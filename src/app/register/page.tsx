@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Shield, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, User, Phone, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { BackButton } from "@/components/back-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -93,6 +94,7 @@ export default function RegisterPage() {
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         
         <div className="relative z-10 flex flex-col justify-center px-16">
+          <BackButton className="w-fit mb-8" />
           <Link href="/" className="flex items-center gap-3 mb-12">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
               <Shield className="w-6 h-6 text-primary" />
@@ -140,6 +142,9 @@ export default function RegisterPage() {
           className="w-full max-w-md"
         >
           <div className="lg:hidden mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <BackButton />
+            </div>
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
                 <Shield className="w-5 h-5 text-primary" />
