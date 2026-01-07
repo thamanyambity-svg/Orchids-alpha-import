@@ -138,27 +138,26 @@ export default function PartnerRequestDetailPage() {
   const updateStatus = async (newStatus: string) => {
     setUpdating(true)
     try {
-      const { error } = await supabase
-        .from('import_requests')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString()
+      const response = await fetch('/api/partner/requests/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestId: params.id,
+          status: newStatus
         })
-        .eq('id', params.id)
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to update status')
+      }
       
-      setRequest({ ...request, status: newStatus })
+      const { data } = await response.json()
+      setRequest({ ...request, status: data.status })
       toast.success(`Statut mis à jour : ${statusLabels[newStatus]}`)
-
-      // Notification webhook call (Triggered by DB Webhook or manual call)
-      // For now, we rely on Supabase DB webhooks if configured, 
-      // or we can call the n8n webhook directly if needed.
-      // Assuming DB webhooks are handled on the backend for status changes.
-
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating status:', error)
-      toast.error("Erreur lors de la mise à jour du statut")
+      toast.error(`Erreur: ${error.message}`)
     } finally {
       setUpdating(false)
     }

@@ -92,21 +92,26 @@ export function DocumentUploadModal({
         .from('documents')
         .getPublicUrl(filePath)
 
-      // 3. Insert into DB
-      const { error: dbError } = await supabase
-        .from('request_documents')
-        .insert({
-          request_id: requestId,
+      // 3. Insert into DB via API to trigger notification
+      const response = await fetch('/api/requests/documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestId,
           service,
           type,
-          file_url: publicUrl,
-          file_name: file.name,
-          file_size: file.size,
-          uploaded_by: user.id,
+          fileUrl: publicUrl,
+          fileName: file.name,
+          fileSize: file.size,
+          uploadedBy: user.id,
           status: 'PENDING'
         })
+      })
 
-      if (dbError) throw dbError
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to record document')
+      }
 
       toast.success("Document téléversé avec succès")
       onSuccess()
