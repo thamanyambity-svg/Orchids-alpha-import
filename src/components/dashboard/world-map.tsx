@@ -84,12 +84,68 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/mapbox/standard",
       center: [20, 20],
       zoom: 1.5,
+      projection: { name: 'globe' } as any, // Enable 3D globe
+      pitch: 45, // Add 3D perspective
+      bearing: -17.6
     })
 
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right")
+
+    map.current.on('style.load', () => {
+      if (!map.current) return
+      
+      // Add fog for a nice atmosphere (3D effect)
+      map.current.setFog({
+        'range': [0.5, 10],
+        'color': 'white',
+        'high-color': '#add8e6',
+        'space-color': '#d8f2ff',
+        'horizon-blend': 0.02
+      })
+
+      // Add 3D buildings layer
+      const layers = map.current.getStyle()?.layers
+      const labelLayerId = layers?.find(
+        (layer) => layer.type === 'symbol' && layer.layout?.['text-field']
+      )?.id
+
+      map.current.addLayer(
+        {
+          'id': 'add-3d-buildings',
+          'source': 'composite',
+          'source-layer': 'building',
+          'filter': ['==', 'extrude', 'true'],
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': '#aaa',
+            'fill-extrusion-height': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              15,
+              0,
+              15.05,
+              ['get', 'height']
+            ],
+            'fill-extrusion-base': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              15,
+              0,
+              15.05,
+              ['get', 'min_height']
+            ],
+            'fill-extrusion-opacity': 0.6
+          }
+        },
+        labelLayerId
+      )
+    })
 
     Object.entries(countryCoordinates).forEach(([code, coords]) => {
       const hasPartner = partners?.[code]
