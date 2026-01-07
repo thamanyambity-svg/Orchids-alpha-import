@@ -12,11 +12,15 @@ import {
   Globe2,
   CheckCircle2,
   Clock,
-  Ship
+  Ship,
+  BellRing,
+  Loader2
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { DashboardHeader } from "@/components/dashboard/header"
+import { useState } from "react"
+import { toast } from "sonner"
 
 const stats = [
   { label: "Acheteurs actifs", value: "156", icon: Users, trend: "+12%", color: "text-chart-2" },
@@ -47,6 +51,28 @@ const countryStats = [
 ]
 
 export default function AdminDashboardPage() {
+  const [isTriggering, setIsTriggering] = useState(false)
+
+  const handleTriggerReminders = async () => {
+    setIsTriggering(true)
+    try {
+      const response = await fetch('/api/admin/reminders/trigger', {
+        method: 'POST',
+      })
+      const data = await response.json()
+      
+      if (data.success) {
+        toast.success(`${data.remindersSent} relances envoyées avec succès`)
+      } else {
+        toast.error("Erreur lors de l'envoi des relances")
+      }
+    } catch (error) {
+      toast.error("Erreur de connexion")
+    } finally {
+      setIsTriggering(false)
+    }
+  }
+
   return (
     <div>
       <DashboardHeader 
@@ -106,6 +132,32 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="space-y-6">
+            <div className="rounded-xl bg-primary/10 border border-primary/20 p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <BellRing className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Relances Automatiques</h3>
+                  <p className="text-xs text-muted-foreground">Déclencher les rappels en attente</p>
+                </div>
+              </div>
+              <Button 
+                onClick={handleTriggerReminders} 
+                disabled={isTriggering}
+                className="w-full shadow-lg shadow-primary/20"
+              >
+                {isTriggering ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  'Lancer les relances'
+                )}
+              </Button>
+            </div>
+
             <div className="rounded-xl bg-card border border-border">
               <div className="p-5 border-b border-border">
                 <h2 className="font-semibold">Actions requises</h2>
