@@ -31,7 +31,7 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
   loading: () => <div className="w-full h-[400px] rounded-2xl bg-muted animate-pulse border border-border" />
 })
 
-const MAPBOX_TOKEN = "sk.eyJ1IjoiYW9ub3MiLCJhIjoiY21qeXFqNXV5NXlsZDNmczUybDl5MGZvOCJ9.GeNnocvMZI63AeO6K1ByjQ."
+const MAPBOX_TOKEN = "sk.eyJ1IjoiYW9ub3MiLCJhIjoiY21qeXFqNXV5NXlsZDNmczUybDl5MGZvOCJ9.GeNnocvMZI63AeO6K1ByjQ"
 
 const allCountries = [
   { code: "CHN", name: "Chine", flag: "🇨🇳" },

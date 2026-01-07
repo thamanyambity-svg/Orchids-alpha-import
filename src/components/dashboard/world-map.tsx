@@ -72,7 +72,7 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
     })
 
     return () => map.current?.remove()
-  }, [])
+  }, [mapboxToken]) // Added dependency
 
   useEffect(() => {
     if (selectedCountry && countryCoordinates[selectedCountry] && map.current) {
@@ -103,7 +103,7 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
         }
       })
     }
-  }, [selectedCountry])
+  }, [selectedCountry, partners]) // Added partners dependency
 
   return (
     <div className="relative w-full h-[400px] rounded-2xl overflow-hidden border border-border shadow-inner">
