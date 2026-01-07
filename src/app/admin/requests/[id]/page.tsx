@@ -175,7 +175,7 @@ export default function AdminRequestDetailPage() {
       </div>
 
       <DashboardHeader 
-        title={request.product_name}
+        title={request.category}
         subtitle={`Référence: ${request.reference}`}
       >
         <div className="flex items-center gap-3">

@@ -196,7 +196,7 @@ export default function PartnerRequestDetailPage() {
       </div>
 
       <DashboardHeader 
-        title={request.product_name}
+        title={request.category}
         subtitle={`Référence: ${request.reference}`}
       >
         <div className="flex items-center gap-3">
@@ -233,17 +233,21 @@ export default function PartnerRequestDetailPage() {
             
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Produit</p>
-                <p className="font-medium">{request.product_name}</p>
+                <p className="text-sm text-muted-foreground">Catégorie</p>
+                <p className="font-medium">{request.category}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Quantité</p>
-                <p className="font-medium">{request.quantity}</p>
+                <p className="font-medium">{request.quantity} {request.unit}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Budget cible</p>
                 <p className="font-medium text-lg text-primary">
-                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}
+                  {request.budget_min && request.budget_max ? (
+                    `${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget_min)} - ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget_max)}`
+                  ) : request.budget_max ? (
+                    `Max: ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget_max)}`
+                  ) : "Non spécifié"}
                 </p>
               </div>
               <div className="space-y-1">

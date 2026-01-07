@@ -145,34 +145,34 @@ export default function RequestDetailsPage() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <section className="bg-card border border-border rounded-2xl p-6">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Package className="w-5 h-5 text-primary" />
-              Détails du produit
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm text-muted-foreground">Produit</label>
-                <p className="font-semibold">{request.product_name}</p>
+            <section className="bg-card border border-border rounded-2xl p-6">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <Package className="w-5 h-5 text-primary" />
+                Détails du dossier
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm text-muted-foreground">Catégorie</label>
+                  <p className="font-semibold">{request.category}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground">Référence</label>
+                  <p className="font-semibold">{request.reference}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground">Quantité</label>
+                  <p className="font-semibold">{request.quantity} {request.unit}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground">Budget Max</label>
+                  <p className="font-semibold">${request.budget_max?.toLocaleString()}</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="text-sm text-muted-foreground">Spécifications</label>
+                  <p className="mt-1 text-sm whitespace-pre-wrap">{request.specifications?.description}</p>
+                </div>
               </div>
-              <div>
-                <label className="text-sm text-muted-foreground">Catégorie</label>
-                <p className="font-semibold">{request.category}</p>
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground">Quantité</label>
-                <p className="font-semibold">{request.quantity} {request.unit}</p>
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground">Budget Max</label>
-                <p className="font-semibold">${request.budget_max?.toLocaleString()}</p>
-              </div>
-              <div className="sm:col-span-2">
-                <label className="text-sm text-muted-foreground">Spécifications</label>
-                <p className="mt-1 text-sm whitespace-pre-wrap">{request.specifications?.description}</p>
-              </div>
-            </div>
-          </section>
+            </section>
 
             {order && (
               <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
