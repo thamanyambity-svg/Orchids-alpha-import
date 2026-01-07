@@ -24,7 +24,7 @@ const countryCoordinates: Record<string, { lat: number; lng: number }> = {
   "BRA": { lng: -47.8825, lat: -15.7942 },
   "CAN": { lng: -75.6972, lat: 45.4215 },
   "CHL": { lng: -70.6693, lat: -33.4489 },
-  "CHN": { lng: 116.4074, lat: 39.9042 },
+  "CHN": { lng: 114.0579, lat: 22.5431 }, // Shenzhen
   "COL": { lng: -74.0721, lat: 4.7110 },
   "COD": { lng: 15.2663, lat: -4.4419 },
   "CIV": { lng: -4.0263, lat: 5.3599 },
@@ -62,11 +62,11 @@ const countryCoordinates: Record<string, { lat: number; lng: number }> = {
   "ZAF": { lng: 28.2293, lat: -25.7479 },
   "ESP": { lng: -3.7038, lat: 40.4168 },
   "CHE": { lng: 7.4474, lat: 46.9480 },
-  "THA": { lng: 100.5018, lat: 13.7563 },
+  "THA": { lng: 100.5018, lat: 13.7563 }, // Bangkok
   "TUN": { lng: 10.1815, lat: 36.8065 },
-  "TUR": { lng: 32.8597, lat: 39.9334 },
+  "TUR": { lng: 28.9784, lat: 41.0082 }, // Istanbul
   "UKR": { lng: 30.5234, lat: 50.4501 },
-  "ARE": { lng: 54.3773, lat: 24.4539 },
+  "ARE": { lng: 55.2708, lat: 25.2048 }, // Dubai
   "GBR": { lng: -0.1276, lat: 51.5074 },
   "USA": { lng: -77.0369, lat: 38.9072 },
   "VNM": { lng: 105.8342, lat: 21.0285 },
@@ -82,69 +82,28 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
 
     mapboxgl.accessToken = mapboxToken
     
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/standard",
-      center: [20, 20],
-      zoom: 1.5,
-      projection: { name: 'globe' } as any, // Enable 3D globe
-      pitch: 45, // Add 3D perspective
-      bearing: -17.6
-    })
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: "mapbox://styles/mapbox/standard", // 3D, colorful, and modern
+        center: [20, 20],
+        zoom: 1.5,
+        projection: { name: 'globe' } as any,
+        pitch: 45,
+        bearing: -17.6
+      })
 
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right")
 
     map.current.on('style.load', () => {
       if (!map.current) return
       
-      // Add fog for a nice atmosphere (3D effect)
-      map.current.setFog({
-        'range': [0.5, 10],
-        'color': 'white',
-        'high-color': '#add8e6',
-        'space-color': '#d8f2ff',
-        'horizon-blend': 0.02
-      })
-
-      // Add 3D buildings layer
-      const layers = map.current.getStyle()?.layers
-      const labelLayerId = layers?.find(
-        (layer) => layer.type === 'symbol' && layer.layout?.['text-field']
-      )?.id
-
-      map.current.addLayer(
-        {
-          'id': 'add-3d-buildings',
-          'source': 'composite',
-          'source-layer': 'building',
-          'filter': ['==', 'extrude', 'true'],
-          'type': 'fill-extrusion',
-          'minzoom': 15,
-          'paint': {
-            'fill-extrusion-color': '#aaa',
-            'fill-extrusion-height': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15,
-              0,
-              15.05,
-              ['get', 'height']
-            ],
-            'fill-extrusion-base': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              15,
-              0,
-              15.05,
-              ['get', 'min_height']
-            ],
-            'fill-extrusion-opacity': 0.6
-          }
-        },
-        labelLayerId
-      )
+      // The Standard style already includes 3D buildings, terrain, and atmosphere.
+      // We just need to ensure the lighting is vibrant.
+      try {
+        map.current.setConfigProperty('basemap', 'lightPreset', 'day');
+      } catch (e) {
+        console.warn("Could not set light preset", e);
+      }
     })
 
     Object.entries(countryCoordinates).forEach(([code, coords]) => {

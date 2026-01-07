@@ -31,7 +31,7 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
   loading: () => <div className="w-full h-[400px] rounded-2xl bg-muted animate-pulse border border-border" />
 })
 
-const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21qeXFqNXV5NXlsZDNmczUybDl5MGZvOCJ9.GeNnocvMZI63AeO6K1ByjQ"
+const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
 
 const allCountries = [
   { code: "AFG", name: "Afghanistan", flag: "🇦🇫" },
