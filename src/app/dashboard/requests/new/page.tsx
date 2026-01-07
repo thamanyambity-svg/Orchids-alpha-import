@@ -22,8 +22,51 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { PartnerProfileCard } from "@/components/dashboard/partner-profile-card"
+import dynamic from "next/dynamic"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+
+const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(mod => mod.WorldMap), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] rounded-2xl bg-muted animate-pulse border border-border" />
+})
+
+const MAPBOX_TOKEN = "sk.eyJ1IjoiYW9ub3MiLCJhIjoiY21qeXFqNXV5NXlsZDNmczUybDl5MGZvOCJ9.GeNnocvMZI63AeO6K1ByjQ."
+
+const allCountries = [
+  { code: "CHN", name: "Chine", flag: "🇨🇳" },
+  { code: "ARE", name: "Émirats Arabes Unis", flag: "🇦🇪" },
+  { code: "TUR", name: "Turquie", flag: "🇹🇷" },
+  { code: "THA", name: "Thaïlande", flag: "🇹🇭" },
+  { code: "FRA", name: "France", flag: "🇫🇷" },
+  { code: "USA", name: "États-Unis", flag: "🇺🇸" },
+  { code: "IND", name: "Inde", flag: "🇮🇳" },
+  { code: "BRA", name: "Brésil", flag: "🇧🇷" },
+  { code: "COD", name: "RD Congo", flag: "🇨🇩" },
+  { code: "NGA", name: "Nigeria", flag: "🇳🇬" },
+  { code: "KEN", name: "Kenya", flag: "🇰🇪" },
+  { code: "MAR", name: "Maroc", flag: "🇲🇦" },
+  { code: "ZAF", name: "Afrique du Sud", flag: "🇿🇦" },
+  { code: "DEU", name: "Allemagne", flag: "🇩🇪" },
+  { code: "ITA", name: "Italie", flag: "🇮🇹" },
+  { code: "ESP", name: "Espagne", flag: "🇪🇸" },
+  { code: "GBR", name: "Royaume-Uni", flag: "🇬🇧" },
+  { code: "JPN", name: "Japon", flag: "🇯🇵" },
+  { code: "KOR", name: "Corée du Sud", flag: "🇰🇷" },
+  { code: "CAN", name: "Canada", flag: "🇨🇦" },
+  { code: "MEX", name: "Mexique", flag: "🇲🇽" },
+  { code: "AUS", name: "Australie", flag: "🇦🇺" },
+  { code: "VNM", name: "Vietnam", flag: "🇻🇳" },
+  { code: "MYS", name: "Malaisie", flag: "🇲🇾" },
+  { code: "IDN", name: "Indonésie", flag: "🇮🇩" },
+  { code: "SGP", name: "Singapour", flag: "🇸🇬" },
+  { code: "EGY", name: "Égypte", flag: "🇪🇬" },
+  { code: "SEN", name: "Sénégal", flag: "🇸🇳" },
+  { code: "CIV", name: "Côte d'Ivoire", flag: "🇨🇮" },
+  { code: "CMR", name: "Cameroun", flag: "🇨🇲" },
+  { code: "AGO", name: "Angola", flag: "🇦🇴" },
+  { code: "ETH", name: "Éthiopie", flag: "🇪🇹" },
+].sort((a, b) => a.name.localeCompare(b.name))
 
 const categories = [
   "Électronique",
@@ -273,25 +316,30 @@ export default function NewRequestPage() {
                         <SelectTrigger className="h-14 text-lg">
                           <SelectValue placeholder="Où achetez-vous ?" />
                         </SelectTrigger>
-                        <SelectContent>
-                          {countries.map((country) => (
-                            <SelectItem key={country.code} value={country.code}>
-                              <span className="flex items-center gap-3 py-1">
-                                <span className="text-2xl">
-                                  {country.code === 'CHN' ? '🇨🇳' : 
-                                   country.code === 'ARE' ? '🇦🇪' : 
-                                   country.code === 'TUR' ? '🇹🇷' : 
-                                   country.code === 'THA' ? '🇹🇭' : '🌍'}
+                          <SelectContent>
+                            {allCountries.map((country) => (
+                              <SelectItem key={country.code} value={country.code}>
+                                <span className="flex items-center gap-3 py-1">
+                                  <span className="text-2xl">{country.flag}</span>
+                                  {country.name}
                                 </span>
-                                {country.name}
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                      <div className="space-y-3">
+                        <Label className="text-base font-semibold italic opacity-70">Aperçu géographique</Label>
+                        <WorldMap 
+                          mapboxToken={MAPBOX_TOKEN}
+                          selectedCountry={formData.country}
+                          onCountrySelect={(code) => setFormData({ ...formData, country: code })}
+                          partners={mockPartners}
+                        />
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-muted/30 border border-border">
                       <h4 className="font-semibold flex items-center gap-2 mb-2">
                         <Search className="w-4 h-4 text-primary" />
                         Pourquoi cette étape ?
