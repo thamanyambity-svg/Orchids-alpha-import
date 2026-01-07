@@ -58,6 +58,28 @@ export default function LoginPage() {
     }
   }
 
+  async function handleAdminClick() {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      toast.info("Veuillez vous connecter avec vos identifiants administrateur pour accéder à cet espace.")
+      return
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+
+    if (profile?.role === "ADMIN") {
+      router.push("/admin")
+    } else {
+      toast.error("Vous n'avez pas les droits d'administration.")
+    }
+  }
+
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative bg-card">
@@ -191,10 +213,14 @@ export default function LoginPage() {
             </p>
 
             <div className="mt-6 pt-6 border-t border-border text-center">
-              <Link href="/admin" className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1">
+              <button 
+                type="button"
+                onClick={handleAdminClick}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+              >
                 <Shield className="w-3 h-3" />
                 Accès Administration
-              </Link>
+              </button>
             </div>
           </motion.div>
       </div>
