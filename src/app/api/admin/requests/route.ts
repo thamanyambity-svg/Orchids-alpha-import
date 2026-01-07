@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
+import { logAudit } from '@/lib/audit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,6 +37,13 @@ export async function POST(request: NextRequest) {
         if (error) throw error
         result = data
         n8nEvent = 'partner_assigned'
+        
+        await logAudit({
+          action: 'ASSIGN_PARTNER',
+          targetType: 'import_requests',
+          targetId: requestId,
+          details: { partnerId }
+        })
         break
       }
 
@@ -78,6 +86,13 @@ export async function POST(request: NextRequest) {
           result = { request: requestData, order: orderData }
           n8nEvent = 'request_validated'
 
+          await logAudit({
+            action: 'VALIDATE_REQUEST',
+            targetType: 'import_requests',
+            targetId: requestId,
+            details: { orderId: orderData.id, reference: orderRef }
+          })
+
           // Trigger certified report generation (Alpha Compliance Report)
           await sendToN8N('certified_report_requested', {
             requestId,
@@ -104,6 +119,13 @@ export async function POST(request: NextRequest) {
         if (error) throw error
         result = data
         n8nEvent = 'request_rejected'
+
+        await logAudit({
+          action: 'REJECT_REQUEST',
+          targetType: 'import_requests',
+          targetId: requestId,
+          details: { reason: actionData?.reason || 'No reason provided' }
+        })
         break
       }
 

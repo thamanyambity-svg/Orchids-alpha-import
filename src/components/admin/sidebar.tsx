@@ -13,7 +13,8 @@ import {
   Settings,
   LogOut,
   ChevronRight,
-  Crown
+  Crown,
+  BarChart3
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,7 @@ const navItems = [
   { href: "/admin/requests", label: "Demandes", icon: FileText },
   { href: "/admin/finances", label: "Flux financiers", icon: Wallet },
   { href: "/admin/incidents", label: "Incidents", icon: AlertTriangle },
+  { href: "/admin/reporting", label: "Reporting & Audit", icon: BarChart3 },
   { href: "/admin/settings", label: "Paramètres", icon: Settings },
 ]
 
