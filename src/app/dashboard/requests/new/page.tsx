@@ -303,12 +303,12 @@ export default function NewRequestPage() {
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-
       if (!user) throw new Error("Non authentifié")
 
-      const { error } = await supabase
-        .from("import_requests")
-        .insert({
+      const response = await fetch("/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           buyer_id: user.id,
           country_id: countries.find(c => c.code === formData.country)?.id,
           category: formData.category,
@@ -321,11 +321,12 @@ export default function NewRequestPage() {
           unit: formData.unit,
           budget_min: parseFloat(formData.budgetMin),
           budget_max: parseFloat(formData.budgetMax),
-          deadline: formData.deadline || null,
-          status: "PENDING"
+          deadline: formData.deadline || null
         })
+      })
 
-      if (error) throw error
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || "Erreur lors de la création")
 
       toast.success("Demande créée avec succès !")
       router.push("/dashboard/requests")
