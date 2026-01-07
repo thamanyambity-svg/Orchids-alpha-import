@@ -50,6 +50,8 @@ const documentTypeLabels: Record<string, string> = {
   INSPECTION_REPORT: "Rapport d'inspection",
   BILL_OF_LADING: "Bill of Lading / LTA",
   CERTIFICATE_ORIGIN: "Certificat d'Origine",
+  PAYMENT_RECEIPT: "Reçu de Paiement (Alpha)",
+  COMPLIANCE_REPORT: "Rapport de Conformité (Alpha)",
   OTHER: "Autre document",
 }
 

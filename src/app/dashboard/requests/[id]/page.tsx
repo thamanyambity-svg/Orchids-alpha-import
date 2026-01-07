@@ -17,7 +17,8 @@ import {
   CreditCard,
   Building2,
   Phone,
-  Mail
+  Mail,
+  ExternalLink
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
@@ -60,6 +61,8 @@ export default function RequestDetailsPage() {
       INSPECTION_REPORT: "Rapport d'inspection",
       BILL_OF_LADING: "Bill of Lading / LTA",
       CERTIFICATE_ORIGIN: "Certificat d'Origine",
+      PAYMENT_RECEIPT: "Reçu de Paiement (Alpha)",
+      COMPLIANCE_REPORT: "Rapport de Conformité (Alpha)",
       OTHER: "Autre document",
     }
 
