@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { 
   FileText, 
@@ -8,59 +9,106 @@ import {
   Package,
   TrendingUp,
   Star,
-  ArrowRight
+  ArrowRight,
+  AlertCircle
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { DashboardHeader } from "@/components/dashboard/header"
-
-const stats = [
-  { label: "Dossiers assignés", value: "8", icon: FileText, trend: "+3 cette semaine" },
-  { label: "En cours de traitement", value: "5", icon: Clock, color: "text-warning" },
-  { label: "Complétés ce mois", value: "12", icon: CheckCircle2, color: "text-success" },
-  { label: "Score performance", value: "98%", icon: Star, color: "text-primary" },
-]
-
-const assignedRequests = [
-  { 
-    id: "REQ-2024-156", 
-    buyer: "Jean Mbala",
-    product: "Smartphones Samsung",
-    quantity: "500 unités",
-    budget: "$15,000",
-    status: "EXECUTING",
-    statusLabel: "En cours",
-    deadline: "20 Jan 2024"
-  },
-  { 
-    id: "REQ-2024-148", 
-    buyer: "Marie Kalonji",
-    product: "Pièces automobiles",
-    quantity: "1000 unités",
-    budget: "$28,000",
-    status: "EXECUTING",
-    statusLabel: "En cours",
-    deadline: "25 Jan 2024"
-  },
-  { 
-    id: "REQ-2024-142", 
-    buyer: "Paul Tshisekedi",
-    product: "Équipements médicaux",
-    quantity: "50 unités",
-    budget: "$45,000",
-    status: "VALIDATED",
-    statusLabel: "À traiter",
-    deadline: "30 Jan 2024"
-  },
-]
+import { createClient } from "@/lib/supabase/client"
+import { format } from "date-fns"
+import { fr } from "date-fns/locale"
 
 const statusColors: Record<string, string> = {
+  PENDING: "bg-secondary text-secondary-foreground",
   VALIDATED: "bg-primary/10 text-primary",
-  EXECUTING: "bg-chart-3/10 text-chart-3",
-  SHIPPED: "bg-chart-4/10 text-chart-4",
+  EXECUTING: "bg-blue-500/10 text-blue-500",
+  SHIPPED: "bg-purple-500/10 text-purple-500",
+  DELIVERED: "bg-green-500/10 text-green-500",
+  COMPLETED: "bg-green-600/10 text-green-600",
+  CANCELLED: "bg-destructive/10 text-destructive",
+}
+
+const statusLabels: Record<string, string> = {
+  PENDING: "En attente",
+  VALIDATED: "À traiter",
+  EXECUTING: "En cours",
+  SHIPPED: "Expédié",
+  DELIVERED: "Livré",
+  COMPLETED: "Terminé",
+  CANCELLED: "Annulé",
 }
 
 export default function PartnerDashboardPage() {
+  const [requests, setRequests] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({
+    assigned: 0,
+    inProgress: 0,
+    completed: 0,
+    performance: "98%"
+  })
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchDashboardData() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        const { data: partner } = await supabase
+          .from('partner_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single()
+
+        if (!partner) return
+
+        const { data, error } = await supabase
+          .from('import_requests')
+          .select(`
+            *,
+            buyer_profiles (
+              full_name,
+              company_name
+            )
+          `)
+          .eq('assigned_partner_id', partner.id)
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+        
+        setRequests(data || [])
+        
+        // Calculate stats
+        const assigned = data?.length || 0
+        const inProgress = data?.filter(r => ['VALIDATED', 'EXECUTING', 'SHIPPED'].includes(r.status)).length || 0
+        const completed = data?.filter(r => r.status === 'COMPLETED').length || 0
+        
+        setStats({
+          assigned,
+          inProgress,
+          completed,
+          performance: "98%" // Keep static for now or calculate from feedback table if exists
+        })
+
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  const statItems = [
+    { label: "Dossiers assignés", value: stats.assigned.toString(), icon: FileText, trend: "+0 cette semaine" },
+    { label: "En cours", value: stats.inProgress.toString(), icon: Clock, color: "text-warning" },
+    { label: "Complétés", value: stats.completed.toString(), icon: CheckCircle2, color: "text-success" },
+    { label: "Performance", value: stats.performance, icon: Star, color: "text-primary" },
+  ]
+
   return (
     <div>
       <DashboardHeader 
@@ -70,7 +118,7 @@ export default function PartnerDashboardPage() {
 
       <div className="p-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, index) => (
+          {statItems.map((stat, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -99,7 +147,7 @@ export default function PartnerDashboardPage() {
           <div className="lg:col-span-2">
             <div className="rounded-xl bg-card border border-border">
               <div className="p-5 border-b border-border flex items-center justify-between">
-                <h2 className="font-semibold">Dossiers à traiter</h2>
+                <h2 className="font-semibold">Dossiers récents</h2>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/partner/requests" className="flex items-center gap-1">
                     Voir tout
@@ -108,32 +156,47 @@ export default function PartnerDashboardPage() {
                 </Button>
               </div>
               <div className="divide-y divide-border">
-                {assignedRequests.map((request) => (
-                  <Link 
-                    key={request.id} 
-                    href={`/partner/requests/${request.id}`}
-                    className="flex items-center gap-4 p-5 hover:bg-accent/50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Package className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs text-muted-foreground">{request.id}</span>
-                        <span className={`px-2 py-0.5 rounded text-xs ${statusColors[request.status]}`}>
-                          {request.statusLabel}
-                        </span>
+                {loading ? (
+                  <div className="p-10 text-center text-muted-foreground">Chargement...</div>
+                ) : requests.length > 0 ? (
+                  requests.slice(0, 5).map((request) => (
+                    <Link 
+                      key={request.id} 
+                      href={`/partner/requests/${request.id}`}
+                      className="flex items-center gap-4 p-5 hover:bg-accent/50 transition-colors"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Package className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="font-medium truncate">{request.product}</p>
-                      <p className="text-sm text-muted-foreground">{request.buyer} • {request.quantity}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">{request.budget}</p>
-                      <p className="text-xs text-muted-foreground">Deadline: {request.deadline}</p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                  </Link>
-                ))}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
+                          <span className={`px-2 py-0.5 rounded text-xs ${statusColors[request.status]}`}>
+                            {statusLabels[request.status]}
+                          </span>
+                        </div>
+                        <p className="font-medium truncate">{request.product_name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {request.buyer_profiles?.company_name || request.buyer_profiles?.full_name} • {request.quantity}
+                        </p>
+                      </div>
+                      <div className="text-right hidden sm:block">
+                        <p className="font-semibold">
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(request.created_at), "d MMM yyyy", { locale: fr })}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    </Link>
+                  ))
+                ) : (
+                  <div className="p-10 text-center">
+                    <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-muted-foreground">Aucun dossier assigné pour le moment.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
