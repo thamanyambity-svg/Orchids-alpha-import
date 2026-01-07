@@ -74,11 +74,21 @@ export async function POST(request: NextRequest) {
           .select()
           .single()
 
-        if (orderError) throw orderError
-        result = { request: requestData, order: orderData }
-        n8nEvent = 'request_validated'
-        break
-      }
+          if (orderError) throw orderError
+          result = { request: requestData, order: orderData }
+          n8nEvent = 'request_validated'
+
+          // Trigger certified report generation (Alpha Compliance Report)
+          await sendToN8N('certified_report_requested', {
+            requestId,
+            orderId: orderData.id,
+            orderReference: orderRef,
+            amount: totalAmount,
+            clientName: requestData.user_id, // In a real app, you'd fetch the user's name
+            timestamp: new Date().toISOString()
+          })
+          break
+        }
 
       case 'REJECT': {
         const { data, error } = await supabase

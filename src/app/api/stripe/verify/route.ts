@@ -73,15 +73,28 @@ export async function GET(request: NextRequest) {
           console.error('Failed to update order:', orderError)
         }
 
-        // Notify n8n
-        await sendToN8N('payment_confirmed', {
-          orderId,
-          paymentType,
-          amount: (session.amount_total || 0) / 100,
-          transactionRef: session.payment_intent,
-          orderReference
-        });
-      }
+          // Notify n8n
+          await sendToN8N('payment_confirmed', {
+            orderId,
+            paymentType,
+            amount: (session.amount_total || 0) / 100,
+            transactionRef: session.payment_intent,
+            orderReference
+          });
+
+          // Trigger PDF Receipt Generation
+          await sendToN8N('payment_receipt_requested', {
+            orderId,
+            paymentType,
+            amount: (session.amount_total || 0) / 100,
+            currency: session.currency?.toUpperCase() || 'USD',
+            customerEmail: session.customer_details?.email,
+            customerName: session.customer_details?.name,
+            transactionRef: session.payment_intent,
+            orderReference,
+            timestamp: new Date().toISOString()
+          });
+        }
 
 
     return NextResponse.json({

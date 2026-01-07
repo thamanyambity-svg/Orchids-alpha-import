@@ -48,6 +48,18 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     })
 
+    // Trigger OCR Analysis for Proforma Invoices
+    if (type === 'PROFORMA_INVOICE') {
+      await sendToN8N('ocr_analysis_requested', {
+        requestId,
+        documentId: data.id,
+        fileUrl,
+        fileName,
+        uploadedBy,
+        timestamp: new Date().toISOString()
+      })
+    }
+
     return NextResponse.json(data)
   } catch (error: any) {
     console.error('Document record creation error:', error)
