@@ -33,12 +33,11 @@ const recentActivity = [
   { type: "validation", message: "Fournisseur validé: Guangzhou Electronics Ltd", time: "Il y a 3h", status: "success" },
 ]
 
-const pendingActions = [
-  { label: "Demandes à valider", count: 5, href: "/admin/requests?status=ANALYSIS" },
-  { label: "Paiements à autoriser", count: 3, href: "/admin/finances?status=BLOCKED" },
-  { label: "Fournisseurs en attente", count: 2, href: "/admin/partners/suppliers" },
-  { label: "Incidents ouverts", count: 1, href: "/admin/incidents?status=OPEN" },
-]
+  const pendingActions = [
+    { label: "Demandes à valider", count: 5, href: "/admin/requests" },
+    { label: "Paiements à autoriser", count: 3, href: "/admin/finances" },
+    { label: "Incidents ouverts", count: 1, href: "/admin/incidents" },
+  ]
 
 const countryStats = [
   { country: "🇨🇳 Chine", requests: 45, volume: "$580K", status: "active" },

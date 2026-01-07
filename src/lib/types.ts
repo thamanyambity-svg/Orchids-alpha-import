@@ -3,12 +3,12 @@ export type UserStatus = 'PENDING' | 'VERIFIED' | 'SUSPENDED'
 export type KycStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'VERIFIED' | 'REJECTED'
 export type ContractStatus = 'PENDING' | 'ACTIVE' | 'SUSPENDED' | 'TERMINATED'
 export type SupplierStatus = 'ACTIVE' | 'RESTRICTED' | 'SUSPENDED'
-export type RequestStatus = 'DRAFT' | 'ANALYSIS' | 'VALIDATED' | 'EXECUTING' | 'SHIPPED' | 'DELIVERED' | 'INCIDENT' | 'CLOSED'
-export type OrderStatus = 'PENDING' | 'FUNDED' | 'SOURCING' | 'PURCHASED' | 'SHIPPED' | 'DELIVERED' | 'CLOSED' | 'INCIDENT'
+export type RequestStatus = 'DRAFT' | 'ANALYSIS' | 'VALIDATED' | 'REJECTED' | 'AWAITING_DEPOSIT' | 'AWAITING_BALANCE' | 'EXECUTING' | 'SHIPPED' | 'DELIVERED' | 'INCIDENT' | 'CLOSED'
+export type OrderStatus = 'PENDING' | 'AWAITING_DEPOSIT' | 'FUNDED' | 'SOURCING' | 'EXECUTING' | 'PURCHASED' | 'AWAITING_BALANCE' | 'SHIPPED' | 'DELIVERED' | 'CLOSED' | 'INCIDENT' | 'FROZEN' | 'CANCELLED'
 export type PaymentType = 'DEPOSIT_60' | 'BALANCE_40'
 export type PaymentStatus = 'PENDING' | 'BLOCKED' | 'RELEASED' | 'REFUNDED'
 export type IncidentType = 'LOSS' | 'DELAY' | 'NON_CONFORMITY' | 'FRAUD'
-export type IncidentStatus = 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED'
+export type IncidentStatus = 'OPEN' | 'UNDER_REVIEW' | 'FROZEN' | 'RESOLVED' | 'CANCELLED'
 export type LedgerEntryType = 'DEPOSIT' | 'RELEASE' | 'COMMISSION' | 'REFUND' | 'FREEZE'
 export type LedgerEntryStatus = 'BLOCKED' | 'AUTHORIZED' | 'EXECUTED'
 
@@ -110,6 +110,12 @@ export interface Order {
   validated_by_admin: boolean
   execution_deadline: string | null
   notes: string | null
+  deposit_amount: number | null
+  balance_amount: number | null
+  deposit_paid: boolean
+  balance_paid: boolean
+  is_frozen: boolean
+  escrow_activated: boolean
   created_at: string
   updated_at: string
 }
