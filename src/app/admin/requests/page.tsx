@@ -74,87 +74,34 @@ export default function AdminRequestsPage() {
     }
   }
 
-  async function handleAssignPartner(requestId: string, partnerId: string) {
+  async function handleAdminAction(action: string, requestId: string, data?: any) {
     try {
-      const { error } = await supabase
-        .from("import_requests")
-        .update({ 
-          assigned_partner_id: partnerId,
-          status: "ANALYSIS",
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", requestId)
+      const response = await fetch('/api/admin/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, requestId, data })
+      })
 
-      if (error) throw error
-      
-      toast.success("Partenaire assigné avec succès")
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || 'Action failed')
+
+      toast.success("Opération réussie")
       fetchData()
     } catch (error: any) {
       toast.error("Erreur: " + error.message)
     }
+  }
+
+  async function handleAssignPartner(requestId: string, partnerId: string) {
+    await handleAdminAction('ASSIGN_PARTNER', requestId, { partnerId })
   }
 
   async function handleValidateRequest(requestId: string) {
-    try {
-      // 1. Update request status
-      const { error: reqError } = await supabase
-        .from("import_requests")
-        .update({ 
-          status: "VALIDATED",
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", requestId)
-
-      if (reqError) throw reqError
-
-      // 2. Create Order automatically as per workflow
-      const request = requests.find(r => r.id === requestId)
-      if (request) {
-        const orderRef = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-        const totalAmount = request.budget_max || 0
-        const commission = totalAmount * 0.1 // 10% commission default
-        
-        const { error: orderError } = await supabase
-          .from("orders")
-          .insert({
-            reference: orderRef,
-            request_id: requestId,
-            total_amount: totalAmount,
-            alpha_commission: commission,
-            partner_payout: totalAmount - commission,
-            status: "AWAITING_DEPOSIT",
-            validated_by_admin: true,
-            deposit_amount: totalAmount * 0.6, // 60%
-            balance_amount: totalAmount * 0.4, // 40%
-          })
-
-        if (orderError) throw orderError
-        toast.success("Demande validée et commande générée")
-      }
-      
-      fetchData()
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
-    }
+    await handleAdminAction('VALIDATE', requestId)
   }
 
   async function handleRejectRequest(requestId: string) {
-    try {
-      const { error } = await supabase
-        .from("import_requests")
-        .update({ 
-          status: "REJECTED",
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", requestId)
-
-      if (error) throw error
-      
-      toast.success("Demande refusée")
-      fetchData()
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
-    }
+    await handleAdminAction('REJECT', requestId)
   }
 
   const filteredRequests = requests.filter(req => {
