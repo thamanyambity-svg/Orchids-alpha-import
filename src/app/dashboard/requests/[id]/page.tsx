@@ -49,47 +49,65 @@ export default function RequestDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
   const [request, setRequest] = useState<any>(null)
-  const [order, setOrder] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+    const [order, setOrder] = useState<any>(null)
+    const [documents, setDocuments] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true)
-      const supabase = createClient()
-      
-      const { data: requestData, error: requestError } = await supabase
-        .from("import_requests")
-        .select(`
-          *,
-          countries (name, flag),
-          assigned_partner:partner_profiles (
-            full_name,
-            company_name,
-            email,
-            phone
-          )
-        `)
-        .eq("id", id)
-        .single()
-
-      if (requestError) {
-        console.error("Error fetching request:", requestError)
-      } else {
-        setRequest(requestData)
-        
-        const { data: orderData } = await supabase
-          .from("orders")
-          .select("*")
-          .eq("request_id", id)
-          .single()
-        
-        setOrder(orderData)
-      }
-      setLoading(false)
+    const documentTypeLabels: Record<string, string> = {
+      PROFORMA_INVOICE: "Facture Proforma",
+      COMMERCIAL_INVOICE: "Facture Commerciale",
+      PACKING_LIST: "Packing List",
+      INSPECTION_REPORT: "Rapport d'inspection",
+      BILL_OF_LADING: "Bill of Lading / LTA",
+      CERTIFICATE_ORIGIN: "Certificat d'Origine",
+      OTHER: "Autre document",
     }
 
-    if (id) fetchData()
-  }, [id])
+    useEffect(() => {
+      async function fetchData() {
+        setLoading(true)
+        const supabase = createClient()
+        
+        const [requestRes, orderRes, docsRes] = await Promise.all([
+          supabase
+            .from("import_requests")
+            .select(`
+              *,
+              countries (name, flag),
+              assigned_partner:partner_profiles (
+                full_name,
+                company_name,
+                email,
+                phone
+              )
+            `)
+            .eq("id", id)
+            .single(),
+          supabase
+            .from("orders")
+            .select("*")
+            .eq("request_id", id)
+            .single(),
+          supabase
+            .from("request_documents")
+            .select("*")
+            .eq("request_id", id)
+            .order('created_at', { ascending: false })
+        ])
+
+        if (requestRes.error) {
+          console.error("Error fetching request:", requestRes.error)
+        } else {
+          setRequest(requestRes.data)
+          setOrder(orderRes.data)
+          setDocuments(docsRes.data || [])
+        }
+        setLoading(false)
+      }
+
+      if (id) fetchData()
+    }, [id])
+
 
   if (loading) {
     return (
@@ -156,75 +174,118 @@ export default function RequestDetailsPage() {
             </div>
           </section>
 
-          {order && (
-            <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <ShieldCheck className="w-24 h-24" />
-              </div>
+            {order && (
+              <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                  <ShieldCheck className="w-24 h-24" />
+                </div>
+                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                  Facturation & Paiement (Modèle 60/40)
+                </h2>
+                
+                <div className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className={`p-4 rounded-xl border ${order.deposit_paid ? 'bg-success/5 border-success/20' : 'bg-primary/5 border-primary/20'}`}>
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm font-medium">Acompte (60%)</span>
+                        {order.deposit_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                      </div>
+                      <p className="text-2xl font-bold mb-4">${order.deposit_amount?.toLocaleString()}</p>
+                      
+                      {!order.deposit_paid ? (
+                        <PaymentButton 
+                          orderId={order.id} 
+                          paymentType="DEPOSIT_60" 
+                          amount={Number(order.deposit_amount)}
+                          className="w-full"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-2 text-success text-sm font-medium">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Payé le {new Date(order.updated_at).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className={`p-4 rounded-xl border ${order.balance_paid ? 'bg-success/5 border-success/20' : 'bg-muted border-border'}`}>
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm font-medium">Solde (40%)</span>
+                        {order.balance_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                      </div>
+                      <p className="text-2xl font-bold mb-4">${order.balance_amount?.toLocaleString()}</p>
+                      
+                      {!order.balance_paid ? (
+                        <PaymentButton 
+                          orderId={order.id} 
+                          paymentType="BALANCE_40" 
+                          amount={Number(order.balance_amount)}
+                          disabled={!order.deposit_paid}
+                          className="w-full"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-2 text-success text-sm font-medium">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Payé
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground">
+                    <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+                    <p>
+                      Vos fonds sont bloqués sur le compte séquestre Alpha. 
+                      Le partenaire n&apos;est payé qu&apos;après validation de chaque étape clé.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            <section className="bg-card border border-border rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-primary" />
-                Facturation & Paiement (Modèle 60/40)
+                <FileText className="w-5 h-5 text-primary" />
+                Documents du dossier
               </h2>
               
-              <div className="space-y-6">
+              {documents.length > 0 ? (
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className={`p-4 rounded-xl border ${order.deposit_paid ? 'bg-success/5 border-success/20' : 'bg-primary/5 border-primary/20'}`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-sm font-medium">Acompte (60%)</span>
-                      {order.deposit_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
-                    </div>
-                    <p className="text-2xl font-bold mb-4">${order.deposit_amount?.toLocaleString()}</p>
-                    
-                    {!order.deposit_paid ? (
-                      <PaymentButton 
-                        orderId={order.id} 
-                        paymentType="DEPOSIT_60" 
-                        amount={Number(order.deposit_amount)}
-                        className="w-full"
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2 text-success text-sm font-medium">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Payé le {new Date(order.updated_at).toLocaleDateString()}
+                  {documents.map((doc) => (
+                    <div 
+                      key={doc.id}
+                      className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold">
+                            {documentTypeLabels[doc.type] || doc.type}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {new Date(doc.created_at).toLocaleDateString()} • {doc.service}
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  <div className={`p-4 rounded-xl border ${order.balance_paid ? 'bg-success/5 border-success/20' : 'bg-muted border-border'}`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-sm font-medium">Solde (40%)</span>
-                      {order.balance_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                      <Button size="icon" variant="ghost" asChild title="Voir">
+                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </Button>
                     </div>
-                    <p className="text-2xl font-bold mb-4">${order.balance_amount?.toLocaleString()}</p>
-                    
-                    {!order.balance_paid ? (
-                      <PaymentButton 
-                        orderId={order.id} 
-                        paymentType="BALANCE_40" 
-                        amount={Number(order.balance_amount)}
-                        disabled={!order.deposit_paid}
-                        className="w-full"
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2 text-success text-sm font-medium">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Payé
-                      </div>
-                    )}
-                  </div>
+                  ))}
                 </div>
-
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground">
-                  <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
-                  <p>
-                    Vos fonds sont bloqués sur le compte séquestre Alpha. 
-                    Le partenaire n&apos;est payé qu&apos;après validation de chaque étape clé.
-                  </p>
+              ) : (
+                <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
+                  <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                  <p className="text-sm text-muted-foreground">Aucun document n'a encore été ajouté.</p>
                 </div>
-              </div>
+              )}
             </section>
-          )}
-        </div>
+          </div>
+
 
         <div className="space-y-6">
           <section className="bg-card border border-border rounded-2xl p-6">

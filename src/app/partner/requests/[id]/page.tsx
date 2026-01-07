@@ -15,7 +15,8 @@ import {
   Clock,
   AlertCircle,
   MoreVertical,
-  ExternalLink
+  ExternalLink,
+  Trash2
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -30,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
+import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -41,42 +43,97 @@ const statusLabels: Record<string, string> = {
   CANCELLED: "Annulé",
 }
 
+const documentTypeLabels: Record<string, string> = {
+  PROFORMA_INVOICE: "Facture Proforma",
+  COMMERCIAL_INVOICE: "Facture Commerciale",
+  PACKING_LIST: "Packing List",
+  INSPECTION_REPORT: "Rapport d'inspection",
+  BILL_OF_LADING: "Bill of Lading / LTA",
+  CERTIFICATE_ORIGIN: "Certificat d'Origine",
+  OTHER: "Autre document",
+}
+
 export default function PartnerRequestDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [request, setRequest] = useState<any>(null)
+  const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [uploadModalOpen, setUploadModalOpen] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
-    async function fetchRequest() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
-          .from('import_requests')
-          .select(`
-            *,
-            buyer_profiles (
-              full_name,
-              company_name,
-              activity_type
-            )
-          `)
-          .eq('id', params.id)
-          .single()
+        const [requestRes, docsRes] = await Promise.all([
+          supabase
+            .from('import_requests')
+            .select(`
+              *,
+              buyer_profiles (
+                full_name,
+                company_name,
+                activity_type
+              )
+            `)
+            .eq('id', params.id)
+            .single(),
+          supabase
+            .from('request_documents')
+            .select('*')
+            .eq('request_id', params.id)
+            .order('created_at', { ascending: false })
+        ])
 
-        if (error) throw error
-        setRequest(data)
+        if (requestRes.error) throw requestRes.error
+        setRequest(requestRes.data)
+        setDocuments(docsRes.data || [])
       } catch (error) {
-        console.error('Error fetching request:', error)
-        toast.error("Erreur lors de la récupération du dossier")
+        console.error('Error fetching data:', error)
+        toast.error("Erreur lors de la récupération des données")
       } finally {
         setLoading(false)
       }
     }
 
-    if (params.id) fetchRequest()
+    if (params.id) fetchData()
   }, [params.id])
+
+  const fetchDocuments = async () => {
+    const { data, error } = await supabase
+      .from('request_documents')
+      .select('*')
+      .eq('request_id', params.id)
+      .order('created_at', { ascending: false })
+    
+    if (!error) setDocuments(data || [])
+  }
+
+  const deleteDocument = async (id: string, url: string) => {
+    if (!confirm("Voulez-vous vraiment supprimer ce document ?")) return
+
+    try {
+      // 1. Delete from storage (need to extract path from URL)
+      const path = url.split('/storage/v1/object/public/documents/')[1]
+      if (path) {
+        await supabase.storage.from('documents').remove([path])
+      }
+
+      // 2. Delete from DB
+      const { error } = await supabase
+        .from('request_documents')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setDocuments(documents.filter(d => d.id !== id))
+      toast.success("Document supprimé")
+    } catch (error) {
+      toast.error("Erreur lors de la suppression")
+    }
+  }
 
   const updateStatus = async (newStatus: string) => {
     setUpdating(true)
@@ -203,104 +260,80 @@ export default function PartnerRequestDetailPage() {
             </div>
           </div>
 
-          {/* Documents */}
-          <div className="rounded-2xl bg-card border border-border p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Documents du dossier
-              </h3>
-              <Button size="sm" variant="outline" className="gap-2">
-                <Upload className="w-4 h-4" />
-                Ajouter
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Facture Proforma</p>
-                    <p className="text-xs text-muted-foreground">Ajouté le 05 Jan 2024</p>
-                  </div>
-                </div>
-                <Button size="icon" variant="ghost">
-                  <ExternalLink className="w-4 h-4" />
+            {/* Documents */}
+            <div className="rounded-2xl bg-card border border-border p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  Documents du dossier
+                </h3>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="gap-2"
+                  onClick={() => setUploadModalOpen(true)}
+                >
+                  <Upload className="w-4 h-4" />
+                  Ajouter
                 </Button>
               </div>
+
+              <div className="space-y-3">
+                {documents.length > 0 ? (
+                  documents.map((doc) => (
+                    <div 
+                      key={doc.id}
+                      className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {documentTypeLabels[doc.type] || doc.type}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(doc.created_at), "d MMM yyyy", { locale: fr })} • {doc.service}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button size="icon" variant="ghost" asChild title="Ouvrir">
+                          <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </Button>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => deleteDocument(doc.id, doc.file_url)}
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
+                    <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                    <p className="text-sm text-muted-foreground">Aucun document téléversé</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
-          {/* Acheteur */}
-          <div className="rounded-2xl bg-card border border-border p-6">
-            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-              <User className="w-5 h-5 text-primary" />
-              Client
-            </h3>
-            
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-xl font-bold">
-                {request.buyer_profiles?.full_name?.charAt(0)}
-              </div>
-              <div>
-                <p className="font-semibold">{request.buyer_profiles?.full_name}</p>
-                <p className="text-xs text-muted-foreground">{request.buyer_profiles?.company_name}</p>
-              </div>
-            </div>
-
-            <div className="space-y-4 pt-4 border-t border-border">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Type d'activité</span>
-                <span className="font-medium">{request.buyer_profiles?.activity_type || 'N/A'}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Pays destination</span>
-                <span className="font-medium">RD Congo</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Statut actuel */}
-          <div className="rounded-2xl bg-card border border-border p-6">
-            <h3 className="text-lg font-semibold mb-4">État d'avancement</h3>
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20 mb-6">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{statusLabels[request.status]}</p>
-                <p className="text-xs text-muted-foreground">Dernière mise à jour: {format(new Date(request.updated_at || request.created_at), "HH:mm")}</p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex gap-3">
-                <div className="w-0.5 h-10 bg-primary/30 relative mt-2 ml-2">
-                  <div className="absolute top-0 -left-[3px] w-2 h-2 rounded-full bg-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Assignation partenaire</p>
-                  <p className="text-xs text-muted-foreground">Effectuée le {format(new Date(request.created_at), "d MMM")}</p>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <div className="w-0.5 h-10 bg-border relative mt-2 ml-2">
-                  <div className="absolute top-0 -left-[3px] w-2 h-2 rounded-full bg-border" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Sourcing & Saisie</p>
-                  <p className="text-xs text-muted-foreground">En attente</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DocumentUploadModal
+          requestId={params.id as string}
+          open={uploadModalOpen}
+          onOpenChange={setUploadModalOpen}
+          onSuccess={fetchDocuments}
+        />
       </div>
-    </div>
-  )
-}
+    )
+  }
+

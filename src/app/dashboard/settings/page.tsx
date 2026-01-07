@@ -17,7 +17,9 @@ import {
   Mail,
   Phone,
   Globe,
-  MapPin
+  MapPin,
+  ExternalLink,
+  Plus
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
@@ -35,46 +37,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { KycUploadModal } from "@/components/dashboard/kyc-upload-modal"
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [profile, setProfile] = useState<any>(null)
   const [countries, setCountries] = useState<any[]>([])
+  const [kycDocuments, setKycDocuments] = useState<any[]>([])
+  const [kycModalOpen, setKycModalOpen] = useState(false)
   const supabase = createClient()
 
+  const documentTypeLabels: Record<string, string> = {
+    PASSPORT: "Passeport",
+    ID_CARD: "Carte d'Identité",
+    DRIVERS_LICENSE: "Permis de Conduire",
+    PROOF_OF_ADDRESS: "Justificatif de Domicile",
+    COMPANY_REGISTRATION: "RCCM / Registre",
+  }
+
   useEffect(() => {
-    fetchProfile()
-    fetchCountries()
+    fetchData()
   }, [])
 
-  async function fetchProfile() {
+  async function fetchData() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+      const [profileRes, kycRes, countriesRes] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('request_documents').select('*').eq('uploaded_by', user.id).is('request_id', null).order('created_at', { ascending: false }),
+        supabase.from('countries').select('*').order('name')
+      ])
 
-      if (error) throw error
-      setProfile(data)
+      if (profileRes.error) throw profileRes.error
+      setProfile(profileRes.data)
+      setKycDocuments(kycRes.data || [])
+      setCountries(countriesRes.data || [])
     } catch (error) {
-      console.error('Error fetching profile:', error)
-      toast.error("Impossible de charger votre profil")
+      console.error('Error fetching settings data:', error)
+      toast.error("Erreur lors du chargement des paramètres")
     } finally {
       setLoading(false)
     }
   }
 
-  async function fetchCountries() {
+  const fetchKycDocuments = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
     const { data } = await supabase
-      .from('countries')
+      .from('request_documents')
       .select('*')
-      .order('name')
-    if (data) setCountries(data)
+      .eq('uploaded_by', user.id)
+      .is('request_id', null)
+      .order('created_at', { ascending: false })
+    if (data) setKycDocuments(data)
   }
 
   async function handleUpdateProfile(e: React.FormEvent) {
@@ -334,64 +352,58 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 rounded-xl border border-dashed border-border group hover:border-primary/50 transition-colors cursor-pointer">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-                      <ShieldCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium">Identité (KYC)</p>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    <div className="flex items-start gap-4 p-4 rounded-xl border border-dashed border-border group hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setKycModalOpen(true)}>
+                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                        <ShieldCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                       </div>
-                      <p className="text-sm text-muted-foreground">Téléchargez une pièce d'identité valide (Passeport, CNI).</p>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="font-medium">Identité (KYC)</p>
+                          <Plus className="w-4 h-4 text-primary" />
+                        </div>
+                        <p className="text-sm text-muted-foreground">Téléchargez une pièce d'identité valide (Passeport, CNI).</p>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          <TabsContent value="security" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sécurité du compte</CardTitle>
-                <CardDescription>
-                  Protégez votre compte avec l'authentification à deux facteurs et gérez vos sessions.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-secondary/30 border border-border">
-                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Lock className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Double Authentification (MFA)</p>
-                      <p className="text-sm text-muted-foreground">Une couche de sécurité supplémentaire lors de la connexion.</p>
-                    </div>
+                    {kycDocuments.length > 0 && (
+                      <div className="space-y-3 pt-4">
+                        <h4 className="text-sm font-semibold">Documents soumis</h4>
+                        <div className="grid gap-3">
+                          {kycDocuments.map((doc) => (
+                            <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                              <div className="flex items-center gap-3">
+                                <FileText className="w-4 h-4 text-primary" />
+                                <div>
+                                  <p className="text-xs font-medium">{documentTypeLabels[doc.type] || doc.type}</p>
+                                  <p className="text-[10px] text-muted-foreground">{new Date(doc.created_at).toLocaleDateString()}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-[10px] uppercase">{doc.status}</Badge>
+                                <Button size="icon" variant="ghost" asChild className="h-7 w-7">
+                                  <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <Button variant="outline" size="sm">Activer</Button>
-                </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-medium text-sm">Changer le mot de passe</h4>
-                  <div className="grid gap-4 max-w-md">
-                    <div className="space-y-2">
-                      <Label htmlFor="current_password">Mot de passe actuel</Label>
-                      <Input id="current_password" type="password" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="new_password">Nouveau mot de passe</Label>
-                      <Input id="new_password" type="password" />
-                    </div>
-                    <Button variant="outline" className="w-fit">Mettre à jour le mot de passe</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        <KycUploadModal 
+          open={kycModalOpen} 
+          onOpenChange={setKycModalOpen} 
+          onSuccess={fetchKycDocuments} 
+        />
       </div>
-    </div>
-  )
-}
+    )
+  }
+
