@@ -12,11 +12,12 @@ const footerLinks = {
     { href: "/privacy", label: "Politique de confidentialité" },
     { href: "/legal", label: "Mentions légales" },
   ],
-  access: [
-    { href: "/register", label: "Devenir acheteur" },
-    { href: "/partner-request", label: "Devenir partenaire" },
-    { href: "/contact", label: "Nous contacter" },
-  ],
+    access: [
+      { href: "/register", label: "Devenir acheteur" },
+      { href: "/partner-request", label: "Devenir partenaire" },
+      { href: "/admin", label: "Administration" },
+      { href: "/contact", label: "Nous contacter" },
+    ],
 }
 
 export function PublicFooter() {

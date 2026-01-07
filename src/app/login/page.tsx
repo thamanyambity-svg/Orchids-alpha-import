@@ -178,13 +178,20 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            Pas encore de compte ?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Créer un compte Acheteur
-            </Link>
-          </p>
-        </motion.div>
+            <p className="mt-8 text-center text-sm text-muted-foreground">
+              Pas encore de compte ?{" "}
+              <Link href="/register" className="text-primary hover:underline">
+                Créer un compte Acheteur
+              </Link>
+            </p>
+
+            <div className="mt-6 pt-6 border-t border-border text-center">
+              <Link href="/admin" className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1">
+                <Shield className="w-3 h-3" />
+                Accès Administration
+              </Link>
+            </div>
+          </motion.div>
       </div>
     </div>
   )
