@@ -19,7 +19,8 @@ import {
   Globe,
   MapPin,
   ExternalLink,
-  Plus
+  Plus,
+  FileText
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
@@ -129,15 +130,65 @@ export default function SettingsPage() {
     )
   }
 
-  return (
-    <div className="pb-10">
-      <DashboardHeader 
-        title="Paramètres" 
-        subtitle="Gérez vos informations personnelles et les paramètres de votre compte"
-      />
+    const selectedCountry = countries.find(c => c.id === profile?.country_id)
 
-      <div className="p-6 max-w-5xl mx-auto">
-        <Tabs defaultValue="profile" className="space-y-6">
+    return (
+      <div className="pb-10">
+        <DashboardHeader 
+          title="Mon Profil" 
+          subtitle="Consultez et gérez vos informations personnelles"
+        />
+
+        <div className="p-6 max-w-5xl mx-auto">
+          <Card className="mb-8 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl overflow-hidden">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-8 h-8 text-primary" />
+                    )}
+                  </div>
+                  {profile?.status === 'VERIFIED' && (
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background">
+                      <CheckCircle2 className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-xl font-bold">{profile?.full_name || 'Nom non défini'}</h2>
+                    <Badge variant={profile?.status === 'VERIFIED' ? 'success' : 'outline'} className="text-[10px]">
+                      {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'Entreprise non renseignée'}</p>
+                  <div className="flex flex-wrap gap-4 text-xs">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>{profile?.email || '-'}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{profile?.phone || 'Non renseigné'}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{profile?.city ? `${profile.city}, ${selectedCountry?.name || ''}` : 'Localisation non renseignée'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right hidden sm:block">
+                  <p className="text-[10px] text-muted-foreground mb-1">ID Client</p>
+                  <p className="font-mono text-xs bg-muted px-2 py-1 rounded">{profile?.id?.slice(0, 8).toUpperCase() || '-'}</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="bg-background border border-border p-1">
             <TabsTrigger value="profile" className="gap-2">
               <User className="w-4 h-4" />
