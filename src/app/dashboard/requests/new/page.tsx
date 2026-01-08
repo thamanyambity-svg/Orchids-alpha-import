@@ -233,6 +233,58 @@ const mockPartners: Record<string, any> = {
     total_orders_handled: 450,
     performance_score: 4.6,
     country_name: "Thaïlande"
+  },
+  "COD": {
+    id: "p5",
+    full_name: "Jean-Pierre Kabila",
+    company_name: "Alpha Logistics RDC",
+    bio: "Expert en logistique et dédouanement en République Démocratique du Congo. Nous facilitons vos imports vers Kinshasa et Lubumbashi avec une expertise locale reconnue.",
+    whatsapp_number: "+243812345678",
+    email: "jp.kabila@alphaix-partner.cd",
+    phone: "+243812345678",
+    experience_years: 10,
+    total_orders_handled: 320,
+    performance_score: 4.8,
+    country_name: "RDC"
+  },
+  "NGA": {
+    id: "p6",
+    full_name: "Olumide Adeyemi",
+    company_name: "Lagos Import Connect",
+    bio: "Votre partenaire stratégique au Nigeria pour le sourcing local et la gestion des importations. Spécialisé dans le hub logistique de Lagos.",
+    whatsapp_number: "+2348012345678",
+    email: "olumide@alphaix-partner.ng",
+    phone: "+2348012345678",
+    experience_years: 14,
+    total_orders_handled: 850,
+    performance_score: 4.7,
+    country_name: "Nigeria"
+  },
+  "KEN": {
+    id: "p7",
+    full_name: "David Mwangi",
+    company_name: "Nairobi Trade Solutions",
+    bio: "Spécialiste du commerce est-africain basé à Nairobi. Nous gérons vos flux de marchandises avec efficacité et transparence totale sur le marché kenyan.",
+    whatsapp_number: "+254712345678",
+    email: "david@alphaix-partner.ke",
+    phone: "+254712345678",
+    experience_years: 9,
+    total_orders_handled: 280,
+    performance_score: 4.5,
+    country_name: "Kenya"
+  },
+  "MAR": {
+    id: "p8",
+    full_name: "Yassine Mansouri",
+    company_name: "Casablanca Trade Link",
+    bio: "Expert en import-export au Maroc. Nous connectons le marché marocain aux opportunités globales avec une expertise pointue en logistique portuaire.",
+    whatsapp_number: "+212612345678",
+    email: "yassine@alphaix-partner.ma",
+    phone: "+212612345678",
+    experience_years: 11,
+    total_orders_handled: 540,
+    performance_score: 4.9,
+    country_name: "Maroc"
   }
 }
 
@@ -438,14 +490,28 @@ export default function NewRequestPage() {
                           <SelectValue placeholder="Où achetez-vous ?" />
                         </SelectTrigger>
                           <SelectContent>
-                            {allCountries.map((country) => (
-                              <SelectItem key={country.code} value={country.code}>
-                                <span className="flex items-center gap-3 py-1">
-                                  <span className="text-2xl">{country.flag}</span>
-                                  {country.name}
-                                </span>
-                              </SelectItem>
-                            ))}
+                            {countries.length > 0 ? (
+                              countries.map((country) => {
+                                const countryInfo = allCountries.find(c => c.code === country.code);
+                                return (
+                                  <SelectItem key={country.code} value={country.code}>
+                                    <span className="flex items-center gap-3 py-1">
+                                      <span className="text-2xl">{countryInfo?.flag || "🌐"}</span>
+                                      {countryInfo?.name || country.name}
+                                    </span>
+                                  </SelectItem>
+                                );
+                              })
+                            ) : (
+                              allCountries.map((country) => (
+                                <SelectItem key={country.code} value={country.code}>
+                                  <span className="flex items-center gap-3 py-1">
+                                    <span className="text-2xl">{country.flag}</span>
+                                    {country.name}
+                                  </span>
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
