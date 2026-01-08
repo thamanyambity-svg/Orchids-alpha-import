@@ -43,11 +43,23 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (user && isAuthPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
-  }
+    if (user && isAuthPage) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      const url = request.nextUrl.clone()
+      if (profile?.role === 'ADMIN') {
+        url.pathname = '/admin'
+      } else if (profile?.role === 'PARTNER') {
+        url.pathname = '/partner'
+      } else {
+        url.pathname = '/dashboard'
+      }
+      return NextResponse.redirect(url)
+    }
 
   return supabaseResponse
 }

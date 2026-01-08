@@ -68,10 +68,34 @@ export default function LoginPage() {
 
   async function handleAdminClick() {
     const supabase = createClient()
+    
+    // Si des identifiants sont saisis, on tente la connexion d'abord
+    if (formData.email && formData.password) {
+      setIsLoading(true)
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        })
+
+        if (error) {
+          toast.error("Identifiants incorrects")
+          setIsLoading(false)
+          return
+        }
+      } catch {
+        toast.error("Erreur lors de la connexion")
+        setIsLoading(false)
+        return
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {
-      toast.info("Veuillez vous connecter avec vos identifiants administrateur pour accéder à cet espace.")
+      toast.info("Veuillez saisir vos identifiants administrateur puis cliquer sur 'Se connecter' ou 'Accès Administration'.")
       return
     }
 
@@ -82,6 +106,7 @@ export default function LoginPage() {
       .single()
 
     if (profile?.role === "ADMIN") {
+      toast.success("Accès Administrateur accordé")
       router.push("/admin")
     } else {
       toast.error("Vous n'avez pas les droits d'administration.")
