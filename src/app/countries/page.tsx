@@ -82,9 +82,73 @@ const countries = [
       "Expertise technique reconnue"
     ],
     specialties: "Agroalimentaire, Pièces Détachées, Bijouterie",
-    image: "https://images.unsplash.com/photo-1528181304800-2f140819898f?auto=format&fit=crop&q=80&w=1200",
+    image: "https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&q=80&w=1200",
     flag: "🇹🇭",
     stats: { growth: "+6%", partners: "150+" }
+  },
+  {
+    id: "morocco",
+    name: "Maroc",
+    title: "Le Hub Industriel Nord-Africain",
+    description: "Le Maroc est devenu un acteur majeur pour le sourcing textile et automobile grâce à sa proximité avec l'Europe et ses infrastructures portuaires de classe mondiale.",
+    advantages: [
+      "Proximité géographique avec l'UE",
+      "Accords de libre-échange",
+      "Secteur textile ultra-performant",
+      "Stabilité politique et économique"
+    ],
+    specialties: "Textile, Automobile, Agriculture, Artisanat",
+    image: "https://images.unsplash.com/photo-1548048026-5a1a941d93d3?auto=format&fit=crop&q=80&w=1200",
+    flag: "🇲🇦",
+    stats: { growth: "+10%", partners: "210+" }
+  },
+  {
+    id: "nigeria",
+    name: "Nigeria",
+    title: "Le Géant Économique Africain",
+    description: "Première économie du continent, le Nigeria offre des opportunités massives en matières premières et un marché de consommation en pleine expansion.",
+    advantages: [
+      "Richesse en matières premières",
+      "Main d'œuvre abondante",
+      "Marché intérieur dynamique",
+      "Plaque tournante régionale"
+    ],
+    specialties: "Matières premières, Énergie, Agro-industrie",
+    image: "https://images.unsplash.com/photo-1541469585174-04a74939b4f2?auto=format&fit=crop&q=80&w=1200",
+    flag: "🇳🇬",
+    stats: { growth: "+14%", partners: "190+" }
+  },
+  {
+    id: "kenya",
+    name: "Kenya",
+    title: "La Porte de l'Afrique de l'Est",
+    description: "Le Kenya est le leader logistique et technologique de l'Afrique de l'Est, idéal pour le sourcing de produits agricoles et de services digitaux.",
+    advantages: [
+      "Hub logistique (Port de Mombasa)",
+      "Avance technologique (Silicon Savannah)",
+      "Qualité des exportations agricoles",
+      "Environnement business-friendly"
+    ],
+    specialties: "Agriculture, Horticulture, Technologie, Textile",
+    image: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?auto=format&fit=crop&q=80&w=1200",
+    flag: "🇰🇪",
+    stats: { growth: "+9%", partners: "170+" }
+  },
+  {
+    id: "rdc",
+    name: "RDC",
+    title: "Le Réservoir de Ressources",
+    description: "La République Démocratique du Congo est indispensable pour le sourcing de minerais stratégiques et de bois précieux dans une démarche de transformation locale.",
+    advantages: [
+      "Ressources naturelles uniques",
+      "Potentiel hydroélectrique massif",
+      "Opportunités d'investissement industriel",
+      "Position centrale stratégique"
+    ],
+    specialties: "Minerais, Bois, Énergie, Agriculture",
+    image: "https://images.unsplash.com/photo-1621648721469-807e78ca9035?auto=format&fit=crop&q=80&w=1200",
+    flag: "🇨🇩",
+    stats: { growth: "+7%", partners: "120+" }
   }
 ]
 
@@ -287,7 +351,7 @@ export default function CountriesPage() {
               Lancez votre importation <span className="text-gradient-gold">aujourd&apos;hui</span>
             </h2>
             <p className="text-xl text-muted-foreground mb-12">
-              Nos partenaires certifiés en Chine, Turquie, Dubaï et Thaïlande sont prêts à sécuriser votre sourcing.
+              Nos partenaires certifiés en Chine, Turquie, Dubaï, Thaïlande, Maroc, Nigeria, Kenya et RDC sont prêts à sécuriser votre sourcing.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="h-14 px-10 text-lg glow-gold" asChild>
