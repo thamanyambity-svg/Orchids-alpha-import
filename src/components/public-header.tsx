@@ -23,12 +23,12 @@ export function PublicHeader() {
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
               <div className="w-12 h-12 relative flex items-center justify-center transition-transform group-hover:scale-110">
-                <Image 
-                  src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png"
-                  alt="Alpha Import Exchange RDC Logo"
-                  fill
-                  className="object-contain"
-                />
+                  <Image 
+                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.16.05-1767867369404.png"
+                    alt="Alpha Import Exchange RDC Logo"
+                    fill
+                    className="object-contain"
+                  />
               </div>
             </div>
             <div>
