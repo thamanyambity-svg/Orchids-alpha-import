@@ -6,10 +6,11 @@ import { useState, useEffect } from "react"
 import { 
   Shield, 
   LayoutDashboard, 
-  FileText, 
-  Wallet,
+  Users, 
+  ShoppingCart, 
+  CircleDollarSign,
   MessageSquare,
-  FolderOpen,
+  Headphones,
   Settings,
   LogOut,
   ChevronRight,
@@ -20,12 +21,12 @@ import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
 const navItems = [
-  { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/dashboard/requests", label: "Mes demandes", icon: FileText },
-  { href: "/dashboard/payments", label: "Paiements", icon: Wallet },
+  { href: "/dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
+  { href: "/dashboard/buyers", label: "Acheteurs", icon: Users },
+  { href: "/dashboard/orders", label: "Commandes", icon: ShoppingCart },
+  { href: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
   { href: "/dashboard/messages", label: "Messagerie", icon: MessageSquare },
-  { href: "/dashboard/documents", label: "Documents", icon: FolderOpen },
-  { href: "/dashboard/settings", label: "Mon Profil", icon: User },
+  { href: "/dashboard/support", label: "Support", icon: Headphones },
 ]
 
 export function DashboardSidebar() {
@@ -55,8 +56,8 @@ export function DashboardSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-r border-white/5 flex flex-col z-50">
+      <div className="p-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
             <Shield className="w-5 h-5 text-primary" />
@@ -69,30 +70,7 @@ export function DashboardSidebar() {
         </Link>
       </div>
 
-      <div className="px-3 mb-4">
-        <Link href="/dashboard/settings" className="block px-3 py-3 rounded-lg bg-sidebar-accent hover:bg-sidebar-accent/80 transition-colors">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <p className="text-sm font-semibold truncate">
-                  {profile?.full_name || 'Acheteur'}
-                </p>
-                {profile?.status === 'VERIFIED' && (
-                  <BadgeCheck className="w-3.5 h-3.5 text-primary shrink-0" />
-                )}
-              </div>
-              <p className="text-[10px] text-muted-foreground truncate">
-                {profile?.company_name || profile?.email || 'Espace Acheteur'}
-              </p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      <nav className="flex-1 px-3">
+      <nav className="flex-1 px-4 py-4">
         <ul className="space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href || 
@@ -103,15 +81,23 @@ export function DashboardSidebar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                    "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group",
                     isActive 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground" 
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
+                      ? "bg-primary/10 text-primary border border-primary/20" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   )}
                 >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                  {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+                  <item.icon className={cn(
+                    "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  )} />
+                  <span className="font-medium tracking-tight">{item.label}</span>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="sidebar-indicator"
+                      className="w-1 h-4 bg-primary rounded-full ml-auto"
+                    />
+                  )}
                 </Link>
               </li>
             )
@@ -119,15 +105,26 @@ export function DashboardSidebar() {
         </ul>
       </nav>
 
-      <div className="p-3 border-t border-sidebar-border">
+      <div className="p-4 space-y-2">
+        <Link
+          href="/dashboard/settings"
+          className={cn(
+            "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group text-muted-foreground hover:text-foreground hover:bg-white/5",
+            pathname === "/dashboard/settings" && "bg-primary/10 text-primary border border-primary/20"
+          )}
+        >
+          <Settings className="w-5 h-5 group-hover:rotate-45 transition-transform duration-300" />
+          <span className="font-medium tracking-tight">Réglages</span>
+        </Link>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent w-full transition-colors"
+          className="flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-destructive/70 hover:text-destructive hover:bg-destructive/5 w-full transition-all duration-300 group"
         >
-          <LogOut className="w-5 h-5" />
-          Déconnexion
+          <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
+          <span className="font-medium tracking-tight">Déconnexion</span>
         </button>
       </div>
     </aside>
   )
 }
+
