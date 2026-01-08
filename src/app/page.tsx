@@ -128,7 +128,7 @@ const countries = [
     name: "Thaïlande", 
     flag: "🇹🇭", 
     region: "Asie",
-    image: "https://images.unsplash.com/photo-1528181304800-2f140819ad1c?q=80&w=2070&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=2070&auto=format&fit=crop"
   },
   { 
     code: "JPN", 

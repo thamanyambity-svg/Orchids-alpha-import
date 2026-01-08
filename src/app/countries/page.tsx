@@ -82,7 +82,7 @@ const countries = [
       "Expertise technique reconnue"
     ],
       specialties: "Agroalimentaire, Pièces Détachées, Bijouterie",
-      image: "https://images.unsplash.com/photo-1528181304800-2f140819ad1c?auto=format&fit=crop&q=80&w=1200",
+      image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=1200",
       flag: "🇹🇭",
       stats: { growth: "+6%", partners: "150+" }
     },
