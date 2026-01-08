@@ -244,6 +244,7 @@ export default function NewRequestPage() {
   const [selectedPartner, setSelectedPartner] = useState<any>(null)
   
   const [formData, setFormData] = useState({
+    buyerCountry: "",
     country: "",
     category: "",
     productName: "",
@@ -283,10 +284,10 @@ export default function NewRequestPage() {
   }, [formData.country])
 
   function handleNext() {
-    if (currentStep === 1 && !formData.country) {
-      toast.error("Veuillez sélectionner un pays")
-      return
-    }
+      if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
+        toast.error("Veuillez sélectionner le pays d'origine et le pays d'achat")
+        return
+      }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
     }
@@ -311,6 +312,7 @@ export default function NewRequestPage() {
         body: JSON.stringify({
           buyer_id: user.id,
           country_id: countries.find(c => c.code === formData.country)?.id,
+          buyer_country: formData.buyerCountry,
           category: formData.category,
           product_name: formData.productName,
           specifications: {
@@ -405,7 +407,29 @@ export default function NewRequestPage() {
                 <div className="grid md:grid-cols-2 gap-8 items-start">
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold">Pays d'origine *</Label>
+                      <Label className="text-base font-semibold">Pays d'origine de l'acheteur *</Label>
+                      <Select
+                        value={formData.buyerCountry}
+                        onValueChange={(value) => setFormData({ ...formData, buyerCountry: value })}
+                      >
+                        <SelectTrigger className="h-14 text-lg">
+                          <SelectValue placeholder="Votre pays de résidence" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {allCountries.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              <span className="flex items-center gap-3 py-1">
+                                <span className="text-2xl">{country.flag}</span>
+                                {country.name}
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label className="text-base font-semibold">Pays d'achat *</Label>
                       <Select
                         value={formData.country}
                         onValueChange={(value) => setFormData({ ...formData, country: value })}
@@ -591,6 +615,14 @@ export default function NewRequestPage() {
                         Détails de la commande
                       </h3>
                       <div className="grid grid-cols-2 gap-y-4 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
+                          <p className="font-semibold">{allCountries.find(c => c.code === formData.buyerCountry)?.name || formData.buyerCountry}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Pays d'achat</p>
+                          <p className="font-semibold">{allCountries.find(c => c.code === formData.country)?.name || formData.country}</p>
+                        </div>
                         <div>
                           <p className="text-muted-foreground">Produit</p>
                           <p className="font-semibold">{formData.productName}</p>

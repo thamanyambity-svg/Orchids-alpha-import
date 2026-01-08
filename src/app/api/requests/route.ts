@@ -10,18 +10,20 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      buyer_id, 
-      country_id, 
-      category, 
-      product_name, 
-      specifications, 
-      quantity, 
-      unit, 
-      budget_min, 
-      budget_max, 
-      deadline 
-    } = body
+      const { 
+        buyer_id, 
+        country_id, 
+        buyer_country,
+        category, 
+        product_name, 
+        specifications, 
+        quantity, 
+        unit, 
+        budget_min, 
+        budget_max, 
+        deadline 
+      } = body
+
 
     // Generate a unique reference: AIX-YYYYMMDD-XXXX
     const date = new Date()
@@ -31,11 +33,13 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from("import_requests")
-      .insert({
-        buyer_id,
-        country_id,
-        category,
-        product_name,
+        .insert({
+          buyer_id,
+          country_id,
+          buyer_country,
+          category,
+          product_name,
+
         specifications,
         quantity,
         unit,
