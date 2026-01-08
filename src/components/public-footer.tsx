@@ -26,25 +26,25 @@ export function PublicFooter() {
     <footer className="border-t border-border bg-card/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 relative flex items-center justify-center">
-                <Image 
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
-                  alt="Alpha Import Exchange RDC Logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <div>
-                <span className="text-xl font-bold tracking-tight">
-                  ALPHA<span className="text-gradient-gold">IX</span>
-                </span>
-                <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                  Import Exchange RDC
-                </span>
-              </div>
-            </Link>
+            <div className="lg:col-span-2">
+              <Link href="/" className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 relative flex items-center justify-center">
+                  <Image 
+                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
+                    alt="Alpha Import Exchange RDC Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold tracking-tight">
+                    ALPHA<span className="text-gradient-gold">IX</span>
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground uppercase tracking-[0.2em] font-medium">
+                    Import Exchange RDC
+                  </span>
+                </div>
+              </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
               Infrastructure de confiance pour le commerce international Afrique-Asie. 
               Sécurité, traçabilité et contrôle à chaque étape.

@@ -119,26 +119,26 @@ export default function LoginPage() {
         <div className="absolute inset-0 pattern-grid opacity-20" />
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         
-        <div className="relative z-10 flex flex-col justify-center px-16">
-          <BackButton href="/" className="w-fit mb-8" />
-          <Link href="/" className="flex items-center gap-3 mb-12">
-            <div className="w-16 h-16 relative flex items-center justify-center transition-transform group-hover:scale-110">
-              <Image 
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
-                alt="Alpha Import Exchange RDC Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div>
-              <span className="text-2xl font-bold tracking-tight">
-                ALPHA<span className="text-gradient-gold">IX</span>
-              </span>
-              <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                Import Exchange RDC
-              </span>
-            </div>
-          </Link>
+          <div className="relative z-10 flex flex-col justify-center px-16">
+            <BackButton href="/" className="w-fit mb-8" />
+            <Link href="/" className="flex items-center gap-6 mb-12 group">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex items-center justify-center transition-transform group-hover:scale-105">
+                <Image 
+                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
+                  alt="Alpha Import Exchange RDC Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div>
+                <span className="text-3xl font-bold tracking-tight">
+                  ALPHA<span className="text-gradient-gold">IX</span>
+                </span>
+                <span className="block text-xs text-muted-foreground uppercase tracking-[0.3em] font-medium mt-1">
+                  Import Exchange RDC
+                </span>
+              </div>
+            </Link>
 
           <h1 className="text-4xl font-bold mb-4">
             Bienvenue sur votre{" "}
@@ -174,8 +174,8 @@ export default function LoginPage() {
             <div className="flex items-center justify-between mb-4">
               <BackButton href="/" />
             </div>
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 relative flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 relative flex items-center justify-center">
                 <Image 
                   src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
                   alt="Alpha Import Exchange RDC Logo"
@@ -184,10 +184,10 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <span className="text-xl font-bold tracking-tight">
+                <span className="text-2xl font-bold tracking-tight">
                   ALPHA<span className="text-gradient-gold">IX</span>
                 </span>
-                <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                <span className="block text-[11px] text-muted-foreground uppercase tracking-[0.2em] font-medium mt-0.5">
                   Import Exchange RDC
                 </span>
               </div>

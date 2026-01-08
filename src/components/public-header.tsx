@@ -19,10 +19,10 @@ export function PublicHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-3 group">
+        <div className="flex items-center justify-between h-24">
+          <Link href="/" className="flex items-center gap-4 group">
             <div className="relative">
-              <div className="w-12 h-12 relative flex items-center justify-center transition-transform group-hover:scale-110">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 relative flex items-center justify-center transition-transform group-hover:scale-105">
                   <Image 
                     src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.33.04-1767868389169.png"
                     alt="Alpha Import Exchange RDC Logo"
@@ -32,10 +32,10 @@ export function PublicHeader() {
               </div>
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight">
+              <span className="text-2xl sm:text-3xl font-bold tracking-tight">
                 ALPHA<span className="text-gradient-gold">IX</span>
               </span>
-              <span className="hidden sm:block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+              <span className="hidden sm:block text-[11px] text-muted-foreground uppercase tracking-[0.3em] font-medium mt-0.5">
                 Import Exchange RDC
               </span>
             </div>
