@@ -3,14 +3,14 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname, useRouter } from "next/navigation"
+import Image from "next/image"
 import { 
-  Shield, 
   LayoutDashboard, 
   Users, 
   UserCheck,
   FileText, 
   Wallet,
-  AlertTriangle,
+  Shield,
   Settings,
   LogOut,
   ChevronRight,
@@ -49,15 +49,14 @@ export function AdminSidebar() {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0e14] border-r border-white/5 flex flex-col z-50">
       <div className="p-6">
-        <Link href="/admin" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ffd700]/20 to-transparent flex items-center justify-center border border-[#ffd700]/30 shadow-[0_0_15px_rgba(255,215,0,0.1)]">
-            <span className="text-[#ffd700] font-bold text-xl">A</span>
-          </div>
-          <div>
-            <span className="text-sm font-semibold tracking-[0.2em] text-white">
-              ALPHA <span className="text-[#ffd700]">IMPORT</span>
-            </span>
-            <p className="text-[10px] text-white/40 tracking-[0.1em] uppercase font-medium">Exchange</p>
+        <Link href="/admin" className="flex items-center group">
+          <div className="relative w-20 h-20 transition-transform group-hover:scale-105">
+            <Image 
+              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
+              alt="Alpha Import Exchange Admin"
+              fill
+              className="object-contain"
+            />
           </div>
         </Link>
       </div>

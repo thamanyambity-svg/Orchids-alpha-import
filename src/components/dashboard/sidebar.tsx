@@ -4,8 +4,8 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { 
-  Shield, 
   LayoutDashboard, 
   Users, 
   ShoppingCart, 
@@ -58,15 +58,15 @@ export function DashboardSidebar() {
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-r border-white/5 flex flex-col z-50">
-      <div className="p-8">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
-            <Shield className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <span className="text-xl font-bold tracking-tight">
-              ALPHA<span className="text-gradient-gold">IX</span>
-            </span>
+      <div className="p-6">
+        <Link href="/" className="flex items-center group">
+          <div className="relative w-16 h-16 transition-transform group-hover:scale-105">
+            <Image 
+              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
+              alt="Alpha Import Exchange"
+              fill
+              className="object-contain"
+            />
           </div>
         </Link>
       </div>
