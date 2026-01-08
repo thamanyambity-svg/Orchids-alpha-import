@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { 
   User, 
   ShieldCheck, 
@@ -11,7 +11,8 @@ import {
   Phone,
   Camera,
   MapPin,
-  Building2
+  Building2,
+  Upload
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -24,9 +25,53 @@ import { toast } from "sonner"
 export default function PartnerSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [profile, setProfile] = useState<any>(null)
   const [country, setCountry] = useState<any>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("L'image ne doit pas dépasser 2MB")
+      return
+    }
+
+    setUploadingAvatar(true)
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${profile.id}-${Math.random()}.${fileExt}`
+      const filePath = `avatars/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', profile.id)
+
+      if (updateError) throw updateError
+
+      setProfile({ ...profile, avatar_url: publicUrl })
+      toast.success("Photo mise à jour")
+    } catch (error) {
+      console.error('Error uploading avatar:', error)
+      toast.error("Erreur lors de l'upload")
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
 
   useEffect(() => {
     fetchProfile()
@@ -109,34 +154,48 @@ export default function PartnerSettingsPage() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile" className="space-y-6">
-              <form onSubmit={handleUpdateProfile}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Informations Générales</CardTitle>
-                    <CardDescription>
-                      Vos coordonnées de contact et informations d'entreprise.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center gap-6">
-                      <div className="relative">
-                        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center border-2 border-dashed border-primary/30 overflow-hidden">
-                          {profile?.avatar_url ? (
-                            <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                          ) : (
-                            <User className="w-10 h-10 text-primary" />
-                          )}
+          <TabsContent value="profile" className="space-y-6">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+            />
+            <form onSubmit={handleUpdateProfile}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informations Générales</CardTitle>
+                  <CardDescription>
+                    Vos coordonnées de contact et informations d'entreprise.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center gap-6">
+                    <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center border-2 border-dashed border-primary/30 overflow-hidden relative">
+                        {uploadingAvatar ? (
+                          <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                          </div>
+                        ) : profile?.avatar_url ? (
+                          <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          <User className="w-10 h-10 text-primary" />
+                        )}
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Upload className="w-8 h-8 text-white" />
                         </div>
-                        <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">
-                          <Camera className="w-4 h-4" />
-                        </button>
                       </div>
-                      <div>
-                        <h4 className="font-medium mb-1">Logo / Photo</h4>
-                        <p className="text-sm text-muted-foreground">Utilisé pour vos rapports de sourcing.</p>
-                      </div>
+                      <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">
+                        <Camera className="w-4 h-4" />
+                      </button>
                     </div>
+                    <div>
+                      <h4 className="font-medium mb-1">Logo / Photo</h4>
+                      <p className="text-sm text-muted-foreground">Utilisé pour vos rapports de sourcing.</p>
+                    </div>
+                  </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">

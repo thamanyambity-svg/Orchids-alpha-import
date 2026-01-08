@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { 
   User, 
   ShieldCheck, 
@@ -12,7 +12,8 @@ import {
   Camera,
   Building2,
   MapPin,
-  CheckCircle2
+  CheckCircle2,
+  Upload
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -33,9 +34,53 @@ import {
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [profile, setProfile] = useState<any>(null)
   const [countries, setCountries] = useState<any[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("L'image ne doit pas dépasser 2MB")
+      return
+    }
+
+    setUploadingAvatar(true)
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${profile.id}-${Math.random()}.${fileExt}`
+      const filePath = `avatars/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', profile.id)
+
+      if (updateError) throw updateError
+
+      setProfile({ ...profile, avatar_url: publicUrl })
+      toast.success("Photo de profil mise à jour")
+    } catch (error) {
+      console.error('Error uploading avatar:', error)
+      toast.error("Erreur lors de l'upload")
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
 
   useEffect(() => {
     fetchData()
@@ -108,15 +153,22 @@ export default function AdminSettingsPage() {
       <Card className="mb-8 overflow-hidden">
         <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl overflow-hidden">
-                {profile?.avatar_url ? (
+            <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl overflow-hidden relative">
+                {uploadingAvatar ? (
+                  <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  </div>
+                ) : profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-8 h-8 text-primary" />
                 )}
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Camera className="w-6 h-6 text-white" />
+                </div>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background">
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background z-10">
                 <CheckCircle2 className="w-3 h-3 text-white" />
               </div>
             </div>
@@ -146,6 +198,13 @@ export default function AdminSettingsPage() {
       </Card>
 
       <Tabs defaultValue="profile" className="space-y-6">
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleAvatarUpload}
+        />
         <TabsList className="bg-background border border-border p-1">
           <TabsTrigger value="profile" className="gap-2">
             <User className="w-4 h-4" />
@@ -172,13 +231,20 @@ export default function AdminSettingsPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center border-2 border-dashed border-primary/30 overflow-hidden">
-                      {profile?.avatar_url ? (
+                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center border-2 border-dashed border-primary/30 overflow-hidden relative">
+                      {uploadingAvatar ? (
+                        <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                        </div>
+                      ) : profile?.avatar_url ? (
                         <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                       ) : (
                         <User className="w-10 h-10 text-primary" />
                       )}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Upload className="w-8 h-8 text-white" />
+                      </div>
                     </div>
                     <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">
                       <Camera className="w-4 h-4" />
