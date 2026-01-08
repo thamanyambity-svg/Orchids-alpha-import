@@ -8,6 +8,7 @@ import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navLinks = [
+  { href: "/about", label: "Qui sommes-nous ?" },
   { href: "/how-it-works", label: "Comment ça marche" },
   { href: "/countries", label: "Pays partenaires" },
   { href: "/contact", label: "Contact" },

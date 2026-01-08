@@ -4,9 +4,9 @@ import { Mail, Phone, MapPin } from "lucide-react"
 
 const footerLinks = {
   platform: [
+    { href: "/about", label: "Qui sommes-nous ?" },
     { href: "/how-it-works", label: "Comment ça marche" },
     { href: "/countries", label: "Pays partenaires" },
-    { href: "/guarantees", label: "Nos garanties" },
   ],
   legal: [
     { href: "/terms", label: "CGU" },
