@@ -73,8 +73,13 @@ export default function AboutPage() {
                 </div>
               </motion.div>
               <div className="relative">
-                <div className="aspect-[16/9] rounded-3xl overflow-hidden border border-border bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center">
-                  <Globe2 className="w-32 h-32 text-primary opacity-20" />
+                <div className="aspect-[16/9] rounded-3xl overflow-hidden border border-border bg-card relative">
+                  <Image
+                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Gemini_Generated_Image_e4f6lde4f6lde4f6-resized-1767874599274.webp?width=8000&height=8000&resize=contain"
+                    alt="Fondation 2019"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div className="absolute -bottom-6 -right-6 p-8 rounded-2xl bg-card border border-border shadow-xl">
                   <div className="text-4xl font-bold text-primary mb-1">2019</div>
