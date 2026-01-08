@@ -102,11 +102,41 @@ const steps = [
 ]
 
 const countries = [
-  { code: "CHN", name: "Chine", flag: "🇨🇳", region: "Asie" },
-  { code: "ARE", name: "Émirats", flag: "🇦🇪", region: "Moyen-Orient" },
-  { code: "TUR", name: "Turquie", flag: "🇹🇷", region: "Europe" },
-  { code: "THA", name: "Thaïlande", flag: "🇹🇭", region: "Asie" },
-  { code: "JPN", name: "Japon", flag: "🇯🇵", region: "Asie" },
+  { 
+    code: "CHN", 
+    name: "Chine", 
+    flag: "🇨🇳", 
+    region: "Asie",
+    image: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?q=80&w=2070&auto=format&fit=crop"
+  },
+  { 
+    code: "ARE", 
+    name: "Émirats", 
+    flag: "🇦🇪", 
+    region: "Moyen-Orient",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop"
+  },
+  { 
+    code: "TUR", 
+    name: "Turquie", 
+    flag: "🇹🇷", 
+    region: "Europe",
+    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop"
+  },
+  { 
+    code: "THA", 
+    name: "Thaïlande", 
+    flag: "🇹🇭", 
+    region: "Asie",
+    image: "https://images.unsplash.com/photo-1528181304800-2f140819898f?q=80&w=2070&auto=format&fit=crop"
+  },
+  { 
+    code: "JPN", 
+    name: "Japon", 
+    flag: "🇯🇵", 
+    region: "Asie",
+    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop"
+  },
 ]
 
 const stats = [
@@ -395,7 +425,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {countries.map((country, index) => (
                 <motion.div
                   key={country.code}
@@ -403,14 +433,24 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 text-center"
+                  className="group relative overflow-hidden rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 h-80"
                 >
-                  <div className="text-5xl mb-4">{country.flag}</div>
-                  <h3 className="font-semibold mb-1">{country.name}</h3>
-                  <p className="text-sm text-muted-foreground">{country.region}</p>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-success">
-                    <CheckCircle2 className="w-3 h-3" />
-                    Partenaire actif
+                  {/* Country Background Image */}
+                  <div 
+                    className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${country.image})` }}
+                  />
+                  <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  
+                  {/* Content */}
+                  <div className="relative z-10 h-full p-6 flex flex-col justify-end text-left">
+                    <div className="text-3xl mb-2">{country.flag}</div>
+                    <h3 className="text-xl font-bold text-white mb-1">{country.name}</h3>
+                    <p className="text-sm text-gray-300 mb-4">{country.region}</p>
+                    <div className="flex items-center gap-2 text-xs text-success font-medium bg-success/10 border border-success/20 w-fit px-2 py-1 rounded-full backdrop-blur-sm">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Partenaire actif
+                    </div>
                   </div>
                 </motion.div>
               ))}
