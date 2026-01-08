@@ -16,19 +16,20 @@ import {
   LogOut,
   ChevronRight,
   User,
-  BadgeCheck
+  BadgeCheck,
+  AlertTriangle
 } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
-import { cn } from "@/lib/utils"
 
 const navItems = [
   { href: "/dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
   { href: "/dashboard/buyers", label: "Acheteurs", icon: Users },
-  { href: "/dashboard/orders", label: "Commandes", icon: ShoppingCart },
+  { href: "/dashboard/requests", label: "Commandes", icon: ShoppingCart },
   { href: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
   { href: "/dashboard/messages", label: "Messagerie", icon: MessageSquare },
   { href: "/dashboard/support", label: "Support", icon: Headphones },
+  { href: "/dashboard/incidents", label: "Incidents", icon: AlertTriangle },
 ]
+
 
 export function DashboardSidebar() {
   const pathname = usePathname()

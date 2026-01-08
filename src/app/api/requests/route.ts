@@ -23,6 +23,12 @@ export async function POST(request: NextRequest) {
       deadline 
     } = body
 
+    // Generate a unique reference: AIX-YYYYMMDD-XXXX
+    const date = new Date()
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '')
+    const random = Math.floor(1000 + Math.random() * 9000)
+    const reference = `AIX-${dateStr}-${random}`
+
     const { data, error } = await supabase
       .from("import_requests")
       .insert({
@@ -36,7 +42,8 @@ export async function POST(request: NextRequest) {
         budget_min,
         budget_max,
         deadline,
-        status: "PENDING"
+        status: "PENDING",
+        reference
       })
       .select()
       .single()
