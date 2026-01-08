@@ -138,7 +138,7 @@ export default function DashboardPage() {
       {/* Footer info */}
       <footer className="mt-20 border-t border-white/5 py-8 text-center">
         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-          © 2024 Alpha import Eachange - Confidental & Securise
+          © {new Date().getFullYear()} Alpha Import Exchange RDC - Confidentiel & Sécurisé
         </p>
       </footer>
     </div>

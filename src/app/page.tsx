@@ -121,7 +121,7 @@ export default function HomePage() {
               </h1>
               
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-                Alpha Import Exchange est l&apos;infrastructure de confiance pour vos importations 
+                Alpha Import Exchange RDC est l&apos;infrastructure de confiance pour vos importations 
                 Afrique-Asie. Contrôle total. Traçabilité complète. Zéro risque.
               </p>
               
@@ -371,7 +371,7 @@ export default function HomePage() {
                 Prêt à sécuriser vos importations ?
               </h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Rejoignez Alpha Import Exchange et bénéficiez d&apos;une infrastructure 
+                Rejoignez Alpha Import Exchange RDC et bénéficiez d&apos;une infrastructure 
                 de confiance pour vos opérations internationales.
               </p>
 

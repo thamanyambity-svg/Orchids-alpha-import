@@ -2,9 +2,10 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Shield, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BackButton } from "@/components/back-button"
 import { Input } from "@/components/ui/input"
@@ -69,7 +70,6 @@ export default function LoginPage() {
   async function handleAdminClick() {
     const supabase = createClient()
     
-    // Si des identifiants sont saisis, on tente la connexion d'abord
     if (formData.email && formData.password) {
       setIsLoading(true)
       try {
@@ -122,12 +122,20 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-center px-16">
           <BackButton className="w-fit mb-8" />
           <Link href="/" className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
-              <Shield className="w-6 h-6 text-primary" />
+            <div className="w-16 h-16 relative flex items-center justify-center transition-transform group-hover:scale-110">
+              <Image 
+                src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png?width=8000&height=8000&resize=contain"
+                alt="Alpha Import Exchange RDC Logo"
+                fill
+                className="object-contain"
+              />
             </div>
             <div>
               <span className="text-2xl font-bold tracking-tight">
                 ALPHA<span className="text-gradient-gold">IX</span>
+              </span>
+              <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                Import Exchange RDC
               </span>
             </div>
           </Link>
@@ -167,12 +175,22 @@ export default function LoginPage() {
               <BackButton />
             </div>
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
-                <Shield className="w-5 h-5 text-primary" />
+              <div className="w-12 h-12 relative flex items-center justify-center">
+                <Image 
+                  src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png?width=8000&height=8000&resize=contain"
+                  alt="Alpha Import Exchange RDC Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <span className="text-xl font-bold tracking-tight">
-                ALPHA<span className="text-gradient-gold">IX</span>
-              </span>
+              <div>
+                <span className="text-xl font-bold tracking-tight">
+                  ALPHA<span className="text-gradient-gold">IX</span>
+                </span>
+                <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                  Import Exchange RDC
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -238,24 +256,24 @@ export default function LoginPage() {
             </Button>
           </form>
 
-            <p className="mt-8 text-center text-sm text-muted-foreground">
-              Pas encore de compte ?{" "}
-              <Link href="/register" className="text-primary hover:underline">
-                Créer un compte Acheteur
-              </Link>
-            </p>
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Pas encore de compte ?{" "}
+            <Link href="/register" className="text-primary hover:underline">
+              Créer un compte Acheteur
+            </Link>
+          </p>
 
-            <div className="mt-6 pt-6 border-t border-border text-center">
-              <button 
-                type="button"
-                onClick={handleAdminClick}
-                className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
-              >
-                <Shield className="w-3 h-3" />
-                Accès Administration
-              </button>
-            </div>
-          </motion.div>
+          <div className="mt-6 pt-6 border-t border-border text-center">
+            <button 
+              type="button"
+              onClick={handleAdminClick}
+              className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+            >
+              <Shield className="w-3 h-3" />
+              Accès Administration
+            </button>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

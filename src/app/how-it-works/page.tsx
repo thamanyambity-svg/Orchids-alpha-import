@@ -373,7 +373,7 @@ export default function HowItWorksPage() {
                 <div>
                   <h3 className="text-2xl font-bold mb-3">En cas d&apos;incident</h3>
                   <p className="text-muted-foreground text-lg">
-                    Alpha Import Exchange dispose de mécanismes de protection à plusieurs niveaux.
+                    Alpha Import Exchange RDC dispose de mécanismes de protection à plusieurs niveaux.
                   </p>
                 </div>
               </div>

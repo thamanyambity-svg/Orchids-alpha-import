@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Shield, Mail, Phone, MapPin } from "lucide-react"
+import Image from "next/image"
+import { Mail, Phone, MapPin } from "lucide-react"
 
 const footerLinks = {
   platform: [
@@ -27,12 +28,20 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/30">
-                <Shield className="w-5 h-5 text-primary" />
+              <div className="w-12 h-12 relative flex items-center justify-center">
+                <Image 
+                  src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png?width=8000&height=8000&resize=contain"
+                  alt="Alpha Import Exchange RDC Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <div>
                 <span className="text-xl font-bold tracking-tight">
                   ALPHA<span className="text-gradient-gold">IX</span>
+                </span>
+                <span className="block text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                  Import Exchange RDC
                 </span>
               </div>
             </Link>
@@ -117,7 +126,7 @@ export function PublicFooter() {
 
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Alpha Import Exchange. Tous droits réservés.
+            © {new Date().getFullYear()} Alpha Import Exchange RDC. Tous droits réservés.
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />

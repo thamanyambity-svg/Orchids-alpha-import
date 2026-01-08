@@ -4,7 +4,7 @@ import { VisualEditsMessenger } from "orchids-visual-edits"
 import { Toaster } from "sonner"
 
 export const metadata: Metadata = {
-  title: "Alpha Import Exchange | Secure International Trade",
+  title: "Alpha Import Exchange RDC | Secure International Trade",
   description: "Infrastructure de confiance pour le commerce international. Sécurité, traçabilité, contrôle.",
   keywords: ["import", "export", "trade", "africa", "asia", "secure", "logistics"],
 }
