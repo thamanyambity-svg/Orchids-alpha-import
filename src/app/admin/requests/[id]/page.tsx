@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { 
-  ArrowLeft, 
-  Package, 
-  User, 
-  Calendar, 
-  DollarSign, 
+import {
+  ArrowLeft,
+  Package,
+  User,
+  Calendar,
+  DollarSign,
   FileText,
   Upload,
   CheckCircle2,
@@ -120,18 +120,35 @@ export default function AdminRequestDetailPage() {
   const handleAction = async (action: string, data?: any) => {
     setUpdating(true)
     try {
-      const response = await fetch('/api/admin/requests', {
+      let endpoint = '/api/admin/requests'
+      let body: any = { action, requestId: params.id, data }
+
+      // Alpha Workflow Engine Integration
+      if (action === 'VALIDATE' || action === 'REJECT') {
+        endpoint = '/api/workflow/transition'
+        const targetStatus = action === 'VALIDATE' ? 'VALIDATED' : 'REJECTED'
+
+        body = {
+          type: 'REQUEST',
+          id: params.id,
+          targetStatus: targetStatus,
+          reason: data?.reason // If we add a prompt for reason later
+        }
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, requestId: params.id, data })
+        body: JSON.stringify(body)
       })
 
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'Action failed')
 
-      toast.success("Opération réussie")
+      toast.success(action === 'VALIDATE' ? "Demande validée avec succès" : "Action effectuée")
       router.refresh()
-      // Re-fetch data
+
+      // Re-fetch data to sync UI immediately
       const { data: updatedReq } = await supabase
         .from('import_requests')
         .select('*, buyer:profiles!import_requests_buyer_id_fkey(*), assigned_partner:partner_profiles(*)')
@@ -139,6 +156,7 @@ export default function AdminRequestDetailPage() {
         .single()
       setRequest(updatedReq)
     } catch (error: any) {
+      console.error("Workflow Action Error:", error)
       toast.error("Erreur: " + error.message)
     } finally {
       setUpdating(false)
@@ -176,7 +194,7 @@ export default function AdminRequestDetailPage() {
         </Button>
       </div>
 
-      <DashboardHeader 
+      <DashboardHeader
         title={request.category}
         subtitle={`Référence: ${request.reference}`}
       >
@@ -218,7 +236,7 @@ export default function AdminRequestDetailPage() {
               <Package className="w-5 h-5 text-primary" />
               Détails de la demande
             </h3>
-            
+
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Produit</p>
@@ -256,7 +274,7 @@ export default function AdminRequestDetailPage() {
             <div className="space-y-3">
               {documents.length > 0 ? (
                 documents.map((doc) => (
-                  <div 
+                  <div
                     key={doc.id}
                     className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
                   >
@@ -300,7 +318,7 @@ export default function AdminRequestDetailPage() {
                 <DollarSign className="w-5 h-5 text-primary" />
                 Détails Financiers
               </h3>
-              
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                   <p className="text-sm text-muted-foreground mb-1">Acompte (60%)</p>

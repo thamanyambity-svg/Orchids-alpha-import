@@ -12,9 +12,10 @@ interface DashboardHeaderProps {
   title: string
   subtitle?: string
   showBackButton?: boolean
+  children?: React.ReactNode
 }
 
-export function DashboardHeader({ title, subtitle, showBackButton = true }: DashboardHeaderProps) {
+export function DashboardHeader({ title, subtitle, showBackButton = true, children }: DashboardHeaderProps) {
   const [profile, setProfile] = useState<any>(null)
   const supabase = createClient()
 
@@ -36,19 +37,24 @@ export function DashboardHeader({ title, subtitle, showBackButton = true }: Dash
   const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
 
   return (
-    <header className="h-20 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40">
-      <div className="flex items-center gap-4">
+    <header className="h-20 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40 gap-4">
+      <div className="flex items-center gap-4 shrink-0">
         {showBackButton && <BackButton className="h-9 border-white/10" variant="outline" label="" />}
         <div className="hidden md:block">
           <h1 className="text-lg font-bold tracking-tight uppercase">{title}</h1>
+          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex-1 flex justify-end md:justify-center">
+        {children}
+      </div>
+
+      <div className="flex items-center gap-6 shrink-0">
         <div className="relative hidden lg:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input 
-            placeholder="Rechercher une transaction..." 
+          <Input
+            placeholder="Rechercher une transaction..."
             className="w-80 pl-9 h-10 bg-white/5 border-white/10 rounded-xl focus:bg-white/10 transition-all"
           />
         </div>
@@ -71,9 +77,9 @@ export function DashboardHeader({ title, subtitle, showBackButton = true }: Dash
           </div>
           <div className="relative">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-colors">
-              <img 
-                src={profile?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"} 
-                alt="Profile" 
+              <img
+                src={profile?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
+                alt="Profile"
                 className="w-full h-full object-cover"
               />
             </div>

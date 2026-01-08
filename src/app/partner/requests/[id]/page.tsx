@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { 
-  ArrowLeft, 
-  Package, 
-  User, 
-  Calendar, 
-  DollarSign, 
+import {
+  ArrowLeft,
+  Package,
+  User,
+  Calendar,
+  DollarSign,
   FileText,
   Upload,
   CheckCircle2,
@@ -68,7 +68,7 @@ export default function PartnerRequestDetailPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [requestRes, docsRes] = await Promise.all([
+        const [requestRes, docsRes, orderRes] = await Promise.all([
           supabase
             .from('import_requests')
             .select(`
@@ -85,12 +85,21 @@ export default function PartnerRequestDetailPage() {
             .from('request_documents')
             .select('*')
             .eq('request_id', params.id)
-            .order('created_at', { ascending: false })
+            .order('created_at', { ascending: false }),
+          supabase
+            .from('orders')
+            .select('id, status')
+            .eq('request_id', params.id)
+            .single()
         ])
 
         if (requestRes.error) throw requestRes.error
         setRequest(requestRes.data)
         setDocuments(docsRes.data || [])
+        // IMPORTANT: We bind the Partner UI to the Order if it exists
+        if (orderRes.data) {
+          setRequest((prev: any) => ({ ...prev, order_id: orderRes.data.id, order_status: orderRes.data.status }))
+        }
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error("Erreur lors de la récupération des données")
@@ -108,7 +117,7 @@ export default function PartnerRequestDetailPage() {
       .select('*')
       .eq('request_id', params.id)
       .order('created_at', { ascending: false })
-    
+
     if (!error) setDocuments(data || [])
   }
 
@@ -138,25 +147,31 @@ export default function PartnerRequestDetailPage() {
   }
 
   const updateStatus = async (newStatus: string) => {
+    if (!request.order_id) {
+      toast.error("Aucune commande associée (Pas encore financée ?)")
+      return
+    }
+
     setUpdating(true)
     try {
-      const response = await fetch('/api/partner/requests/status', {
+      const response = await fetch('/api/workflow/transition', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          requestId: params.id,
-          status: newStatus
+          type: 'ORDER',
+          id: request.order_id,
+          targetStatus: newStatus
         })
       })
 
+      const result = await response.json()
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to update status')
+        throw new Error(result.error || 'Failed to update status')
       }
-      
-      const { data } = await response.json()
-      setRequest({ ...request, status: data.status })
-      toast.success(`Statut mis à jour : ${statusLabels[newStatus]}`)
+
+      setRequest({ ...request, order_status: result.newStatus, status: result.newStatus })
+      toast.success(`Statut mis à jour : ${statusLabels[newStatus] || newStatus}`)
+      router.refresh()
     } catch (error: any) {
       console.error('Error updating status:', error)
       toast.error(`Erreur: ${error.message}`)
@@ -196,7 +211,7 @@ export default function PartnerRequestDetailPage() {
         </Button>
       </div>
 
-      <DashboardHeader 
+      <DashboardHeader
         title={request.category}
         subtitle={`Référence: ${request.reference}`}
       >
@@ -231,7 +246,7 @@ export default function PartnerRequestDetailPage() {
               <Package className="w-5 h-5 text-primary" />
               Détails de la marchandise
             </h3>
-            
+
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Catégorie</p>
@@ -265,80 +280,80 @@ export default function PartnerRequestDetailPage() {
             </div>
           </div>
 
-            {/* Documents */}
-            <div className="rounded-2xl bg-card border border-border p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-primary" />
-                  Documents du dossier
-                </h3>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="gap-2"
-                  onClick={() => setUploadModalOpen(true)}
-                >
-                  <Upload className="w-4 h-4" />
-                  Ajouter
-                </Button>
-              </div>
+          {/* Documents */}
+          <div className="rounded-2xl bg-card border border-border p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                Documents du dossier
+              </h3>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2"
+                onClick={() => setUploadModalOpen(true)}
+              >
+                <Upload className="w-4 h-4" />
+                Ajouter
+              </Button>
+            </div>
 
-              <div className="space-y-3">
-                {documents.length > 0 ? (
-                  documents.map((doc) => (
-                    <div 
-                      key={doc.id}
-                      className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <FileText className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">
-                            {documentTypeLabels[doc.type] || doc.type}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {format(new Date(doc.created_at), "d MMM yyyy", { locale: fr })} • {doc.service}
-                          </p>
-                        </div>
+            <div className="space-y-3">
+              {documents.length > 0 ? (
+                documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Button size="icon" variant="ghost" asChild title="Ouvrir">
-                          <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
-                        <Button 
-                          size="icon" 
-                          variant="ghost" 
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => deleteDocument(doc.id, doc.file_url)}
-                          title="Supprimer"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div>
+                        <p className="text-sm font-medium">
+                          {documentTypeLabels[doc.type] || doc.type}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(doc.created_at), "d MMM yyyy", { locale: fr })} • {doc.service}
+                        </p>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
-                    <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                    <p className="text-sm text-muted-foreground">Aucun document téléversé</p>
+                    <div className="flex items-center gap-1">
+                      <Button size="icon" variant="ghost" asChild title="Ouvrir">
+                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => deleteDocument(doc.id, doc.file_url)}
+                        title="Supprimer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
+                  <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                  <p className="text-sm text-muted-foreground">Aucun document téléversé</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        <DocumentUploadModal
-          requestId={params.id as string}
-          open={uploadModalOpen}
-          onOpenChange={setUploadModalOpen}
-          onSuccess={fetchDocuments}
-        />
       </div>
-    )
-  }
+
+      <DocumentUploadModal
+        requestId={params.id as string}
+        open={uploadModalOpen}
+        onOpenChange={setUploadModalOpen}
+        onSuccess={fetchDocuments}
+      />
+    </div>
+  )
+}
 
