@@ -30,8 +30,11 @@ export async function POST(request: NextRequest) {
 
     // Notify n8n
     await sendToN8N('partner_status_update', {
-      requestId,
+      requestId: data.id,
+      reference: data.reference,
+      category: data.category,
       newStatus: status,
+      isAutomobile: data.category === "Automobile & Pièces",
       timestamp: new Date().toISOString()
     })
 

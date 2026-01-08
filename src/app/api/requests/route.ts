@@ -54,15 +54,20 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error
 
-    // Notify n8n
-    await sendToN8N('new_request_created', {
-      requestId: data.id,
-      productName: data.product_name,
-      category: data.category,
-      quantity: `${data.quantity} ${data.unit}`,
-      budget: `${data.budget_min} - ${data.budget_max}`,
-      buyerId: data.buyer_id
-    })
+      // Notify n8n
+      await sendToN8N('new_request_created', {
+        requestId: data.id,
+        reference: data.reference,
+        productName: data.product_name,
+        category: data.category,
+        specifications: data.specifications, // Includes AI-predicted brand/model
+        quantity: `${data.quantity} ${data.unit}`,
+        budget: `${data.budget_min} - ${data.budget_max}`,
+        buyerId: data.buyer_id,
+        buyerCountry: data.buyer_country,
+        countryId: data.country_id,
+        isAutomobile: data.category === "Automobile & Pièces"
+      })
 
     return NextResponse.json(data)
   } catch (error: any) {
