@@ -94,9 +94,10 @@ export default function RegisterPage() {
         <div className="absolute inset-0 pattern-grid opacity-20" />
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         
-        <div className="relative z-10 flex flex-col justify-center px-16">
-          <BackButton className="w-fit mb-8" />
-          <Link href="/" className="flex items-center gap-3 mb-12">
+          <div className="relative z-10 flex flex-col justify-center px-16">
+            <BackButton href="/" className="w-fit mb-8" />
+            <Link href="/" className="flex items-center gap-3 mb-12">
+
             <div className="w-16 h-16 relative flex items-center justify-center">
               <Image 
                 src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png"
@@ -152,7 +153,7 @@ export default function RegisterPage() {
         >
           <div className="lg:hidden mb-8">
             <div className="flex items-center justify-between mb-4">
-              <BackButton />
+              <BackButton href="/" />
             </div>
             <Link href="/" className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex items-center justify-center">

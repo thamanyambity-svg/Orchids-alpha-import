@@ -146,7 +146,7 @@ export default function HowItWorksPage() {
       
       <main className="pt-20 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 text-left">
-          <BackButton />
+          <BackButton href="/" />
         </div>
 
         {/* Hero Section with Animation */}

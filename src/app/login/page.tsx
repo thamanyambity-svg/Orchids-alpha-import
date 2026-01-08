@@ -120,7 +120,7 @@ export default function LoginPage() {
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         
         <div className="relative z-10 flex flex-col justify-center px-16">
-          <BackButton className="w-fit mb-8" />
+          <BackButton href="/" className="w-fit mb-8" />
           <Link href="/" className="flex items-center gap-3 mb-12">
             <div className="w-16 h-16 relative flex items-center justify-center transition-transform group-hover:scale-110">
               <Image 
@@ -172,7 +172,7 @@ export default function LoginPage() {
         >
           <div className="lg:hidden mb-8">
             <div className="flex items-center justify-between mb-4">
-              <BackButton />
+              <BackButton href="/" />
             </div>
             <Link href="/" className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex items-center justify-center">
