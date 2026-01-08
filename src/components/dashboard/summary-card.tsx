@@ -36,7 +36,7 @@ export function SummaryCard({ request }: { request?: any }) {
             <div className={`w-2 h-2 rounded-full ${request.status === 'COMPLETED' ? 'bg-green-500' : 'bg-primary'}`} />
             <span>{statusLabel}</span>
           </div>
-          <span>G.A. EILO CATION</span>
+          <span>ALPHA IX SÉCURISÉ</span>
         </div>
       </div>
 

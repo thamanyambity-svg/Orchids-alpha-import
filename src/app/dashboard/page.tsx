@@ -61,15 +61,6 @@ export default function DashboardPage() {
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
 
-  const defaultPartner = {
-    id: "default-partner",
-    full_name: "Achignon Bilongo",
-    company_name: "MAARMALA - Head Officer",
-    avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
-  }
-
-  const activePartner = request?.assigned_partner || defaultPartner
-
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
       {/* Background patterns */}
@@ -124,14 +115,20 @@ export default function DashboardPage() {
           {/* Left Column (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             <PartnerShowcase />
-            <DocumentTable requestId={request?.id} />
-            <TransactionHistory requestId={request?.id} />
+            <div id="documents-section">
+              <DocumentTable requestId={request?.id} />
+            </div>
+            <div id="transactions-section">
+              <TransactionHistory requestId={request?.id} />
+            </div>
           </div>
 
           {/* Right Column (4 cols) */}
           <div className="lg:col-span-4 space-y-8">
-            <MessagingCard partner={activePartner} />
-            <CertifiedPartnerCard partner={activePartner} />
+            <div id="messaging-section">
+              <MessagingCard partner={request?.assigned_partner} />
+            </div>
+            <CertifiedPartnerCard partner={request?.assigned_partner} />
           </div>
         </div>
       </div>
