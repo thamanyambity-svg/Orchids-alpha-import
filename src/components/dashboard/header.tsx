@@ -3,6 +3,8 @@
 import { Bell, Search, Home, ChevronDown, Grid } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 import { BackButton } from "@/components/back-button"
 
@@ -13,6 +15,26 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle, showBackButton = true }: DashboardHeaderProps) {
+  const [profile, setProfile] = useState<any>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('full_name, avatar_url')
+          .eq('id', user.id)
+          .single()
+        setProfile(data)
+      }
+    }
+    fetchProfile()
+  }, [])
+
+  const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
+
   return (
     <header className="h-20 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40">
       <div className="flex items-center gap-4">
@@ -45,12 +67,12 @@ export function DashboardHeader({ title, subtitle, showBackButton = true }: Dash
 
         <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-xl hover:bg-white/5 transition-colors group">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold tracking-tight text-white">Bonjour, Ahmad !</p>
+            <p className="text-xs font-bold tracking-tight text-white">Bonjour, {firstName} !</p>
           </div>
           <div className="relative">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-colors">
               <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop" 
+                src={profile?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"} 
                 alt="Profile" 
                 className="w-full h-full object-cover"
               />
