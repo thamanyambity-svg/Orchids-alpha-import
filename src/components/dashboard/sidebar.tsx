@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
 import { 
   LayoutDashboard, 
   Users, 
