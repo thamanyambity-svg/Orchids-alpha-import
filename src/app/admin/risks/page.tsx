@@ -109,7 +109,7 @@ export default function AdminRisksPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <TrendingUp className="w-5 h-5 text-red-500" />
-                    Transactions Sensibles (> 10k€)
+                            Transactions Sensibles (&gt; 10k€)
                         </CardTitle>
                         <CardDescription>
                             Ces commandes nécessitent une attention particulière.
