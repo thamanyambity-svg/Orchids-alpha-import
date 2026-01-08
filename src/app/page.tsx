@@ -1,7 +1,8 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { 
   Shield, 
   ArrowRight, 
@@ -20,6 +21,29 @@ import {
 import { Button } from "@/components/ui/button"
 import { PublicHeader } from "@/components/public-header"
 import { PublicFooter } from "@/components/public-footer"
+
+const heroImages = [
+  {
+    url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
+    title: "Logistique Mondiale",
+    alt: "Port de conteneurs avec une équipe diversifiée"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
+    title: "Partenariat de Confiance",
+    alt: "Équipe professionnelle multiculturelle en réunion"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=2070&auto=format&fit=crop",
+    title: "Sourcing International",
+    alt: "Contrôle qualité dans une usine moderne"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop",
+    title: "Engagement & Valeurs",
+    alt: "Poignée de main symbolisant la confiance et la diversité"
+  }
+]
 
 const features = [
   {
@@ -93,35 +117,65 @@ const stats = [
 ]
 
 export default function HomePage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
     <div className="min-h-screen">
       <PublicHeader />
       
       <main>
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-          <div className="absolute inset-0 pattern-grid opacity-30" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          {/* Background Image Carousel */}
+          <div className="absolute inset-0 z-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentImageIndex}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="absolute inset-0"
+              >
+                <div 
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[5000ms]"
+                  style={{ 
+                    backgroundImage: `url(${heroImages[currentImageIndex].url})`,
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/40" />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="absolute inset-0 pattern-grid opacity-20 z-[1]" />
           
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="text-center max-w-4xl mx-auto"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/30 text-sm text-primary font-medium mb-8 backdrop-blur-sm">
                 <Shield className="w-4 h-4" />
                 Infrastructure de confiance
               </div>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-8">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-8 text-white">
                 Nous ne connectons pas.{" "}
                 <span className="text-gradient-gold">Nous sécurisons</span>{" "}
                 le commerce international.
               </h1>
               
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-12">
                 Alpha Import Exchange RDC est l&apos;infrastructure de confiance pour vos importations 
                 Afrique-Asie. Contrôle total. Traçabilité complète. Zéro risque.
               </p>
@@ -133,11 +187,26 @@ export default function HomePage() {
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild className="h-14 px-8 text-base">
+                <Button size="lg" variant="outline" asChild className="h-14 px-8 text-base bg-white/5 hover:bg-white/10 text-white border-white/20">
                   <Link href="/how-it-works">
                     Voir comment ça marche
                   </Link>
                 </Button>
+              </div>
+
+              {/* Carousel Indicators */}
+              <div className="mt-16 flex justify-center gap-3">
+                {heroImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-12 h-1 rounded-full transition-all duration-500 ${
+                      index === currentImageIndex 
+                        ? "bg-primary w-20" 
+                        : "bg-white/20 hover:bg-white/40"
+                    }`}
+                  />
+                ))}
               </div>
             </motion.div>
 
@@ -148,11 +217,11 @@ export default function HomePage() {
               className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8"
             >
               {stats.map((stat, index) => (
-                <div key={index} className="text-center">
+                <div key={index} className="text-center backdrop-blur-sm bg-black/20 p-4 rounded-2xl border border-white/5">
                   <div className="text-3xl sm:text-4xl font-bold text-gradient-gold mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm text-gray-400 font-medium uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
