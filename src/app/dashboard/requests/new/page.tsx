@@ -12,7 +12,13 @@ import {
   CheckCircle2,
   Loader2,
   ShieldCheck,
-  Search
+  Search,
+  Sparkles,
+  Plus,
+  Trash2,
+  Car,
+  Settings2,
+  AlertCircle
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -20,6 +26,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { PartnerProfileCard } from "@/components/dashboard/partner-profile-card"
 import dynamic from "next/dynamic"
@@ -32,6 +40,19 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
 })
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
+
+const AUTO_BRANDS = [
+  { name: "Toyota", models: ["Hilux", "Land Cruiser", "Prado", "Corolla", "RAV4", "Fortuner", "Hiace"] },
+  { name: "Mercedes-Benz", models: ["G-Class", "GLE", "S-Class", "C-Class", "Sprinter", "Vito"] },
+  { name: "BMW", models: ["X5", "X6", "X7", "5 Series", "3 Series"] },
+  { name: "Hyundai", models: ["Tucson", "Santa Fe", "Palisade", "Elantra", "H1"] },
+  { name: "Nissan", models: ["Patrol", "Navara", "X-Trail", "Qashqai"] },
+  { name: "Mitsubishi", models: ["L200", "Pajero", "Outlander"] },
+  { name: "Ford", models: ["Ranger", "Everest", "F-150", "Explorer"] },
+  { name: "Lexus", models: ["LX 570", "LX 600", "GX 460", "RX 350"] },
+  { name: "Volkswagen", models: ["Amarok", "Tiguan", "Touareg", "Transporter"] },
+  { name: "Range Rover", models: ["Vogue", "Sport", "Velar", "Evoque"] },
+]
 
 const allCountries = [
   { code: "AFG", name: "Afghanistan", flag: "🇦🇫" },
@@ -249,26 +270,50 @@ const mockPartners: Record<string, any> = {
   }
 }
 
-export default function NewRequestPage() {
-  const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [countries, setCountries] = useState<any[]>([])
-  const [selectedPartner, setSelectedPartner] = useState<any>(null)
-  
-  const [formData, setFormData] = useState({
-    buyerCountry: "",
-    country: "",
-    category: "",
-    productName: "",
-    description: "",
-    quantity: "",
-    unit: "",
-    budgetMin: "",
-    budgetMax: "",
-    deadline: "",
-    additionalNotes: "",
-  })
+  export default function NewRequestPage() {
+    const router = useRouter()
+    const [currentStep, setCurrentStep] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
+    const [countries, setCountries] = useState<any[]>([])
+    const [selectedPartner, setSelectedPartner] = useState<any>(null)
+    
+    const [formData, setFormData] = useState({
+      buyerCountry: "",
+      country: "",
+      category: "",
+      deadline: "",
+    })
+
+    const [items, setItems] = useState<any[]>([
+      { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
+    ])
+
+    const addItem = () => {
+      setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+    }
+
+    const removeItem = (id: string) => {
+      if (items.length > 1) {
+        setItems(items.filter(item => item.id !== id))
+      }
+    }
+
+    const updateItem = (id: string, field: string, value: any) => {
+      setItems(items.map(item => {
+        if (item.id === id) {
+          const newItem = { ...item, [field]: value }
+          // AI logic: if carBrand changes, update productName
+          if (field === 'carBrand' || field === 'carModel') {
+            const brand = field === 'carBrand' ? value : item.carBrand
+            const model = field === 'carModel' ? value : item.carModel
+            newItem.productName = `${brand} ${model}`.trim()
+          }
+          return newItem
+        }
+        return item
+      }))
+    }
+
 
   useEffect(() => {
     async function fetchCountries() {
@@ -312,45 +357,57 @@ export default function NewRequestPage() {
     }
   }
 
-  async function handleSubmit() {
-    setIsLoading(true)
-    try {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
+    async function handleSubmit() {
+      setIsLoading(true)
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error("Non authentifié")
 
-      const response = await fetch("/api/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          buyer_id: user.id,
-          country_id: countries.find(c => c.code === formData.country)?.id,
-          buyer_country: formData.buyerCountry,
-          category: formData.category,
-          product_name: formData.productName,
-          specifications: {
-            description: formData.description,
-            additionalNotes: formData.additionalNotes
-          },
-          quantity: parseInt(formData.quantity),
-          unit: formData.unit,
-          budget_min: parseFloat(formData.budgetMin),
-          budget_max: parseFloat(formData.budgetMax),
-          deadline: formData.deadline || null
+        const countryId = countries.find(c => c.code === formData.country)?.id
+
+        // Create a request for each item
+        const promises = items.map(item => {
+          return fetch("/api/requests", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              buyer_id: user.id,
+              country_id: countryId,
+              buyer_country: formData.buyerCountry,
+              category: formData.category,
+              product_name: item.productName,
+              specifications: {
+                description: item.description,
+                brand: item.carBrand || null,
+                model: item.carModel || null
+              },
+              quantity: parseInt(item.quantity),
+              unit: item.unit,
+              budget_min: parseFloat(item.budgetMin),
+              budget_max: parseFloat(item.budgetMax),
+              deadline: formData.deadline || null
+            })
+          })
         })
-      })
 
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || "Erreur lors de la création")
+        const results = await Promise.all(promises)
+        const failed = results.find(r => !r.ok)
+        
+        if (failed) {
+          const data = await failed.json()
+          throw new Error(data.error || "Erreur lors de la création d'une ou plusieurs fiches")
+        }
 
-      toast.success("Demande créée avec succès !")
-      router.push("/dashboard/requests")
-    } catch (error: any) {
-      toast.error(error.message || "Une erreur est survenue")
-    } finally {
-      setIsLoading(false)
+        toast.success(`${items.length} demande(s) créée(s) avec succès !`)
+        router.push("/dashboard/requests")
+      } catch (error: any) {
+        toast.error(error.message || "Une erreur est survenue")
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }
+
 
   return (
     <div>
@@ -527,22 +584,32 @@ export default function NewRequestPage() {
 
             {currentStep === 2 && (
               <div className="space-y-8">
-                <div>
-                  <h2 className="text-2xl font-bold mb-1">Détails de votre demande</h2>
-                  <p className="text-muted-foreground">
-                    Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation.
-                  </p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-1">Détails de votre demande</h2>
+                    <p className="text-muted-foreground">
+                      {formData.category === "Automobile & Pièces" 
+                        ? "Précisez la marque, le modèle et les détails techniques pour une cotation précise."
+                        : "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="px-3 py-1 gap-1.5 bg-primary/10 text-primary border-primary/20">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      IA Alpha Prédicteur Active
+                    </Badge>
+                  </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Catégorie *</Label>
+                <div className="space-y-4">
+                  <div className="space-y-2 max-w-sm">
+                    <Label className="font-semibold">Catégorie de la demande *</Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
                     >
-                      <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Sélectionnez" />
+                      <SelectTrigger className="h-12 border-primary/20">
+                        <SelectValue placeholder="Sélectionnez une catégorie" />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map((category) => (
@@ -552,75 +619,164 @@ export default function NewRequestPage() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Nom du produit *</Label>
-                    <Input
-                      placeholder="Ex: iPhone 15 Pro Max 256GB"
-                      className="h-12"
-                      value={formData.productName}
-                      onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
-                    />
-                  </div>
+                  {formData.category === "Automobile & Pièces" && (
+                    <Alert className="bg-blue-500/5 border-blue-500/20">
+                      <AlertCircle className="h-4 w-4 text-blue-500" />
+                      <AlertTitle className="text-blue-700">Information Importante</AlertTitle>
+                      <AlertDescription className="text-blue-600/80">
+                        Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l'objet d'une fiche de commande séparée pour un meilleur suivi douanier et logistique.
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="font-semibold">Description détaillée & Spécifications *</Label>
-                  <Textarea
-                    placeholder="Couleurs, dimensions, puissance, emballage requis..."
-                    className="min-h-[120px] resize-none"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  />
-                </div>
+                <div className="space-y-6">
+                  {items.map((item, index) => (
+                    <div key={item.id} className="relative p-6 rounded-2xl border border-border bg-muted/10 space-y-6">
+                      {items.length > 1 && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="absolute top-4 right-4 text-muted-foreground hover:text-destructive"
+                          onClick={() => removeItem(item.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                      
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                          {index + 1}
+                        </div>
+                        <h3 className="font-semibold">Produit {index + 1}</h3>
+                      </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="space-y-2 col-span-1">
-                    <Label className="font-semibold">Quantité *</Label>
-                    <Input
-                      type="number"
-                      placeholder="Ex: 50"
-                      className="h-12"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2 col-span-1">
-                    <Label className="font-semibold">Unité *</Label>
-                    <Select
-                      value={formData.unit}
-                      onValueChange={(value) => setFormData({ ...formData, unit: value })}
-                    >
-                      <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Unité" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="units">Unités</SelectItem>
-                        <SelectItem value="kg">KG</SelectItem>
-                        <SelectItem value="tons">Tonnes</SelectItem>
-                        <SelectItem value="cartons">Cartons</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2 col-span-2">
-                    <Label className="font-semibold">Budget total estimé ($)</Label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Min"
-                        className="h-12"
-                        value={formData.budgetMin}
-                        onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
-                      />
-                      <span className="text-muted-foreground">-</span>
-                      <Input
-                        type="number"
-                        placeholder="Max"
-                        className="h-12"
-                        value={formData.budgetMax}
-                        onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
-                      />
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {formData.category === "Automobile & Pièces" ? (
+                          <>
+                            <div className="space-y-2">
+                              <Label className="font-semibold flex items-center gap-2">
+                                Marque <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
+                              </Label>
+                              <Select
+                                value={item.carBrand}
+                                onValueChange={(value) => updateItem(item.id, "carBrand", value)}
+                              >
+                                <SelectTrigger className="h-12">
+                                  <SelectValue placeholder="Sélectionnez une marque" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {AUTO_BRANDS.map((brand) => (
+                                    <SelectItem key={brand.name} value={brand.name}>{brand.name}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="font-semibold flex items-center gap-2">
+                                Modèle <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
+                              </Label>
+                              <Select
+                                value={item.carModel}
+                                onValueChange={(value) => updateItem(item.id, "carModel", value)}
+                                disabled={!item.carBrand}
+                              >
+                                <SelectTrigger className="h-12">
+                                  <SelectValue placeholder={item.carBrand ? "Sélectionnez un modèle" : "Choisissez d'abord la marque"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {item.carBrand && AUTO_BRANDS.find(b => b.name === item.carBrand)?.models.map((model) => (
+                                    <SelectItem key={model} value={model}>{model}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="font-semibold">Nom du produit *</Label>
+                            <Input
+                              placeholder="Ex: iPhone 15 Pro Max 256GB"
+                              className="h-12"
+                              value={item.productName}
+                              onChange={(e) => updateItem(item.id, "productName", e.target.value)}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="font-semibold">Description détaillée & Spécifications *</Label>
+                        <Textarea
+                          placeholder={formData.category === "Automobile & Pièces" 
+                            ? "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)..." 
+                            : "Couleurs, dimensions, puissance, emballage requis..."}
+                          className="min-h-[100px] resize-none"
+                          value={item.description}
+                          onChange={(e) => updateItem(item.id, "description", e.target.value)}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Quantité *</Label>
+                          <Input
+                            type="number"
+                            placeholder="Ex: 1"
+                            className="h-12"
+                            value={item.quantity}
+                            onChange={(e) => updateItem(item.id, "quantity", e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Unité *</Label>
+                          <Select
+                            value={item.unit}
+                            onValueChange={(value) => updateItem(item.id, "unit", value)}
+                          >
+                            <SelectTrigger className="h-12">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="units">Unités</SelectItem>
+                              <SelectItem value="kg">KG</SelectItem>
+                              <SelectItem value="tons">Tonnes</SelectItem>
+                              <SelectItem value="cartons">Cartons</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label className="font-semibold">Budget estimé ($)</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              placeholder="Min"
+                              className="h-12"
+                              value={item.budgetMin}
+                              onChange={(e) => updateItem(item.id, "budgetMin", e.target.value)}
+                            />
+                            <span className="text-muted-foreground">-</span>
+                            <Input
+                              type="number"
+                              placeholder="Max"
+                              className="h-12"
+                              value={item.budgetMax}
+                              onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-12 border-dashed border-2 hover:bg-primary/5 hover:border-primary/50 text-primary transition-all"
+                    onClick={addItem}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Ajouter un autre produit à cette demande
+                  </Button>
                 </div>
               </div>
             )}
@@ -630,7 +786,7 @@ export default function NewRequestPage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-1">Vérification finale</h2>
                   <p className="text-muted-foreground">
-                    Relisez votre demande avant l'envoi à votre partenaire.
+                    Relisez votre demande avant l'envoi à votre partenaire. {items.length > 1 && <span className="text-primary font-medium">{items.length} fiches seront créées.</span>}
                   </p>
                 </div>
 
@@ -638,10 +794,10 @@ export default function NewRequestPage() {
                   <div className="md:col-span-2 space-y-6">
                     <div className="p-6 rounded-2xl bg-muted/30 border border-border">
                       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                        <Package className="w-5 h-5 text-primary" />
-                        Détails de la commande
+                        <FileText className="w-5 h-5 text-primary" />
+                        Récapitulatif de l'Importation
                       </h3>
-                      <div className="grid grid-cols-2 gap-y-4 text-sm">
+                      <div className="grid grid-cols-2 gap-y-4 text-sm mb-6 pb-6 border-b border-border/50">
                         <div>
                           <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.buyerCountry)?.name || formData.buyerCountry}</p>
@@ -651,25 +807,27 @@ export default function NewRequestPage() {
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.country)?.name || formData.country}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Produit</p>
-                          <p className="font-semibold">{formData.productName}</p>
-                        </div>
-                        <div>
                           <p className="text-muted-foreground">Catégorie</p>
                           <p className="font-semibold">{formData.category}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Quantité</p>
-                          <p className="font-semibold">{formData.quantity} {formData.unit}</p>
+                          <p className="text-muted-foreground">Nombre de fiches</p>
+                          <p className="font-semibold">{items.length}</p>
                         </div>
-                        <div>
-                          <p className="text-muted-foreground">Budget</p>
-                          <p className="font-semibold">${formData.budgetMin} - ${formData.budgetMax}</p>
-                        </div>
-                        <div className="col-span-2 pt-2">
-                          <p className="text-muted-foreground">Description</p>
-                          <p className="text-sm mt-1 leading-relaxed">{formData.description}</p>
-                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Liste des Produits</p>
+                        {items.map((item, idx) => (
+                          <div key={item.id} className="p-4 rounded-xl bg-card border border-border">
+                            <div className="flex justify-between items-start mb-2">
+                              <p className="font-bold text-primary"># {idx + 1} - {item.productName || "Sans nom"}</p>
+                              <Badge variant="outline">{item.quantity} {item.unit}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
+                            <p className="text-xs font-semibold mt-2">Budget: ${item.budgetMin} - ${item.budgetMax}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
