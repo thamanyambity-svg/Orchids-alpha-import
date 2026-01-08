@@ -108,7 +108,7 @@ export default function SettingsPage() {
           company_name: profile.company_name,
           city: profile.city,
           country_id: profile.country_id,
-          updated_at: new Error().stack?.includes('at ') ? new Date().toISOString() : undefined // Dummy check for ISO string
+          updated_at: new Date().toISOString()
         })
         .eq('id', profile.id)
 

@@ -64,6 +64,8 @@ export default function PartnerSettingsPage() {
           full_name: profile.full_name,
           phone: profile.phone,
           company_name: profile.company_name,
+          city: profile.city,
+          country_id: profile.country_id,
           updated_at: new Date().toISOString()
         })
         .eq('id', profile.id)
