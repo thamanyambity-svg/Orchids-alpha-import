@@ -114,14 +114,22 @@ export default function DashboardPage() {
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Left Column (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
-            <PartnerShowcase />
-            <DocumentTable requestId={request?.id} />
-            <TransactionHistory requestId={request?.id} />
+            <div id="partner-showcase">
+              <PartnerShowcase />
+            </div>
+            <div id="documents-section">
+              <DocumentTable requestId={request?.id} />
+            </div>
+            <div id="transactions-section">
+              <TransactionHistory requestId={request?.id} />
+            </div>
           </div>
 
           {/* Right Column (4 cols) */}
           <div className="lg:col-span-4 space-y-8">
-            <MessagingCard partner={request?.assigned_partner} />
+            <div id="messaging-section">
+              <MessagingCard partner={request?.assigned_partner} />
+            </div>
             <CertifiedPartnerCard partner={request?.assigned_partner} />
           </div>
         </div>

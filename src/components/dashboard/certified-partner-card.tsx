@@ -1,13 +1,21 @@
 "use client"
 
-import { Star, ShieldCheck, Grid, LayoutGrid, FileText, BarChart3, ChevronDown, Package, CreditCard, MessageSquare } from "lucide-react"
+import { Star, ShieldCheck, LayoutGrid, FileText, CreditCard, MessageSquare, Mail, Phone, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function CertifiedPartnerCard({ partner }: { partner?: any }) {
   const displayPartner = partner || {
     full_name: "Achignon Bilongo",
     company_name: "MAARMALA - Head Officer",
     city: "Dubai",
+    email: "contact@maarmala.com",
+    phone: "+971500000000",
     countries: { name: "United Arab Emirates", code: "ARE" },
     avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
   }
@@ -17,6 +25,15 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  const handleWhatsApp = () => {
+    const phone = displayPartner.phone?.replace(/\s+/g, '') || "+971500000000";
+    window.open(`https://wa.me/${phone.replace('+', '')}`, '_blank');
+  }
+
+  const handleEmail = () => {
+    window.location.href = `mailto:${displayPartner.email || 'contact@maarmala.com'}`;
   }
 
   return (
@@ -39,17 +56,20 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
           </div>
           <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-white/5">
              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-             <ChevronDown className="w-3 h-3 text-muted-foreground" />
+             <span className="text-[9px] font-mono text-primary uppercase">En ligne</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/30">
+          <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/30 relative group">
             <img 
               src={displayPartner.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"} 
               alt="Partner" 
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <ExternalLink className="w-4 h-4 text-white" />
+            </div>
           </div>
           <div>
             <h4 className="text-lg font-bold text-white tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
@@ -74,7 +94,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
 
         <div className="grid grid-cols-4 gap-2 mb-8">
           {[
-            { icon: LayoutGrid, label: "Hub", target: "messaging-section" },
+            { icon: LayoutGrid, label: "Hub", target: "partner-showcase" },
             { icon: FileText, label: "Docs", target: "documents-section" },
             { icon: CreditCard, label: "Paie", target: "transactions-section" },
             { icon: MessageSquare, label: "Chat", target: "messaging-section" },
@@ -92,13 +112,31 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
           ))}
         </div>
 
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <Button 
-            onClick={() => scrollToSection('messaging-section')}
-            className="w-full h-12 rounded-xl bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-xs"
+            onClick={handleWhatsApp}
+            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-white transition-all font-bold tracking-widest uppercase text-[10px]"
           >
-            Contacter {displayPartner.full_name.split(' ')[0]}
+            <Phone className="w-3 h-3 mr-2" />
+            WhatsApp
           </Button>
+          <Button 
+            onClick={handleEmail}
+            className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
+          >
+            <Mail className="w-3 h-3 mr-2" />
+            Email
+          </Button>
+        </div>
+
+        <Button 
+          onClick={() => scrollToSection('messaging-section')}
+          className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase text-xs shadow-lg shadow-primary/20"
+        >
+          Ouvrir le Chat Sécurisé
+        </Button>
       </div>
     </div>
   )
 }
+
