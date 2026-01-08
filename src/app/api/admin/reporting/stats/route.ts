@@ -9,7 +9,7 @@ export async function GET() {
     const { data: volumeData, error: volumeError } = await supabase
       .from('import_requests')
       .select('budget_max')
-      .not('status', 'in', '("DRAFT", "REJECTED")')
+      .not('status', 'in', '(DRAFT,REJECTED)')
 
     if (volumeError) throw volumeError
     const totalVolume = volumeData.reduce((acc, curr) => acc + (Number(curr.budget_max) || 0), 0)
@@ -18,7 +18,7 @@ export async function GET() {
     const { count: activeCount, error: activeError } = await supabase
       .from('import_requests')
       .select('*', { count: 'exact', head: true })
-      .not('status', 'in', '("DRAFT", "REJECTED", "CLOSED")')
+      .not('status', 'in', '(DRAFT,REJECTED,CLOSED)')
 
     if (activeError) throw activeError
 
