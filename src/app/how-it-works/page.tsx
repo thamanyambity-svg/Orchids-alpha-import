@@ -45,11 +45,11 @@ const steps = [
     description: "Décrivez précisément votre besoin via notre formulaire intelligent adapté à chaque pays et catégorie.",
     icon: FileCheck,
     image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
-    details: [
-      "Pays source (Chine, Émirats, Turquie, Thaïlande)",
-      "Catégorie de produit",
-      "Spécifications, quantités, budget"
-    ]
+      details: [
+        "Pays source (Chine, Émirats, Turquie, Thaïlande, Japon)",
+        "Catégorie de produit",
+        "Spécifications, quantités, budget"
+      ]
   },
   {
     number: "03",
@@ -273,7 +273,7 @@ export default function HowItWorksPage() {
                   {[
                     { icon: Box, title: "Gestion des Stocks", desc: "Contrôle physique et entreposage sécurisé avant expédition." },
                     { icon: Truck, title: "Logistique & Transport", desc: "Réseau multimodal air/mer avec suivi GPS en temps réel." },
-                    { icon: Globe, title: "Présence Globale", desc: "Bureaux et partenaires certifiés en Chine, Turquie et Dubaï." },
+                      { icon: Globe, title: "Présence Globale", desc: "Bureaux et partenaires certifiés en Chine, Émirats, Turquie, Thaïlande et Japon." },
                   ].map((item, i) => (
                     <div key={i} className="flex gap-4 p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-colors">
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">

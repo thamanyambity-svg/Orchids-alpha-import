@@ -82,6 +82,7 @@ const countries = [
   { code: "ARE", name: "Émirats", flag: "🇦🇪", region: "Moyen-Orient" },
   { code: "TUR", name: "Turquie", flag: "🇹🇷", region: "Europe" },
   { code: "THA", name: "Thaïlande", flag: "🇹🇭", region: "Asie" },
+  { code: "JPN", name: "Japon", flag: "🇯🇵", region: "Asie" },
 ]
 
 const stats = [
