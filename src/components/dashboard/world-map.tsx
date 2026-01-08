@@ -124,10 +124,45 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
 
       el.addEventListener('click', () => {
         onCountrySelect(code)
+        // Scroll to partner card
+        setTimeout(() => {
+          const element = document.getElementById('partner-card-container')
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }, 300)
       })
+
+      const popupContent = `
+        <div class="p-3 min-w-[180px] bg-background">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
+              ${hasPartner.full_name[0]}
+            </div>
+            <div>
+              <h4 class="font-bold text-sm leading-tight">${hasPartner.full_name}</h4>
+              <p class="text-[10px] text-muted-foreground">${hasPartner.company_name}</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] mb-2">
+            <span class="text-amber-500 font-bold">★ ${hasPartner.performance_score}/5.0</span>
+            <span class="text-muted-foreground">${hasPartner.total_orders_handled}+ orders</span>
+          </div>
+          <div class="text-[9px] py-1 px-2 bg-primary/5 border border-primary/10 rounded text-primary font-medium text-center">
+            Cliquez pour accéder au profil
+          </div>
+        </div>
+      `
+
+      const popup = new mapboxgl.Popup({ 
+        offset: 25,
+        closeButton: false,
+        className: 'custom-map-popup'
+      }).setHTML(popupContent)
 
       const marker = new mapboxgl.Marker(el)
         .setLngLat([coords.lng, coords.lat])
+        .setPopup(popup)
         .addTo(map.current!)
       
       markers.current[code] = marker

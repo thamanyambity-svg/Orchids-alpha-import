@@ -451,7 +451,7 @@ export default function NewRequestPage() {
 
                   <AnimatePresence mode="wait">
                     {selectedPartner ? (
-                      <div className="space-y-4">
+                      <div className="space-y-4" id="partner-card-container">
                         <Label className="text-base font-semibold">Votre partenaire dédié</Label>
                         <PartnerProfileCard 
                           partner={selectedPartner}
