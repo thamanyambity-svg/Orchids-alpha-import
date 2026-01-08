@@ -1,0 +1,239 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck } from "lucide-react"
+
+interface PartnerWithDetails {
+    id: string
+    user_id: string
+    email: string
+    full_name: string | null
+    phone: string | null
+    city: string | null
+    country: string | null
+    status: string // UserStatus
+    contract_status: string // ContractStatus
+    performance_score: number
+    total_orders_handled: number
+}
+
+export default function AdminPartnersPage() {
+    const [partners, setPartners] = useState<PartnerWithDetails[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [searchQuery, setSearchQuery] = useState("")
+
+    const supabase = createClient()
+
+    useEffect(() => {
+        fetchPartners()
+    }, [])
+
+    async function fetchPartners() {
+        setIsLoading(true)
+        try {
+            // 1. Fetch profiles with role 'PARTNER'
+            const { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('role', 'PARTNER')
+                .order('created_at', { ascending: false })
+
+            if (profilesError) throw profilesError
+
+            // 2. Fetch specific partner details from 'partner_profiles'
+            const partnersData = await Promise.all(
+                (profiles || []).map(async (profile) => {
+                    const { data: partnerDetails } = await supabase
+                        .from('partner_profiles')
+                        .select('*')
+                        .eq('user_id', profile.id)
+                        .single()
+
+                    return {
+                        id: profile.id,
+                        user_id: profile.id,
+                        email: profile.email,
+                        full_name: profile.full_name || "Sans nom",
+                        phone: profile.phone,
+                        city: profile.city,
+                        country: profile.country_id, // Could fetch country name if needed
+                        status: profile.status,
+                        contract_status: partnerDetails?.contract_status || 'PENDING',
+                        performance_score: partnerDetails?.performance_score || 0,
+                        total_orders_handled: partnerDetails?.total_orders_handled || 0
+                    }
+                })
+            )
+
+            setPartners(partnersData)
+        } catch (error) {
+            console.error("Error fetching partners:", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const filteredPartners = partners.filter(p =>
+        p.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.full_name && p.full_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.city && p.city.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+
+    return (
+        <div className="space-y-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Gestion des Partenaires</h1>
+                    <p className="text-muted-foreground">
+                        {partners.length} partenaires logistiques dans le réseau.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button>
+                        <UserCheck className="mr-2 h-4 w-4" />
+                        Inviter un Partenaire
+                    </Button>
+                </div>
+            </div>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
+                    <div className="space-y-1">
+                        <CardTitle>Réseau Logistique</CardTitle>
+                        <CardDescription>
+                            Vue d'ensemble des partenaires et de leurs performances
+                        </CardDescription>
+                    </div>
+                    <div className="relative w-full md:w-64">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Rechercher (Nom, Ville)..."
+                            className="pl-8"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Partenaire</TableHead>
+                                <TableHead>Localisation</TableHead>
+                                <TableHead>Contrat & Statut</TableHead>
+                                <TableHead>Performance</TableHead>
+                                <TableHead>Volume</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="text-center py-8">Chargement...</TableCell>
+                                </TableRow>
+                            ) : filteredPartners.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="text-center py-8">Aucun partenaire trouvé</TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredPartners.map((partner) => (
+                                    <TableRow key={partner.id}>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
+                                                    <Briefcase className="h-5 w-5 text-blue-600" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-medium text-blue-900">{partner.full_name}</div>
+                                                    <div className="text-xs text-muted-foreground">{partner.email}</div>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <MapPin className="h-4 w-4" />
+                                                {partner.city || "Non défini"}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col gap-1 items-start">
+                                                {partner.contract_status === 'ACTIVE' ? (
+                                                    <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200">
+                                                        <FileCheck className="w-3 h-3 mr-1" /> Contrat Actif
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge variant="outline">En attente</Badge>
+                                                )}
+
+                                                {/* Secondary generic status */}
+                                                {partner.status !== 'VERIFIED' && (
+                                                    <span className="text-[10px] text-amber-600 font-medium px-1">
+                                                        (Kyc: {partner.status})
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-1 font-medium">
+                                                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                {partner.performance_score}/5
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-sm">
+                                                <span className="font-bold">{partner.total_orders_handled}</span> commandes
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" className="h-8 w-8 p-0">
+                                                        <span className="sr-only">Menu</span>
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuLabel>Gestion</DropdownMenuLabel>
+                                                    <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
+                                                        Contacter
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
+                                                    <DropdownMenuItem>Voir les Fournisseurs</DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem className="text-red-600">Résilier Contrat</DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
