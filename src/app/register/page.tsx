@@ -99,7 +99,7 @@ export default function RegisterPage() {
           <Link href="/" className="flex items-center gap-3 mb-12">
             <div className="w-16 h-16 relative flex items-center justify-center">
               <Image 
-                src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png?width=8000&height=8000&resize=contain"
+                src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png"
                 alt="Alpha Import Exchange RDC Logo"
                 fill
                 className="object-contain"
@@ -157,7 +157,7 @@ export default function RegisterPage() {
             <Link href="/" className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex items-center justify-center">
                 <Image 
-                  src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png?width=8000&height=8000&resize=contain"
+                  src="https://slelguoygbfzlbylpxfs.supabase.co/storage/v1/object/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767867010685.png"
                   alt="Alpha Import Exchange RDC Logo"
                   fill
                   className="object-contain"
