@@ -39,7 +39,7 @@ const statusLabels: Record<string, string> = {
   EXECUTING: "En cours d'exécution",
   SHIPPED: "Expédié",
   DELIVERED: "Livré",
-  COMPLETED: "Terminé",
+  CLOSED: "Terminé",
   CANCELLED: "Annulé",
 }
 

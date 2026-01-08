@@ -25,19 +25,19 @@ const statusColors: Record<string, string> = {
   EXECUTING: "bg-blue-500/10 text-blue-500",
   SHIPPED: "bg-purple-500/10 text-purple-500",
   DELIVERED: "bg-green-500/10 text-green-500",
-  COMPLETED: "bg-green-600/10 text-green-600",
-  CANCELLED: "bg-destructive/10 text-destructive",
-}
-
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  VALIDATED: "À traiter",
-  EXECUTING: "En cours",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  COMPLETED: "Terminé",
-  CANCELLED: "Annulé",
-}
+    CLOSED: "bg-green-600/10 text-green-600",
+    CANCELLED: "bg-destructive/10 text-destructive",
+  }
+  
+  const statusLabels: Record<string, string> = {
+    PENDING: "En attente",
+    VALIDATED: "À traiter",
+    EXECUTING: "En cours",
+    SHIPPED: "Expédié",
+    DELIVERED: "Livré",
+    CLOSED: "Terminé",
+    CANCELLED: "Annulé",
+  }
 
 export default function PartnerDashboardPage() {
   const [requests, setRequests] = useState<any[]>([])
@@ -83,7 +83,7 @@ export default function PartnerDashboardPage() {
         // Calculate stats
         const assigned = data?.length || 0
         const inProgress = data?.filter(r => ['VALIDATED', 'EXECUTING', 'SHIPPED'].includes(r.status)).length || 0
-        const completed = data?.filter(r => r.status === 'COMPLETED').length || 0
+        const completed = data?.filter(r => r.status === 'CLOSED').length || 0
         
         setStats({
           assigned,

@@ -37,7 +37,7 @@ export async function GET() {
     const { data: financialData, error: financialError } = await supabase
       .from('financial_ledger')
       .select('amount')
-      .eq('status', 'COMPLETED')
+      .eq('status', 'EXECUTED')
 
     if (financialError) throw financialError
     const totalTransactions = financialData.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
