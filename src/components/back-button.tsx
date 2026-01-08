@@ -26,11 +26,13 @@ export function BackButton({
       <Button
         variant={variant}
         size="sm"
-        onClick={() => router.push(href)}
+        asChild
         className={cn("gap-2 hover:bg-primary/10 transition-colors", className)}
       >
-        <ChevronLeft className="w-4 h-4" />
-        {label}
+        <Link href={href}>
+          <ChevronLeft className="w-4 h-4" />
+          {label}
+        </Link>
       </Button>
     )
   }
