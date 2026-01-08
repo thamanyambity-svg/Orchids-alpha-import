@@ -37,9 +37,17 @@ export default function LoginPage() {
         return
       }
 
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        toast.error("Utilisateur non trouvé")
+        return
+      }
+
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
+        .eq("id", user.id)
         .single()
 
       if (profile?.role === "ADMIN") {
