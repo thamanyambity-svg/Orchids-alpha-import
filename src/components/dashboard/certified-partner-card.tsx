@@ -4,13 +4,13 @@ import { Star, ShieldCheck, Mail, Grid, LayoutGrid, FileText, BarChart3, Chevron
 import { Button } from "@/components/ui/button"
 
 export function CertifiedPartnerCard({ partner }: { partner?: any }) {
-  const displayPartner = partner || {
-    full_name: "Omar",
-    company_name: "OrientTrade Inc.",
-    city: "Dubai",
-    countries: { name: "United Arab Emirates", code: "ARE" },
-    avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"
-  }
+    const displayPartner = partner || {
+      full_name: "Achignon Bilongo",
+      company_name: "MAARMALA - Head Officer",
+      city: "Dubai",
+      countries: { name: "United Arab Emirates", code: "ARE" },
+      avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
+    }
 
   return (
     <div className="space-y-6">
@@ -81,9 +81,9 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
           ))}
         </div>
 
-        <Button className="w-full h-12 rounded-xl bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-xs">
-          Contacter Omar
-        </Button>
+          <Button className="w-full h-12 rounded-xl bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-xs">
+            Contacter Achignon
+          </Button>
       </div>
 
       {/* Local Partner Section */}

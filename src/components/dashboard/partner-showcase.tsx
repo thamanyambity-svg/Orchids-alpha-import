@@ -32,31 +32,30 @@ export function PartnerShowcase() {
           <span className="text-sm font-mono tracking-widest text-white/80 uppercase">Dubai</span>
         </div>
 
-        <h2 className="text-4xl font-bold mb-2 tracking-tight">OrientTrade Inc.</h2>
-        
-        <div className="flex items-center gap-2 mb-8">
-          <div className="flex items-center gap-0.5">
-            {[1, 2, 3, 4].map((i) => (
-              <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-            ))}
-            <Star className="w-4 h-4 text-primary" />
+          <h2 className="text-4xl font-bold mb-2 tracking-tight">MAARMALA - Head Officer</h2>
+          
+          <div className="flex items-center gap-2 mb-8">
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+              ))}
+            </div>
+            <span className="text-xs text-muted-foreground ml-2">Dubaï Global Hub</span>
           </div>
-          <span className="text-xs text-muted-foreground ml-2">Gza dou DBALLS</span>
-        </div>
 
-        <div className="glass-dark p-6 rounded-2xl border border-white/10 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
-            <img 
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop" 
-              alt="Partner" 
-              className="w-full h-full object-cover"
-            />
+          <div className="glass-dark p-6 rounded-2xl border border-white/10 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+              <img 
+                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain" 
+                alt="Partner" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">Achignon Bilongo</p>
+              <p className="text-xs text-muted-foreground">Spécialiste du commerce international à Dubaï. Prêt à traiter votre demande.</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-bold text-white">Omar</p>
-            <p className="text-xs text-muted-foreground">Votre demande est en cours de validation, nous vous informerons sous peu.</p>
-          </div>
-        </div>
       </div>
     </motion.div>
   )

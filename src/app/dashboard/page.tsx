@@ -14,28 +14,41 @@ import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<any>(null)
+  const [request, setRequest] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchDashboardData() {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
-          const { data } = await supabase
+          // Fetch profile with countries
+          const { data: profileData } = await supabase
             .from('profiles')
-            .select('full_name, status, country_id')
+            .select('*, countries(name, code)')
             .eq('id', user.id)
             .single()
-          setProfile(data)
+          setProfile(profileData)
+
+          // Fetch latest request with partner info
+          const { data: requestData } = await supabase
+            .from('import_requests')
+            .select('*, assigned_partner:profiles!import_requests_assigned_partner_id_fkey(*, countries(name, code))')
+            .eq('buyer_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+          
+          setRequest(requestData)
         }
       } catch (error) {
-        console.error('Error fetching profile:', error)
+        console.error('Error fetching dashboard data:', error)
       } finally {
         setLoading(false)
       }
     }
-    fetchProfile()
+    fetchDashboardData()
   }, [])
 
   if (loading) {
@@ -47,6 +60,15 @@ export default function DashboardPage() {
   }
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
+
+  const defaultPartner = {
+    id: "default-partner",
+    full_name: "Achignon Bilongo",
+    company_name: "MAARMALA - Head Officer",
+    avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
+  }
+
+  const activePartner = request?.assigned_partner || defaultPartner
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
@@ -70,39 +92,46 @@ export default function DashboardPage() {
             transition={{ delay: 0.1 }}
             className="flex items-center gap-3"
           >
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground uppercase tracking-widest">
               Acheteur: {profile?.status === 'VERIFIED' ? 'Vérifié' : 'En attente'}
             </span>
-            <div className="w-5 h-3 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
-              <div className="h-1/3 bg-[#ff0000]" />
-              <div className="h-1/3 bg-white" />
-              <div className="h-1/3 bg-black" />
-              <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-[#00732f]" />
-            </div>
+            {profile?.countries && (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-muted-foreground uppercase">{profile.countries.name}</span>
+                {profile.countries.code === 'ARE' && (
+                  <div className="w-5 h-3 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
+                    <div className="h-1/3 bg-[#ff0000]" />
+                    <div className="h-1/3 bg-white" />
+                    <div className="h-1/3 bg-black" />
+                    <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-[#00732f]" />
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         </div>
 
         {/* Summary Row */}
         <div className="grid lg:grid-cols-1 gap-6">
-          <SummaryCard />
+          <SummaryCard request={request} />
         </div>
 
         {/* Tabs Section */}
-        <StatusTabs />
+        <StatusTabs status={request?.status} />
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Left Column (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             <PartnerShowcase />
-            <DocumentTable />
-            <TransactionHistory />
+            <DocumentTable requestId={request?.id} />
+            <TransactionHistory requestId={request?.id} />
           </div>
 
           {/* Right Column (4 cols) */}
           <div className="lg:col-span-4 space-y-8">
-            <MessagingCard />
-            <CertifiedPartnerCard />
+            <MessagingCard partner={activePartner} />
+            <CertifiedPartnerCard partner={activePartner} />
           </div>
         </div>
       </div>
