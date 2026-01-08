@@ -6,14 +6,16 @@ import { cn } from "@/lib/utils"
 
 const tabs = ["GLOBAL", "SOURCING", "LOGISTIQUE", "DOCUMENTATION"]
 
-export function StatusTabs() {
+export function StatusTabs({ status }: { status?: string }) {
   const [activeTab, setActiveTab] = useState("GLOBAL")
+
+  const displayStatus = status || 'En attente'
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-mono tracking-[0.2em] text-muted-foreground uppercase flex items-center gap-2">
-          Statut de la demande <span className="text-primary ml-2">En cours</span>
+          Statut de la demande <span className="text-primary ml-2">{displayStatus}</span>
         </h2>
       </div>
       

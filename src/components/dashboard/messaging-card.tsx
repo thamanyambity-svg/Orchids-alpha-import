@@ -1,34 +1,78 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { MessageSquare, Send, Mic, Paperclip } from "lucide-react"
+import { MessageSquare, Send, Mic, Paperclip, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useEffect, useState, useRef } from "react"
+import { createClient } from "@/lib/supabase/client"
 
-export function MessagingCard() {
-  const messages = [
-    {
-      id: 1,
-      sender: "Omar (Partenaire)",
-      role: "Sypsan ouP",
-      text: "Bonjour Ahmad, merci pour votre prefiert paliment. Voc peceque en bloibre qubiotare coensons.",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
-      isPartner: true
-    },
-    {
-      id: 2,
-      sender: "Vous",
-      text: "Merci Omar - aimatis votre rettor made las de la plorarattes, cos qui li pur nemtou !",
-      isPartner: false
-    },
-    {
-      id: 3,
-      sender: "Omar (Partenaire)",
-      text: "Merci Omar, partierte coensons. prongantard et partene coonmates",
-      isPartner: true,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
+export function MessagingCard({ partner }: { partner?: any }) {
+  const [messages, setMessages] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [newMessage, setNewMessage] = useState("")
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchMessages() {
+      setLoading(true)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data } = await supabase
+            .from('messages')
+            .select('*')
+            .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
+            .order('created_at', { ascending: true })
+          
+          if (data) setMessages(data)
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchMessages()
+
+    // Real-time subscription
+    const channel = supabase
+      .channel('messages_changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+        setMessages((prev) => [...prev, payload.new])
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [messages])
+
+  const handleSend = async () => {
+    if (!newMessage.trim() || !partner) return
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('messages').insert({
+          content: newMessage,
+          sender_id: user.id,
+          recipient_id: partner.id,
+        })
+        setNewMessage("")
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+    }
+  }
 
   return (
     <div className="glass rounded-3xl overflow-hidden flex flex-col h-full min-h-[500px]">
@@ -42,32 +86,55 @@ export function MessagingCard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-muted-foreground">36</span>
+          <span className="text-xs font-mono text-muted-foreground">{messages.length}</span>
           <Paperclip className="w-4 h-4 text-muted-foreground" />
         </div>
       </div>
 
-      <div className="flex-1 p-6 space-y-6 overflow-y-auto max-h-[400px]">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex gap-4 ${msg.isPartner ? "" : "flex-row-reverse"}`}>
-            {msg.isPartner && (
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
-                <img src={msg.avatar} alt={msg.sender} className="w-full h-full object-cover" />
-              </div>
-            )}
-            <div className={`space-y-1 max-w-[80%] ${msg.isPartner ? "" : "text-right"}`}>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{msg.sender}</p>
-              <div className={`p-4 rounded-2xl text-sm ${msg.isPartner ? "bg-secondary/50 rounded-tl-none" : "bg-primary text-primary-foreground rounded-tr-none"}`}>
-                {msg.text}
-              </div>
-            </div>
+      <div ref={scrollRef} className="flex-1 p-6 space-y-6 overflow-y-auto max-h-[400px]">
+        {loading && messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
-        ))}
+        ) : messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">Aucun message</p>
+            <p className="text-[10px] text-muted-foreground uppercase">Commencez la discussion avec votre partenaire</p>
+          </div>
+        ) : (
+          messages.map((msg) => {
+            const isPartner = msg.sender_id === partner?.id
+            return (
+              <div key={msg.id} className={`flex gap-4 ${isPartner ? "" : "flex-row-reverse"}`}>
+                {isPartner && (
+                  <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-primary/10 flex items-center justify-center">
+                    {partner?.avatar_url ? (
+                      <img src={partner.avatar_url} alt={partner.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-primary">{partner?.full_name?.charAt(0)}</span>
+                    )}
+                  </div>
+                )}
+                <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-right"}`}>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                    {isPartner ? (partner?.full_name || "Partenaire") : "Vous"}
+                  </p>
+                  <div className={`p-4 rounded-2xl text-sm ${isPartner ? "bg-secondary/50 rounded-tl-none" : "bg-primary text-primary-foreground rounded-tr-none"}`}>
+                    {msg.content}
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        )}
       </div>
 
       <div className="p-4 bg-secondary/30 mt-auto">
         <div className="relative">
           <Input 
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Écrire un message..." 
             className="bg-background/50 border-white/5 pr-24 h-12 rounded-xl"
           />
@@ -75,7 +142,7 @@ export function MessagingCard() {
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
               <Mic className="w-4 h-4" />
             </button>
-            <Button size="sm" className="h-8 rounded-lg">
+            <Button size="sm" className="h-8 rounded-lg" onClick={handleSend} disabled={!partner}>
               Envoyer
             </Button>
           </div>
