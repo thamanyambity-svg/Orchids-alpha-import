@@ -21,6 +21,7 @@ import {
   Zap,
   ShieldCheck,
   Search,
+  Settings,
   ChevronDown,
   LayoutGrid,
   ListFilter
