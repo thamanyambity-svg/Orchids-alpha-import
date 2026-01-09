@@ -18,7 +18,9 @@ import {
   Trash2,
   Car,
   Settings2,
-  AlertCircle
+  AlertCircle,
+  Ship,
+  Plane
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -620,24 +622,53 @@ export default function NewRequestPage() {
                       </Select>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                       <Label className="font-semibold">Mode d'Expédition *</Label>
-                      <Select
-                        value={formData.transportMode}
-                        onValueChange={(value) => setFormData({ ...formData, transportMode: value })}
-                      >
-                        <SelectTrigger className="h-12 border-primary/20">
-                          <SelectValue placeholder="Choix du transport" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="SEA">
-                            <span className="flex items-center gap-2">🚢 Fret Maritime (Standard)</span>
-                          </SelectItem>
-                          <SelectItem value="AIR">
-                            <span className="flex items-center gap-2">✈️ Fret Aérien (Urgent)</span>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Maritime */}
+                        <div
+                          onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
+                          className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'SEA' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 rounded-lg bg-blue-100 text-blue-700">
+                                <Ship className="w-6 h-6" />
+                              </div>
+                              <div>
+                                <h3 className="font-bold text-sm">Maritime (Standard)</h3>
+                                <p className="text-xs text-muted-foreground mt-1">Économique • 30-45 Jours</p>
+                              </div>
+                            </div>
+                            {formData.transportMode === 'SEA' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+                            Idéal pour les grands volumes et les charges lourdes. Le choix optimisé pour réduire les coûts.
+                          </p>
+                        </div>
+
+                        {/* Aérien */}
+                        <div
+                          onClick={() => setFormData({ ...formData, transportMode: 'AIR' })}
+                          className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'AIR' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+                                <Plane className="w-6 h-6" />
+                              </div>
+                              <div>
+                                <h3 className="font-bold text-sm">Aérien (Express)</h3>
+                                <p className="text-xs text-muted-foreground mt-1">Rapide • 5-7 Jours</p>
+                              </div>
+                            </div>
+                            {formData.transportMode === 'AIR' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+                            Pour les envois urgents et produits de haute valeur. Livraison prioritaire garantie.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 

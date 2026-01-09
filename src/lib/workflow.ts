@@ -214,6 +214,50 @@ export async function executeTransition(
             console.error('⚠️ Notification failed:', error)
         }
 
+        // --- Auto-Generate Order on VALIDATED -> AWAITING_DEPOSIT ---
+        if (target === 'AWAITING_DEPOSIT') {
+            // Fetch full request details to create order
+            const { data: requestData } = await supabase
+                .from('import_requests')
+                .select('*')
+                .eq('id', id)
+                .single()
+
+            if (requestData) {
+                const amount = requestData.budget_max || requestData.budget_min || 0
+                const commission = amount * 0.10 // 10% default
+                const payout = amount - commission
+
+                // Generate Order Reference (Max 20 chars)
+                let baseRef = requestData.reference || 'REF'
+                if (baseRef.length > 15) {
+                    baseRef = baseRef.slice(-15)
+                }
+                const orderRef = `ORD-${baseRef}`
+
+                const { error: orderError } = await supabase.from('orders').insert({
+                    request_id: id,
+                    reference: orderRef,
+                    total_amount: amount,
+                    alpha_commission: commission,
+                    partner_payout: payout,
+                    status: 'PENDING', // Starts as PENDING for User to Accept
+                    deposit_amount: amount * 0.60,
+                    balance_amount: amount * 0.40,
+                    validated_by_admin: true,
+                    deposit_paid: false,
+                    balance_paid: false,
+                    is_frozen: false,
+                    escrow_activated: false
+                })
+
+                if (orderError) {
+                    console.error("Failed to auto-generate order:", orderError)
+                    throw orderError
+                }
+            }
+        }
+
         return { success: true, newStatus: target }
     } else if (type === 'ORDER') {
         const { data: orderData, error: fetchError } = await supabase

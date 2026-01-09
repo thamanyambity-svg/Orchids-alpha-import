@@ -91,34 +91,43 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat: any, i: number) => {
           const Icon = ICON_MAP[stat.icon] || Wallet
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="relative group overflow-hidden"
-            >
-              <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-500">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={cn("p-2 rounded-lg bg-white/5", stat.color)}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  {stat.trend && (
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
-                      <TrendingUp className="w-3 h-3" />
-                      {stat.trend}
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs text-white/40 font-medium mb-1 uppercase tracking-wider">{stat.label}</p>
-                <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
 
-                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Icon className="w-24 h-24" />
+          // Determine link target based on label logic
+          let href = "/admin"
+          if (stat.label.includes("Funds")) href = "/admin/finances"
+          else if (stat.label.includes("Demandes")) href = "/admin/requests"
+          else if (stat.label.includes("Fret")) href = "/admin/shipping"
+          else if (stat.label.includes("Partenaires")) href = "/admin/partners"
+
+          return (
+            <Link key={i} href={href} className="block">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="relative group overflow-hidden"
+              >
+                <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-500 cursor-pointer h-full">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={cn("p-2 rounded-lg bg-white/5 transition-colors group-hover:bg-white/10", stat.color)}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    {stat.trend && (
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                        <TrendingUp className="w-3 h-3" />
+                        {stat.trend}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-white/40 font-medium mb-1 uppercase tracking-wider">{stat.label}</p>
+                  <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
+
+                  <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Icon className="w-24 h-24" />
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           )
         })}
       </div>
@@ -223,7 +232,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="space-y-4">
             {recentRequests.length > 0 ? recentRequests.map((req: any, i: number) => (
-              <Link key={i} href={`/admin/requests/${req.id}`} className="block">
+              <Link key={i} href={`/admin/requests/${req.realId}`} className="block">
                 <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
                   <div className="flex flex-col items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mb-1 shadow-[0_0_8px_#60a5fa]" />
@@ -303,7 +312,9 @@ export default function AdminDashboardPage() {
                     <h4 className="text-xs font-bold text-white mb-1">{alert.title}</h4>
                     <p className="text-[10px] text-white/40 uppercase tracking-widest">{alert.location} • {alert.time}</p>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-[10px] text-destructive hover:bg-destructive/10">Voir</Button>
+                  <Link href="/admin/risks">
+                    <Button variant="ghost" size="sm" className="text-[10px] text-destructive hover:bg-destructive/10">Voir</Button>
+                  </Link>
                 </div>
               </div>
             )) : (
@@ -320,9 +331,11 @@ export default function AdminDashboardPage() {
             <Search className="w-5 h-5" />
           </Button>
           <div className="w-px h-6 bg-white/10" />
-          <Button variant="ghost" size="icon" className="text-[#ffd700] bg-[#ffd700]/10 border border-[#ffd700]/20 scale-110 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
-            <LayoutGrid className="w-5 h-5" />
-          </Button>
+          <Link href="/admin">
+            <Button variant="ghost" size="icon" className="text-[#ffd700] bg-[#ffd700]/10 border border-[#ffd700]/20 scale-110 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+              <LayoutGrid className="w-5 h-5" />
+            </Button>
+          </Link>
           <Link href="/admin/requests">
             <Button variant="ghost" size="icon" className="text-white/40 hover:text-white transition-colors">
               <FileText className="w-5 h-5" />
