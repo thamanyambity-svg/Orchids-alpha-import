@@ -6,13 +6,14 @@ import { createClient } from '@supabase/supabase-js'
 import { executeTransition } from '@/lib/workflow'
 
 // Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-12-18.acacia' as any, // Use latest or type correctly
-})
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(request: Request) {
+    // Initialize Stripe inside handler to avoid build-time errors
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        apiVersion: '2024-12-18.acacia' as any,
+    })
     const body = await request.text()
     const signature = (await headers()).get('stripe-signature') as string
 
