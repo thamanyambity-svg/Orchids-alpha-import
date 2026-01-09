@@ -14,10 +14,12 @@ import {
   ArrowRight,
   Shield,
   AlertTriangle,
-  Info
+  Info,
+  Wallet
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
