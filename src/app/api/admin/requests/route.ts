@@ -3,12 +3,13 @@ import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const body = await request.json()
     const { action, requestId, data: actionData } = body
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
         const { partnerId } = actionData
         const { data, error } = await supabase
           .from('import_requests')
-          .update({ 
+          .update({
             assigned_partner_id: partnerId,
             status: 'ANALYSIS',
             updated_at: new Date().toISOString()
@@ -33,11 +34,11 @@ export async function POST(request: NextRequest) {
           .eq('id', requestId)
           .select()
           .single()
-        
+
         if (error) throw error
         result = data
         n8nEvent = 'partner_assigned'
-        
+
         await logAudit({
           action: 'ASSIGN_PARTNER',
           targetType: 'import_requests',
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
         // 1. Update request status
         const { data: requestData, error: reqError } = await supabase
           .from('import_requests')
-          .update({ 
+          .update({
             status: 'VALIDATED',
             updated_at: new Date().toISOString()
           })
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
         const orderRef = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
         const totalAmount = requestData.budget_max || 0
         const commission = totalAmount * 0.1
-        
+
         const { data: orderData, error: orderError } = await supabase
           .from('orders')
           .insert({
@@ -82,33 +83,33 @@ export async function POST(request: NextRequest) {
           .select()
           .single()
 
-          if (orderError) throw orderError
-          result = { request: requestData, order: orderData }
-          n8nEvent = 'request_validated'
+        if (orderError) throw orderError
+        result = { request: requestData, order: orderData }
+        n8nEvent = 'request_validated'
 
-          await logAudit({
-            action: 'VALIDATE_REQUEST',
-            targetType: 'import_requests',
-            targetId: requestId,
-            details: { orderId: orderData.id, reference: orderRef }
-          })
+        await logAudit({
+          action: 'VALIDATE_REQUEST',
+          targetType: 'import_requests',
+          targetId: requestId,
+          details: { orderId: orderData.id, reference: orderRef }
+        })
 
-          // Trigger certified report generation (Alpha Compliance Report)
-          await sendToN8N('certified_report_requested', {
-            requestId,
-            orderId: orderData.id,
-            orderReference: orderRef,
-            amount: totalAmount,
-            clientName: requestData.user_id, // In a real app, you'd fetch the user's name
-            timestamp: new Date().toISOString()
-          })
-          break
-        }
+        // Trigger certified report generation (Alpha Compliance Report)
+        await sendToN8N('certified_report_requested', {
+          requestId,
+          orderId: orderData.id,
+          orderReference: orderRef,
+          amount: totalAmount,
+          clientName: requestData.user_id, // In a real app, you'd fetch the user's name
+          timestamp: new Date().toISOString()
+        })
+        break
+      }
 
       case 'REJECT': {
         const { data, error } = await supabase
           .from('import_requests')
-          .update({ 
+          .update({
             status: 'REJECTED',
             updated_at: new Date().toISOString()
           })
