@@ -1,10 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { 
-  Users, 
-  UserCheck, 
-  FileText, 
+import {
+  Users,
+  UserCheck,
+  FileText,
   Wallet,
   TrendingUp,
   AlertTriangle,
@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <p className="text-xs text-white/40 font-medium mb-1 uppercase tracking-wider">{stat.label}</p>
                 <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
-                
+
                 <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
                   <Icon className="w-24 h-24" />
                 </div>
@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
       <div className="relative aspect-[21/9] rounded-3xl overflow-hidden bg-[#0a0e14] border border-white/5 group">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 mix-blend-luminosity grayscale" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020609] via-transparent to-transparent" />
-        
+
         {/* Map Markers - These could also be dynamic later */}
         <div className="absolute top-[30%] left-[75%] group/pin">
           <div className="relative">
@@ -185,7 +185,7 @@ export default function AdminDashboardPage() {
                     <td className="py-4 text-xs text-white/40">{p.country}</td>
                     <td className="py-4">
                       <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-[#ffd700] to-orange-500 rounded-full"
                           style={{ width: `${p.performance}%` }}
                         />

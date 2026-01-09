@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  ArrowLeft, 
+import {
+  ArrowLeft,
   ArrowRight,
   Globe2,
   Package,
@@ -270,49 +270,50 @@ const mockPartners: Record<string, any> = {
   }
 }
 
-  export default function NewRequestPage() {
-    const router = useRouter()
-    const [currentStep, setCurrentStep] = useState(1)
-    const [isLoading, setIsLoading] = useState(false)
-    const [countries, setCountries] = useState<any[]>([])
-    const [selectedPartner, setSelectedPartner] = useState<any>(null)
-    
-    const [formData, setFormData] = useState({
-      buyerCountry: "",
-      country: "",
-      category: "",
-      deadline: "",
-    })
+export default function NewRequestPage() {
+  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [countries, setCountries] = useState<any[]>([])
+  const [selectedPartner, setSelectedPartner] = useState<any>(null)
 
-    const [items, setItems] = useState<any[]>([
-      { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
-    ])
+  const [formData, setFormData] = useState({
+    buyerCountry: "",
+    country: "",
+    category: "",
+    deadline: "",
+    transportMode: "SEA", // Default
+  })
 
-    const addItem = () => {
-      setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+  const [items, setItems] = useState<any[]>([
+    { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
+  ])
+
+  const addItem = () => {
+    setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+  }
+
+  const removeItem = (id: string) => {
+    if (items.length > 1) {
+      setItems(items.filter(item => item.id !== id))
     }
+  }
 
-    const removeItem = (id: string) => {
-      if (items.length > 1) {
-        setItems(items.filter(item => item.id !== id))
-      }
-    }
-
-    const updateItem = (id: string, field: string, value: any) => {
-      setItems(items.map(item => {
-        if (item.id === id) {
-          const newItem = { ...item, [field]: value }
-          // AI logic: if carBrand changes, update productName
-          if (field === 'carBrand' || field === 'carModel') {
-            const brand = field === 'carBrand' ? value : item.carBrand
-            const model = field === 'carModel' ? value : item.carModel
-            newItem.productName = `${brand} ${model}`.trim()
-          }
-          return newItem
+  const updateItem = (id: string, field: string, value: any) => {
+    setItems(items.map(item => {
+      if (item.id === id) {
+        const newItem = { ...item, [field]: value }
+        // AI logic: if carBrand changes, update productName
+        if (field === 'carBrand' || field === 'carModel') {
+          const brand = field === 'carBrand' ? value : item.carBrand
+          const model = field === 'carModel' ? value : item.carModel
+          newItem.productName = `${brand} ${model}`.trim()
         }
-        return item
-      }))
-    }
+        return newItem
+      }
+      return item
+    }))
+  }
 
 
   useEffect(() => {
@@ -322,7 +323,7 @@ const mockPartners: Record<string, any> = {
         .from("countries")
         .select("*")
         .eq("is_active", true)
-      
+
       if (data) {
         setCountries(data)
       }
@@ -342,10 +343,10 @@ const mockPartners: Record<string, any> = {
   }, [formData.country])
 
   function handleNext() {
-      if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
-        toast.error("Veuillez sélectionner le pays d'origine et le pays d'achat")
-        return
-      }
+    if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
+      toast.error("Veuillez sélectionner le pays d'origine et le pays d'achat")
+      return
+    }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
     }
@@ -357,62 +358,63 @@ const mockPartners: Record<string, any> = {
     }
   }
 
-    async function handleSubmit() {
-      setIsLoading(true)
-      try {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) throw new Error("Non authentifié")
+  async function handleSubmit() {
+    setIsLoading(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error("Non authentifié")
 
-        const countryId = countries.find(c => c.code === formData.country)?.id
+      const countryId = countries.find(c => c.code === formData.country)?.id
 
-        // Create a request for each item
-        const promises = items.map(item => {
-          return fetch("/api/requests", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              buyer_id: user.id,
-              country_id: countryId,
-              buyer_country: formData.buyerCountry,
-              category: formData.category,
-              product_name: item.productName,
-              specifications: {
-                description: item.description,
-                brand: item.carBrand || null,
-                model: item.carModel || null
-              },
-              quantity: parseInt(item.quantity),
-              unit: item.unit,
-              budget_min: parseFloat(item.budgetMin),
-              budget_max: parseFloat(item.budgetMax),
-              deadline: formData.deadline || null
-            })
+      // Create a request for each item
+      const promises = items.map(item => {
+        return fetch("/api/requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            buyer_id: user.id,
+            country_id: countryId,
+            buyer_country: formData.buyerCountry,
+            category: formData.category,
+            product_name: item.productName,
+            specifications: {
+              description: item.description,
+              brand: item.carBrand || null,
+              model: item.carModel || null
+            },
+            quantity: parseInt(item.quantity),
+            unit: item.unit,
+            budget_min: parseFloat(item.budgetMin),
+            budget_max: parseFloat(item.budgetMax),
+            deadline: formData.deadline || null,
+            transport_mode: formData.transportMode
           })
         })
+      })
 
-        const results = await Promise.all(promises)
-        const failed = results.find(r => !r.ok)
-        
-        if (failed) {
-          const data = await failed.json()
-          throw new Error(data.error || "Erreur lors de la création d'une ou plusieurs fiches")
-        }
+      const results = await Promise.all(promises)
+      const failed = results.find(r => !r.ok)
 
-        toast.success(`${items.length} demande(s) créée(s) avec succès !`)
-        router.push("/dashboard/requests")
-      } catch (error: any) {
-        toast.error(error.message || "Une erreur est survenue")
-      } finally {
-        setIsLoading(false)
+      if (failed) {
+        const data = await failed.json()
+        throw new Error(data.error || "Erreur lors de la création d'une ou plusieurs fiches")
       }
+
+      toast.success(`${items.length} demande(s) créée(s) avec succès !`)
+      router.push("/dashboard/requests")
+    } catch (error: any) {
+      toast.error(error.message || "Une erreur est survenue")
+    } finally {
+      setIsLoading(false)
     }
+  }
 
 
   return (
     <div>
-      <DashboardHeader 
-        title="Nouvelle demande" 
+      <DashboardHeader
+        title="Nouvelle demande"
         subtitle="Trouvez votre partenaire certifié et lancez votre importation"
       />
 
@@ -431,11 +433,10 @@ const mockPartners: Record<string, any> = {
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
                 <div className={`flex items-center gap-3 ${currentStep >= step.id ? 'text-primary' : 'text-muted-foreground'}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-                    currentStep >= step.id 
-                      ? 'border-primary bg-primary/10' 
-                      : 'border-border'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${currentStep >= step.id
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border'
+                    }`}>
                     {currentStep > step.id ? (
                       <CheckCircle2 className="w-5 h-5" />
                     ) : (
@@ -445,9 +446,8 @@ const mockPartners: Record<string, any> = {
                   <span className="hidden sm:block text-sm font-medium">{step.title}</span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-12 sm:w-24 h-0.5 mx-4 ${
-                    currentStep > step.id ? 'bg-primary' : 'bg-border'
-                  }`} />
+                  <div className={`w-12 sm:w-24 h-0.5 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-border'
+                    }`} />
                 )}
               </div>
             ))}
@@ -507,51 +507,51 @@ const mockPartners: Record<string, any> = {
                         <SelectTrigger className="h-14 text-lg">
                           <SelectValue placeholder="Où achetez-vous ?" />
                         </SelectTrigger>
-                          <SelectContent>
-                            {countries.length > 0 ? (
-                              countries.map((country) => {
-                                const countryInfo = allCountries.find(c => c.code === country.code);
-                                return (
-                                  <SelectItem key={country.code} value={country.code}>
-                                    <span className="flex items-center gap-3 py-1">
-                                      <span className="text-2xl">{countryInfo?.flag || "🌐"}</span>
-                                      {countryInfo?.name || country.name}
-                                    </span>
-                                  </SelectItem>
-                                );
-                              })
-                            ) : (
-                              allCountries.map((country) => (
+                        <SelectContent>
+                          {countries.length > 0 ? (
+                            countries.map((country) => {
+                              const countryInfo = allCountries.find(c => c.code === country.code);
+                              return (
                                 <SelectItem key={country.code} value={country.code}>
                                   <span className="flex items-center gap-3 py-1">
-                                    <span className="text-2xl">{country.flag}</span>
-                                    {country.name}
+                                    <span className="text-2xl">{countryInfo?.flag || "🌐"}</span>
+                                    {countryInfo?.name || country.name}
                                   </span>
                                 </SelectItem>
-                              ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                              );
+                            })
+                          ) : (
+                            allCountries.map((country) => (
+                              <SelectItem key={country.code} value={country.code}>
+                                <span className="flex items-center gap-3 py-1">
+                                  <span className="text-2xl">{country.flag}</span>
+                                  {country.name}
+                                </span>
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                      <div className="space-y-3">
-                        <Label className="text-base font-semibold italic opacity-70">Aperçu géographique</Label>
-                        <WorldMap 
-                          mapboxToken={MAPBOX_TOKEN}
-                          selectedCountry={formData.country}
-                          onCountrySelect={(code) => setFormData({ ...formData, country: code })}
-                          partners={mockPartners}
-                        />
-                      </div>
+                    <div className="space-y-3">
+                      <Label className="text-base font-semibold italic opacity-70">Aperçu géographique</Label>
+                      <WorldMap
+                        mapboxToken={MAPBOX_TOKEN}
+                        selectedCountry={formData.country}
+                        onCountrySelect={(code) => setFormData({ ...formData, country: code })}
+                        partners={mockPartners}
+                      />
+                    </div>
 
-                      <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                    <div className="p-4 rounded-xl bg-muted/30 border border-border">
                       <h4 className="font-semibold flex items-center gap-2 mb-2">
                         <Search className="w-4 h-4 text-primary" />
                         Pourquoi cette étape ?
                       </h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        AlphaIX vous connecte directement avec un expert local certifié. 
-                        Chaque pays dispose d'une équipe dédiée pour garantir la sécurité 
+                        AlphaIX vous connecte directement avec un expert local certifié.
+                        Chaque pays dispose d'une équipe dédiée pour garantir la sécurité
                         de vos fonds et la conformité de vos produits.
                       </p>
                     </div>
@@ -561,7 +561,7 @@ const mockPartners: Record<string, any> = {
                     {selectedPartner ? (
                       <div className="space-y-4" id="partner-card-container">
                         <Label className="text-base font-semibold">Votre partenaire dédié</Label>
-                        <PartnerProfileCard 
+                        <PartnerProfileCard
                           partner={selectedPartner}
                           onContact={(method) => {
                             toast.info(`Contact via ${method} initié`)
@@ -588,7 +588,7 @@ const mockPartners: Record<string, any> = {
                   <div>
                     <h2 className="text-2xl font-bold mb-1">Détails de votre demande</h2>
                     <p className="text-muted-foreground">
-                      {formData.category === "Automobile & Pièces" 
+                      {formData.category === "Automobile & Pièces"
                         ? "Précisez la marque, le modèle et les détails techniques pour une cotation précise."
                         : "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation."}
                     </p>
@@ -602,21 +602,43 @@ const mockPartners: Record<string, any> = {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="space-y-2 max-w-sm">
-                    <Label className="font-semibold">Catégorie de la demande *</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger className="h-12 border-primary/20">
-                        <SelectValue placeholder="Sélectionnez une catégorie" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="font-semibold">Catégorie de la demande *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      >
+                        <SelectTrigger className="h-12 border-primary/20">
+                          <SelectValue placeholder="Sélectionnez une catégorie" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>{category}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="font-semibold">Mode d'Expédition *</Label>
+                      <Select
+                        value={formData.transportMode}
+                        onValueChange={(value) => setFormData({ ...formData, transportMode: value })}
+                      >
+                        <SelectTrigger className="h-12 border-primary/20">
+                          <SelectValue placeholder="Choix du transport" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SEA">
+                            <span className="flex items-center gap-2">🚢 Fret Maritime (Standard)</span>
+                          </SelectItem>
+                          <SelectItem value="AIR">
+                            <span className="flex items-center gap-2">✈️ Fret Aérien (Urgent)</span>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   {formData.category === "Automobile & Pièces" && (
@@ -634,16 +656,16 @@ const mockPartners: Record<string, any> = {
                   {items.map((item, index) => (
                     <div key={item.id} className="relative p-6 rounded-2xl border border-border bg-muted/10 space-y-6">
                       {items.length > 1 && (
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="absolute top-4 right-4 text-muted-foreground hover:text-destructive"
                           onClick={() => removeItem(item.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       )}
-                      
+
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                           {index + 1}
@@ -708,8 +730,8 @@ const mockPartners: Record<string, any> = {
                       <div className="space-y-2">
                         <Label className="font-semibold">Description détaillée & Spécifications *</Label>
                         <Textarea
-                          placeholder={formData.category === "Automobile & Pièces" 
-                            ? "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)..." 
+                          placeholder={formData.category === "Automobile & Pièces"
+                            ? "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)..."
                             : "Couleurs, dimensions, puissance, emballage requis..."}
                           className="min-h-[100px] resize-none"
                           value={item.description}
@@ -769,8 +791,8 @@ const mockPartners: Record<string, any> = {
                     </div>
                   ))}
 
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full h-12 border-dashed border-2 hover:bg-primary/5 hover:border-primary/50 text-primary transition-all"
                     onClick={addItem}
                   >
@@ -798,6 +820,12 @@ const mockPartners: Record<string, any> = {
                         Récapitulatif de l'Importation
                       </h3>
                       <div className="grid grid-cols-2 gap-y-4 text-sm mb-6 pb-6 border-b border-border/50">
+                        <div>
+                          <p className="text-muted-foreground">Mode d'expédition</p>
+                          <p className="font-medium flex items-center gap-1">
+                            {formData.transportMode === 'AIR' ? '✈️ Aérien' : '🚢 Maritime'}
+                          </p>
+                        </div>
                         <div>
                           <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.buyerCountry)?.name || formData.buyerCountry}</p>
@@ -857,7 +885,7 @@ const mockPartners: Record<string, any> = {
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
                       <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
                       <p className="text-amber-700 font-medium">
