@@ -6,9 +6,7 @@ import { motion } from "framer-motion"
 import { XCircle, ArrowLeft, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-import { Suspense } from "react"
-
-function PaymentCancelContent() {
+export default function PaymentCancelPage() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get("order_id")
 
@@ -59,19 +57,5 @@ function PaymentCancelContent() {
         </div>
       </motion.div>
     </div>
-  )
-}
-
-export default function PaymentCancelPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Button variant="ghost" disabled>
-          Chargement...
-        </Button>
-      </div>
-    }>
-      <PaymentCancelContent />
-    </Suspense>
   )
 }

@@ -14,9 +14,7 @@ interface PaymentDetails {
   status: string
 }
 
-import { Suspense } from "react"
-
-function PaymentSuccessContent() {
+export default function PaymentSuccessPage() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
   const [loading, setLoading] = useState(true)
@@ -34,7 +32,7 @@ function PaymentSuccessContent() {
       try {
         const response = await fetch(`/api/stripe/verify?session_id=${sessionId}`)
         const data = await response.json()
-
+        
         if (!response.ok) {
           setError(data.error || "Failed to verify payment")
           return
@@ -138,17 +136,5 @@ function PaymentSuccessContent() {
         </div>
       </motion.div>
     </div>
-  )
-}
-
-export default function PaymentSuccessPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-12 h-12 animate-spin text-primary" />
-      </div>
-    }>
-      <PaymentSuccessContent />
-    </Suspense>
   )
 }

@@ -31,69 +31,35 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
-  const isAuthPage = path.startsWith('/login') || path.startsWith('/register')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
+                     request.nextUrl.pathname.startsWith('/register')
+  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard') ||
+                      request.nextUrl.pathname.startsWith('/admin') ||
+                      request.nextUrl.pathname.startsWith('/partner')
 
-  // Protected Routes
-  const isAdminRoute = path.startsWith('/admin')
-  const isPartnerRoute = path.startsWith('/partner')
-  const isBuyerRoute = path.startsWith('/dashboard')
-  const isProtectedRoute = isAdminRoute || isPartnerRoute || isBuyerRoute
-
-  // 1. Unauthenticated User trying to access protected route
-  if (!user && isProtectedRoute) {
+  if (!user && isDashboard) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // 2. Authenticated User Logic
-  if (user) {
-    // Fetch user role (Optimisation: In prod, use user_metadata to avoid DB call)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    if (user && isAuthPage) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
 
-    const userRole = profile?.role
-
-    // 2a. User on Auth Page -> Redirect to their Dashboard
-    if (isAuthPage) {
       const url = request.nextUrl.clone()
-      if (userRole === 'ADMIN') {
+      if (profile?.role === 'ADMIN') {
         url.pathname = '/admin'
-      } else if (userRole === 'PARTNER') {
+      } else if (profile?.role === 'PARTNER') {
         url.pathname = '/partner'
       } else {
         url.pathname = '/dashboard'
       }
       return NextResponse.redirect(url)
     }
-
-    // 2b. Strict Role Enforcement (The "Guard" Logic)
-    if (isAdminRoute && userRole !== 'ADMIN') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard' // or 403 page
-      return NextResponse.redirect(url)
-    }
-
-    if (isPartnerRoute && userRole !== 'PARTNER') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      return NextResponse.redirect(url)
-    }
-
-    if (isBuyerRoute && userRole !== 'BUYER') {
-      // Admins might want to see dashboard? For now, STRICT separation as per matrix.
-      // If Admin tries to go to /dashboard, send them back to /admin
-      const url = request.nextUrl.clone()
-      if (userRole === 'ADMIN') url.pathname = '/admin'
-      else if (userRole === 'PARTNER') url.pathname = '/partner'
-      else url.pathname = '/' // Fallback
-      return NextResponse.redirect(url)
-    }
-  }
 
   return supabaseResponse
 }

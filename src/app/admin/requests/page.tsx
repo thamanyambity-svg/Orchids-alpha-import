@@ -2,21 +2,19 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Link from "next/link"
-import {
-  FileText,
-  Search,
-  Filter,
-  MoreVertical,
-  CheckCircle2,
-  XCircle,
-  UserPlus,
+import { 
+  FileText, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  CheckCircle2, 
+  XCircle, 
+  UserPlus, 
   Clock,
   ArrowRight,
   Shield,
   AlertTriangle,
-  Info,
-  Wallet
+  Info
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
@@ -108,8 +106,8 @@ export default function AdminRequestsPage() {
 
   const filteredRequests = requests.filter(req => {
     const matchesSearch = req.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.buyer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+                         req.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         req.buyer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "ALL" || req.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -123,7 +121,7 @@ export default function AdminRequestsPage() {
       case "AWAITING_DEPOSIT": return <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-amber-500/20">Attente Acompte</Badge>
       case "EXECUTING": return <Badge variant="secondary" className="bg-purple-500/10 text-purple-500 border-purple-500/20">Exécution</Badge>
       case "SHIPPED": return <Badge variant="secondary" className="bg-cyan-500/10 text-cyan-500 border-cyan-500/20">Expédiée</Badge>
-      case "DELIVERED": return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Livrée</Badge>
+      case "DELIVERED": return <Badge variant="success">Livrée</Badge>
       case "CLOSED": return <Badge variant="outline">Clôturée</Badge>
       case "INCIDENT": return <Badge variant="destructive">Incident</Badge>
       default: return <Badge variant="outline">{status}</Badge>
@@ -132,8 +130,8 @@ export default function AdminRequestsPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <DashboardHeader
-        title="Gestion des Demandes"
+      <DashboardHeader 
+        title="Gestion des Demandes" 
         subtitle="Suivez et validez les flux d'importation"
       />
 

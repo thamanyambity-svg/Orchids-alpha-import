@@ -93,7 +93,6 @@ export async function GET() {
       })) || [],
       recentRequests: recentRequests?.map(r => ({
         id: r.reference || r.id.slice(0, 6),
-        real_id: r.id, // Pass real UUID for linking
         product: r.product_name || r.category,
         partner: r.partner?.profile?.full_name || "Non assigné",
         status: r.status,

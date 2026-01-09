@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import {
-  User,
-  ShieldCheck,
-  Lock,
-  Loader2,
-  Save,
-  Mail,
+import { 
+  User, 
+  ShieldCheck, 
+  Lock, 
+  Loader2, 
+  Save, 
+  Mail, 
   Phone,
   Camera,
   Building2,
@@ -175,7 +175,7 @@ export default function AdminSettingsPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold">{profile?.full_name || 'Admin'}</h2>
-                <Badge className="text-[10px] bg-green-500/10 text-green-500 border-green-500/20">Administrateur</Badge>
+                <Badge variant="success" className="text-[10px]">Administrateur</Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'AlphaIX Admin'}</p>
               <div className="flex flex-wrap gap-4 text-xs">
@@ -261,12 +261,12 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="full_name">Nom complet</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="full_name"
-                        className="pl-9"
-                        value={profile?.full_name || ''}
+                      <Input 
+                        id="full_name" 
+                        className="pl-9" 
+                        value={profile?.full_name || ''} 
                         onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                        placeholder="Admin Alpha"
+                        placeholder="Admin Alpha" 
                       />
                     </div>
                   </div>
@@ -274,11 +274,11 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="email">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        className="pl-9"
-                        value={profile?.email || ''}
-                        disabled
+                      <Input 
+                        id="email" 
+                        className="pl-9" 
+                        value={profile?.email || ''} 
+                        disabled 
                       />
                     </div>
                   </div>
@@ -286,12 +286,12 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="phone">Téléphone</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="phone"
-                        className="pl-9"
-                        value={profile?.phone || ''}
+                      <Input 
+                        id="phone" 
+                        className="pl-9" 
+                        value={profile?.phone || ''} 
                         onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                        placeholder="+243..."
+                        placeholder="+243..." 
                       />
                     </div>
                   </div>
@@ -322,19 +322,19 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="company_name">Nom de l'institution</Label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="company_name"
-                        className="pl-9"
-                        value={profile?.company_name || ''}
+                      <Input 
+                        id="company_name" 
+                        className="pl-9" 
+                        value={profile?.company_name || ''} 
                         onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
-                        placeholder="Alpha Trading SARL"
+                        placeholder="Alpha Trading SARL" 
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="country">Pays</Label>
-                    <Select
-                      value={profile?.country_id || ''}
+                    <Select 
+                      value={profile?.country_id || ''} 
                       onValueChange={(val) => setProfile({ ...profile, country_id: val })}
                     >
                       <SelectTrigger className="w-full">
@@ -353,12 +353,12 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="city">Ville</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="city"
-                        className="pl-9"
-                        value={profile?.city || ''}
+                      <Input 
+                        id="city" 
+                        className="pl-9" 
+                        value={profile?.city || ''} 
                         onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                        placeholder="Kinshasa"
+                        placeholder="Kinshasa" 
                       />
                     </div>
                   </div>

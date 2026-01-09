@@ -1,10 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import {
-  Users,
-  UserCheck,
-  FileText,
+import { 
+  Users, 
+  UserCheck, 
+  FileText, 
   Wallet,
   TrendingUp,
   AlertTriangle,
@@ -27,7 +27,6 @@ import {
   ListFilter
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
@@ -40,7 +39,6 @@ const ICON_MAP: Record<string, any> = {
 }
 
 export default function AdminDashboardPage() {
-  const router = useRouter()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -93,24 +91,15 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat: any, i: number) => {
           const Icon = ICON_MAP[stat.icon] || Wallet
-
-          // Determine link based on label
-          let linkUrl = "/admin"
-          if (stat.label.includes("Funds")) linkUrl = "/admin/finances"
-          else if (stat.label.includes("Demandes")) linkUrl = "/admin/requests"
-          else if (stat.label.includes("Fret")) linkUrl = "/admin/shipping"
-          else if (stat.label.includes("Partenaires")) linkUrl = "/admin/partners"
-
           return (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="relative group overflow-hidden cursor-pointer"
-              onClick={() => router.push(linkUrl)}
+              className="relative group overflow-hidden"
             >
-              <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-500 hover:shadow-lg hover:shadow-[#ffd700]/5">
+              <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-500">
                 <div className="flex items-center justify-between mb-4">
                   <div className={cn("p-2 rounded-lg bg-white/5", stat.color)}>
                     <Icon className="w-5 h-5" />
@@ -121,13 +110,10 @@ export default function AdminDashboardPage() {
                       {stat.trend}
                     </div>
                   )}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight className="w-4 h-4 text-white/40" />
-                  </div>
                 </div>
                 <p className="text-xs text-white/40 font-medium mb-1 uppercase tracking-wider">{stat.label}</p>
                 <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
-
+                
                 <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
                   <Icon className="w-24 h-24" />
                 </div>
@@ -141,48 +127,24 @@ export default function AdminDashboardPage() {
       <div className="relative aspect-[21/9] rounded-3xl overflow-hidden bg-[#0a0e14] border border-white/5 group">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 mix-blend-luminosity grayscale" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020609] via-transparent to-transparent" />
-
-        {/* Map Markers */}
-        {/* China */}
-        <div className="absolute top-[30%] left-[75%] group/pin cursor-pointer" title="Hub Chine">
+        
+        {/* Map Markers - These could also be dynamic later */}
+        <div className="absolute top-[30%] left-[75%] group/pin">
           <div className="relative">
             <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-blue-400 border-2 border-white shadow-[0_0_15px_#60a5fa] transition-transform hover:scale-125" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover/pin:opacity-100 transition-opacity">
-              <span className="text-xs text-white font-medium">Chine (Principal)</span>
+            <div className="w-3 h-3 rounded-full bg-blue-400 border-2 border-white shadow-[0_0_15px_#60a5fa]" />
+            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap">
+              <span className="text-xs text-white font-medium">Chine</span>
             </div>
           </div>
         </div>
 
-        {/* Dubai */}
-        <div className="absolute top-[50%] left-[60%] group/pin cursor-pointer" title="Hub Dubaï">
+        <div className="absolute top-[50%] left-[60%] group/pin">
           <div className="relative">
             <div className="absolute inset-0 animate-ping rounded-full bg-[#ffd700] opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-[#ffd700] border-2 border-white shadow-[0_0_15px_#ffd700] transition-transform hover:scale-125" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover/pin:opacity-100 transition-opacity">
-              <span className="text-xs text-white font-medium">Dubaï (Hub)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Turkey */}
-        <div className="absolute top-[38%] left-[55%] group/pin cursor-pointer" title="Hub Turquie">
-          <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-purple-500 opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-purple-500 border-2 border-white shadow-[0_0_15px_#a855f7] transition-transform hover:scale-125" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover/pin:opacity-100 transition-opacity">
-              <span className="text-xs text-white font-medium">Turquie</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Europe */}
-        <div className="absolute top-[32%] left-[48%] group/pin cursor-pointer" title="Hub Europe">
-          <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow-[0_0_15px_#10b981] transition-transform hover:scale-125" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover/pin:opacity-100 transition-opacity">
-              <span className="text-xs text-white font-medium">Europe</span>
+            <div className="w-3 h-3 rounded-full bg-[#ffd700] border-2 border-white shadow-[0_0_15px_#ffd700]" />
+            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap">
+              <span className="text-xs text-white font-medium">Dubaï</span>
             </div>
           </div>
         </div>
@@ -223,7 +185,7 @@ export default function AdminDashboardPage() {
                     <td className="py-4 text-xs text-white/40">{p.country}</td>
                     <td className="py-4">
                       <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                        <div
+                        <div 
                           className="h-full bg-gradient-to-r from-[#ffd700] to-orange-500 rounded-full"
                           style={{ width: `${p.performance}%` }}
                         />
@@ -261,7 +223,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="space-y-4">
             {recentRequests.length > 0 ? recentRequests.map((req: any, i: number) => (
-              <Link key={i} href={`/admin/requests/${req.real_id || req.id}`} className="block">
+              <Link key={i} href={`/admin/requests/${req.id}`} className="block">
                 <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
                   <div className="flex flex-col items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mb-1 shadow-[0_0_8px_#60a5fa]" />
