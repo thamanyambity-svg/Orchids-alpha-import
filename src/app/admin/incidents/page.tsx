@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { 
-  AlertTriangle, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  AlertTriangle,
+  Search,
+  Filter,
+  MoreVertical,
+  CheckCircle2,
+  XCircle,
   Clock,
   ShieldAlert,
-  FreezeColumn,
+  Snowflake,
   Play
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
@@ -88,9 +88,9 @@ export default function AdminIncidentsPage() {
       // 2. Resolve incident
       const { error: incError } = await supabase
         .from("incidents")
-        .update({ 
-          status: "RESOLVED", 
-          resolved_at: new Date().toISOString() 
+        .update({
+          status: "RESOLVED",
+          resolved_at: new Date().toISOString()
         })
         .eq("id", incidentId)
 
@@ -105,8 +105,8 @@ export default function AdminIncidentsPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <DashboardHeader 
-        title="Gestion des Incidents" 
+      <DashboardHeader
+        title="Gestion des Incidents"
         subtitle="Analyse et résolution des litiges sur le flux import"
       />
 
@@ -118,7 +118,7 @@ export default function AdminIncidentsPage() {
           <div>
             <h3 className="text-lg font-semibold text-destructive mb-1">Protocole de Gel Automatique</h3>
             <p className="text-sm text-muted-foreground max-w-2xl">
-              Tout incident signalé déclenche un gel des fonds sur le compte séquestre. 
+              Tout incident signalé déclenche un gel des fonds sur le compte séquestre.
               Aucun paiement ne peut être effectué tant que l&apos;administrateur n&apos;a pas rendu sa décision.
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function AdminIncidentsPage() {
                       </Button>
                     )}
                     {inc.status === "FROZEN" && (
-                      <Button size="sm" variant="success" onClick={() => handleResolveIncident(inc.id, inc.order_id)}>
+                      <Button size="sm" variant="default" onClick={() => handleResolveIncident(inc.id, inc.order_id)}>
                         <CheckCircle2 className="w-4 h-4 mr-1" /> Résoudre
                       </Button>
                     )}
