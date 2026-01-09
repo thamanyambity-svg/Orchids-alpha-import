@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const { orderId, paymentType } = await request.json()
 
@@ -59,8 +60,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const amount = paymentType === 'DEPOSIT_60' 
-      ? Number(order.deposit_amount) 
+    const amount = paymentType === 'DEPOSIT_60'
+      ? Number(order.deposit_amount)
       : Number(order.balance_amount)
 
     const amountInCents = Math.round(amount * 100)
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: paymentType === 'DEPOSIT_60' 
+              name: paymentType === 'DEPOSIT_60'
                 ? `Deposit (60%) - Order ${order.reference}`
                 : `Balance (40%) - Order ${order.reference}`,
               description: `Payment for order ${order.reference}`,

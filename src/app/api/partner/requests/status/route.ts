@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const body = await request.json()
     const { requestId, status } = body
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('import_requests')
-      .update({ 
+      .update({
         status,
         updated_at: new Date().toISOString()
       })

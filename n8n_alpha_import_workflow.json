@@ -1,0 +1,184 @@
+{
+    "name": "Alpha Import Exchange - Main Router",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "webhook-test",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "dataType": "string",
+                "value1": "={{ $json.body.event }}",
+                "rules": {
+                    "rules": [
+                        {
+                            "value2": "new_request_created",
+                            "output": 0
+                        },
+                        {
+                            "value2": "payment_confirmed",
+                            "output": 1
+                        },
+                        {
+                            "value2": "document_uploaded",
+                            "output": 2
+                        },
+                        {
+                            "value2": "ocr_analysis_requested",
+                            "output": 3
+                        },
+                        {
+                            "value2": "partner_status_update",
+                            "output": 4
+                        },
+                        {
+                            "value2": "certified_report_requested",
+                            "output": 5
+                        },
+                        {
+                            "value2": "reminder_awaiting_deposit",
+                            "output": 6
+                        }
+                    ]
+                },
+                "fallbackOutput": 7
+            },
+            "name": "Event Router",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "message": "🚨 **Nouvelle Demande Import**\nRef: {{ $json.body.data.reference }}\nClient: {{ $json.body.data.buyerId }}\nProduit: {{ $json.body.data.productName }}\nBudget: {{ $json.body.data.budget }}"
+            },
+            "name": "Notify Admin (Slack/Teams)",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                700,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "message": "💰 **Paiement Reçu**\nRef: {{ $json.body.data.reference }}\nMontant: Acompte 60%\nStatut: FUNDED"
+            },
+            "name": "Notify Finance",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                700,
+                250
+            ]
+        },
+        {
+            "parameters": {
+                "message": "OCR Analysis Placeholder"
+            },
+            "name": "Start OCR AI",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                700,
+                400
+            ]
+        },
+        {
+            "parameters": {},
+            "name": "Log Other Events",
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                700,
+                600
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Event Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Event Router": {
+            "main": [
+                [
+                    {
+                        "node": "Notify Admin (Slack/Teams)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Notify Finance",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log Other Events",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Start OCR AI",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log Other Events",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log Other Events",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log Other Events",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Log Other Events",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

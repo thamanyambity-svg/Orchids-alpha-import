@@ -3,12 +3,13 @@ import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const sessionId = request.nextUrl.searchParams.get('session_id')
 
@@ -69,32 +70,32 @@ export async function GET(request: NextRequest) {
         .update({ [updateField]: true })
         .eq('id', orderId)
 
-        if (orderError) {
-          console.error('Failed to update order:', orderError)
-        }
+      if (orderError) {
+        console.error('Failed to update order:', orderError)
+      }
 
-          // Notify n8n
-          await sendToN8N('payment_confirmed', {
-            orderId,
-            paymentType,
-            amount: (session.amount_total || 0) / 100,
-            transactionRef: session.payment_intent,
-            orderReference
-          });
+      // Notify n8n
+      await sendToN8N('payment_confirmed', {
+        orderId,
+        paymentType,
+        amount: (session.amount_total || 0) / 100,
+        transactionRef: session.payment_intent,
+        orderReference
+      });
 
-          // Trigger PDF Receipt Generation
-          await sendToN8N('payment_receipt_requested', {
-            orderId,
-            paymentType,
-            amount: (session.amount_total || 0) / 100,
-            currency: session.currency?.toUpperCase() || 'USD',
-            customerEmail: session.customer_details?.email,
-            customerName: session.customer_details?.name,
-            transactionRef: session.payment_intent,
-            orderReference,
-            timestamp: new Date().toISOString()
-          });
-        }
+      // Trigger PDF Receipt Generation
+      await sendToN8N('payment_receipt_requested', {
+        orderId,
+        paymentType,
+        amount: (session.amount_total || 0) / 100,
+        currency: session.currency?.toUpperCase() || 'USD',
+        customerEmail: session.customer_details?.email,
+        customerName: session.customer_details?.name,
+        transactionRef: session.payment_intent,
+        orderReference,
+        timestamp: new Date().toISOString()
+      });
+    }
 
 
     return NextResponse.json({
