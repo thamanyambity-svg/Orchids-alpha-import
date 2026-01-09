@@ -1,18 +1,19 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { 
-  Wallet, 
-  Search, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  ShieldCheck, 
+import {
+  Wallet,
+  Search,
+  ArrowUpRight,
+  ArrowDownRight,
+  ShieldCheck,
   Clock,
   CheckCircle2,
   Lock,
   Unlock,
   Info,
-  MoreVertical
+  MoreVertical,
+  TrendingUp
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
@@ -43,12 +44,12 @@ export default function AdminFinancesPage() {
         .order("created_at", { ascending: false })
 
       if (error) throw error
-      
+
       const formattedData = data.map((item: any) => ({
         ...item,
         buyer: item.request?.buyer
       }))
-      
+
       setOrders(formattedData)
     } catch (error: any) {
       toast.error("Erreur lors du chargement des finances: " + error.message)
@@ -61,7 +62,7 @@ export default function AdminFinancesPage() {
     try {
       const { error } = await supabase
         .from("orders")
-        .update({ 
+        .update({
           escrow_activated: true,
           status: "FUNDED",
           deposit_paid: true,
@@ -70,7 +71,7 @@ export default function AdminFinancesPage() {
         .eq("id", orderId)
 
       if (error) throw error
-      
+
       toast.success("Compte séquestre activé (Acompte 60% confirmé)")
       fetchOrders()
     } catch (error: any) {
@@ -82,7 +83,7 @@ export default function AdminFinancesPage() {
     try {
       const { error } = await supabase
         .from("orders")
-        .update({ 
+        .update({
           balance_paid: true,
           status: "SHIPPED",
           updated_at: new Date().toISOString()
@@ -90,7 +91,7 @@ export default function AdminFinancesPage() {
         .eq("id", orderId)
 
       if (error) throw error
-      
+
       toast.success("Solde 40% confirmé. Commande passée en statut Expédiée.")
       fetchOrders()
     } catch (error: any) {
@@ -98,15 +99,15 @@ export default function AdminFinancesPage() {
     }
   }
 
-  const filteredOrders = orders.filter(order => 
+  const filteredOrders = orders.filter(order =>
     order.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
     order.buyer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
     <div className="flex flex-col min-h-screen">
-      <DashboardHeader 
-        title="Flux Financiers" 
+      <DashboardHeader
+        title="Flux Financiers"
         subtitle="Gestion du compte séquestre et des paiements Alpha"
       />
 
@@ -127,7 +128,7 @@ export default function AdminFinancesPage() {
               Fonds bloqués en attente de validation
             </div>
           </div>
-          
+
           <div className="p-6 rounded-2xl bg-success/5 border border-success/20">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
