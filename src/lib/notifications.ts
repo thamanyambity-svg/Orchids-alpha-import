@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { RequestStatus, OrderStatus } from './types'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
 
 // We'll use a verified sender or a test one.
 // For Resend testing, you usually must send to your own email unless you verify a domain.
