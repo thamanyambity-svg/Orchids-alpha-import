@@ -1,12 +1,13 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { XCircle, ArrowLeft, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export default function PaymentCancelPage() {
+function PaymentCancelContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get("order_id")
 
@@ -57,5 +58,13 @@ export default function PaymentCancelPage() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+export default function PaymentCancelPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+      <PaymentCancelContent />
+    </Suspense>
   )
 }
