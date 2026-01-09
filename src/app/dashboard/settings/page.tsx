@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
-import { 
-  User, 
-  Building2, 
-  ShieldCheck, 
-  Bell, 
-  Lock, 
+import {
+  User,
+  Building2,
+  ShieldCheck,
+  Bell,
+  Lock,
   CreditCard,
   Camera,
   CheckCircle2,
@@ -175,72 +175,75 @@ export default function SettingsPage() {
     )
   }
 
-    const selectedCountry = countries.find(c => c.id === profile?.country_id)
+  const selectedCountry = countries.find(c => c.id === profile?.country_id)
 
-    return (
-      <div className="pb-10">
-        <DashboardHeader 
-          title="Mon Profil" 
-          subtitle="Consultez et gérez vos informations personnelles"
-        />
+  return (
+    <div className="pb-10">
+      <DashboardHeader
+        title="Mon Profil"
+        subtitle="Consultez et gérez vos informations personnelles"
+      />
 
-        <div className="p-6 max-w-5xl mx-auto">
-          <Card className="mb-8 overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                    <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl overflow-hidden relative">
-                      {uploadingAvatar ? (
-                        <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
-                          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                        </div>
-                      ) : profile?.avatar_url ? (
-                        <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <User className="w-8 h-8 text-primary" />
-                      )}
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Camera className="w-6 h-6 text-white" />
-                      </div>
+      <div className="p-6 max-w-5xl mx-auto">
+        <Card className="mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-4 border-background shadow-xl overflow-hidden relative">
+                  {uploadingAvatar ? (
+                    <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
                     </div>
-                    {profile?.status === 'VERIFIED' && (
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background z-10">
-                        <CheckCircle2 className="w-3 h-3 text-white" />
-                      </div>
-                    )}
-                  </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-xl font-bold">{profile?.full_name || 'Nom non défini'}</h2>
-                    <Badge variant={profile?.status === 'VERIFIED' ? 'success' : 'outline'} className="text-[10px]">
-                      {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'Entreprise non renseignée'}</p>
-                  <div className="flex flex-wrap gap-4 text-xs">
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Mail className="w-3.5 h-3.5" />
-                      <span>{profile?.email || '-'}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>{profile?.phone || 'Non renseigné'}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span>{profile?.city ? `${profile.city}, ${selectedCountry?.name || ''}` : 'Localisation non renseignée'}</span>
-                    </div>
+                  ) : profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-8 h-8 text-primary" />
+                  )}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                <div className="text-right hidden sm:block">
-                  <p className="text-[10px] text-muted-foreground mb-1">ID Client</p>
-                  <p className="font-mono text-xs bg-muted px-2 py-1 rounded">{profile?.id?.slice(0, 8).toUpperCase() || '-'}</p>
+                {profile?.status === 'VERIFIED' && (
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background z-10">
+                    <CheckCircle2 className="w-3 h-3 text-white" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-xl font-bold">{profile?.full_name || 'Nom non défini'}</h2>
+                  <Badge
+                    variant="default" // Changed from conditional variant to controlled style
+                    className={`text-[10px] ${profile?.status === 'VERIFIED' ? 'bg-green-500/20 text-green-600 border-green-200' : ''}`}
+                  >
+                    {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'Entreprise non renseignée'}</p>
+                <div className="flex flex-wrap gap-4 text-xs">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>{profile?.email || '-'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>{profile?.phone || 'Non renseigné'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>{profile?.city ? `${profile.city}, ${selectedCountry?.name || ''}` : 'Localisation non renseignée'}</span>
+                  </div>
                 </div>
               </div>
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] text-muted-foreground mb-1">ID Client</p>
+                <p className="font-mono text-xs bg-muted px-2 py-1 rounded">{profile?.id?.slice(0, 8).toUpperCase() || '-'}</p>
+              </div>
             </div>
-          </Card>
+          </div>
+        </Card>
 
-          <Tabs defaultValue="profile" className="space-y-6">
+        <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="bg-background border border-border p-1">
             <TabsTrigger value="profile" className="gap-2">
               <User className="w-4 h-4" />
@@ -308,12 +311,12 @@ export default function SettingsPage() {
                       <Label htmlFor="full_name">Nom complet</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="full_name" 
-                          className="pl-9" 
-                          value={profile?.full_name || ''} 
+                        <Input
+                          id="full_name"
+                          className="pl-9"
+                          value={profile?.full_name || ''}
                           onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                          placeholder="Jean Dupont" 
+                          placeholder="Jean Dupont"
                         />
                       </div>
                     </div>
@@ -321,11 +324,11 @@ export default function SettingsPage() {
                       <Label htmlFor="email">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="email" 
-                          className="pl-9" 
-                          value={profile?.email || ''} 
-                          disabled 
+                        <Input
+                          id="email"
+                          className="pl-9"
+                          value={profile?.email || ''}
+                          disabled
                         />
                       </div>
                       <p className="text-[10px] text-muted-foreground">L'email ne peut pas être modifié pour des raisons de sécurité.</p>
@@ -334,12 +337,12 @@ export default function SettingsPage() {
                       <Label htmlFor="phone">Téléphone</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="phone" 
-                          className="pl-9" 
-                          value={profile?.phone || ''} 
+                        <Input
+                          id="phone"
+                          className="pl-9"
+                          value={profile?.phone || ''}
                           onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                          placeholder="+243..." 
+                          placeholder="+243..."
                         />
                       </div>
                     </div>
@@ -370,19 +373,19 @@ export default function SettingsPage() {
                       <Label htmlFor="company_name">Nom de l'entreprise</Label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="company_name" 
-                          className="pl-9" 
-                          value={profile?.company_name || ''} 
+                        <Input
+                          id="company_name"
+                          className="pl-9"
+                          value={profile?.company_name || ''}
                           onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
-                          placeholder="Alpha Trading SARL" 
+                          placeholder="Alpha Trading SARL"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="country">Pays de résidence</Label>
-                      <Select 
-                        value={profile?.country_id || ''} 
+                      <Select
+                        value={profile?.country_id || ''}
                         onValueChange={(val) => setProfile({ ...profile, country_id: val })}
                       >
                         <SelectTrigger className="w-full">
@@ -401,12 +404,12 @@ export default function SettingsPage() {
                       <Label htmlFor="city">Ville</Label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="city" 
-                          className="pl-9" 
-                          value={profile?.city || ''} 
+                        <Input
+                          id="city"
+                          className="pl-9"
+                          value={profile?.city || ''}
                           onChange={(e) => setProfile({ ...profile, city: e.target.value })}
-                          placeholder="Kinshasa" 
+                          placeholder="Kinshasa"
                         />
                       </div>
                     </div>
@@ -432,7 +435,10 @@ export default function SettingsPage() {
                       Vérifiez votre identité pour augmenter vos limites de transaction.
                     </CardDescription>
                   </div>
-                  <Badge variant={profile?.status === 'VERIFIED' ? 'success' : 'outline'} className="h-6">
+                  <Badge
+                    variant="default"
+                    className={`h-6 ${profile?.status === 'VERIFIED' ? 'bg-green-500/20 text-green-600 border-green-200' : ''}`}
+                  >
                     {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
                   </Badge>
                 </div>
@@ -460,7 +466,7 @@ export default function SettingsPage() {
                       <div className="flex items-center justify-between mb-1">
                         <p className="font-medium">Numéro de Téléphone</p>
                         {profile?.phone ? (
-                           <CheckCircle2 className="w-4 h-4 text-success" />
+                          <CheckCircle2 className="w-4 h-4 text-success" />
                         ) : (
                           <Badge variant="outline" className="text-[10px]">Non vérifié</Badge>
                         )}
@@ -469,58 +475,58 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                    <div className="flex items-start gap-4 p-4 rounded-xl border border-dashed border-border group hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setKycModalOpen(true)}>
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-                        <ShieldCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="font-medium">Identité (KYC)</p>
-                          <Plus className="w-4 h-4 text-primary" />
-                        </div>
-                        <p className="text-sm text-muted-foreground">Téléchargez une pièce d'identité valide (Passeport, CNI).</p>
-                      </div>
+                  <div className="flex items-start gap-4 p-4 rounded-xl border border-dashed border-border group hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setKycModalOpen(true)}>
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                      <ShieldCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                     </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium">Identité (KYC)</p>
+                        <Plus className="w-4 h-4 text-primary" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">Téléchargez une pièce d'identité valide (Passeport, CNI).</p>
+                    </div>
+                  </div>
 
-                    {kycDocuments.length > 0 && (
-                      <div className="space-y-3 pt-4">
-                        <h4 className="text-sm font-semibold">Documents soumis</h4>
-                        <div className="grid gap-3">
-                          {kycDocuments.map((doc) => (
-                            <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
-                              <div className="flex items-center gap-3">
-                                <FileText className="w-4 h-4 text-primary" />
-                                <div>
-                                  <p className="text-xs font-medium">{documentTypeLabels[doc.type] || doc.type}</p>
-                                  <p className="text-[10px] text-muted-foreground">{new Date(doc.created_at).toLocaleDateString()}</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="text-[10px] uppercase">{doc.status}</Badge>
-                                <Button size="icon" variant="ghost" asChild className="h-7 w-7">
-                                  <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                                    <ExternalLink className="w-3 h-3" />
-                                  </a>
-                                </Button>
+                  {kycDocuments.length > 0 && (
+                    <div className="space-y-3 pt-4">
+                      <h4 className="text-sm font-semibold">Documents soumis</h4>
+                      <div className="grid gap-3">
+                        {kycDocuments.map((doc) => (
+                          <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-4 h-4 text-primary" />
+                              <div>
+                                <p className="text-xs font-medium">{documentTypeLabels[doc.type] || doc.type}</p>
+                                <p className="text-[10px] text-muted-foreground">{new Date(doc.created_at).toLocaleDateString()}</p>
                               </div>
                             </div>
-                          ))}
-                        </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-[10px] uppercase">{doc.status}</Badge>
+                              <Button size="icon" variant="ghost" asChild className="h-7 w-7">
+                                <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        <KycUploadModal 
-          open={kycModalOpen} 
-          onOpenChange={setKycModalOpen} 
-          onSuccess={fetchKycDocuments} 
-        />
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
-    )
-  }
+
+      <KycUploadModal
+        open={kycModalOpen}
+        onOpenChange={setKycModalOpen}
+        onSuccess={fetchKycDocuments}
+      />
+    </div>
+  )
+}
 
