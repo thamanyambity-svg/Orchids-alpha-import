@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { 
-  Shield, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import {
+  Shield,
+  Mail,
+  Phone,
+  MapPin,
   MessageSquare,
   Send,
   Loader2,
@@ -44,9 +44,9 @@ export default function ContactPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
-    
+
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     toast.success("Message envoyé ! Nous vous répondrons sous 24h.")
     setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
     setContactType("")
@@ -56,7 +56,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen">
       <PublicHeader />
-      
+
       <main className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           <BackButton />
@@ -64,7 +64,7 @@ export default function ContactPage() {
         <section className="py-24 relative overflow-hidden">
           <div className="absolute inset-0 pattern-grid opacity-20" />
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-          
+
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-16">
               <motion.div
@@ -75,12 +75,12 @@ export default function ContactPage() {
                   <MessageSquare className="w-4 h-4" />
                   Contact
                 </div>
-                
+
                 <h1 className="text-4xl sm:text-5xl font-bold mb-6">
                   Parlons de votre <span className="text-gradient-gold">projet</span>
                 </h1>
                 <p className="text-lg text-muted-foreground mb-12">
-                  Que vous soyez acheteur, futur partenaire ou institutionnel, 
+                  Que vous soyez acheteur, futur partenaire ou institutionnel,
                   notre équipe est à votre écoute pour répondre à toutes vos questions.
                 </p>
 
@@ -104,7 +104,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
                       <a href="mailto:contact@alphaix.com" className="text-primary hover:underline">
-                        contact@alphaix.com
+                        contact@aonosekehouseinvestmentdrc.site
                       </a>
                     </div>
                   </div>
@@ -116,7 +116,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold mb-1">Téléphone / WhatsApp</h3>
                       <a href="tel:+243000000000" className="text-primary hover:underline">
-                        +243 000 000 000
+                        +243 999 894 788 / +243 818 924 674
                       </a>
                     </div>
                   </div>
@@ -148,15 +148,13 @@ export default function ContactPage() {
                         key={type.value}
                         type="button"
                         onClick={() => setContactType(type.value)}
-                        className={`p-4 rounded-xl border transition-all text-center ${
-                          contactType === type.value
+                        className={`p-4 rounded-xl border transition-all text-center ${contactType === type.value
                             ? "border-primary bg-primary/10"
                             : "border-border hover:border-primary/50"
-                        }`}
+                          }`}
                       >
-                        <type.icon className={`w-6 h-6 mx-auto mb-2 ${
-                          contactType === type.value ? "text-primary" : "text-muted-foreground"
-                        }`} />
+                        <type.icon className={`w-6 h-6 mx-auto mb-2 ${contactType === type.value ? "text-primary" : "text-muted-foreground"
+                          }`} />
                         <span className="text-xs">{type.label}</span>
                       </button>
                     ))}
