@@ -31,11 +31,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                     request.nextUrl.pathname.startsWith('/register')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname.startsWith('/register')
   const isDashboard = request.nextUrl.pathname.startsWith('/dashboard') ||
-                      request.nextUrl.pathname.startsWith('/admin') ||
-                      request.nextUrl.pathname.startsWith('/partner')
+    request.nextUrl.pathname.startsWith('/admin') ||
+    (request.nextUrl.pathname.startsWith('/partner') && !request.nextUrl.pathname.startsWith('/partner-request'))
 
   if (!user && isDashboard) {
     const url = request.nextUrl.clone()
@@ -43,23 +43,23 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-    if (user && isAuthPage) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
+  if (user && isAuthPage) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
 
-      const url = request.nextUrl.clone()
-      if (profile?.role === 'ADMIN') {
-        url.pathname = '/admin'
-      } else if (profile?.role === 'PARTNER') {
-        url.pathname = '/partner'
-      } else {
-        url.pathname = '/dashboard'
-      }
-      return NextResponse.redirect(url)
+    const url = request.nextUrl.clone()
+    if (profile?.role === 'ADMIN') {
+      url.pathname = '/admin'
+    } else if (profile?.role === 'PARTNER') {
+      url.pathname = '/partner'
+    } else {
+      url.pathname = '/dashboard'
     }
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }
