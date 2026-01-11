@@ -39,7 +39,7 @@ export default function DashboardPage() {
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle()
-          
+
           setRequest(requestData)
         }
       } catch (error) {
@@ -70,14 +70,14 @@ export default function DashboardPage() {
       <div className="relative z-10 p-6 lg:p-10 max-w-[1600px] mx-auto space-y-10">
         {/* Header / Greeting */}
         <div className="flex flex-col gap-1">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl font-bold tracking-tight"
           >
             Bonjour, {firstName} !
           </motion.h1>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -132,11 +132,11 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Footer info */}
       <footer className="mt-20 border-t border-white/5 py-8 text-center">
         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-          © 2026 Alpha Import Exchange - Confidentiel & Sécurisé
+          © 2026 Alpha A Ambity - Confidentiel & Sécurisé
         </p>
       </footer>
     </div>

@@ -58,7 +58,7 @@ export default function LoginPage() {
       } else {
         router.push("/dashboard")
       }
-      
+
       toast.success("Connexion réussie")
     } catch {
       toast.error("Une erreur est survenue")
@@ -69,7 +69,7 @@ export default function LoginPage() {
 
   async function handleAdminClick() {
     const supabase = createClient()
-    
+
     if (formData.email && formData.password) {
       setIsLoading(true)
       try {
@@ -93,7 +93,7 @@ export default function LoginPage() {
     }
 
     const { data: { user } } = await supabase.auth.getUser()
-    
+
     if (!user) {
       toast.info("Veuillez saisir vos identifiants administrateur puis cliquer sur 'Se connecter' ou 'Accès Administration'.")
       return
@@ -118,26 +118,26 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 relative bg-card">
         <div className="absolute inset-0 pattern-grid opacity-20" />
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-        
-          <div className="relative z-10 flex flex-col justify-center px-16">
-            <BackButton href="/" className="w-fit mb-8" />
-            <Link href="/" className="flex items-center mb-12 group">
-              <div className="w-40 h-40 sm:w-48 sm:h-48 relative flex items-center justify-center transition-transform group-hover:scale-105">
-                <Image 
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                  alt="Alpha Import Exchange RDC"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </Link>
+
+        <div className="relative z-10 flex flex-col justify-center px-16">
+          <BackButton href="/" className="w-fit mb-8" />
+          <Link href="/" className="flex items-center mb-12 group">
+            <div className="w-40 h-40 sm:w-48 sm:h-48 relative flex items-center justify-center transition-transform group-hover:scale-105">
+              <Image
+                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
+                alt="Alpha Import Exchange RDC"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </Link>
 
           <h1 className="text-4xl font-bold mb-4">
             Bienvenue sur votre{" "}
             <span className="text-gradient-gold">espace sécurisé</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-md">
-            Accédez à votre tableau de bord pour gérer vos importations, 
+            Accédez à votre tableau de bord pour gérer vos importations,
             suivre vos commandes et consulter vos documents.
           </p>
 
@@ -168,9 +168,9 @@ export default function LoginPage() {
             </div>
             <Link href="/" className="flex items-center">
               <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex items-center justify-center">
-                <Image 
+                <Image
                   src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                  alt="Alpha Import Exchange RDC"
+                  alt="Alpha A Ambity"
                   fill
                   className="object-contain"
                 />
@@ -247,14 +247,39 @@ export default function LoginPage() {
             </Link>
           </p>
 
-          <div className="mt-6 pt-6 border-t border-border text-center">
-            <button 
+
+          <div className="mt-6 pt-6 border-t border-border flex justify-center gap-4">
+            <button
               type="button"
               onClick={handleAdminClick}
               className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
             >
               <Shield className="w-3 h-3" />
               Accès Administration
+            </button>
+
+            {/* Dev Helper - TO BE REMOVED IN PROD */}
+            <button
+              type="button"
+              onClick={async () => {
+                const supabase = createClient()
+                setIsLoading(true)
+                const { error } = await supabase.auth.signInWithPassword({
+                  email: 'smoke-688@test.com', // The user created by smoke test
+                  password: 'Password123!'
+                })
+                if (error) toast.error(error.message)
+                else {
+                  toast.success("Mode Dev Admin Activé")
+                  // Force redirect to admin
+                  window.location.href = "/admin"
+                }
+                setIsLoading(false)
+              }}
+              className="text-xs text-red-400 hover:text-red-300 transition-colors inline-flex items-center gap-1 border border-red-500/20 px-2 py-1 rounded"
+            >
+              <Shield className="w-3 h-3" />
+              DEV: Auto Business Admin
             </button>
           </div>
         </motion.div>

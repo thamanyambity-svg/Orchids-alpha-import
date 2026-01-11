@@ -50,7 +50,7 @@ export async function GET() {
       .select(`
         *,
         country:countries(name),
-        partner:partner_profiles(profile:profiles(full_name))
+        partner:profiles!assigned_partner_id(full_name)
       `)
       .order('created_at', { ascending: false })
       .limit(4)
@@ -95,7 +95,7 @@ export async function GET() {
         id: r.reference || r.id.slice(0, 6),
         realId: r.id,
         product: r.product_name || r.category,
-        partner: r.partner?.profile?.full_name || "Non assigné",
+        partner: (r.partner as any)?.full_name || "Non assigné",
         status: r.status,
         statusColor: getStatusColor(r.status)
       })) || [],
