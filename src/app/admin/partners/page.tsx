@@ -104,6 +104,29 @@ export default function AdminPartnersPage() {
         }
     }
 
+
+    const [applications, setApplications] = useState<any[]>([])
+
+    useEffect(() => {
+        fetchPartners()
+        fetchApplications()
+    }, [])
+
+    async function fetchApplications() {
+        try {
+            const { data, error } = await supabase
+                .from('partner_applications')
+                .select('*')
+                .eq('status', 'PENDING')
+                .order('created_at', { ascending: false })
+
+            if (error) throw error
+            setApplications(data || [])
+        } catch (error) {
+            console.error("Error fetching applications:", error)
+        }
+    }
+
     // Helper to determine zone
     function getZone(code: string, region: string) {
         if (!code) return "OTHER"
@@ -125,13 +148,21 @@ export default function AdminPartnersPage() {
         return matchesSearch && matchesTab
     })
 
+    const handleReviewApplication = (appId: string) => {
+        // Simple direct navigation for now, or we could open a modal
+        // For MVP, we can just use a simple alert or toast as placeholder until we build the full review modal
+        console.log("Reviewing", appId)
+        // Ideally navigate to /admin/partners/applications/[id]
+        window.location.href = `/admin/partners/applications/${appId}`
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Gestion des Partenaires</h1>
                     <p className="text-muted-foreground">
-                        {partners.length} partenaires logistiques dans le réseau.
+                        {partners.length} partenaires actifs • {applications.length} candidatures en attente
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -145,122 +176,69 @@ export default function AdminPartnersPage() {
             <Tabs defaultValue="ALL" onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="ALL">Tous les partenaires</TabsTrigger>
+                    <TabsTrigger value="APPLICATIONS" className="relative">
+                        Candidatures
+                        {applications.length > 0 && (
+                            <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                                {applications.length}
+                            </span>
+                        )}
+                    </TabsTrigger>
                     <TabsTrigger value="ASIA">Asie (Chine)</TabsTrigger>
                     <TabsTrigger value="MIDDLE_EAST">Moyen-Orient (Dubaï/Turquie)</TabsTrigger>
                     <TabsTrigger value="EUROPE">Europe</TabsTrigger>
                     <TabsTrigger value="AMERICAS">Amériques</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value={activeTab} className="space-y-4">
+                <TabsContent value="APPLICATIONS" className="space-y-4">
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
-                            <div className="space-y-1">
-                                <CardTitle>Réseau Logistique - {activeTab === 'ALL' ? 'Global' : activeTab}</CardTitle>
-                                <CardDescription>
-                                    Vue d'ensemble des partenaires et de leurs performances
-                                </CardDescription>
-                            </div>
-                            <div className="relative w-full md:w-64">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    type="search"
-                                    placeholder="Rechercher (Nom, Ville)..."
-                                    className="pl-8"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                            </div>
+                        <CardHeader>
+                            <CardTitle>Candidatures en attente</CardTitle>
+                            <CardDescription>
+                                Examinez les nouvelles demandes et validez les documents.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Partenaire</TableHead>
-                                        <TableHead>Localisation</TableHead>
-                                        <TableHead>Contrat & Statut</TableHead>
-                                        <TableHead>Performance</TableHead>
-                                        <TableHead>Volume</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>Entreprise</TableHead>
+                                        <TableHead>Contact</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Documents</TableHead>
+                                        <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {isLoading ? (
+                                    {applications.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={6} className="text-center py-8">Chargement...</TableCell>
-                                        </TableRow>
-                                    ) : filteredPartners.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                                                Aucun partenaire trouvé dans cette zone
+                                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                                Aucune nouvelle candidature
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        filteredPartners.map((partner) => (
-                                            <TableRow key={partner.id}>
-                                                <TableCell>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
-                                                            <Briefcase className="h-5 w-5 text-blue-600" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-medium text-blue-900">{partner.full_name}</div>
-                                                            <div className="text-xs text-muted-foreground">{partner.email}</div>
-                                                        </div>
-                                                    </div>
+                                        applications.map((app) => (
+                                            <TableRow key={app.id}>
+                                                <TableCell className="font-medium">
+                                                    {app.company_name}
+                                                    <div className="text-xs text-muted-foreground">{app.company_details?.address || 'Adresse non spécifiée'}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                        <MapPin className="h-4 w-4" />
-                                                        {partner.city || "Non défini"}, {partner.country}
-                                                    </div>
+                                                    <div>{app.email}</div>
+                                                    <div className="text-xs text-muted-foreground">{app.phone}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex flex-col gap-1 items-start">
-                                                        {partner.contract_status === 'ACTIVE' ? (
-                                                            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200">
-                                                                <FileCheck className="w-3 h-3 mr-1" /> Contrat Actif
-                                                            </Badge>
-                                                        ) : (
-                                                            <Badge variant="outline">En attente</Badge>
-                                                        )}
-                                                        {partner.status !== 'VERIFIED' && (
-                                                            <span className="text-[10px] text-amber-600 font-medium px-1">
-                                                                (Kyc: {partner.status})
-                                                            </span>
-                                                        )}
-                                                    </div>
+                                                    {new Date(app.created_at).toLocaleDateString()}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex items-center gap-1 font-medium">
-                                                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                                        {partner.performance_score}/5
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="text-sm">
-                                                        <span className="font-bold">{partner.total_orders_handled}</span> commandes
-                                                    </div>
+                                                    <Badge variant="secondary">
+                                                        {Array.isArray(app.documents) ? app.documents.length : 0} fichiers
+                                                    </Badge>
                                                 </TableCell>
                                                 <TableCell className="text-right">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                                <span className="sr-only">Menu</span>
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel>Gestion</DropdownMenuLabel>
-                                                            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
-                                                                Contacter
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
-                                                            <DropdownMenuItem>Voir les Fournisseurs</DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem className="text-red-600">Résilier Contrat</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                                    <Button size="sm" onClick={() => handleReviewApplication(app.id)}>
+                                                        Examiner
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))
@@ -269,6 +247,129 @@ export default function AdminPartnersPage() {
                             </Table>
                         </CardContent>
                     </Card>
+                </TabsContent>
+
+                <TabsContent value={activeTab} className="space-y-4">
+                    {/* Only render if NOT applications tab (to avoid double render or empty state issues) */}
+                    {activeTab !== 'APPLICATIONS' && (
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
+                                <div className="space-y-1">
+                                    <CardTitle>Réseau Logistique - {activeTab === 'ALL' ? 'Global' : activeTab}</CardTitle>
+                                    <CardDescription>
+                                        Vue d'ensemble des partenaires et de leurs performances
+                                    </CardDescription>
+                                </div>
+                                <div className="relative w-full md:w-64">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        type="search"
+                                        placeholder="Rechercher (Nom, Ville)..."
+                                        className="pl-8"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Partenaire</TableHead>
+                                            <TableHead>Localisation</TableHead>
+                                            <TableHead>Contrat & Statut</TableHead>
+                                            <TableHead>Performance</TableHead>
+                                            <TableHead>Volume</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {isLoading ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-8">Chargement...</TableCell>
+                                            </TableRow>
+                                        ) : filteredPartners.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                                                    Aucun partenaire trouvé dans cette zone
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            filteredPartners.map((partner) => (
+                                                <TableRow key={partner.id}>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
+                                                                <Briefcase className="h-5 w-5 text-blue-600" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-medium text-blue-900">{partner.full_name}</div>
+                                                                <div className="text-xs text-muted-foreground">{partner.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                            <MapPin className="h-4 w-4" />
+                                                            {partner.city || "Non défini"}, {partner.country}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col gap-1 items-start">
+                                                            {partner.contract_status === 'ACTIVE' ? (
+                                                                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200">
+                                                                    <FileCheck className="w-3 h-3 mr-1" /> Contrat Actif
+                                                                </Badge>
+                                                            ) : (
+                                                                <Badge variant="outline">En attente</Badge>
+                                                            )}
+                                                            {partner.status !== 'VERIFIED' && (
+                                                                <span className="text-[10px] text-amber-600 font-medium px-1">
+                                                                    (Kyc: {partner.status})
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-1 font-medium">
+                                                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                            {partner.performance_score}/5
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="text-sm">
+                                                            <span className="font-bold">{partner.total_orders_handled}</span> commandes
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                    <span className="sr-only">Menu</span>
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuLabel>Gestion</DropdownMenuLabel>
+                                                                <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
+                                                                    Contacter
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
+                                                                <DropdownMenuItem>Voir les Fournisseurs</DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem className="text-red-600">Résilier Contrat</DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    )}
                 </TabsContent>
             </Tabs>
         </div>
