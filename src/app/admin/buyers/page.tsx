@@ -67,7 +67,7 @@ export default function AdminBuyersPage() {
                 (profiles || []).map(async (profile) => {
                     // Count Requests
                     const { count: requestsCount } = await supabase
-                        .from('requests')
+                        .from('import_requests')
                         .select('*', { count: 'exact', head: true })
                         .eq('buyer_id', profile.id)
 

@@ -39,7 +39,7 @@ export default function AdminFinancesPage() {
         .from("orders")
         .select(`
           *,
-          request:import_requests(buyer:profiles(*))
+          request:import_requests(buyer:profiles!import_requests_buyer_id_fkey(*))
         `)
         .order("created_at", { ascending: false })
 

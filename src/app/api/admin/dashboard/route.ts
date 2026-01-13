@@ -39,7 +39,7 @@ export async function GET() {
       .select(`
         *,
         profile:profiles(full_name, avatar_url),
-        country:countries(name)
+        country:countries(name, code)
       `)
       .order('performance_score', { ascending: false })
       .limit(4)
@@ -86,6 +86,8 @@ export async function GET() {
       partners: partners?.map(p => ({
         name: p.profile?.full_name || "Anonyme",
         country: p.country?.name || "N/A",
+        cities: p.assigned_cities || [],
+        iso_code: p.country?.code || "N/A",
         rating: 5, // We don't have a rating system yet, use 5 as default
         performance: Number(p.performance_score) || 0,
         volume: `${(Number(p.deposit_amount) || 0).toLocaleString()}$`, // Using deposit as a proxy for volume for now

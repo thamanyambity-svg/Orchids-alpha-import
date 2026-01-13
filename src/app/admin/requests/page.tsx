@@ -20,6 +20,7 @@ import {
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -37,6 +38,9 @@ export default function AdminRequestsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "ALL">("ALL")
+  const searchParams = useSearchParams()
+  const countryFilter = searchParams.get('country')
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -51,7 +55,8 @@ export default function AdminRequestsPage() {
         .from("import_requests")
         .select(`
           *,
-          buyer:profiles!import_requests_buyer_id_fkey(*)
+          buyer:profiles!import_requests_buyer_id_fkey(*),
+          country:countries(name, code)
         `)
         .order("created_at", { ascending: false })
 
@@ -111,7 +116,8 @@ export default function AdminRequestsPage() {
       req.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.buyer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "ALL" || req.status === statusFilter
-    return matchesSearch && matchesStatus
+    const matchesCountry = !countryFilter || (req as any).country?.code === countryFilter
+    return matchesSearch && matchesStatus && matchesCountry
   })
 
   const getStatusBadge = (status: RequestStatus) => {
@@ -228,7 +234,7 @@ export default function AdminRequestsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">{req.category}</div>
-                      <div className="text-xs text-muted-foreground">Source: {req.country_id ? "Chine" : "N/A"}</div>
+                      <div className="text-xs text-muted-foreground">Source: {(req as any).country?.name || "N/A"}</div>
                     </td>
                     <td className="px-6 py-4">
                       {req.assigned_partner_id ? (

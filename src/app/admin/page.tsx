@@ -27,6 +27,7 @@ import {
   ListFilter
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
@@ -38,7 +39,17 @@ const ICON_MAP: Record<string, any> = {
   UserCheck
 }
 
+import dynamic from "next/dynamic"
+
+const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(mod => mod.WorldMap), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] rounded-3xl bg-[#0a0e14] animate-pulse border border-white/5" />
+})
+
+const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
+
 export default function AdminDashboardPage() {
+  const router = useRouter()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -72,6 +83,21 @@ export default function AdminDashboardPage() {
     auditLogs: [],
     criticalAlerts: []
   }
+
+  // Transform partners list for the map
+  const partnersMap = partners?.reduce((acc: any, p: any) => {
+    if (p.iso_code && p.iso_code !== 'N/A') {
+      acc[p.iso_code] = {
+        full_name: p.name,
+        company_name: "Partenaire Certifié",
+        performance_score: p.performance || 5.0,
+        total_orders_handled: "120+",
+        cities: p.cities, // Capture cities
+        ...p
+      }
+    }
+    return acc
+  }, {}) || {}
 
   return (
     <div className="p-8 space-y-8 max-w-[1600px] mx-auto">
@@ -133,30 +159,13 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* World Map Section */}
-      <div className="relative aspect-[21/9] rounded-3xl overflow-hidden bg-[#0a0e14] border border-white/5 group">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 mix-blend-luminosity grayscale" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#020609] via-transparent to-transparent" />
-
-        {/* Map Markers - These could also be dynamic later */}
-        <div className="absolute top-[30%] left-[75%] group/pin">
-          <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-blue-400 opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-blue-400 border-2 border-white shadow-[0_0_15px_#60a5fa]" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap">
-              <span className="text-xs text-white font-medium">Chine</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute top-[50%] left-[60%] group/pin">
-          <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-[#ffd700] opacity-20" />
-            <div className="w-3 h-3 rounded-full bg-[#ffd700] border-2 border-white shadow-[0_0_15px_#ffd700]" />
-            <div className="absolute left-6 -top-1 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 whitespace-nowrap">
-              <span className="text-xs text-white font-medium">Dubaï</span>
-            </div>
-          </div>
-        </div>
+      <div className="relative rounded-3xl overflow-hidden bg-[#0a0e14] border border-white/5 shadow-2xl shadow-black/50">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e14]/50 to-transparent pointer-events-none z-10" />
+        <WorldMap
+          mapboxToken={MAPBOX_TOKEN}
+          onCountrySelect={(code) => router.push(`/admin/requests?country=${code}`)}
+          partners={partnersMap}
+        />
       </div>
 
       {/* Tables Row */}

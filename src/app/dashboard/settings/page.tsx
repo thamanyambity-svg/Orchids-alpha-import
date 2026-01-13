@@ -112,13 +112,23 @@ export default function SettingsPage() {
       if (!user) return
 
       const [profileRes, kycRes, countriesRes] = await Promise.all([
-        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
         supabase.from('request_documents').select('*').eq('uploaded_by', user.id).is('request_id', null).order('created_at', { ascending: false }),
         supabase.from('countries').select('*').order('name')
       ])
 
       if (profileRes.error) throw profileRes.error
-      setProfile(profileRes.data)
+
+      setProfile(profileRes.data || {
+        id: user.id,
+        email: user.email,
+        full_name: '',
+        phone: '',
+        company_name: '',
+        country_id: null,
+        city: null,
+        status: 'PENDING'
+      })
       setKycDocuments(kycRes.data || [])
       setCountries(countriesRes.data || [])
     } catch (error) {
@@ -147,7 +157,11 @@ export default function SettingsPage() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: profile.id,
+          email: profile.email,
+          role: profile.role || 'BUYER',
+          status: profile.status || 'PENDING',
           full_name: profile.full_name,
           phone: profile.phone,
           company_name: profile.company_name,

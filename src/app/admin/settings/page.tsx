@@ -92,12 +92,23 @@ export default function AdminSettingsPage() {
       if (!user) return
 
       const [profileRes, countriesRes] = await Promise.all([
-        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
         supabase.from('countries').select('*').order('name')
       ])
 
       if (profileRes.error) throw profileRes.error
-      setProfile(profileRes.data)
+
+      // If no profile, use default structure with user.id and email
+      setProfile(profileRes.data || {
+        id: user.id,
+        email: user.email,
+        full_name: '',
+        phone: '',
+        company_name: '',
+        country_id: null,
+        city: null,
+        status: 'PENDING'
+      })
       setCountries(countriesRes.data || [])
     } catch (error) {
       console.error('Error fetching admin profile:', error)
@@ -113,7 +124,11 @@ export default function AdminSettingsPage() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: profile.id, // Ensure ID is included for upsert
+          email: profile.email, // Ensure email is preserved
+          role: profile.role || 'ADMIN', // Default role if missing
+          status: profile.status || 'VERIFIED',
           full_name: profile.full_name,
           phone: profile.phone,
           company_name: profile.company_name,
