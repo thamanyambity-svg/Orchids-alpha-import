@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   FileText,
@@ -32,7 +32,7 @@ import {
 import { toast } from "sonner"
 import type { ImportRequest, RequestStatus, PartnerProfile, Profile } from "@/lib/types"
 
-export default function AdminRequestsPage() {
+function AdminRequestsContent() {
   const [requests, setRequests] = useState<(ImportRequest & { buyer: Profile, partner?: Profile })[]>([])
   const [partners, setPartners] = useState<(PartnerProfile & { user: Profile })[]>([])
   const [loading, setLoading] = useState(true)
@@ -308,5 +308,13 @@ export default function AdminRequestsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminRequestsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center p-8">Chargement...</div>}>
+      <AdminRequestsContent />
+    </Suspense>
   )
 }
