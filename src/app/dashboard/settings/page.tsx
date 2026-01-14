@@ -88,7 +88,7 @@ export default function SettingsPage() {
       toast.success("Photo de profil mise à jour")
     } catch (error) {
       console.error('Error uploading avatar:', error)
-      toast.error("Erreur lors de l'upload")
+      toast.error("Erreur upload: " + (error as any).message)
     } finally {
       setUploadingAvatar(false)
     }
@@ -133,7 +133,7 @@ export default function SettingsPage() {
       setCountries(countriesRes.data || [])
     } catch (error) {
       console.error('Error fetching settings data:', error)
-      toast.error("Erreur lors du chargement des paramètres")
+      toast.error("Erreur chargement: " + (error as any).message)
     } finally {
       setLoading(false)
     }
