@@ -7,10 +7,10 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { 
-  LayoutDashboard, 
-  Users, 
-  ShoppingCart, 
+import {
+  LayoutDashboard,
+  Users,
+  ShoppingCart,
   CircleDollarSign,
   MessageSquare,
   Headphones,
@@ -24,7 +24,7 @@ import {
 
 const navItems = [
   { href: "/dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
-  { href: "/dashboard/buyers", label: "Acheteurs", icon: Users },
+  // { href: "/dashboard/buyers", label: "Acheteurs", icon: Users }, // Removed for client view
   { href: "/dashboard/requests", label: "Commandes", icon: ShoppingCart },
   { href: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
   { href: "/dashboard/messages", label: "Messagerie", icon: MessageSquare },
@@ -64,7 +64,7 @@ export function DashboardSidebar() {
       <div className="p-6">
         <Link href="/" className="flex items-center group">
           <div className="relative w-16 h-16 transition-transform group-hover:scale-105">
-            <Image 
+            <Image
               src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
               alt="Alpha Import Exchange"
               fill
@@ -77,17 +77,17 @@ export function DashboardSidebar() {
       <nav className="flex-1 px-4 py-4">
         <ul className="space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || 
+            const isActive = pathname === item.href ||
               (item.href !== "/dashboard" && pathname.startsWith(item.href))
-            
+
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
                     "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group",
-                    isActive 
-                      ? "bg-primary/10 text-primary border border-primary/20" 
+                    isActive
+                      ? "bg-primary/10 text-primary border border-primary/20"
                       : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   )}
                 >
@@ -97,7 +97,7 @@ export function DashboardSidebar() {
                   )} />
                   <span className="font-medium tracking-tight">{item.label}</span>
                   {isActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="sidebar-indicator"
                       className="w-1 h-4 bg-primary rounded-full ml-auto"
                     />

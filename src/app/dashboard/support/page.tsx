@@ -2,12 +2,12 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Headphones, 
-  Plus, 
-  Minus, 
-  Mail, 
-  MessageSquare, 
+import {
+  Headphones,
+  Plus,
+  Minus,
+  Mail,
+  MessageSquare,
   Phone,
   HelpCircle,
   ExternalLink,
@@ -40,8 +40,8 @@ export default function SupportPage() {
 
   return (
     <div>
-      <DashboardHeader 
-        title="Centre d'Assistance" 
+      <DashboardHeader
+        title="Centre d'Assistance"
         subtitle="Nous sommes là pour vous accompagner dans vos opérations"
       />
 
@@ -53,10 +53,10 @@ export default function SupportPage() {
               <HelpCircle className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold">Questions Fréquentes</h2>
             </div>
-            
+
             <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-card border border-border rounded-xl overflow-hidden"
                 >
@@ -131,7 +131,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <h3 className="font-bold">Support Email</h3>
-                    <p className="text-xs text-muted-foreground">support@alphaimport-exchange.com</p>
+                    <p className="text-xs text-muted-foreground">contact@aonosekehouseinvestmentdrc.site</p>
                   </div>
                 </div>
                 <Button variant="outline" className="w-full gap-2">
@@ -150,7 +150,7 @@ export default function SupportPage() {
                     <p className="text-xs text-muted-foreground">Lundi - Vendredi, 9h-18h</p>
                   </div>
                 </div>
-                <p className="text-center font-bold text-lg">+243 812 345 678</p>
+                <p className="text-center font-bold text-lg">+243 999 894 788 / +243 818 924 674</p>
               </div>
             </div>
           </div>

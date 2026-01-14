@@ -59,7 +59,8 @@ export default function DashboardPage() {
     )
   }
 
-  const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
+  // Fallback to email username if full_name is missing, otherwise 'Utilisateur'
+  const displayName = profile?.full_name?.split(' ')[0] || (profile?.email?.split('@')[0]) || 'Utilisateur'
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
@@ -75,7 +76,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl font-bold tracking-tight"
           >
-            Bonjour, {firstName} !
+            Bonjour, {displayName} !
           </motion.h1>
           <motion.div
             initial={{ opacity: 0, x: -20 }}
