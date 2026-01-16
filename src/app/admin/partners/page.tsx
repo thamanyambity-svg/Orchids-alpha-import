@@ -23,7 +23,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck } from "lucide-react"
+import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck, Edit } from "lucide-react"
+import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
 
 interface PartnerWithDetails {
     id: string
@@ -45,6 +46,7 @@ export default function AdminPartnersPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
     const [activeTab, setActiveTab] = useState("ALL")
+    const [editingPartner, setEditingPartner] = useState<any>(null)
 
     const supabase = createClient()
 
@@ -354,6 +356,9 @@ export default function AdminPartnersPage() {
                                                                 <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
                                                                     Contacter
                                                                 </DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => setEditingPartner(partner)}>
+                                                                    <Edit className="w-4 h-4 mr-2" /> Modifier
+                                                                </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
                                                                 <DropdownMenuItem>Voir les Fournisseurs</DropdownMenuItem>
@@ -372,6 +377,13 @@ export default function AdminPartnersPage() {
                     )}
                 </TabsContent>
             </Tabs>
+
+            <EditPartnerDialog
+                open={!!editingPartner}
+                partner={editingPartner}
+                onClose={() => setEditingPartner(null)}
+                onUpdate={fetchPartners}
+            />
         </div>
     )
 }

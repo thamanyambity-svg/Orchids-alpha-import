@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import { VisualEditsMessenger } from "orchids-visual-edits"
-import { Toaster } from "sonner"
+import { Providers } from "@/components/providers"
 
 export const metadata: Metadata = {
   title: "Alpha A Ambity | Secure International Trade",
@@ -17,18 +16,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="dark">
       <body className="min-h-screen font-sans">
-        {children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: 'oklch(0.10 0.015 260)',
-              border: '1px solid oklch(0.22 0.02 260)',
-              color: 'oklch(0.95 0.01 260)',
-            },
-          }}
-        />
-        <VisualEditsMessenger />
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

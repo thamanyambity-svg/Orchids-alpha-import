@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 import { BackButton } from "@/components/back-button"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 interface DashboardHeaderProps {
   title: string
@@ -55,6 +56,10 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
             placeholder="Rechercher une transaction..."
             className="w-80 pl-9 h-10 bg-white/5 border-white/10 rounded-xl focus:bg-white/10 transition-all"
           />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
         </div>
 
         <div className="flex items-center gap-2">
