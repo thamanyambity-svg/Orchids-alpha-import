@@ -2,7 +2,7 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Politique de Confidentialité | Alpha A Ambity",
+    title: "Politique de Confidentialité | Alpha Import Exchange",
     description: "Engagement de confidentialité et protection des données personnelles.",
 }
 

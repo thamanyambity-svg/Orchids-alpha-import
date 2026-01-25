@@ -48,13 +48,13 @@ export function PublicFooter() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-primary" />
-                <a href="mailto:contact@alphaix.com" className="hover:text-foreground transition-colors">
+                <a href="mailto:contact@aonosekehouseinvestmentdrc.site" className="hover:text-foreground transition-colors">
                   contact@aonosekehouseinvestmentdrc.site
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-primary" />
-                <a href="tel:+243000000000" className="hover:text-foreground transition-colors">
+                <a href="tel:+243999894788" className="hover:text-foreground transition-colors">
                   +243 999 894 788 / +243 818 924 674
                 </a>
               </div>

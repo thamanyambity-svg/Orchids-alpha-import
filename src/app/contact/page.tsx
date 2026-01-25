@@ -138,7 +138,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
-                      <a href="mailto:contact@alphaix.com" className="text-primary hover:underline">
+                      <a href="mailto:contact@aonosekehouseinvestmentdrc.site" className="text-primary hover:underline">
                         contact@aonosekehouseinvestmentdrc.site
                       </a>
                     </div>
