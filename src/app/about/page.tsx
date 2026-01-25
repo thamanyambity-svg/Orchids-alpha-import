@@ -13,7 +13,6 @@ import {
   Award,
   ShieldCheck,
   Lightbulb,
-  Lightbulb,
   Heart
 } from "lucide-react"
 import {
