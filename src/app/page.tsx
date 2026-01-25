@@ -16,7 +16,8 @@ import {
   ChevronRight,
   Ship,
   Factory,
-  Landmark
+  Landmark,
+  Package
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PublicHeader } from "@/components/public-header"
