@@ -162,33 +162,20 @@ export default function HomePage() {
 
       <main>
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black selection:bg-gold/30">
-          {/* Dynamic Background */}
+          {/* Dynamic Background with World Map Hint */}
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-900 via-black to-black" />
 
-            {/* Animated Gold Orbs */}
+            {/* World Map Watermark (CSS based for now, replacing previous particles for a cleaner look) */}
+            <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-center bg-no-repeat bg-cover grayscale contrast-200" style={{ filter: 'invert(1)' }} />
+
+            {/* Network Connections (Subtle animated lines) */}
             <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3],
-                x: [0, 50, 0],
-                y: [0, -30, 0]
-              }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[120px]"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.2, 0.4, 0.2],
-                x: [0, -40, 0],
-                y: [0, 40, 0]
-              }}
-              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-              className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px]"
+              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 bg-[linear-gradient(45deg,transparent_45%,rgba(197,160,89,0.05)_50%,transparent_55%)] bg-[length:200%_200%]"
             />
 
-            {/* Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
           </div>
 
@@ -198,329 +185,181 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="mb-8"
+              className="mb-12 max-w-5xl"
             >
-              <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full glass border border-gold/20 text-sm text-gold font-medium mb-8 shadow-[0_0_20px_-5px_rgba(255,215,0,0.3)]">
-                <Shield className="w-4 h-4" />
-                <span className="tracking-wide uppercase text-xs">L'Excellence Logistique</span>
+              <div className="mb-8">
+                <span className="text-sm font-medium tracking-widest text-gold/80 uppercase">Une filiale du Groupe A.Onoseke House Investment RDC</span>
+                <div className="h-0.5 w-24 bg-gold/50 mx-auto mt-2" />
               </div>
 
-              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter mb-8 text-white">
-                Importez <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold via-[#FFF8D6] to-gold animate-gradient-x bg-[length:200%_auto]">
-                  Sans Limites
-                </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white uppercase leading-tight">
+                La Passerelle Sécurisée entre <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400">Kinshasa</span> et les <br />
+                <span className="text-gradient-gold">Géants Économiques Mondiaux</span>
               </h1>
 
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-                La première plateforme qui fusionne <span className="text-white font-medium">sécurisation financière</span> et <span className="text-white font-medium">logistique de précision</span>.
-                De la Chine à Kinshasa, contrôlez chaque étape.
-              </p>
+              <h2 className="text-lg sm:text-xl lg:text-2xl text-gray-400 font-light mb-10 max-w-3xl mx-auto">
+                Facilitation d'Achats • Sourcing Stratégique • Importation de Précision <br />
+                <span className="text-sm mt-4 block text-gray-500">
+                  Accédez aux meilleurs fournisseurs de <span className="text-white">Chine, Dubaï (UAE), Turquie, Thaïlande et Japon</span> sans les risques liés à la distance.
+                </span>
+              </h2>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <Button size="lg" asChild className="h-16 px-10 text-lg bg-gold text-black hover:bg-[#F0C000] transition-all duration-300 shadow-[0_0_30px_-5px_rgba(255,215,0,0.4)] hover:shadow-[0_0_40px_-5px_rgba(255,215,0,0.6)] hover:-translate-y-1">
-                  <Link href="/register" className="flex items-center gap-2 font-bold">
-                    Commencer
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild className="h-16 px-10 text-lg border-white/10 hover:bg-white/5 hover:border-white/30 backdrop-blur-md transition-all duration-300">
-                  <Link href="/how-it-works">
-                    Découvrir le modèle
+                <Button size="lg" asChild className="h-16 px-12 text-lg bg-[#0033A0] hover:bg-[#002a85] text-white transition-all duration-300 shadow-[0_0_30px_-5px_rgba(0,51,160,0.4)] hover:shadow-[0_0_40px_-5px_rgba(0,51,160,0.6)] hover:-translate-y-1 rounded-full">
+                  <Link href="/register" className="flex items-center gap-2 font-bold tracking-wide">
+                    LANCER MON IMPORTATION
                   </Link>
                 </Button>
               </div>
             </motion.div>
 
-            {/* Stats Glass Cards */}
+            {/* Flag Strip */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="flex items-center gap-6 opacity-70 grayscale hover:grayscale-0 transition-all duration-500"
             >
-              {[
-                { label: "Sécurité", value: "100%", sub: "Fonds garantis" },
-                { label: "Réseau", value: "5+", sub: "Pays partenaires" },
-                { label: "Support", value: "24/7", sub: "Assistance dédiée" },
-                { label: "Rapidité", value: "Express", sub: "Douane prioritaire" }
-              ].map((stat, index) => (
-                <div key={index} className="group glass p-6 rounded-2xl border border-white/5 hover:border-gold/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-gold/5">
-                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1 group-hover:text-gold transition-colors">{stat.value}</div>
-                  <div className="text-xs font-bold text-gold uppercase tracking-widest mb-1">{stat.label}</div>
-                  <div className="text-xs text-gray-500">{stat.sub}</div>
-                </div>
+              {['🇨🇳', '🇦🇪', '🇹🇷', '🇹🇭', '🇯🇵'].map((flag, i) => (
+                <span key={i} className="text-3xl drop-shadow-md cursor-help" title="Pays Partenaire">{flag}</span>
               ))}
             </motion.div>
           </div>
 
-          {/* Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 1 }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           >
-            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500">Explorer</span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-gold/0 via-gold/50 to-gold/0" />
+            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500">Découvrir l'infrastructure</span>
+            <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-gold/50 to-transparent" />
           </motion.div>
         </section>
 
-        <section className="py-32 relative">
+        {/* Section 2: La Promesse */}
+        <section className="py-32 relative bg-black">
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Pourquoi <span className="text-gradient-gold">Alpha</span> ?
+            <div className="text-center max-w-4xl mx-auto mb-20">
+              <h2 className="text-3xl sm:text-5xl font-bold mb-8 uppercase tracking-wide text-white">
+                Importation <span className="text-gold">5 Étoiles</span>, Sans Frontières.
               </h2>
-              <p className="text-muted-foreground">
-                Une infrastructure conçue pour éliminer les risques du commerce international.
+              <p className="text-xl text-gray-400 leading-relaxed font-light">
+                Alpha Import Exchange redéfinit les standards de l'importation en RDC.
+                Adossés à la solidité financière du <span className="text-white font-medium">Groupe A.Onoseke House Investment</span>,
+                nous ne sommes pas de simples transitaires. Nous sommes votre partenaire d'achat global.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group p-6 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-gold/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
-                >
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-gold/20 to-transparent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 border border-gold/10">
-                    <feature.icon className="w-7 h-7 text-gold" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 text-white group-hover:text-gold transition-colors">{feature.title}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
-                </motion.div>
-              ))}
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Pilier 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="p-8 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-gold/20 transition-all group"
+              >
+                <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
+                  <Shield className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">Sécurisation Financière</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Vos fonds sont protégés. Nous gérons le paiement de vos fournisseurs pour éviter les arnaques et les blocages bancaires.
+                </p>
+              </motion.div>
+
+              {/* Pilier 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="p-8 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-gold/20 transition-all group lg:col-span-1"
+              >
+                <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
+                  <Globe2 className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">Hubs Stratégiques</h3>
+                <ul className="space-y-3 text-sm text-gray-400">
+                  <li className="flex items-center gap-3"><span className="text-xl">🇨🇳</span> <span><strong className="text-white">CHINE :</strong> L'usine du monde.</span></li>
+                  <li className="flex items-center gap-3"><span className="text-xl">🇦🇪</span> <span><strong className="text-white">DUBAÏ :</strong> Luxe & Tech.</span></li>
+                  <li className="flex items-center gap-3"><span className="text-xl">🇹🇷</span> <span><strong className="text-white">TURQUIE :</strong> Textile & Industrie.</span></li>
+                  <li className="flex items-center gap-3"><span className="text-xl">🇹🇭</span> <span><strong className="text-white">THAÏLANDE :</strong> Excellence manufacturière.</span></li>
+                  <li className="flex items-center gap-3"><span className="text-xl">🇯🇵</span> <span><strong className="text-white">JAPON :</strong> Haute technologie.</span></li>
+                </ul>
+              </motion.div>
+
+              {/* Pilier 3 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="p-8 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-gold/20 transition-all group"
+              >
+                <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
+                  <Package className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">Logistique de Bout en Bout</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Du sourcing à l'entrepôt du fournisseur jusqu'à votre porte à Kinshasa. Une chaîne logistique intégrée et maîtrisée.
+                </p>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        <section className="py-32 bg-card/50 relative">
-          <div className="absolute inset-0 pattern-dots opacity-20" />
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Comment ça <span className="text-gradient-gold">marche</span> ?
-              </h2>
-              <p className="text-muted-foreground">
-                Un processus en 5 étapes, transparent et sécurisé à chaque instant.
-              </p>
+        {/* Section 3: Comment ça marche */}
+        <section className="py-32 bg-[#050505] relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-16 font-mono text-gold tracking-widest uppercase">
+              // PROCESSUS SIMPLIFIÉ
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-12 relative">
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+              {[
+                { number: "01", title: "IDENTIFIEZ", text: "Dites-nous ce que vous cherchez ou envoyez-nous votre facture proforma.", icon: Eye },
+                { number: "02", title: "PAYEZ EN LOCAL", text: "Réglez en toute sécurité à Kinshasa. Nous nous occupons du change et du transfert international.", icon: Lock },
+                { number: "03", title: "RÉCEPTIONNEZ", text: "Suivez votre cargo en temps réel et recevez vos marchandises dédouanées.", icon: CheckCircle2 }
+              ].map((step, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 }}
+                  className="relative bg-black border border-white/10 p-8 rounded-xl hover:border-gold/30 transition-colors"
+                >
+                  <div className="w-20 h-20 mx-auto bg-black border-2 border-gold/50 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
+                    <step.icon className="w-8 h-8 text-gold" />
+                  </div>
+                  <div className="text-5xl font-bold text-white/5 absolute top-4 right-6 pointer-events-none">{step.number}</div>
+                  <h3 className="text-xl font-bold text-white mb-4 tracking-wider">{step.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {step.text}
+                  </p>
+                </motion.div>
+              ))}
             </div>
 
-            <div className="relative">
-              <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent" />
-
-              <div className="grid lg:grid-cols-5 gap-8">
-                {steps.map((step, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative text-center"
-                  >
-                    <div className="relative z-10 w-16 h-16 mx-auto rounded-2xl bg-card border border-border flex items-center justify-center mb-6">
-                      <step.icon className="w-7 h-7 text-primary" />
-                    </div>
-                    <div className="text-xs font-mono text-primary mb-2">{step.number}</div>
-                    <h3 className="font-semibold mb-2">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-16 text-center">
-              <Button size="lg" variant="outline" asChild className="group">
-                <Link href="/how-it-works" className="flex items-center gap-2">
-                  En savoir plus sur le processus
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            <div className="mt-20">
+              <Button size="lg" asChild className="h-14 px-10 text-base bg-[#0033A0] hover:bg-[#002a85] text-white rounded-full">
+                <Link href="/register">
+                  Démarrer maintenant
                 </Link>
               </Button>
             </div>
           </div>
         </section>
 
-        <section className="py-32 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                  Le modèle <span className="text-gradient-gold">60/40</span>
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  Un système de paiement fractionné qui protège toutes les parties.
-                  Vos fonds restent sous contrôle Alpha jusqu&apos;à livraison confirmée.
-                </p>
-
-                <div className="space-y-6">
-                  <div className="flex gap-4 p-4 rounded-xl bg-card border border-border group hover:border-gold/30 transition-colors">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <span className="text-lg font-bold text-primary">60%</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Acompte sécurisé</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Payé à la validation. Bloqué jusqu&apos;à autorisation Alpha.
-                        Finance le sourcing et l&apos;achat.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4 p-4 rounded-xl bg-card border border-border group hover:border-gold/30 transition-colors">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <span className="text-lg font-bold text-primary">40%</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Solde à livraison</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Payé après confirmation de réception. Libère les fonds partenaire
-                        et commissions Alpha.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="relative"
-              >
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent rounded-3xl blur-2xl animate-pulse" />
-                <div className="relative p-8 rounded-2xl glass border border-white/10">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Landmark className="w-6 h-6 text-primary" />
-                    <span className="font-semibold text-white">Flux financier sécurisé</span>
-                  </div>
-
-                  <div className="space-y-4">
-                    {[
-                      { label: "Acheteur", arrow: true },
-                      { label: "Compte Alpha (séquestre)", highlight: true, arrow: true },
-                      { label: "Validation Admin", arrow: true },
-                      { label: "Partenaire local", arrow: true },
-                      { label: "Fournisseur" }
-                    ].map((item, index) => (
-                      <div key={index}>
-                        <div className={`p-3 rounded-lg transition-all hover:scale-[1.02] ${item.highlight ? 'bg-gold/10 border border-gold/30' : 'bg-white/5 border border-white/5'}`}>
-                          <span className={`text-sm ${item.highlight ? 'text-gold font-bold shadow-gold' : 'text-gray-300'}`}>
-                            {item.label}
-                          </span>
-                        </div>
-                        {item.arrow && (
-                          <div className="flex justify-center py-2">
-                            <div className="w-px h-4 bg-gradient-to-b from-white/20 to-transparent" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-32 bg-card/50 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Pays <span className="text-gradient-gold">partenaires</span>
-              </h2>
-              <p className="text-muted-foreground">
-                Un partenaire certifié par pays. Contrat exclusif. Caution déposée.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-              {countries.map((country, index) => (
-                <motion.div
-                  key={country.code}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group relative overflow-hidden rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 h-80"
-                >
-                  {/* Country Background Image */}
-                  <div
-                    className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                    style={{ backgroundImage: `url(${country.image})` }}
-                  />
-                  <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                  {/* Content */}
-                  <div className="relative z-10 h-full p-6 flex flex-col justify-end text-left">
-                    <div className="text-4xl mb-3 drop-shadow-md transform group-hover:-translate-y-2 transition-transform duration-500">{country.flag}</div>
-                    <div className="w-8 h-1 bg-gold mb-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <h3 className="text-2xl font-bold text-white mb-1 tracking-wide">{country.name}</h3>
-                    <p className="text-sm text-gray-300 mb-4 font-light tracking-wider">{country.region}</p>
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gold font-bold bg-black/50 border border-gold/30 w-fit px-3 py-1.5 rounded-full backdrop-blur-md">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Partenaire actif
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-12 text-center">
-              <Link
-                href="/countries"
-                className="inline-flex items-center gap-2 text-primary hover:underline"
-              >
-                Voir tous les pays disponibles
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-32 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
-          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Globe2 className="w-16 h-16 text-primary mx-auto mb-8" />
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                Prêt à sécuriser vos importations ?
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Rejoignez Alpha Import Exchange RDC et bénéficiez d&apos;une infrastructure
-                de confiance pour vos opérations internationales.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button size="lg" asChild className="h-14 px-8 text-base group glow-gold">
-                  <Link href="/register" className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Créer un compte Acheteur
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild className="h-14 px-8 text-base">
-                  <Link href="/partner-request">
-                    Devenir Partenaire
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
       </main>
 
       <PublicFooter />
