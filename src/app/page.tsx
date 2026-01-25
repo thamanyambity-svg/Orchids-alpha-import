@@ -167,10 +167,10 @@ export default function HomePage() {
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-900 via-black to-black" />
 
-            {/* World Map Watermark (CSS based for now, replacing previous particles for a cleaner look) */}
+            {/* World Map Watermark */}
             <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-center bg-no-repeat bg-cover grayscale contrast-200" style={{ filter: 'invert(1)' }} />
 
-            {/* Network Connections (Subtle animated lines) */}
+            {/* Network Connections */}
             <motion.div
               animate={{ opacity: [0.1, 0.3, 0.1] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -188,75 +188,69 @@ export default function HomePage() {
               transition={{ duration: 1, ease: "easeOut" }}
               className="mb-12 max-w-5xl"
             >
+              {/* BRANDING */}
               <div className="mb-8">
                 <span className="text-sm font-medium tracking-widest text-gold/80 uppercase">Une filiale du Groupe A.Onoseke House Investment RDC</span>
                 <div className="h-0.5 w-24 bg-gold/50 mx-auto mt-2" />
               </div>
 
+              {/* TITRE PRINCIPAL (H1) */}
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white uppercase leading-tight">
-                La Passerelle Sécurisée entre <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400">Kinshasa</span> et les <br />
-                <span className="text-gradient-gold">Géants Économiques Mondiaux</span>
+                LA PASSERELLE SÉCURISÉE ENTRE <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400">KINSHASA</span> ET LES <br />
+                <span className="text-gradient-gold">GÉANTS ÉCONOMIQUES MONDIAUX</span>
               </h1>
 
+              {/* SOUS-TITRE (H2) */}
               <h2 className="text-lg sm:text-xl lg:text-2xl text-gray-400 font-light mb-10 max-w-3xl mx-auto">
-                Facilitation d'Achats • Sourcing Stratégique • Importation de Précision <br />
+                <strong className="text-white font-normal">Facilitation d'Achats • Sourcing Stratégique • Importation de Précision</strong>
                 <span className="text-sm mt-4 block text-gray-500">
                   Accédez aux meilleurs fournisseurs de <span className="text-white">Chine, Dubaï (UAE), Turquie, Thaïlande et Japon</span> sans les risques liés à la distance.
                 </span>
               </h2>
 
+              {/* BOUTON D'ACTION (CTA) - Royal Blue */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <Button size="lg" asChild className="h-16 px-12 text-lg bg-[#0033A0] hover:bg-[#002a85] text-white transition-all duration-300 shadow-[0_0_30px_-5px_rgba(0,51,160,0.4)] hover:shadow-[0_0_40px_-5px_rgba(0,51,160,0.6)] hover:-translate-y-1 rounded-full">
-                  <Link href="/register" className="flex items-center gap-2 font-bold tracking-wide">
+                <Button size="lg" asChild className="h-16 px-12 text-lg bg-[#0033A0] hover:bg-[#002a85] text-white transition-all duration-300 shadow-[0_0_30px_-5px_rgba(0,51,160,0.4)] hover:shadow-[0_0_40px_-5px_rgba(0,51,160,0.6)] hover:-translate-y-1 rounded-full uppercase font-bold tracking-widest">
+                  <Link href="/register">
                     LANCER MON IMPORTATION
                   </Link>
                 </Button>
               </div>
             </motion.div>
 
-            {/* Flag Strip */}
+            {/* Flag Strip (Juste en dessous du titre comme demandé) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="flex items-center gap-6 opacity-70 grayscale hover:grayscale-0 transition-all duration-500"
+              className="flex items-center gap-6 opacity-80 grayscale-[30%] hover:grayscale-0 transition-all duration-500 mt-8"
             >
               {['🇨🇳', '🇦🇪', '🇹🇷', '🇹🇭', '🇯🇵'].map((flag, i) => (
-                <span key={i} className="text-3xl drop-shadow-md cursor-help" title="Pays Partenaire">{flag}</span>
+                <span key={i} className="text-3xl sm:text-4xl drop-shadow-md cursor-help hover:scale-110 transition-transform" title="Pays Partenaire">{flag}</span>
               ))}
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          >
-            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500">Découvrir l'infrastructure</span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-gold/50 to-transparent" />
-          </motion.div>
         </section>
 
-        {/* Section 2: La Promesse */}
+        {/* SECTION 2 : LA PROMESSE */}
         <section className="py-32 relative bg-black">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-4xl mx-auto mb-20">
               <h2 className="text-3xl sm:text-5xl font-bold mb-8 uppercase tracking-wide text-white">
-                Importation <span className="text-gold">5 Étoiles</span>, Sans Frontières.
+                IMPORTATION <span className="text-gold">5 ÉTOILES</span>, SANS FRONTIÈRES.
               </h2>
               <p className="text-xl text-gray-400 leading-relaxed font-light">
                 Alpha Import Exchange redéfinit les standards de l'importation en RDC.
                 Adossés à la solidité financière du <span className="text-white font-medium">Groupe A.Onoseke House Investment</span>,
-                nous ne sommes pas de simples transitaires. Nous sommes votre partenaire d'achat global.
+                nous ne sommes pas de simples transitaires. <strong>Nous sommes votre partenaire d'achat global.</strong>
               </p>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-              {/* Pilier 1 */}
+              {/* 1. Sécurisation Financière */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -266,13 +260,13 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
                   <Shield className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4 uppercase">Sécurisation Financière</h3>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">1. Sécurisation Financière</h3>
                 <p className="text-gray-400 leading-relaxed">
                   Vos fonds sont protégés. Nous gérons le paiement de vos fournisseurs pour éviter les arnaques et les blocages bancaires.
                 </p>
               </motion.div>
 
-              {/* Pilier 2 */}
+              {/* 2. Hubs Stratégiques */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -283,17 +277,20 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
                   <Globe2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4 uppercase">Hubs Stratégiques</h3>
-                <ul className="space-y-3 text-sm text-gray-400">
-                  <li className="flex items-center gap-3"><span className="text-xl">🇨🇳</span> <span><strong className="text-white">CHINE :</strong> L'usine du monde.</span></li>
-                  <li className="flex items-center gap-3"><span className="text-xl">🇦🇪</span> <span><strong className="text-white">DUBAÏ :</strong> Luxe & Tech.</span></li>
-                  <li className="flex items-center gap-3"><span className="text-xl">🇹🇷</span> <span><strong className="text-white">TURQUIE :</strong> Textile & Industrie.</span></li>
-                  <li className="flex items-center gap-3"><span className="text-xl">🇹🇭</span> <span><strong className="text-white">THAÏLANDE :</strong> Excellence manufacturière.</span></li>
-                  <li className="flex items-center gap-3"><span className="text-xl">🇯🇵</span> <span><strong className="text-white">JAPON :</strong> Haute technologie.</span></li>
-                </ul>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">2. Hubs Stratégiques Ciblés</h3>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-400">Une présence maîtrisée sur les marchés clés :</p>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li className="flex items-center gap-3"><span className="text-xl">🇨🇳</span> <span><strong className="text-white">CHINE :</strong> L'usine du monde.</span></li>
+                    <li className="flex items-center gap-3"><span className="text-xl">🇦🇪</span> <span><strong className="text-white">UAE (DUBAÏ) :</strong> Le luxe et la technologie.</span></li>
+                    <li className="flex items-center gap-3"><span className="text-xl">🇹🇷</span> <span><strong className="text-white">TURQUIE :</strong> Le textile et l'industriel.</span></li>
+                    <li className="flex items-center gap-3"><span className="text-xl">🇹🇭</span> <span><strong className="text-white">THAÏLANDE :</strong> L'excellence manufacturière.</span></li>
+                    <li className="flex items-center gap-3"><span className="text-xl">🇯🇵</span> <span><strong className="text-white">JAPON :</strong> La haute technologie.</span></li>
+                  </ul>
+                </div>
               </motion.div>
 
-              {/* Pilier 3 */}
+              {/* 3. Logistique de Bout en Bout */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -304,22 +301,22 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
                   <Package className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4 uppercase">Logistique de Bout en Bout</h3>
+                <h3 className="text-xl font-bold text-white mb-4 uppercase">3. Logistique de Bout en Bout</h3>
                 <p className="text-gray-400 leading-relaxed">
-                  Du sourcing à l'entrepôt du fournisseur jusqu'à votre porte à Kinshasa. Une chaîne logistique intégrée et maîtrisée.
+                  Du sourcing à l'entrepôt du fournisseur jusqu'à votre porte à Kinshasa.
                 </p>
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Section 3: Comment ça marche */}
+        {/* SECTION 3 : COMMENT ÇA MARCHE ? */}
         <section className="py-32 bg-[#050505] relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 className="text-3xl sm:text-4xl font-bold mb-16 font-mono text-gold tracking-widest uppercase">
-              // PROCESSUS SIMPLIFIÉ
+              // COMMENT ÇA MARCHE ?
             </h2>
 
             <div className="grid md:grid-cols-3 gap-12 relative">
@@ -339,20 +336,21 @@ export default function HomePage() {
                   transition={{ delay: i * 0.2 }}
                   className="relative bg-black border border-white/10 p-8 rounded-xl hover:border-gold/30 transition-colors"
                 >
+                  {/* Golden Icon on Black Background */}
                   <div className="w-20 h-20 mx-auto bg-black border-2 border-gold/50 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
                     <step.icon className="w-8 h-8 text-gold" />
                   </div>
                   <div className="text-5xl font-bold text-white/5 absolute top-4 right-6 pointer-events-none">{step.number}</div>
-                  <h3 className="text-xl font-bold text-white mb-4 tracking-wider">{step.title}</h3>
+                  <h3 className="text-xl font-bold text-white mb-4 tracking-wider uppercase">{step.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    {step.text}
+                    "{step.text}"
                   </p>
                 </motion.div>
               ))}
             </div>
 
             <div className="mt-20">
-              <Button size="lg" asChild className="h-14 px-10 text-base bg-[#0033A0] hover:bg-[#002a85] text-white rounded-full">
+              <Button size="lg" asChild className="h-14 px-10 text-base bg-[#0033A0] hover:bg-[#002a85] text-white rounded-full uppercase tracking-wider font-bold shadow-lg shadow-blue-900/20">
                 <Link href="/register">
                   Démarrer maintenant
                 </Link>
