@@ -278,15 +278,47 @@ export default function HomePage() {
                 <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 text-gold group-hover:scale-110 transition-transform">
                   <Globe2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4 uppercase">2. Hubs Stratégiques Ciblés</h3>
-                <div className="space-y-4">
-                  <p className="text-sm text-gray-400">Une présence maîtrisée sur les marchés clés :</p>
-                  <ul className="space-y-2 text-sm text-gray-400">
-                    <li className="flex items-center gap-3"><span className="text-xl">🇨🇳</span> <span><strong className="text-white">CHINE :</strong> L'usine du monde.</span></li>
-                    <li className="flex items-center gap-3"><span className="text-xl">🇦🇪</span> <span><strong className="text-white">UAE (DUBAÏ) :</strong> Le luxe et la technologie.</span></li>
-                    <li className="flex items-center gap-3"><span className="text-xl">🇹🇷</span> <span><strong className="text-white">TURQUIE :</strong> Le textile et l'industriel.</span></li>
-                    <li className="flex items-center gap-3"><span className="text-xl">🇹🇭</span> <span><strong className="text-white">THAÏLANDE :</strong> L'excellence manufacturière.</span></li>
-                    <li className="flex items-center gap-3"><span className="text-xl">🇯🇵</span> <span><strong className="text-white">JAPON :</strong> La haute technologie.</span></li>
+                <h3 className="text-xl font-bold text-white mb-6 uppercase">2. Hubs Stratégiques Ciblés</h3>
+                <div className="space-y-6">
+                  {/* UAE - Real Partner */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-gold/30 flex items-start gap-4 hover:bg-white/10 transition-colors cursor-default">
+                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white shrink-0 shadow-lg">
+                      <Image
+                        src="/partners/maarmala.jpg"
+                        alt="MAARMALA UAE"
+                        fill
+                        className="object-contain p-1"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xl">🇦🇪</span>
+                        <span className="font-bold text-white text-sm">MAARMALA (UAE)</span>
+                      </div>
+                      <p className="text-xs text-gold mb-1 font-medium tracking-wide">Partenaire Officiel</p>
+                      <p className="text-xs text-gray-400">M. BILONGO ACHIGNON</p>
+                      <p className="text-xs text-gray-400 font-mono">+971 50 120 1719</p>
+                    </div>
+                  </div>
+
+                  {/* Others - Coming Soon */}
+                  <ul className="space-y-3 text-sm text-gray-400">
+                    <li className="flex items-center gap-3 opacity-60">
+                      <span className="text-xl">🇨🇳</span>
+                      <span><strong className="text-white">CHINE</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
+                    </li>
+                    <li className="flex items-center gap-3 opacity-60">
+                      <span className="text-xl">🇹🇷</span>
+                      <span><strong className="text-white">TURQUIE</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
+                    </li>
+                    <li className="flex items-center gap-3 opacity-60">
+                      <span className="text-xl">🇹🇭</span>
+                      <span><strong className="text-white">THAÏLANDE</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
+                    </li>
+                    <li className="flex items-center gap-3 opacity-60">
+                      <span className="text-xl">🇯🇵</span>
+                      <span><strong className="text-white">JAPON</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
+                    </li>
                   </ul>
                 </div>
               </motion.div>
