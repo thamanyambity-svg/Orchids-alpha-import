@@ -301,6 +301,27 @@ export default function HomePage() {
                     </div>
                   </div>
 
+                  {/* Japan - Real Partner */}
+                  <div className="p-4 rounded-xl bg-white/5 border border-gold/30 flex items-start gap-4 hover:bg-white/10 transition-colors cursor-default">
+                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white shrink-0 shadow-lg">
+                      <Image
+                        src="/partners/pam-japan.png"
+                        alt="PAM CONGO JAPAN"
+                        fill
+                        className="object-contain p-1"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xl">🇯🇵</span>
+                        <span className="font-bold text-white text-sm">PAM CONGO JAPAN</span>
+                      </div>
+                      <p className="text-xs text-gold mb-1 font-medium tracking-wide">Partenaire Officiel</p>
+                      <p className="text-xs text-gray-400">M. ASSANI MUSUSA</p>
+                      <p className="text-xs text-gray-400 font-mono">+81 90 8326 7671</p>
+                    </div>
+                  </div>
+
                   {/* Others - Coming Soon */}
                   <ul className="space-y-3 text-sm text-gray-400">
                     <li className="flex items-center gap-3 opacity-60">
@@ -314,10 +335,6 @@ export default function HomePage() {
                     <li className="flex items-center gap-3 opacity-60">
                       <span className="text-xl">🇹🇭</span>
                       <span><strong className="text-white">THAÏLANDE</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
-                    </li>
-                    <li className="flex items-center gap-3 opacity-60">
-                      <span className="text-xl">🇯🇵</span>
-                      <span><strong className="text-white">JAPON</strong> <span className="text-[10px] uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full ml-2 text-gray-500">Bientôt</span></span>
                     </li>
                   </ul>
                 </div>
