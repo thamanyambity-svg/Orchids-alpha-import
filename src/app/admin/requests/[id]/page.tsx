@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { 
-  ArrowLeft, 
-  Package, 
-  User, 
-  Calendar, 
-  DollarSign, 
+import { TrackingEditor } from "@/components/admin/tracking-editor"
+import {
+  ArrowLeft,
+  Package,
+  User,
+  Calendar,
+  DollarSign,
   FileText,
   Upload,
   CheckCircle2,
@@ -176,7 +177,7 @@ export default function AdminRequestDetailPage() {
         </Button>
       </div>
 
-      <DashboardHeader 
+      <DashboardHeader
         title={request.category}
         subtitle={`Référence: ${request.reference}`}
       >
@@ -218,7 +219,7 @@ export default function AdminRequestDetailPage() {
               <Package className="w-5 h-5 text-primary" />
               Détails de la demande
             </h3>
-            
+
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Produit</p>
@@ -256,7 +257,7 @@ export default function AdminRequestDetailPage() {
             <div className="space-y-3">
               {documents.length > 0 ? (
                 documents.map((doc) => (
-                  <div 
+                  <div
                     key={doc.id}
                     className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
                   >
@@ -300,7 +301,7 @@ export default function AdminRequestDetailPage() {
                 <DollarSign className="w-5 h-5 text-primary" />
                 Détails Financiers
               </h3>
-              
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                   <p className="text-sm text-muted-foreground mb-1">Acompte (60%)</p>
@@ -405,6 +406,9 @@ export default function AdminRequestDetailPage() {
               </div>
             )}
           </div>
+
+          {/* TRACKING SECTION */}
+          <TrackingEditor requestId={params.id as string} />
 
           {/* Country/Origin */}
           <div className="rounded-2xl bg-card border border-border p-6">

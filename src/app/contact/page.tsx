@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import {
   Shield,
   Mail,
@@ -10,7 +12,6 @@ import {
   MessageSquare,
   Send,
   Loader2,
-  Users,
   Building2,
   Briefcase
 } from "lucide-react"
@@ -25,12 +26,13 @@ import { PublicFooter } from "@/components/public-footer"
 import { toast } from "sonner"
 
 const contactTypes = [
-  { value: "buyer", label: "Je suis acheteur", icon: Users },
   { value: "partner", label: "Je veux devenir partenaire", icon: Building2 },
   { value: "institutional", label: "Contact institutionnel", icon: Briefcase },
 ]
 
 export default function ContactPage() {
+  const router = useRouter()
+  const supabase = createClient()
   const [isLoading, setIsLoading] = useState(false)
   const [contactType, setContactType] = useState("")
   const [formData, setFormData] = useState({
@@ -41,16 +43,49 @@ export default function ContactPage() {
     message: "",
   })
 
+  // Handle Type Selection
+  const handleTypeSelect = (type: string) => {
+    if (type === "partner") {
+      router.push("/partner-request")
+      return
+    }
+    setContactType(type)
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
 
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+      if (contactType !== "institutional") {
+        toast.error("Veuillez sélectionner un type de contact.")
+        return
+      }
 
-    toast.success("Message envoyé ! Nous vous répondrons sous 24h.")
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
-    setContactType("")
-    setIsLoading(false)
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          type: 'INSTITUTIONAL',
+          status: 'PENDING'
+        })
+
+      if (error) throw error
+
+      toast.success("Message institutionnel envoyé ! Nous vous répondrons sous 24h.")
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
+      setContactType("")
+
+    } catch (error: any) {
+      console.error("Error sending message:", error)
+      toast.error("Erreur lors de l'envoi : " + error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -80,7 +115,7 @@ export default function ContactPage() {
                   Parlons de votre <span className="text-gradient-gold">projet</span>
                 </h1>
                 <p className="text-lg text-muted-foreground mb-12">
-                  Que vous soyez acheteur, futur partenaire ou institutionnel,
+                  Que vous soyez futur partenaire ou institutionnel,
                   notre équipe est à votre écoute pour répondre à toutes vos questions.
                 </p>
 
@@ -115,7 +150,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Téléphone / WhatsApp</h3>
-                      <a href="tel:+243000000000" className="text-primary hover:underline">
+                      <a href="tel:+243999894788" className="text-primary hover:underline">
                         +243 999 894 788 / +243 818 924 674
                       </a>
                     </div>
@@ -142,15 +177,15 @@ export default function ContactPage() {
                 <div className="p-8 rounded-2xl bg-card border border-border">
                   <h2 className="text-2xl font-bold mb-6">Envoyez-nous un message</h2>
 
-                  <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="grid grid-cols-2 gap-3 mb-6">
                     {contactTypes.map((type) => (
                       <button
                         key={type.value}
                         type="button"
-                        onClick={() => setContactType(type.value)}
+                        onClick={() => handleTypeSelect(type.value)}
                         className={`p-4 rounded-xl border transition-all text-center ${contactType === type.value
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50"
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50"
                           }`}
                       >
                         <type.icon className={`w-6 h-6 mx-auto mb-2 ${contactType === type.value ? "text-primary" : "text-muted-foreground"
@@ -160,90 +195,103 @@ export default function ContactPage() {
                     ))}
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid sm:grid-cols-2 gap-4">
+                  {contactType === "institutional" && (
+                    <motion.form
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      onSubmit={handleSubmit}
+                      className="space-y-5"
+                    >
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Nom complet *</Label>
+                          <Input
+                            id="name"
+                            type="text"
+                            placeholder="Jean Dupont"
+                            className="h-12"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email *</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            placeholder="votre@email.com"
+                            className="h-12"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Téléphone</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="+243 000 000 000"
+                            className="h-12"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="subject">Sujet *</Label>
+                          <Select
+                            value={formData.subject}
+                            onValueChange={(value) => setFormData({ ...formData, subject: value })}
+                            required
+                          >
+                            <SelectTrigger className="h-12">
+                              <SelectValue placeholder="Sélectionnez" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="info">Demande d&apos;information</SelectItem>
+                              <SelectItem value="partnership">Proposition Institutionnelle</SelectItem>
+                              <SelectItem value="press">Presse / Média</SelectItem>
+                              <SelectItem value="other">Autre</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="name">Nom complet *</Label>
-                        <Input
-                          id="name"
-                          type="text"
-                          placeholder="Jean Dupont"
-                          className="h-12"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        <Label htmlFor="message">Message *</Label>
+                        <Textarea
+                          id="message"
+                          placeholder="Décrivez votre demande en détail..."
+                          className="min-h-32 resize-none"
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                           required
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="votre@email.com"
-                          className="h-12"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          required
-                        />
-                      </div>
-                    </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Téléphone</Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="+243 000 000 000"
-                          className="h-12"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Sujet *</Label>
-                        <Select
-                          value={formData.subject}
-                          onValueChange={(value) => setFormData({ ...formData, subject: value })}
-                          required
-                        >
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Sélectionnez" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="info">Demande d&apos;information</SelectItem>
-                            <SelectItem value="quote">Demande de devis</SelectItem>
-                            <SelectItem value="partner">Devenir partenaire</SelectItem>
-                            <SelectItem value="support">Support technique</SelectItem>
-                            <SelectItem value="other">Autre</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                      <Button type="submit" className="w-full h-12" disabled={isLoading}>
+                        {isLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <>
+                            <Send className="w-5 h-5 mr-2" />
+                            Envoyer le message
+                          </>
+                        )}
+                      </Button>
+                    </motion.form>
+                  )}
 
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message *</Label>
-                      <Textarea
-                        id="message"
-                        placeholder="Décrivez votre demande en détail..."
-                        className="min-h-32 resize-none"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        required
-                      />
+                  {!contactType && (
+                    <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
+                      <p>Veuillez sélectionner le type de demande ci-dessus pour continuer.</p>
                     </div>
+                  )}
 
-                    <Button type="submit" className="w-full h-12" disabled={isLoading}>
-                      {isLoading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5 mr-2" />
-                          Envoyer le message
-                        </>
-                      )}
-                    </Button>
-                  </form>
                 </div>
               </motion.div>
             </div>

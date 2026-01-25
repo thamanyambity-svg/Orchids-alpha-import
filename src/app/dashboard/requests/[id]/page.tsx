@@ -4,13 +4,13 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { 
-  ArrowLeft, 
-  FileText, 
-  Globe2, 
-  Package, 
-  Clock, 
-  CheckCircle2, 
+import {
+  ArrowLeft,
+  FileText,
+  Globe2,
+  Package,
+  Clock,
+  CheckCircle2,
   Loader2,
   ShieldCheck,
   AlertCircle,
@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import { PaymentButton } from "@/components/payment-button"
+import { TrackingTimeline } from "@/components/dashboard/tracking-timeline"
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -50,31 +51,31 @@ export default function RequestDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
   const [request, setRequest] = useState<any>(null)
-    const [order, setOrder] = useState<any>(null)
-    const [documents, setDocuments] = useState<any[]>([])
-    const [loading, setLoading] = useState(true)
+  const [order, setOrder] = useState<any>(null)
+  const [documents, setDocuments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-    const documentTypeLabels: Record<string, string> = {
-      PROFORMA_INVOICE: "Facture Proforma",
-      COMMERCIAL_INVOICE: "Facture Commerciale",
-      PACKING_LIST: "Packing List",
-      INSPECTION_REPORT: "Rapport d'inspection",
-      BILL_OF_LADING: "Bill of Lading / LTA",
-      CERTIFICATE_ORIGIN: "Certificat d'Origine",
-      PAYMENT_RECEIPT: "Reçu de Paiement (Alpha)",
-      COMPLIANCE_REPORT: "Rapport de Conformité (Alpha)",
-      OTHER: "Autre document",
-    }
+  const documentTypeLabels: Record<string, string> = {
+    PROFORMA_INVOICE: "Facture Proforma",
+    COMMERCIAL_INVOICE: "Facture Commerciale",
+    PACKING_LIST: "Packing List",
+    INSPECTION_REPORT: "Rapport d'inspection",
+    BILL_OF_LADING: "Bill of Lading / LTA",
+    CERTIFICATE_ORIGIN: "Certificat d'Origine",
+    PAYMENT_RECEIPT: "Reçu de Paiement (Alpha)",
+    COMPLIANCE_REPORT: "Rapport de Conformité (Alpha)",
+    OTHER: "Autre document",
+  }
 
-    useEffect(() => {
-      async function fetchData() {
-        setLoading(true)
-        const supabase = createClient()
-        
-        const [requestRes, orderRes, docsRes] = await Promise.all([
-          supabase
-            .from("import_requests")
-            .select(`
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      const supabase = createClient()
+
+      const [requestRes, orderRes, docsRes] = await Promise.all([
+        supabase
+          .from("import_requests")
+          .select(`
               *,
               countries (name, flag),
               assigned_partner:partner_profiles (
@@ -84,32 +85,32 @@ export default function RequestDetailsPage() {
                 phone
               )
             `)
-            .eq("id", id)
-            .single(),
-          supabase
-            .from("orders")
-            .select("*")
-            .eq("request_id", id)
-            .single(),
-          supabase
-            .from("request_documents")
-            .select("*")
-            .eq("request_id", id)
-            .order('created_at', { ascending: false })
-        ])
+          .eq("id", id)
+          .single(),
+        supabase
+          .from("orders")
+          .select("*")
+          .eq("request_id", id)
+          .single(),
+        supabase
+          .from("request_documents")
+          .select("*")
+          .eq("request_id", id)
+          .order('created_at', { ascending: false })
+      ])
 
-        if (requestRes.error) {
-          console.error("Error fetching request:", requestRes.error)
-        } else {
-          setRequest(requestRes.data)
-          setOrder(orderRes.data)
-          setDocuments(docsRes.data || [])
-        }
-        setLoading(false)
+      if (requestRes.error) {
+        console.error("Error fetching request:", requestRes.error)
+      } else {
+        setRequest(requestRes.data)
+        setOrder(orderRes.data)
+        setDocuments(docsRes.data || [])
       }
+      setLoading(false)
+    }
 
-      if (id) fetchData()
-    }, [id])
+    if (id) fetchData()
+  }, [id])
 
 
   if (loading) {
@@ -148,146 +149,149 @@ export default function RequestDetailsPage() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-            <section className="bg-card border border-border rounded-2xl p-6">
+          <section className="bg-card border border-border rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Package className="w-5 h-5 text-primary" />
+              Détails du dossier
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <label className="text-sm text-muted-foreground">Catégorie</label>
+                <p className="font-semibold">{request.category}</p>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Référence</label>
+                <p className="font-semibold">{request.reference}</p>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Quantité</label>
+                <p className="font-semibold">{request.quantity} {request.unit}</p>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Budget Max</label>
+                <p className="font-semibold">${request.budget_max?.toLocaleString()}</p>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-sm text-muted-foreground">Spécifications</label>
+                <p className="mt-1 text-sm whitespace-pre-wrap">{request.specifications?.description}</p>
+              </div>
+            </div>
+          </section>
+
+          {order && (
+            <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5">
+                <ShieldCheck className="w-24 h-24" />
+              </div>
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Package className="w-5 h-5 text-primary" />
-                Détails du dossier
+                <CreditCard className="w-5 h-5 text-primary" />
+                Facturation & Paiement (Modèle 60/40)
               </h2>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-sm text-muted-foreground">Catégorie</label>
-                  <p className="font-semibold">{request.category}</p>
+
+              <div className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className={`p-4 rounded-xl border ${order.deposit_paid ? 'bg-success/5 border-success/20' : 'bg-primary/5 border-primary/20'}`}>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-medium">Acompte (60%)</span>
+                      {order.deposit_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                    </div>
+                    <p className="text-2xl font-bold mb-4">${order.deposit_amount?.toLocaleString()}</p>
+
+                    {!order.deposit_paid ? (
+                      <PaymentButton
+                        orderId={order.id}
+                        paymentType="DEPOSIT_60"
+                        amount={Number(order.deposit_amount)}
+                        className="w-full"
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2 text-success text-sm font-medium">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Payé le {new Date(order.updated_at).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={`p-4 rounded-xl border ${order.balance_paid ? 'bg-success/5 border-success/20' : 'bg-muted border-border'}`}>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-medium">Solde (40%)</span>
+                      {order.balance_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                    </div>
+                    <p className="text-2xl font-bold mb-4">${order.balance_amount?.toLocaleString()}</p>
+
+                    {!order.balance_paid ? (
+                      <PaymentButton
+                        orderId={order.id}
+                        paymentType="BALANCE_40"
+                        amount={Number(order.balance_amount)}
+                        disabled={!order.deposit_paid}
+                        className="w-full"
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2 text-success text-sm font-medium">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Payé
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Référence</label>
-                  <p className="font-semibold">{request.reference}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Quantité</label>
-                  <p className="font-semibold">{request.quantity} {request.unit}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Budget Max</label>
-                  <p className="font-semibold">${request.budget_max?.toLocaleString()}</p>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-sm text-muted-foreground">Spécifications</label>
-                  <p className="mt-1 text-sm whitespace-pre-wrap">{request.specifications?.description}</p>
+
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground">
+                  <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+                  <p>
+                    Vos fonds sont bloqués sur le compte séquestre Alpha.
+                    Le partenaire n&apos;est payé qu&apos;après validation de chaque étape clé.
+                  </p>
                 </div>
               </div>
             </section>
+          )}
 
-            {order && (
-              <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-5">
-                  <ShieldCheck className="w-24 h-24" />
-                </div>
-                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-primary" />
-                  Facturation & Paiement (Modèle 60/40)
-                </h2>
-                
-                <div className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className={`p-4 rounded-xl border ${order.deposit_paid ? 'bg-success/5 border-success/20' : 'bg-primary/5 border-primary/20'}`}>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-medium">Acompte (60%)</span>
-                        {order.deposit_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+          <section className="bg-card border border-border rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              Documents du dossier
+            </h2>
+
+            {documents.length > 0 ? (
+              <div className="grid sm:grid-cols-2 gap-4">
+                {documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="text-2xl font-bold mb-4">${order.deposit_amount?.toLocaleString()}</p>
-                      
-                      {!order.deposit_paid ? (
-                        <PaymentButton 
-                          orderId={order.id} 
-                          paymentType="DEPOSIT_60" 
-                          amount={Number(order.deposit_amount)}
-                          className="w-full"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2 text-success text-sm font-medium">
-                          <CheckCircle2 className="w-4 h-4" />
-                          Payé le {new Date(order.updated_at).toLocaleDateString()}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={`p-4 rounded-xl border ${order.balance_paid ? 'bg-success/5 border-success/20' : 'bg-muted border-border'}`}>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-medium">Solde (40%)</span>
-                        {order.balance_paid && <CheckCircle2 className="w-4 h-4 text-success" />}
+                      <div>
+                        <p className="text-sm font-bold">
+                          {documentTypeLabels[doc.type] || doc.type}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {new Date(doc.created_at).toLocaleDateString()} • {doc.service}
+                        </p>
                       </div>
-                      <p className="text-2xl font-bold mb-4">${order.balance_amount?.toLocaleString()}</p>
-                      
-                      {!order.balance_paid ? (
-                        <PaymentButton 
-                          orderId={order.id} 
-                          paymentType="BALANCE_40" 
-                          amount={Number(order.balance_amount)}
-                          disabled={!order.deposit_paid}
-                          className="w-full"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2 text-success text-sm font-medium">
-                          <CheckCircle2 className="w-4 h-4" />
-                          Payé
-                        </div>
-                      )}
                     </div>
+                    <Button size="icon" variant="ghost" asChild title="Voir">
+                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </Button>
                   </div>
-
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground">
-                    <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
-                    <p>
-                      Vos fonds sont bloqués sur le compte séquestre Alpha. 
-                      Le partenaire n&apos;est payé qu&apos;après validation de chaque étape clé.
-                    </p>
-                  </div>
-                </div>
-              </section>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
+                <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                <p className="text-sm text-muted-foreground">Aucun document n'a encore été ajouté.</p>
+              </div>
             )}
+          </section>
 
-            <section className="bg-card border border-border rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Documents du dossier
-              </h2>
-              
-              {documents.length > 0 ? (
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {documents.map((doc) => (
-                    <div 
-                      key={doc.id}
-                      className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border group hover:border-primary/30 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <FileText className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold">
-                            {documentTypeLabels[doc.type] || doc.type}
-                          </p>
-                          <p className="text-[10px] text-muted-foreground">
-                            {new Date(doc.created_at).toLocaleDateString()} • {doc.service}
-                          </p>
-                        </div>
-                      </div>
-                      <Button size="icon" variant="ghost" asChild title="Voir">
-                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
-                  <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                  <p className="text-sm text-muted-foreground">Aucun document n'a encore été ajouté.</p>
-                </div>
-              )}
-            </section>
-          </div>
+          {/* TRACKING TIMELINE */}
+          <TrackingTimeline requestId={id as string} />
+        </div>
 
 
         <div className="space-y-6">
