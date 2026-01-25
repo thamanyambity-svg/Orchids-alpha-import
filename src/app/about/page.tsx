@@ -2,19 +2,27 @@
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { 
-  History, 
-  Target, 
-  Users, 
-  Globe2, 
-  Cpu, 
-  LineChart, 
+import {
+  History,
+  Target,
+  Users,
+  Globe2,
+  Cpu,
+  LineChart,
   UserPlus,
   Award,
   ShieldCheck,
   Lightbulb,
+  Lightbulb,
   Heart
 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { PublicHeader } from "@/components/public-header"
 import { PublicFooter } from "@/components/public-footer"
 import { BackButton } from "@/components/back-button"
@@ -23,7 +31,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       <PublicHeader />
-      
+
       <main className="pt-20">
         {/* Hero Section */}
         <section className="relative py-24 overflow-hidden">
@@ -160,38 +168,100 @@ export default function AboutPage() {
                 {
                   icon: Globe2,
                   title: "Commerce & Logistique",
-                  desc: "Experts en Import-Export, nous connectons le marché local aux opportunités mondiales."
+                  desc: "Experts en Import-Export, nous connectons le marché local aux opportunités mondiales.",
+                  detail: {
+                    title: "La Route de la Soie Moderne & Sécurisée",
+                    subtitle: "Importation stratégique : Chine • Dubaï • Turquie • Asie",
+                    content: [
+                      { title: "🛡️ Sourcing Vérifié", text: "Nous ne dépendons pas du hasard. Nos agents basés dans les hubs mondiaux (Guangzhou, Istanbul, Dubaï) inspectent les usines et valident la marchandise avant tout paiement." },
+                      { title: "💸 Facilité Financière", text: "Payez en toute sécurité à Kinshasa. Nous prenons en charge les transferts internationaux complexes et le change, éliminant les risques de blocage bancaire." },
+                      { title: "📦 Logistique Door-to-Door", text: "Une prise en charge totale, de l'entrepôt du fournisseur jusqu'à votre porte en RDC, incluant le dédouanement." }
+                    ]
+                  }
                 },
                 {
                   icon: Cpu,
                   title: "Technologie & Innovation",
-                  desc: "Transformation numérique et solutions logicielles sur mesure pour la modernité."
+                  desc: "Transformation numérique et solutions logicielles sur mesure pour la modernité.",
+                  detail: {
+                    title: "Architectes de votre Transformation Digitale",
+                    subtitle: "Développement sur mesure & Infrastructures Cloud",
+                    content: [
+                      { title: "🚀 Développement Full-Stack", text: "Conception de plateformes web et mobiles robustes (Python, Node.js). Nous créons des outils adaptés aux réalités africaines (faible bande passante, intégration Mobile Money)." },
+                      { title: "☁️ Migration & Sécurité", text: "Transition de vos anciens systèmes vers des environnements Cloud modernes (Antigravity), garantissant la sécurité et la pérennité de vos données." },
+                      { title: "🤖 Audit & Automatisation", text: "Analyse de vos processus métiers pour automatiser les tâches répétitives et réduire les coûts opérationnels." }
+                    ]
+                  }
                 },
                 {
                   icon: LineChart,
                   title: "Finance & Trading",
-                  desc: "Démocratisation de l'accès aux marchés financiers via une formation de pointe."
+                  desc: "Démocratisation de l'accès aux marchés financiers via une formation de pointe.",
+                  detail: {
+                    title: "Trading Algorithmique & Haute Finance",
+                    subtitle: "La puissance de l'automatisation institutionnelle",
+                    content: [
+                      { title: "🤖 Bot Institutionnel Propriétaire", text: "Accès exclusif à notre technologie de trading automatisé. Notre intelligence artificielle scanne les marchés et exécute les ordres avec une rigueur mathématique, éliminant totalement le facteur émotionnel humain." },
+                      { title: "📊 Gestion de Risque Avancée", text: "Nous appliquons des protocoles de 'Risk Management' stricts, identiques à ceux des grands fonds d'investissement, pour préserver et faire croître le capital sur le long terme." }
+                    ]
+                  }
                 },
                 {
                   icon: UserPlus,
                   title: "Capital Humain",
-                  desc: "Resourcing et formation professionnelle pour identifier et polir les talents locaux."
+                  desc: "Resourcing et formation professionnelle pour identifier et polir les talents locaux.",
+                  detail: {
+                    title: "Incubateur de Compétences & Employabilité",
+                    subtitle: "Répondre aux besoins urgents du marché congolais",
+                    content: [
+                      { title: "🏗️ Formations 'Métiers en Tension'", text: "Nos cursus sont dictés par la demande réelle des entreprises en RDC. Nous formons spécifiquement pour les secteurs qui recrutent massivement (Mines, Logistique Avancée, Digital) mais qui manquent de main-d'œuvre qualifiée." },
+                      { title: "🎯 Certification & Insertion", text: "Plus que de la théorie, nous visons l'opérationnel. Notre objectif est de transformer des potentiels bruts en techniciens immédiatement employables et de faciliter leur placement en entreprise." }
+                    ]
+                  }
                 }
               ].map((pole, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-8 rounded-2xl border border-border bg-card hover:border-primary transition-all group"
-                >
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <pole.icon className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{pole.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{pole.desc}</p>
-                </motion.div>
+                <Dialog key={i}>
+                  <DialogTrigger asChild>
+                    <motion.div
+                      whileHover={{ y: -5 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      className="p-8 rounded-2xl border border-border bg-card hover:border-primary transition-all group cursor-pointer h-full flex flex-col"
+                    >
+                      <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <pole.icon className="w-7 h-7 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3">{pole.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{pole.desc}</p>
+                      <span className="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                        En savoir plus <span className="text-lg">→</span>
+                      </span>
+                    </motion.div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-2xl bg-[#0a0e14] border-white/10 text-white">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-primary mb-2">{pole.detail.title}</DialogTitle>
+                      <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-6 border-b border-primary/20 pb-4">
+                        {pole.detail.subtitle}
+                      </div>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                      {pole.detail.content.map((item, j) => (
+                        <div key={j} className="flex gap-4">
+                          <div className="shrink-0 pt-1">
+                            <div className="w-2 h-2 rounded-full bg-primary mt-2" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white text-base mb-1">{item.title}</h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{item.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
               ))}
             </div>
           </div>
