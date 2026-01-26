@@ -56,7 +56,8 @@ export function DashboardSidebar() {
 
   async function handleLogout() {
     await supabase.auth.signOut()
-    router.push("/login")
+    // Force hard reload to clear all client states/caches
+    window.location.href = "/login"
   }
 
   return (
