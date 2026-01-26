@@ -24,12 +24,22 @@ export default function DashboardPage() {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
           // Fetch profile with countries
-          const { data: profileData } = await supabase
+          const { data: profileData, error } = await supabase
             .from('profiles')
             .select('*, countries(name, code)')
             .eq('id', user.id)
             .single()
-          setProfile(profileData)
+
+          // Mixed Profile with Metadata Fallback
+          const mixedProfile = {
+            ...(profileData || {}),
+            full_name: user.user_metadata?.full_name || profileData?.full_name,
+            avatar_url: user.user_metadata?.avatar_url || profileData?.avatar_url
+          }
+
+          if (error) console.warn("Dashboard profile fetch warning:", error.message)
+
+          setProfile(mixedProfile)
 
           // Fetch latest request with partner info
           const { data: requestData } = await supabase
@@ -59,8 +69,8 @@ export default function DashboardPage() {
     )
   }
 
-  // Fallback to email username if full_name is missing, otherwise 'Utilisateur'
-  const displayName = profile?.full_name?.split(' ')[0] || (profile?.email?.split('@')[0]) || 'Utilisateur'
+  // Fallback to Partenaire Alpha
+  const displayName = profile?.full_name?.split(' ')[0] || (profile?.email?.split('@')[0]) || 'Partenaire Alpha'
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">

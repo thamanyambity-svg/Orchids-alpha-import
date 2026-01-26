@@ -100,7 +100,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
     await supabase.from('notifications').update({ is_read: true }).eq('id', id)
   }
 
-  const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
+  const firstName = profile?.full_name?.split(' ')[0] || 'Partenaire Alpha'
 
   return (
     <header className="h-20 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40">
