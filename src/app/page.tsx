@@ -18,11 +18,20 @@ import {
   Ship,
   Factory,
   Landmark,
-  Package
+  Landmark,
+  Package,
+  PenTool
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PublicHeader } from "@/components/public-header"
 import { PublicFooter } from "@/components/public-footer"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const heroImages = [
   {
@@ -374,28 +383,114 @@ export default function HomePage() {
               <div className="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
               {[
-                { number: "01", title: "IDENTIFIEZ", text: "Dites-nous ce que vous cherchez ou envoyez-nous votre facture proforma.", icon: Eye },
-                { number: "02", title: "PAYEZ EN LOCAL", text: "Réglez en toute sécurité à Kinshasa. Nous nous occupons du change et du transfert international.", icon: Lock },
-                { number: "03", title: "RÉCEPTIONNEZ", text: "Suivez votre cargo en temps réel et recevez vos marchandises dédouanées.", icon: CheckCircle2 }
+                {
+                  number: "01",
+                  title: "IDENTIFICATION",
+                  subtitle: "L'étude de faisabilité avant l'action.",
+                  text: "Dites-nous ce que vous cherchez ou envoyez-nous votre facture proforma.",
+                  icon: Eye,
+                  detail: {
+                    title: "IDENTIFICATION & SOURCING",
+                    subtitle: "L'étude de faisabilité avant l'action.",
+                    content: [
+                      { title: "🔍 Audit Fournisseur & Conformité", text: "Nous ne lançons rien à l'aveugle. Que vous ayez déjà une proforma ou que vous cherchiez un produit, nous vérifions l'existence légale et la fiabilité du fournisseur dans son pays (Chine, Turquie, UAE...)." },
+                      { title: "📊 Calcul du \"Landed Cost\"", text: "Transparence totale. Avant de payer, nous vous fournissons le coût de revient exact rendu à Kinshasa (Prix Achat + Fret + Douane). Vous connaissez votre marge avant même de commander." }
+                    ],
+                    action: "SOUMETTRE MA DEMANDE"
+                  }
+                },
+                {
+                  number: "02",
+                  title: "PROTOCOLE FINANCIER",
+                  subtitle: "Sécurisation par Double Signature.",
+                  text: "Réglez 60% en toute sécurité. Fonds bloqués jusqu'à validation.",
+                  icon: Lock,
+                  detail: {
+                    title: "PROTOCOLE FINANCIER (60/40)",
+                    subtitle: "Sécurisation par Double Signature.",
+                    content: [
+                      { title: "💳 Le Versement Initial (60%)", text: "Le processus s'enclenche par un versement de 60% du devis validé. Ce montant est déposé directement sur le compte corporate Alpha Import Exchange basé dans le pays de résidence du partenaire (Chine, Turquie, etc.), et non à Kinshasa, garantissant la disponibilité des devises." },
+                      { title: "🔐 Sécurité \"Double Signature\"", text: "C'est votre garantie absolue. Une fois les fonds reçus, aucun décaissement n'est possible sans une Procuration d'Autorisation Bancaire. Ce document exige impérativement la double signature (Direction Kinshasa + Partenaire Local). L'argent est verrouillé jusqu'à validation conjointe pour l'achat.", highlight: true }
+                    ],
+                    action: "VOIR LES COORDONNÉES BANCAIRES"
+                  }
+                },
+                {
+                  number: "03",
+                  title: "LOGISTIQUE & DÉLIVRANCE",
+                  subtitle: "Maîtrise du dernier kilomètre.",
+                  text: "Suivez votre cargo en temps réel. Payez le solde (40%) à la livraison.",
+                  icon: CheckCircle2,
+                  detail: {
+                    title: "LOGISTIQUE & DÉLIVRANCE",
+                    subtitle: "Maîtrise du dernier kilomètre.",
+                    content: [
+                      { title: "🚢 Clearing & Transit", text: "Nous prenons le relais. De l'embarquement (FOB) jusqu'à l'arrivée à Matadi ou N'djili, nous gérons la liasse documentaire et les formalités douanières (DGDA) pour éviter tout contentieux." },
+                      { title: "📦 Livraison & Solde (40%)", text: "Confiance jusqu'au bout. À l'arrivée de la marchandise à Kinshasa, vous inspectez votre cargo. C'est à ce moment précis, contre la remise des biens, que vous réglez les 40% restants de la facture." }
+                    ],
+                    action: "SUIVRE MON CARGO"
+                  }
+                }
               ].map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.2 }}
-                  className="relative bg-black border border-white/10 p-8 rounded-xl hover:border-gold/30 transition-colors"
-                >
-                  {/* Golden Icon on Black Background */}
-                  <div className="w-20 h-20 mx-auto bg-black border-2 border-gold/50 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
-                    <step.icon className="w-8 h-8 text-gold" />
-                  </div>
-                  <div className="text-5xl font-bold text-white/5 absolute top-4 right-6 pointer-events-none">{step.number}</div>
-                  <h3 className="text-xl font-bold text-white mb-4 tracking-wider uppercase">{step.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    "{step.text}"
-                  </p>
-                </motion.div>
+                <Dialog key={i}>
+                  <DialogTrigger asChild>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.2 }}
+                      whileHover={{ scale: 1.02 }}
+                      className="relative bg-black border border-white/10 p-8 rounded-xl hover:border-gold/30 transition-all cursor-pointer group h-full flex flex-col"
+                    >
+                      {/* Golden Icon on Black Background */}
+                      <div className="w-20 h-20 mx-auto bg-black border-2 border-gold/50 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-[0_0_20px_rgba(197,160,89,0.2)] group-hover:scale-110 transition-transform">
+                        <step.icon className="w-8 h-8 text-gold" />
+                      </div>
+                      <div className="text-5xl font-bold text-white/5 absolute top-4 right-6 pointer-events-none">{step.number}</div>
+                      <h3 className="text-xl font-bold text-white mb-2 tracking-wider uppercase">{step.title}</h3>
+                      <p className="text-gold/70 text-xs uppercase tracking-widest mb-4 font-medium">{step.subtitle}</p>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-1">
+                        "{step.text}"
+                      </p>
+                      <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center justify-center gap-2 border border-white/10 rounded-full py-2 px-4 group-hover:bg-white/5 transition-colors">
+                        Voir le détail <span className="text-lg">→</span>
+                      </span>
+                    </motion.div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-2xl bg-[#0a0e14] border-white/10 text-white">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-gold mb-2 uppercase">{step.detail.title}</DialogTitle>
+                      <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-6 border-b border-primary/20 pb-4">
+                        {step.detail.subtitle}
+                      </div>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                      {step.detail.content.map((item, j) => (
+                        <div key={j} className={`p-4 rounded-lg border ${item.highlight ? 'bg-gold/5 border-gold/30' : 'bg-transparent border-transparent'}`}>
+                          <div className="flex gap-4">
+                            <div className="shrink-0 pt-1">
+                              {item.highlight ? <PenTool className="w-5 h-5 text-gold" /> : <div className="w-2 h-2 rounded-full bg-primary mt-2" />}
+                            </div>
+                            <div>
+                              <h4 className={`font-bold text-base mb-1 ${item.highlight ? 'text-gold' : 'text-white'}`}>{item.title}</h4>
+                              <p className="text-sm text-gray-300 leading-relaxed">{item.text}</p>
+                              {item.highlight && (
+                                <div className="mt-3 flex items-center gap-2 text-gold/80 text-xs font-mono uppercase tracking-widest border-t border-gold/10 pt-2">
+                                  <PenTool className="w-3 h-3" /> Double Signature Requise
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 flex justify-end">
+                      <Button className="bg-gold hover:bg-gold/80 text-black font-bold uppercase tracking-wider">
+                        {step.detail.action}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               ))}
             </div>
 
