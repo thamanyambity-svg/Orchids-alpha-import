@@ -385,7 +385,7 @@ export default function HomePage() {
               {[
                 {
                   number: "01",
-                  title: "IDENTIFICATION",
+                  title: "IDENTIFICATION & SOURCING",
                   subtitle: "L'étude de faisabilité avant l'action.",
                   text: "Dites-nous ce que vous cherchez ou envoyez-nous votre facture proforma.",
                   icon: Eye,
@@ -401,7 +401,7 @@ export default function HomePage() {
                 },
                 {
                   number: "02",
-                  title: "PROTOCOLE FINANCIER",
+                  title: "PROTOCOLE FINANCIER (60/40)",
                   subtitle: "Sécurisation par Double Signature.",
                   text: "Réglez 60% en toute sécurité. Fonds bloqués jusqu'à validation.",
                   icon: Lock,
@@ -444,7 +444,15 @@ export default function HomePage() {
                     >
                       {/* Golden Icon on Black Background */}
                       <div className="w-20 h-20 mx-auto bg-black border-2 border-gold/50 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-[0_0_20px_rgba(197,160,89,0.2)] group-hover:scale-110 transition-transform">
-                        <step.icon className="w-8 h-8 text-gold" />
+                        {step.number === "02" ? (
+                          <div className="relative w-8 h-8 flex items-center justify-center">
+                            {/* Visual: Two Crossed Pens/Keys */}
+                            <PenTool className="w-6 h-6 text-gold absolute -rotate-45 translate-x-1" />
+                            <PenTool className="w-6 h-6 text-gold/70 absolute rotate-12 -translate-x-1 translate-y-1" />
+                          </div>
+                        ) : (
+                          <step.icon className="w-8 h-8 text-gold" />
+                        )}
                       </div>
                       <div className="text-5xl font-bold text-white/5 absolute top-4 right-6 pointer-events-none">{step.number}</div>
                       <h3 className="text-xl font-bold text-white mb-2 tracking-wider uppercase">{step.title}</h3>
@@ -476,10 +484,13 @@ export default function HomePage() {
                               <p className="text-sm text-gray-300 leading-relaxed">{item.text}</p>
                               {item.highlight && (
                                 <div className="mt-3 flex items-center gap-2 text-gold/80 text-xs font-mono uppercase tracking-widest border-t border-gold/10 pt-2">
-                                  <PenTool className="w-3 h-3" /> Double Signature Requise
+                                  <div className="flex relative w-4 h-4 mr-2">
+                                    <PenTool className="w-3 h-3 absolute -rotate-45 text-gold" />
+                                    <PenTool className="w-3 h-3 absolute rotate-45 translate-x-1 text-gold" />
+                                  </div>
+                                  Double Signature Requise
                                 </div>
-                              )}
-                            </div>
+                              )}                         </div>
                           </div>
                         </div>
                       ))}
