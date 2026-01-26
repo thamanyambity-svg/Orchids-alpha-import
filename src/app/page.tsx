@@ -18,7 +18,6 @@ import {
   Ship,
   Factory,
   Landmark,
-  Landmark,
   Package,
   PenTool
 } from "lucide-react"
