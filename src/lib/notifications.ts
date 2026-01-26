@@ -1,7 +1,10 @@
 import { Resend } from 'resend'
 import { RequestStatus, OrderStatus } from './types'
+import { createClient } from '@supabase/supabase-js'
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+
 
 // We'll use a verified sender or a test one.
 // For Resend testing, you usually must send to your own email unless you verify a domain.
@@ -160,7 +163,28 @@ export async function sendStatusNotification(
             console.log(`✅ Email sent to ${toEmail} [${status}] ID: ${data.data?.id}`)
         }
 
+        // --- NEW: Insert into Real-Time Notifications Table ---
+        try {
+            // Find user ID by email (we need to link it to a profile)
+            const { data: userProfile } = await supabase.from('profiles').select('id').eq('email', toEmail).single()
+
+            if (userProfile) {
+                const { error: dbError } = await supabase.from('notifications').insert({
+                    user_id: userProfile.id,
+                    title: subject?.replace(/<[^>]*>?/gm, '') || 'Nouvelle Notification', // Strip HTML if any
+                    message: `Statut mis à jour : ${status}`,
+                    type: 'INFO',
+                    link: '/dashboard' // Can be refined later based on orderId
+                })
+                if (dbError) console.error('⚠️ Failed to save notification to DB (Table might be missing):', dbError.message)
+                else console.log('✅ Notification saved to DB')
+            }
+        } catch (dbEx) {
+            console.error('⚠️ DB Notification Error:', dbEx)
+        }
+
     } catch (error) {
         console.error('❌ Failed to send email notification:', error)
     }
 }
+

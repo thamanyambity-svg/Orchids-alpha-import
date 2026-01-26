@@ -1,13 +1,15 @@
-"use client"
-
-import { Bell, Search, Home, ChevronDown, Grid } from "lucide-react"
+import { Bell, Search, ChevronDown, Grid, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
 import { BackButton } from "@/components/back-button"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface DashboardHeaderProps {
   title: string
@@ -18,22 +20,74 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ title, subtitle, showBackButton = true, children }: DashboardHeaderProps) {
   const [profile, setProfile] = useState<any>(null)
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
   const supabase = createClient()
 
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchProfileAndNotifications() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
+        // 1. Profile
         const { data } = await supabase
           .from('profiles')
           .select('full_name, avatar_url')
           .eq('id', user.id)
           .single()
         setProfile(data)
+
+        // 2. Initial Notifications
+        fetchNotifications(user.id)
+
+        // 3. Realtime Subscription
+        const channel = supabase
+          .channel('header-notifications')
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'notifications',
+              filter: `user_id=eq.${user.id}`
+            },
+            (payload) => {
+              console.log('🔔 New Notification:', payload.new)
+              setNotifications((prev) => [payload.new, ...prev])
+              setUnreadCount((prev) => prev + 1)
+              // Optionally play sound
+            }
+          )
+          .subscribe()
+
+        return () => {
+          supabase.removeChannel(channel)
+        }
       }
     }
-    fetchProfile()
+    fetchProfileAndNotifications()
   }, [])
+
+  async function fetchNotifications(userId: string) {
+    const { data } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    if (data) {
+      setNotifications(data)
+      setUnreadCount(data.filter(n => !n.is_read).length)
+    }
+  }
+
+  async function markAsRead(id: string) {
+    // Optimistic update
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n))
+    setUnreadCount(prev => Math.max(0, prev - 1))
+
+    await supabase.from('notifications').update({ is_read: true }).eq('id', id)
+  }
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Utilisateur'
 
@@ -63,10 +117,42 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 relative">
-            <Bell className="w-5 h-5 text-muted-foreground" />
-            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 relative">
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-background animate-pulse" />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0 bg-[#0a0e14] border-white/10" align="end">
+              <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                <h4 className="font-semibold text-white">Notifications</h4>
+                {unreadCount > 0 && <span className="text-xs text-muted-foreground">{unreadCount} non lues</span>}
+              </div>
+              <div className="max-h-[300px] overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-8 text-center text-muted-foreground text-sm">
+                    Aucune notification
+                  </div>
+                ) : (
+                  notifications.map(n => (
+                    <div
+                      key={n.id}
+                      className={`p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${!n.is_read ? 'bg-blue-500/5' : ''}`}
+                      onClick={() => markAsRead(n.id)}
+                    >
+                      <h5 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'font-medium text-gray-400'}`}>{n.title}</h5>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.message}</p>
+                      <span className="text-[10px] text-gray-500 mt-2 block">{new Date(n.created_at).toLocaleTimeString()}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+
           <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5">
             <Grid className="w-5 h-5 text-muted-foreground" />
           </Button>
@@ -95,4 +181,5 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
     </header>
   )
 }
+
 

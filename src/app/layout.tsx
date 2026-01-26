@@ -69,6 +69,10 @@ export const metadata: Metadata = {
   },
 }
 
+import { AiAssistant } from "@/components/ai-assistant"
+
+// ... imports remain same ...
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +83,7 @@ export default function RootLayout({
       <body className="min-h-screen font-sans">
         <Providers>
           {children}
+          <AiAssistant />
         </Providers>
       </body>
     </html>
