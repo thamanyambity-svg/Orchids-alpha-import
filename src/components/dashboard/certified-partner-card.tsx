@@ -32,8 +32,15 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
    * Ensures automatic opening of real partner channels.
    */
   const handleWhatsApp = () => {
-    // 1. Get Phone (Fallback to Maarmala Dubai if missing)
-    const rawPhone = displayPartner.phone || "+971500000000";
+    // 1. Get Phone based on Country (Default to Maarmala UAE)
+    let rawPhone = displayPartner.phone || "+971501201719";
+
+    // Executive Overrides (Validated Numbers)
+    if (displayPartner.countries?.code === 'JPN') {
+      rawPhone = "+819083267671"; // Pam Congo Japan
+    } else if (displayPartner.countries?.code === 'ARE') {
+      rawPhone = "+971501201719"; // Achignon Bilongo UAE
+    }
 
     // 2. Sanitize: Remove spaces, dashes, parens, pluses
     // Example: "+971 50 123" -> "97150123"
