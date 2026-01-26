@@ -29,6 +29,8 @@ interface SupplierWithPartner {
     rating: number
     capacity: string | null
     partner_name?: string
+    sector?: string
+    territory?: string
 }
 
 export default function AdminSuppliersPage() {
@@ -103,20 +105,57 @@ export default function AdminSuppliersPage() {
         }
     }
 
-    const filteredSuppliers = suppliers.filter(s =>
-        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (s.partner_name && s.partner_name.toLowerCase().includes(searchQuery.toLowerCase()))
-    )
+    const [activeTab, setActiveTab] = useState("ALL")
+
+    // Derived filters based on activeTab
+    const filteredSuppliers = suppliers.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (s.partner_name && s.partner_name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+        // Tab Logic
+        let matchesTab = true;
+        if (activeTab === 'APPLICATIONS') {
+            return s.validated_by_admin === false; // Show unvalidated as "Applications"
+        }
+        if (activeTab === 'ASIA') {
+            matchesTab = s.territory === 'ASIA' || s.partner_name?.includes('CN') || s.partner_name?.includes('JP') || false;
+        } else if (activeTab === 'MIDDLE_EAST') {
+            matchesTab = s.territory === 'MIDDLE_EAST' || s.partner_name?.includes('TR') || s.partner_name?.includes('UAE') || false;
+        } else if (['TEXTILE', 'ELECTRONICS', 'AGRO'].includes(activeTab)) {
+            matchesTab = s.sector === activeTab;
+        }
+
+        return matchesSearch && matchesTab
+    })
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Validation Fournisseurs</h1>
-                    <p className="text-muted-foreground">
-                        Contrôle et validation des fournisseurs ajoutés par les partenaires.
+                    <p className="text-muted-foreground mr-4">
+                        {suppliers.length} fournisseurs • {suppliers.filter(s => !s.validated_by_admin).length} à valider
                     </p>
                 </div>
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                {['ALL', 'APPLICATIONS', 'ASIA', 'MIDDLE_EAST', 'TEXTILE', 'ELECTRONICS'].map((tab) => (
+                    <Button
+                        key={tab}
+                        variant={activeTab === tab ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setActiveTab(tab)}
+                        className="rounded-full text-xs font-bold uppercase tracking-wider"
+                    >
+                        {tab === 'ALL' && 'Tous'}
+                        {tab === 'APPLICATIONS' && 'Candidatures'}
+                        {tab === 'ASIA' && 'Asie'}
+                        {tab === 'MIDDLE_EAST' && 'Moyen-Orient'}
+                        {tab === 'TEXTILE' && 'Textile'}
+                        {tab === 'ELECTRONICS' && 'Électronique'}
+                    </Button>
+                ))}
             </div>
 
             <Card>
@@ -124,14 +163,14 @@ export default function AdminSuppliersPage() {
                     <div className="space-y-1">
                         <CardTitle>Registre Global</CardTitle>
                         <CardDescription>
-                            {suppliers.filter(s => !s.validated_by_admin).length} fournisseurs en attente de validation
+                            Vue par {activeTab}
                         </CardDescription>
                     </div>
                     <div className="relative w-full md:w-64">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Rechercher (Nom, Partenaire)..."
+                            placeholder="Rechercher..."
                             className="pl-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -143,20 +182,21 @@ export default function AdminSuppliersPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Fournisseur</TableHead>
+                                <TableHead>Secteur & Zone</TableHead>
                                 <TableHead>Partenaire Responsable</TableHead>
-                                <TableHead>Capacité & Adresse</TableHead>
-                                <TableHead>Statut Validation</TableHead>
+                                <TableHead>Capacité</TableHead>
+                                <TableHead>Statut</TableHead>
                                 <TableHead className="text-right">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8">Chargement...</TableCell>
+                                    <TableCell colSpan={6} className="text-center py-8">Chargement...</TableCell>
                                 </TableRow>
                             ) : filteredSuppliers.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8">Aucun fournisseur trouvé</TableCell>
+                                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Aucun fournisseur trouvé</TableCell>
                                 </TableRow>
                             ) : (
                                 filteredSuppliers.map((supplier) => (
@@ -168,8 +208,14 @@ export default function AdminSuppliersPage() {
                                                 </div>
                                                 <div>
                                                     <div className="font-medium">{supplier.name}</div>
-                                                    <div className="text-xs text-muted-foreground">{supplier.contact_email || "Aucun email"}</div>
+                                                    <div className="text-xs text-muted-foreground">{supplier.contact_email || "Email manquant"}</div>
                                                 </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col gap-1">
+                                                <Badge variant="outline" className="w-fit text-[10px]">{supplier.sector || 'N/A'}</Badge>
+                                                <span className="text-[10px] text-muted-foreground uppercase">{supplier.territory || 'N/A'}</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
@@ -181,9 +227,6 @@ export default function AdminSuppliersPage() {
                                             <div className="flex flex-col gap-1 text-sm text-muted-foreground">
                                                 <span className="flex items-center gap-1">
                                                     <Box className="w-3 h-3" /> {supplier.capacity || "N/A"}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <MapPin className="w-3 h-3" /> {supplier.address ? (supplier.address.substring(0, 20) + "...") : "Non renseignée"}
                                                 </span>
                                             </div>
                                         </TableCell>
