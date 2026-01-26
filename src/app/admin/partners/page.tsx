@@ -99,42 +99,7 @@ export default function AdminPartnersPage() {
                 })
             )
 
-            // INJECTION: Official Partners (Hardcoded for "Logic" consistency)
-            const officialPartners: PartnerWithDetails[] = [
-                {
-                    id: "official-uae",
-                    user_id: "official-uae",
-                    email: "achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site",
-                    full_name: "MAARMALA (UAE) - M. BILONGO",
-                    phone: "+971 50 120 1719",
-                    city: "Dubaï",
-                    country: "Émirats Arabes Unis",
-                    country_code: "ARE",
-                    zone: "MIDDLE_EAST",
-                    status: "VERIFIED",
-                    contract_status: "ACTIVE",
-                    performance_score: 5.0,
-                    total_orders_handled: 12
-                },
-                {
-                    id: "official-jpn",
-                    user_id: "official-jpn",
-                    email: "assanimususa.pdg.pam.congo.japon@aonosekehouseinvestmentdrc.site",
-                    full_name: "PAM CONGO JAPAN - M. MUSUSA",
-                    phone: "+81 90 8326 7671",
-                    city: "Tokyo",
-                    country: "Japon",
-                    country_code: "JPN",
-                    zone: "ASIA", // Manually set to match getZone("JPN")
-                    status: "VERIFIED",
-                    contract_status: "ACTIVE",
-                    performance_score: 5.0,
-                    total_orders_handled: 8
-                }
-            ]
-
-            // Merge DB partners with Official Partners
-            setPartners([...officialPartners, ...partnersData])
+            setPartners(partnersData)
         } catch (error) {
             console.error("Error fetching partners:", error)
         } finally {
