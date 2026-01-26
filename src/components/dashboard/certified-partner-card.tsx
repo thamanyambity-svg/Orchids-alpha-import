@@ -14,7 +14,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
     full_name: "Achignon Bilongo",
     company_name: "MAARMALA - Head Officer",
     city: "Dubai",
-    email: "contact@maarmala.com",
+    email: "achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site",
     phone: "+971500000000",
     countries: { name: "United Arab Emirates", code: "ARE" },
     avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
@@ -45,8 +45,20 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
   }
 
   const handleEmail = () => {
-    const email = displayPartner.email || 'contact@maarmala.com';
-    window.location.href = `mailto:${email}?subject=Ref: Alpha Import Exchange - Support`;
+    // Smart routing based on country/partner
+    let targetEmail = displayPartner.email;
+
+    // Force specific requested emails based on country code if dynamic data isn't perfectly clean
+    if (displayPartner.countries?.code === 'JPN') {
+      targetEmail = 'assanimususa.pdg.pam.congo.japon@aonosekehouseinvestmentdrc.site';
+    } else if (displayPartner.countries?.code === 'ARE') {
+      targetEmail = 'achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site';
+    } else if (!targetEmail) {
+      // Ultimate fallback
+      targetEmail = 'achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site';
+    }
+
+    window.location.href = `mailto:${targetEmail}?subject=Ref: Alpha Import Exchange - Support`;
   }
 
   return (
