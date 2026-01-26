@@ -227,8 +227,12 @@ export function AiAssistant() {
                         {/* Header */}
                         <div className="p-4 border-b border-white/10 bg-gold/5 flex justify-between items-center shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30">
-                                    <Bot className="w-6 h-6 text-gold" />
+                                <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30 overflow-hidden relative">
+                                    <img
+                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
+                                        alt="Alpha AI"
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-white text-sm">Alpha Assistant</h3>
@@ -261,8 +265,8 @@ export function AiAssistant() {
                                         {/* Message Bubble */}
                                         <div
                                             className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${msg.role === 'user'
-                                                    ? 'bg-gold text-black rounded-tr-none font-medium'
-                                                    : 'bg-white/5 text-gray-100 rounded-tl-none border border-white/10'
+                                                ? 'bg-gold text-black rounded-tr-none font-medium'
+                                                : 'bg-white/5 text-gray-100 rounded-tl-none border border-white/10'
                                                 }`}
                                         >
                                             <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -299,8 +303,8 @@ export function AiAssistant() {
                                                         size="sm"
                                                         onClick={opt.action}
                                                         className={`h-auto py-2 px-3 text-xs whitespace-normal text-left h-fit ${opt.variant === 'gold'
-                                                                ? 'bg-gold text-black hover:bg-gold/90 border-transparent'
-                                                                : 'bg-transparent border-white/20 text-white hover:bg-white/10'
+                                                            ? 'bg-gold text-black hover:bg-gold/90 border-transparent'
+                                                            : 'bg-transparent border-white/20 text-white hover:bg-white/10'
                                                             }`}
                                                     >
                                                         {opt.label}
