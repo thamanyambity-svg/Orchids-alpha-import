@@ -133,10 +133,10 @@ export default function AdminPartnersPage() {
     // Helper to determine zone
     function getZone(code: string, region: string) {
         if (!code) return "OTHER"
-        // Expanded Asia Definition
-        if (["CHN", "JPN", "KOR", "VNM", "TWN", "HKG", "SGP", "THA", "IDN"].includes(code)) return "ASIA"
-        // Expanded Middle East Definition
-        if (["ARE", "TUR", "SAU", "QAT", "KWT", "OMN"].includes(code)) return "MIDDLE_EAST"
+        // Expanded Asia Definition (ISO-3 + ISO-2)
+        if (["CHN", "CN", "JPN", "JP", "KOR", "KR", "VNM", "VN", "TWN", "TW", "HKG", "HK", "SGP", "SG", "THA", "TH", "IDN", "ID"].includes(code)) return "ASIA"
+        // Expanded Middle East Definition (ISO-3 + ISO-2)
+        if (["ARE", "UAE", "AE", "TUR", "TR", "SAU", "SA", "QAT", "QA", "KWT", "KW", "OMN", "OM"].includes(code)) return "MIDDLE_EAST"
         return "OTHER"
     }
 
