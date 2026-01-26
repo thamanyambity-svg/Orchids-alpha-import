@@ -59,6 +59,34 @@ export async function POST(request: Request) {
 
                 const systemActorId = adminUser?.id || session.customer as string // Fallback
 
+                // 1. Record the Transaction (Financial Source of Truth)
+                const { error: txError } = await supabase
+                    .from('transactions')
+                    .insert({
+                        order_id: orderId,
+                        user_id: session.metadata?.userId || systemActorId, // Ideally passed in metadata, fallback to actor
+                        amount: session.amount_total ? session.amount_total / 100 : 0, // Convert cents to dollars
+                        currency: session.currency?.toUpperCase() || 'USD',
+                        type: session.metadata?.paymentType === 'DEPOSIT_60' ? 'DEPOSIT' : 'BALANCE',
+                        status: 'SUCCEEDED',
+                        stripe_payment_id: session.payment_intent as string,
+                        provider: 'STRIPE',
+                        metadata: {
+                            stripe_session_id: session.id,
+                            customer_email: session.customer_details?.email
+                        }
+                    })
+
+                if (txError) {
+                    console.error('❌ Failed to record transaction:', txError)
+                    // We continue execution because the payment DID happen on Stripe, 
+                    // and we don't want to block the order transition. 
+                    // In a perfect world, we'd have a retry mechanism or alert.
+                } else {
+                    console.log('✅ Transaction recorded in ledger')
+                }
+
+                // 2. Transition the Order
                 await executeTransition(
                     supabase,
                     'ORDER',

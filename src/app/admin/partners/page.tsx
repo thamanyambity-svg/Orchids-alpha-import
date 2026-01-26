@@ -133,10 +133,10 @@ export default function AdminPartnersPage() {
     // Helper to determine zone
     function getZone(code: string, region: string) {
         if (!code) return "OTHER"
+        // Expanded Asia Definition
         if (["CHN", "JPN", "KOR", "VNM", "TWN", "HKG", "SGP", "THA", "IDN"].includes(code)) return "ASIA"
+        // Expanded Middle East Definition
         if (["ARE", "TUR", "SAU", "QAT", "KWT", "OMN"].includes(code)) return "MIDDLE_EAST"
-        if (["FRA", "DEU", "GBR", "ITA", "ESP", "NLD", "BEL"].includes(code)) return "EUROPE"
-        if (["USA", "CAN", "MEX", "BRA"].includes(code)) return "AMERICAS"
         return "OTHER"
     }
 
@@ -187,10 +187,9 @@ export default function AdminPartnersPage() {
                             </span>
                         )}
                     </TabsTrigger>
-                    <TabsTrigger value="ASIA">Asie (Chine)</TabsTrigger>
+                    <TabsTrigger value="ASIA">Asie (Chine/Japon)</TabsTrigger>
                     <TabsTrigger value="MIDDLE_EAST">Moyen-Orient (Dubaï/Turquie)</TabsTrigger>
-                    <TabsTrigger value="EUROPE">Europe</TabsTrigger>
-                    <TabsTrigger value="AMERICAS">Amériques</TabsTrigger>
+
                 </TabsList>
 
                 <TabsContent value="APPLICATIONS" className="space-y-4">

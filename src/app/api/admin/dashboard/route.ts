@@ -6,13 +6,14 @@ export async function GET() {
 
   try {
     // 1. Stats
-    // Total Volume (sum of budget_max for requests not draft/rejected)
-    const { data: volumeData } = await supabase
-      .from('import_requests')
-      .select('budget_max')
-      .not('status', 'in', '(DRAFT,REJECTED)')
+    // REALITY CHECK: Total Funds = Sum of successful transactions (Deposits + Balances)
+    // Formerly: Sum of budget_max (Potential) -> Now: Sum of transactions.amount (Actual)
+    const { data: transactionsData } = await supabase
+      .from('transactions')
+      .select('amount')
+      .eq('status', 'SUCCEEDED')
 
-    const totalFunds = volumeData?.reduce((acc, curr) => acc + (Number(curr.budget_max) || 0), 0) || 0
+    const totalFunds = transactionsData?.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0) || 0
 
     // Active Requests (not closed/rejected/draft)
     const { count: activeRequests } = await supabase
