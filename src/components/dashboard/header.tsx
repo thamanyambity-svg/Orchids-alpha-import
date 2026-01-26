@@ -28,55 +28,55 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
     async function fetchProfileAndNotifications() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        if (user) {
-          // 1. Profile (Try fetching DB, but use Metadata as potential fallback/init)
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('full_name, avatar_url')
-            .eq('id', user.id)
-            .single()
 
-          // Robust Fallback: If DB profile is missing/loading, use Auth Metadata
-          const dbProfile = data || {}
-          const metaProfile = {
-            full_name: user.user_metadata?.full_name || dbProfile.full_name,
-            avatar_url: user.user_metadata?.avatar_url || dbProfile.avatar_url,
-          }
+        // 1. Profile (Try fetching DB, but use Metadata as potential fallback/init)
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, avatar_url')
+          .eq('id', user.id)
+          .single()
 
-          setProfile(metaProfile)
-          if (error) console.warn("Profile DB fetch warning (using metadata):", error.message)
+        // Robust Fallback: If DB profile is missing/loading, use Auth Metadata
+        const dbProfile = data || { full_name: '', avatar_url: '' }
+        const metaProfile = {
+          full_name: user.user_metadata?.full_name || dbProfile.full_name,
+          avatar_url: user.user_metadata?.avatar_url || dbProfile.avatar_url,
+        }
+
+        setProfile(metaProfile)
+        if (error) console.warn("Profile DB fetch warning (using metadata):", error.message)
 
 
-          // 2. Initial Notifications
-          fetchNotifications(user.id)
+        // 2. Initial Notifications
+        fetchNotifications(user.id)
 
-          // 3. Realtime Subscription
-          const channel = supabase
-            .channel('header-notifications')
-            .on(
-              'postgres_changes',
-              {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'notifications',
-                filter: `user_id=eq.${user.id}`
-              },
-              (payload) => {
-                console.log('🔔 New Notification:', payload.new)
-                setNotifications((prev) => [payload.new, ...prev])
-                setUnreadCount((prev) => prev + 1)
-                // Optionally play sound
-              }
-            )
-            .subscribe()
+        // 3. Realtime Subscription
+        const channel = supabase
+          .channel('header-notifications')
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'notifications',
+              filter: `user_id=eq.${user.id}`
+            },
+            (payload) => {
+              console.log('🔔 New Notification:', payload.new)
+              setNotifications((prev) => [payload.new, ...prev])
+              setUnreadCount((prev) => prev + 1)
+              // Optionally play sound
+            }
+          )
+          .subscribe()
 
-          return () => {
-            supabase.removeChannel(channel)
-          }
+        return () => {
+          supabase.removeChannel(channel)
         }
       }
-      fetchProfileAndNotifications()
-    }, [])
+    }
+    fetchProfileAndNotifications()
+  }, [])
 
   async function fetchNotifications(userId: string) {
     const { data } = await supabase
