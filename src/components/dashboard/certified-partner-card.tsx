@@ -27,13 +27,26 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
     }
   }
 
+  /* 
+   * COMMUNICATION HANDLERS
+   * Ensures automatic opening of real partner channels.
+   */
   const handleWhatsApp = () => {
-    const phone = displayPartner.phone?.replace(/\s+/g, '') || "+971500000000";
-    window.open(`https://wa.me/${phone.replace('+', '')}`, '_blank');
+    // 1. Get Phone (Fallback to Maarmala Dubai if missing)
+    const rawPhone = displayPartner.phone || "+971500000000";
+
+    // 2. Sanitize: Remove spaces, dashes, parens, pluses
+    // Example: "+971 50 123" -> "97150123"
+    const cleanPhone = rawPhone.replace(/\D/g, '');
+
+    // 3. Open WhatsApp Web/App
+    // Note: wa.me works best with pure digits including country code
+    window.open(`https://wa.me/${cleanPhone}`, '_blank');
   }
 
   const handleEmail = () => {
-    window.location.href = `mailto:${displayPartner.email || 'contact@maarmala.com'}`;
+    const email = displayPartner.email || 'contact@maarmala.com';
+    window.location.href = `mailto:${email}?subject=Ref: Alpha Import Exchange - Support`;
   }
 
   return (
@@ -55,16 +68,16 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
             </div>
           </div>
           <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-white/5">
-             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-             <span className="text-[9px] font-mono text-primary uppercase">En ligne</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <span className="text-[9px] font-mono text-primary uppercase">En ligne</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4 mb-8">
           <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/30 relative group">
-            <img 
-              src={displayPartner.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"} 
-              alt="Partner" 
+            <img
+              src={displayPartner.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
+              alt="Partner"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -99,8 +112,8 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
             { icon: CreditCard, label: "Paie", target: "transactions-section" },
             { icon: MessageSquare, label: "Chat", target: "messaging-section" },
           ].map((item, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="flex flex-col items-center gap-2"
               onClick={() => scrollToSection(item.target)}
             >
@@ -113,14 +126,14 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <Button 
+          <Button
             onClick={handleWhatsApp}
             className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-white transition-all font-bold tracking-widest uppercase text-[10px]"
           >
             <Phone className="w-3 h-3 mr-2" />
             WhatsApp
           </Button>
-          <Button 
+          <Button
             onClick={handleEmail}
             className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
           >
@@ -129,7 +142,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: any }) {
           </Button>
         </div>
 
-        <Button 
+        <Button
           onClick={() => scrollToSection('messaging-section')}
           className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase text-xs shadow-lg shadow-primary/20"
         >
