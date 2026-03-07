@@ -3,7 +3,6 @@
 import * as React from "react"
 import { LanguageProvider } from "@/lib/i18n-context"
 import { Toaster } from "sonner"
-import { VisualEditsMessenger } from "orchids-visual-edits"
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
@@ -19,7 +18,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
                     },
                 }}
             />
-            <VisualEditsMessenger />
         </LanguageProvider>
     )
 }
