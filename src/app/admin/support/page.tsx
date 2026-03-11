@@ -20,6 +20,7 @@ import { AlertTriangle, MessageSquare, CheckCircle2, Clock, Search, ExternalLink
 export default function AdminSupportPage() {
     const [incidents, setIncidents] = useState<any[]>([])
     const [messages, setMessages] = useState<any[]>([])
+    const [avgResponseHours, setAvgResponseHours] = useState<number | null>(null)
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
 
@@ -41,9 +42,7 @@ export default function AdminSupportPage() {
         `)
                 .order('created_at', { ascending: false })
 
-            // 2. Fetch Unread Messages (Support Context)
-            // Assuming messages to 'ADMIN' or generic support
-            // For now, we fetch latest messages for demo
+            // 2. Fetch Messages
             const { data: messagesData } = await supabase
                 .from('messages')
                 .select(`
@@ -53,8 +52,25 @@ export default function AdminSupportPage() {
                 .order('created_at', { ascending: false })
                 .limit(20)
 
+            // 3. Calcul du temps de réponse moyen (incidents résolus sur 7 jours)
+            const sevenDaysAgo = new Date()
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+            const resolved = (incidentsData || []).filter(
+                (i) => i.status === 'RESOLVED' && i.resolved_at && new Date(i.resolved_at) >= sevenDaysAgo
+            )
+            let avgH: number | null = null
+            if (resolved.length > 0) {
+                const totalHours = resolved.reduce((acc, i) => {
+                    const created = new Date(i.created_at).getTime()
+                    const resolvedAt = new Date(i.resolved_at).getTime()
+                    return acc + (resolvedAt - created) / (1000 * 60 * 60)
+                }, 0)
+                avgH = Math.round((totalHours / resolved.length) * 10) / 10
+            }
+
             setIncidents(incidentsData || [])
             setMessages(messagesData || [])
+            setAvgResponseHours(avgH)
 
         } catch (error) {
             console.error("Error fetching support data:", error)
@@ -105,8 +121,10 @@ export default function AdminSupportPage() {
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">2.4h</div>
-                        <p className="text-xs text-muted-foreground">Moyenne sur 7 jours</p>
+                        <div className="text-2xl font-bold">
+                            {avgResponseHours != null ? `${avgResponseHours}h` : "—"}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Moyenne sur 7 jours (incidents résolus)</p>
                     </CardContent>
                 </Card>
             </div>
@@ -138,7 +156,7 @@ export default function AdminSupportPage() {
                                 <TableBody>
                                     {incidents.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">Aucun incident signalé 🎉</TableCell>
+                                            <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">Aucun incident signalé</TableCell>
                                         </TableRow>
                                     ) : (
                                         incidents.map(incident => (

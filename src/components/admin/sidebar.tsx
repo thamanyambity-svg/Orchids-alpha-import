@@ -9,32 +9,36 @@ import {
   LayoutDashboard,
   Users,
   UserCheck,
-  FileText,
   Wallet,
   Shield,
   Settings,
   LogOut,
-  ChevronRight,
   Crown,
-  BarChart3,
   Box,
   Activity,
   LifeBuoy,
-  BadgeAlert
+  Mail,
+  Ship,
+  ClipboardList,
+  FileCheck
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { href: "/admin", label: "Tableau de Bord", icon: LayoutDashboard },
+  { href: "/admin/requests", label: "Demandes", icon: ClipboardList },
+  { href: "/admin/shipping", label: "Expéditions", icon: Ship },
   { href: "/admin/buyers", label: "Acheteurs", icon: Users },
   { href: "/admin/partners", label: "Partenaires", icon: UserCheck },
   { href: "/admin/suppliers", label: "Fournisseurs", icon: Box },
   { href: "/admin/finances", label: "Transactions", icon: Wallet },
   { href: "/admin/risks", label: "Gestion des Risques", icon: Shield },
-  { href: "/admin/reporting", label: "Journal d'Audit", icon: Activity, badge: 5 },
+  { href: "/admin/customs", label: "Douanes & Conformité", icon: FileCheck },
+  { href: "/admin/reporting", label: "Journal d'Audit", icon: Activity },
   { href: "/admin/settings", label: "Paramètres", icon: Settings },
   { href: "/admin/support", label: "Support", icon: LifeBuoy },
+  { href: "/admin/emails", label: "Boîte Mail IA", icon: Mail },
 ]
 
 export function AdminSidebar() {
@@ -72,10 +76,10 @@ export function AdminSidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0e14] border-r border-white/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/admin" className="flex items-center group">
-          <div className="relative w-20 h-20 transition-transform group-hover:scale-105">
+          <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
             <Image
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-              alt="Alpha Import Exchange Admin"
+              src="/logo-alpha-import.png?v=4"
+              alt="Alpha Import Exchange"
               fill
               className="object-contain"
             />

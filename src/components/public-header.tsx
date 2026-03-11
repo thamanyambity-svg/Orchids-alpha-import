@@ -23,12 +23,13 @@ export function PublicHeader() {
         <div className="flex items-center justify-between h-24">
             <Link href="/" className="flex items-center group">
               <div className="relative">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 relative flex items-center justify-center transition-transform group-hover:scale-105">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 relative flex items-center justify-center bg-black rounded-lg transition-transform group-hover:scale-105">
                   <Image 
-                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                    alt="Alpha Import Exchange RDC"
+                    src="/logo-alpha-import.png?v=4"
+                    alt="Alpha Import Exchange"
                     fill
                     className="object-contain"
+                    priority
                   />
                 </div>
               </div>

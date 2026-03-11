@@ -64,9 +64,9 @@ export function DashboardSidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-r border-white/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/" className="flex items-center group">
-          <div className="relative w-16 h-16 transition-transform group-hover:scale-105">
+          <div className="relative w-16 h-16 bg-black rounded-lg transition-transform group-hover:scale-105">
             <Image
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
+              src="/logo-alpha-import.png?v=4"
               alt="Alpha Import Exchange"
               fill
               className="object-contain"

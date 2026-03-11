@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input"
 import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 
-export function MessagingCard({ partner }: { partner?: any }) {
-  const [messages, setMessages] = useState<any[]>([])
+import type { Message, Profile } from "@/lib/types"
+
+export function MessagingCard({ partner }: { partner?: Profile | null }) {
+  const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [newMessage, setNewMessage] = useState("")
   const scrollRef = useRef<HTMLDivElement>(null)

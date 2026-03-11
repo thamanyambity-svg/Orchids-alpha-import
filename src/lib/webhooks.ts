@@ -1,4 +1,6 @@
-export async function sendToN8N(event: string, data: any) {
+import type { N8nWebhookPayload } from "./types"
+
+export async function sendToN8N(event: string, data?: Record<string, unknown>) {
   const webhookUrl = process.env.N8N_WEBHOOK_URL;
 
   if (!webhookUrl) {
@@ -15,8 +17,8 @@ export async function sendToN8N(event: string, data: any) {
       body: JSON.stringify({
         event,
         timestamp: new Date().toISOString(),
-        data,
-      }),
+        data: data ?? {},
+      } satisfies N8nWebhookPayload),
     });
 
     if (!response.ok) {

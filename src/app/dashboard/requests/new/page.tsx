@@ -403,8 +403,11 @@ export default function NewRequestPage() {
         throw new Error(data.error || "Erreur lors de la création d'une ou plusieurs fiches")
       }
 
-      toast.success(`${items.length} demande(s) créée(s) avec succès !`)
-      router.push("/dashboard/requests")
+      const created = await Promise.all(results.map(r => r.json()))
+      toast.success(`${items.length} demande(s) créée(s) ! Prochaine étape : paiement 60%.`)
+
+      // Rediriger vers la demande créée pour accéder au paiement dès validation
+      router.push(`/dashboard/requests/${created[0].id}`)
     } catch (error: any) {
       toast.error(error.message || "Une erreur est survenue")
     } finally {
@@ -851,11 +854,34 @@ export default function NewRequestPage() {
                         Récapitulatif de l'Importation
                       </h3>
                       <div className="grid grid-cols-2 gap-y-4 text-sm mb-6 pb-6 border-b border-border/50">
-                        <div>
-                          <p className="text-muted-foreground">Mode d'expédition</p>
-                          <p className="font-medium flex items-center gap-1">
-                            {formData.transportMode === 'AIR' ? '✈️ Aérien' : '🚢 Maritime'}
-                          </p>
+                        <div className="col-span-2">
+                          <p className="text-muted-foreground mb-2">Mode d&apos;expédition</p>
+                          <div className="flex gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
+                              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${
+                                formData.transportMode === 'SEA'
+                                  ? 'border-primary bg-primary/10 text-primary font-semibold'
+                                  : 'border-border hover:border-primary/50'
+                              }`}
+                            >
+                              <Ship className="w-4 h-4" />
+                              Maritime
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, transportMode: 'AIR' })}
+                              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${
+                                formData.transportMode === 'AIR'
+                                  ? 'border-primary bg-primary/10 text-primary font-semibold'
+                                  : 'border-border hover:border-primary/50'
+                              }`}
+                            >
+                              <Plane className="w-4 h-4" />
+                              Par avion
+                            </button>
+                          </div>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
@@ -917,11 +943,24 @@ export default function NewRequestPage() {
                       </div>
                     )}
 
-                    <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
-                      <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
-                      <p className="text-amber-700 font-medium">
-                        Vos fonds sont sécurisés via notre compte séquestre jusqu'à validation de la livraison.
-                      </p>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
+                        <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
+                        <p className="text-amber-700 font-medium">
+                          Vos fonds sont sécurisés via notre compte séquestre jusqu&apos;à validation de la livraison.
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                        <p className="text-xs font-bold text-primary mb-1">Prochaine étape : Paiement 60%</p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Dès validation de votre demande, vous paierez l&apos;acompte (60%) via :
+                        </p>
+                        <div className="flex flex-wrap gap-2 text-[10px]">
+                          <Badge variant="secondary">Carte bancaire</Badge>
+                          <Badge variant="secondary">Mobile Money</Badge>
+                          <Badge variant="secondary">Virement</Badge>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

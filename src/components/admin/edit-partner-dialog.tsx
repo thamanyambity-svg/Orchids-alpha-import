@@ -21,11 +21,26 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
+import type { PartnerProfile, Profile } from "@/lib/types"
+
+/** Partenaire avec infos user, ou objet fusionné (id=user_id, full_name, etc.) */
+export interface PartnerWithUser extends Partial<PartnerProfile> {
+    id: string
+    user_id?: string
+    user?: Profile
+    full_name?: string
+    company_name?: string
+    city?: string
+    status?: string
+    contract_status?: string
+    performance_score?: number
+    assigned_cities?: string[]
+}
 
 interface EditPartnerDialogProps {
     open: boolean
     onClose: () => void
-    partner: any
+    partner: PartnerWithUser
     onUpdate: () => void
 }
 
@@ -87,9 +102,9 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
             toast.success("Partenaire mis à jour avec succès")
             onUpdate()
             onClose()
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error updating partner:", error)
-            toast.error("Erreur lors de la mise à jour: " + error.message)
+            toast.error("Erreur lors de la mise à jour: " + (error instanceof Error ? error.message : "Erreur inconnue"))
         } finally {
             setLoading(false)
         }

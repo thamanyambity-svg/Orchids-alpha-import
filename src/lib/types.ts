@@ -197,3 +197,26 @@ export interface FinancialLedger {
   authorized_by: string | null
   created_at: string
 }
+
+// Types étendus pour les requêtes avec relations Supabase
+export interface ImportRequestWithRelations extends ImportRequest {
+  countries?: { name: string; flag?: string } | null
+  assigned_partner?: Profile & { company_name?: string } | null
+  country?: { name: string; code: string } | null
+}
+
+export interface RequestDocument {
+  id: string
+  request_id: string
+  document_type?: string
+  name?: string
+  file_url: string
+  file_type?: string | null
+  created_at: string
+}
+
+export interface N8nWebhookPayload {
+  event: string
+  timestamp: string
+  data?: Record<string, unknown>
+}

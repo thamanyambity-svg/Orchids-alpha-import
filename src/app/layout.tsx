@@ -22,12 +22,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://alpha-import.com'), // Replace with actual domain when live
+  metadataBase: new URL('https://aonosekehouseinvestmentdrc.site'),
   title: {
-    default: "Alpha Import Exchange RDC | Sécurisation Import Chine-Turquie-Dubai",
+    default: "Alpha Import Exchange RDC | Sécurisation Import Chine-Turquie-Dubai-Japon-Thaïlande",
     template: "%s | Alpha Import Exchange"
   },
-  description: "L'infrastructure de confiance pour vos importations en RDC. Sécurisation financière (60/40), logistique maîtrisée et partenaires certifiés en Chine, Turquie et Dubaï.",
+  description: "L'infrastructure de confiance pour vos importations en RDC. Sécurisation financière (60/40), logistique maîtrisée et partenaires certifiés en Chine, Turquie, Dubai, Japon et Thaïlande.",
   keywords: ["Import RDC", "Logistique Congo", "Achat Chine Kinshasa", "Import Turquie RDC", "Cargo Dubai Kinshasa", "Alpha Import", "Sécurisation paiement import"],
   authors: [{ name: "Alpha Import Exchange" }],
   creator: "Alpha Import Exchange",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_CD",
-    url: "https://alpha-import.com",
+    url: "https://aonosekehouseinvestmentdrc.site",
     title: "Alpha Import Exchange | L'Import Sans Risque",
     description: "Sécurisez vos fonds à 100%. Ne payez le solde qu'à la livraison. Infrastructure certifiée pour la RDC.",
     siteName: "Alpha Import Exchange RDC",

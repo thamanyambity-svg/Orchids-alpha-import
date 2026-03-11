@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://alpha-import.com' // Replace with env var if needed
+    const baseUrl = 'https://aonosekehouseinvestmentdrc.site'
 
     return [
         {

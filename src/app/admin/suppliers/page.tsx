@@ -14,8 +14,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { CheckCircle2, XCircle, Search, Box, MapPin, AlertCircle, FileText } from "lucide-react"
+import { CheckCircle2, XCircle, Search, Box, AlertCircle, FileText, ExternalLink, FileEdit } from "lucide-react"
 import { toast } from "sonner"
+import Link from "next/link"
 
 interface SupplierWithPartner {
     id: string
@@ -29,8 +30,7 @@ interface SupplierWithPartner {
     rating: number
     capacity: string | null
     partner_name?: string
-    sector?: string
-    territory?: string
+    country_code?: string
 }
 
 export default function AdminSuppliersPage() {
@@ -55,23 +55,30 @@ export default function AdminSuppliersPage() {
 
             if (error) throw error
 
-            // 2. Fetch partner names for each supplier
+            // 2. Fetch partner names + country for each supplier
             const enrichedSuppliers = await Promise.all(
                 (suppliersData || []).map(async (supplier) => {
                     let partnerName = "Inconnu"
+                    let countryCode: string | undefined
                     if (supplier.partner_id) {
                         const { data: profile } = await supabase
                             .from('profiles')
-                            .select('full_name, company_name')
+                            .select(`
+                                full_name,
+                                company_name,
+                                country:countries(code)
+                            `)
                             .eq('id', supplier.partner_id)
                             .single()
 
                         partnerName = profile?.company_name || profile?.full_name || "Partenaire Inconnu"
+                        countryCode = (profile?.country as { code?: string })?.code
                     }
 
                     return {
                         ...supplier,
-                        partner_name: partnerName
+                        partner_name: partnerName,
+                        country_code: countryCode
                     }
                 })
             )
@@ -106,54 +113,112 @@ export default function AdminSuppliersPage() {
     }
 
     const [activeTab, setActiveTab] = useState("ALL")
+    const [pendingApplications, setPendingApplications] = useState(0)
+
+    // Pays d'intervention Alpha : Turquie, Dubai (UAE), Chine, Japon, Thaïlande uniquement
+    const ZONE_FILTERS: Record<string, string[]> = {
+        TUR: ['TUR', 'TR'],
+        ARE: ['ARE', 'UAE', 'AE'],
+        CHN: ['CHN', 'CN'],
+        JPN: ['JPN', 'JP'],
+        THA: ['THA', 'TH'],
+    }
+
+    useEffect(() => {
+        async function fetchPendingApplications() {
+            try {
+                const { count } = await supabase
+                    .from('partner_applications')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'PENDING')
+                setPendingApplications(count ?? 0)
+            } catch {
+                // Ignorer
+            }
+        }
+        fetchPendingApplications()
+    }, [])
 
     // Derived filters based on activeTab
     const filteredSuppliers = suppliers.filter(s => {
         const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (s.partner_name && s.partner_name.toLowerCase().includes(searchQuery.toLowerCase()))
 
-        // Tab Logic
-        let matchesTab = true;
+        let matchesTab = true
         if (activeTab === 'APPLICATIONS') {
-            return s.validated_by_admin === false; // Show unvalidated as "Applications"
-        }
-        if (activeTab === 'ASIA') {
-            matchesTab = s.territory === 'ASIA' || s.partner_name?.includes('CN') || s.partner_name?.includes('JP') || false;
-        } else if (activeTab === 'MIDDLE_EAST') {
-            matchesTab = s.territory === 'MIDDLE_EAST' || s.partner_name?.includes('TR') || s.partner_name?.includes('UAE') || false;
-        } else if (['TEXTILE', 'ELECTRONICS', 'AGRO'].includes(activeTab)) {
-            matchesTab = s.sector === activeTab;
+            matchesTab = s.validated_by_admin === false
+        } else if (activeTab !== 'ALL') {
+            const allowedCodes = ZONE_FILTERS[activeTab]
+            matchesTab = allowedCodes
+                ? (s.country_code && allowedCodes.includes(s.country_code.toUpperCase()))
+                : false
         }
 
         return matchesSearch && matchesTab
     })
 
+    const toValidateCount = suppliers.filter(s => !s.validated_by_admin).length
+
     return (
         <div className="space-y-6">
+            {/* Candidatures : liaison avec l'espace dépôt (page d'accueil) */}
+            {pendingApplications > 0 && (
+                <Card className="border-primary/30 bg-primary/5">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                            <FileEdit className="w-4 h-4 text-primary" />
+                            Candidatures partenaires en cours
+                        </CardTitle>
+                        <CardDescription>
+                            {pendingApplications} candidature(s) déposée(s) en attente de validation.
+                            Les dépôts proviennent de l&apos;espace public sur la page d&apos;accueil.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-wrap gap-2">
+                        <Button asChild size="sm" className="gap-2">
+                            <Link href="/admin/partners">
+                                <CheckCircle2 className="w-4 h-4" />
+                                Gérer les candidatures
+                            </Link>
+                        </Button>
+                        <Button asChild variant="outline" size="sm" className="gap-2">
+                            <Link href="/partner-request" target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-4 h-4" />
+                                Voir le dépôt de candidature
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
+
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Validation Fournisseurs</h1>
                     <p className="text-muted-foreground mr-4">
-                        {suppliers.length} fournisseurs • {suppliers.filter(s => !s.validated_by_admin).length} à valider
+                        {suppliers.length} fournisseurs • {toValidateCount} à valider
                     </p>
                 </div>
             </div>
 
+            {/* Filtres par zone géographique : Turquie, Dubai, Chine, Japon, Thaïlande uniquement */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                {['ALL', 'APPLICATIONS', 'ASIA', 'MIDDLE_EAST', 'TEXTILE', 'ELECTRONICS'].map((tab) => (
+                {[
+                    { id: 'ALL', label: 'Tous' },
+                    { id: 'APPLICATIONS', label: 'Candidatures' },
+                    { id: 'TUR', label: 'Turquie' },
+                    { id: 'ARE', label: 'Dubai (UAE)' },
+                    { id: 'CHN', label: 'Chine' },
+                    { id: 'JPN', label: 'Japon' },
+                    { id: 'THA', label: 'Thaïlande' },
+                ].map(({ id, label }) => (
                     <Button
-                        key={tab}
-                        variant={activeTab === tab ? "default" : "outline"}
+                        key={id}
+                        variant={activeTab === id ? "default" : "outline"}
                         size="sm"
-                        onClick={() => setActiveTab(tab)}
-                        className="rounded-full text-xs font-bold uppercase tracking-wider"
+                        onClick={() => setActiveTab(id)}
+                        className="rounded-full text-xs font-bold uppercase tracking-wider shrink-0"
                     >
-                        {tab === 'ALL' && 'Tous'}
-                        {tab === 'APPLICATIONS' && 'Candidatures'}
-                        {tab === 'ASIA' && 'Asie'}
-                        {tab === 'MIDDLE_EAST' && 'Moyen-Orient'}
-                        {tab === 'TEXTILE' && 'Textile'}
-                        {tab === 'ELECTRONICS' && 'Électronique'}
+                        {label}
                     </Button>
                 ))}
             </div>
@@ -163,7 +228,7 @@ export default function AdminSuppliersPage() {
                     <div className="space-y-1">
                         <CardTitle>Registre Global</CardTitle>
                         <CardDescription>
-                            Vue par {activeTab}
+                            Vue par {activeTab === 'ALL' ? 'Tous' : activeTab === 'APPLICATIONS' ? 'Candidatures' : ({ TUR: 'Turquie', ARE: 'Dubai', CHN: 'Chine', JPN: 'Japon', THA: 'Thaïlande' } as Record<string, string>)[activeTab] || activeTab}
                         </CardDescription>
                     </div>
                     <div className="relative w-full md:w-64">
@@ -182,7 +247,7 @@ export default function AdminSuppliersPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Fournisseur</TableHead>
-                                <TableHead>Secteur & Zone</TableHead>
+                                <TableHead>Zone</TableHead>
                                 <TableHead>Partenaire Responsable</TableHead>
                                 <TableHead>Capacité</TableHead>
                                 <TableHead>Statut</TableHead>
@@ -213,10 +278,11 @@ export default function AdminSuppliersPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-col gap-1">
-                                                <Badge variant="outline" className="w-fit text-[10px]">{supplier.sector || 'N/A'}</Badge>
-                                                <span className="text-[10px] text-muted-foreground uppercase">{supplier.territory || 'N/A'}</span>
-                                            </div>
+                                            <Badge variant="outline" className="w-fit text-[10px]">
+                                                {supplier.country_code
+                                                    ? ({ TUR: 'Turquie', ARE: 'Dubai', CHN: 'Chine', JPN: 'Japon', THA: 'Thaïlande' }[supplier.country_code] || supplier.country_code)
+                                                    : '—'}
+                                            </Badge>
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className="bg-muted/50">

@@ -84,15 +84,20 @@ export default function AdminDashboardPage() {
     criticalAlerts: []
   }
 
-  // Transform partners list for the map
+  // Zones Alpha : Turquie, Dubai, Chine, Japon, Thaïlande uniquement
+  const ALLOWED_CODES = ['CHN', 'CN', 'TUR', 'TR', 'ARE', 'UAE', 'AE', 'JPN', 'JP', 'THA', 'TH']
   const partnersMap = partners?.reduce((acc: any, p: any) => {
-    if (p.iso_code && p.iso_code !== 'N/A') {
-      acc[p.iso_code] = {
+    const code = (p.iso_code || '').toUpperCase()
+    if (code && code !== 'N/A' && ALLOWED_CODES.includes(code)) {
+      const mapCode = ['CN', 'TR', 'AE', 'JP', 'TH'].includes(code) 
+        ? { CN: 'CHN', TR: 'TUR', AE: 'ARE', JP: 'JPN', TH: 'THA' }[code]! 
+        : code
+      acc[mapCode] = {
         full_name: p.name,
         company_name: "Partenaire Certifié",
         performance_score: p.performance || 5.0,
         total_orders_handled: "120+",
-        cities: p.cities, // Capture cities
+        cities: p.cities,
         ...p
       }
     }

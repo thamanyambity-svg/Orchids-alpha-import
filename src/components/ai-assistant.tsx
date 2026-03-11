@@ -168,7 +168,7 @@ export function AiAssistant() {
             )
         } else if (key === "partenaire") {
             addUserMessage("🤝 Devenir Partenaire")
-            addAiMessage("Nous recrutons des partenaires logistiques fiables (Chine, Turquie, Dubai). Veuillez soumettre votre candidature via la page dédiée.",
+            addAiMessage("Nous recrutons des partenaires logistiques fiables en Chine, Turquie, Dubai, Japon et Thaïlande. Veuillez soumettre votre candidature via la page dédiée.",
                 undefined,
                 {
                     title: "CANDIDATURE PARTENAIRE",
@@ -227,11 +227,11 @@ export function AiAssistant() {
                         {/* Header */}
                         <div className="p-4 border-b border-white/10 bg-gold/5 flex justify-between items-center shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30 overflow-hidden relative">
+                                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center border border-gold/30 overflow-hidden relative">
                                     <img
-                                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                                        alt="Alpha AI"
-                                        className="w-full h-full object-cover"
+                                        src="/logo-alpha-import.png?v=4"
+                                        alt="Alpha Import Exchange"
+                                        className="w-full h-full object-contain"
                                     />
                                 </div>
                                 <div>

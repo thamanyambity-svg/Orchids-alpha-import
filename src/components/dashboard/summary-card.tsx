@@ -1,9 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ChevronRight, Cpu, Package, ShoppingBag } from "lucide-react"
+import { ChevronRight, Package } from "lucide-react"
+import type { ImportRequest } from "@/lib/types"
 
-export function SummaryCard({ request }: { request?: any }) {
+export function SummaryCard({ request }: { request?: ImportRequest | null }) {
   if (!request) {
     return (
       <motion.div 

@@ -10,7 +10,7 @@ export async function logAudit({
   action: string
   targetType: string
   targetId?: string
-  details?: any
+  details?: Record<string, unknown>
   actorId?: string
 }) {
   const supabase = await createClient()

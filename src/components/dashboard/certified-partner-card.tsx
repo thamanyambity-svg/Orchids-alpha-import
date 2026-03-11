@@ -9,7 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function CertifiedPartnerCard({ partner }: { partner?: any }) {
+/** Partenaire affiché : peut venir de partner_profiles+user ou d'un fallback */
+export interface PartnerDisplay {
+  id?: string
+  full_name?: string
+  company_name?: string
+  city?: string
+  email?: string
+  phone?: string
+  avatar_url?: string
+  countries?: { name?: string; code?: string }
+}
+
+export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | null }) {
   const displayPartner = partner || {
     full_name: "Achignon Bilongo",
     company_name: "MAARMALA - Head Officer",

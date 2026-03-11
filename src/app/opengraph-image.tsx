@@ -50,7 +50,7 @@ export default async function Image() {
                         maxWidth: '800px',
                     }}
                 >
-                    L'INFRASTRUCTURE DE CONFIANCE RDC - CHINE - TURQUIE
+                    L'INFRASTRUCTURE DE CONFIANCE RDC - CHINE · TURQUIE · DUBAI · JAPON · THAÏLANDE
                 </div>
 
                 <div style={{ display: 'flex', marginTop: 40, gap: 20 }}>

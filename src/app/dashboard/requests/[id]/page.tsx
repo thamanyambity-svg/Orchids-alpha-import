@@ -21,6 +21,7 @@ import {
   ExternalLink
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { PaymentButton } from "@/components/payment-button"
 import { TrackingTimeline } from "@/components/dashboard/tracking-timeline"
@@ -177,6 +178,27 @@ export default function RequestDetailsPage() {
               </div>
             </div>
           </section>
+
+          {!order && (
+            <section className="bg-card border border-border rounded-2xl p-6">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-primary" />
+                Prochaine étape : Paiement 60%
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Votre demande est en cours de validation. Dès qu&apos;elle sera validée par notre équipe, vous pourrez procéder au paiement de l&apos;acompte (60%) via :
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="secondary" className="text-xs">Carte bancaire</Badge>
+                <Badge variant="secondary" className="text-xs">Mobile Money</Badge>
+                <Badge variant="secondary" className="text-xs">Virement</Badge>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20 text-sm">
+                <Clock className="w-5 h-5 text-primary shrink-0" />
+                <p>Vous recevrez une notification dès que le paiement sera disponible.</p>
+              </div>
+            </section>
+          )}
 
           {order && (
             <section className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden">

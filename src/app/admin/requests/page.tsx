@@ -15,7 +15,9 @@ import {
   Shield,
   AlertTriangle,
   Info,
-  Wallet
+  Wallet,
+  Ship,
+  Plane
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
@@ -235,6 +237,15 @@ function AdminRequestsContent() {
                     <td className="px-6 py-4">
                       <div className="text-sm">{req.category}</div>
                       <div className="text-xs text-muted-foreground">Source: {(req as any).country?.name || "N/A"}</div>
+                      <div className="mt-1">
+                        <Badge variant="outline" className="text-[10px] gap-1">
+                          {(req as any).transport_mode === 'AIR' ? (
+                            <><Plane className="w-2.5 h-2.5 shrink-0" /> Aérien</>
+                          ) : (
+                            <><Ship className="w-2.5 h-2.5 shrink-0" /> Maritime</>
+                          )}
+                        </Badge>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       {req.assigned_partner_id ? (

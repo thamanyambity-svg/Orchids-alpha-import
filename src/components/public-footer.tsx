@@ -28,10 +28,10 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center mb-8 group">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 relative flex items-center justify-center transition-transform group-hover:scale-105">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 relative flex items-center justify-center bg-black rounded-lg transition-transform group-hover:scale-105">
                 <Image
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                  alt="Alpha A Ambity"
+                  src="/logo-alpha-import.png?v=4"
+                  alt="Alpha Import Exchange"
                   fill
                   className="object-contain"
                 />

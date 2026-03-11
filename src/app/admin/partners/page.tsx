@@ -23,7 +23,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck, Edit } from "lucide-react"
+import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck, Edit, ExternalLink, FileEdit } from "lucide-react"
+import Link from "next/link"
 import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
 
 interface PartnerWithDetails {
@@ -90,7 +91,7 @@ export default function AdminPartnersPage() {
                         city: profile.city,
                         country: profile.country?.name || "N/A",
                         country_code: profile.country?.code || "UNK",
-                        zone: getZone(profile.country?.code, profile.country?.region),
+                        zone: getZone(profile.country?.code),
                         status: profile.status,
                         contract_status: partnerDetails?.contract_status || 'PENDING',
                         performance_score: partnerDetails?.performance_score || 0,
@@ -130,13 +131,11 @@ export default function AdminPartnersPage() {
         }
     }
 
-    // Helper to determine zone
-    function getZone(code: string, region: string) {
+    // Zones Alpha : Turquie, Dubai, Chine, Japon, Thaïlande uniquement
+    function getZone(code: string) {
         if (!code) return "OTHER"
-        // Expanded Asia Definition (ISO-3 + ISO-2)
-        if (["CHN", "CN", "JPN", "JP", "KOR", "KR", "VNM", "VN", "TWN", "TW", "HKG", "HK", "SGP", "SG", "THA", "TH", "IDN", "ID"].includes(code)) return "ASIA"
-        // Expanded Middle East Definition (ISO-3 + ISO-2)
-        if (["ARE", "UAE", "AE", "TUR", "TR", "SAU", "SA", "QAT", "QA", "KWT", "KW", "OMN", "OM"].includes(code)) return "MIDDLE_EAST"
+        if (["CHN", "CN", "JPN", "JP", "THA", "TH"].includes(code)) return "ASIA"
+        if (["ARE", "UAE", "AE", "TUR", "TR"].includes(code)) return "MIDDLE_EAST"
         return "OTHER"
     }
 
@@ -159,8 +158,38 @@ export default function AdminPartnersPage() {
         window.location.href = `/admin/partners/applications/${appId}`
     }
 
+    const ZONE_LABELS: Record<string, string> = {
+        ALL: "Global",
+        ASIA: "Asie (Chine/Japon/Thaïlande)",
+        MIDDLE_EAST: "Moyen-Orient (Dubai/Turquie)",
+        OTHER: "Autres",
+    }
+
     return (
         <div className="space-y-6">
+            {/* Lien vers le dépôt de candidature (page d'accueil) */}
+            {applications.length > 0 && (
+                <Card className="border-primary/30 bg-primary/5">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                            <FileEdit className="w-4 h-4 text-primary" />
+                            Candidatures en attente
+                        </CardTitle>
+                        <CardDescription>
+                            {applications.length} candidature(s) déposée(s). Les dépôts proviennent de l&apos;espace public sur la page d&apos;accueil.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button asChild variant="outline" size="sm" className="gap-2">
+                            <Link href="/partner-request" target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-4 h-4" />
+                                Voir le dépôt de candidature
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
+
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Gestion des Partenaires</h1>
@@ -169,9 +198,11 @@ export default function AdminPartnersPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button>
-                        <UserCheck className="mr-2 h-4 w-4" />
-                        Inviter un Partenaire
+                    <Button asChild>
+                        <Link href="/partner-request" target="_blank" rel="noopener noreferrer">
+                            <UserCheck className="mr-2 h-4 w-4" />
+                            Inviter un Partenaire
+                        </Link>
                     </Button>
                 </div>
             </div>
@@ -187,8 +218,8 @@ export default function AdminPartnersPage() {
                             </span>
                         )}
                     </TabsTrigger>
-                    <TabsTrigger value="ASIA">Asie (Chine/Japon)</TabsTrigger>
-                    <TabsTrigger value="MIDDLE_EAST">Moyen-Orient (Dubaï/Turquie)</TabsTrigger>
+                    <TabsTrigger value="ASIA">Asie (Chine/Japon/Thaïlande)</TabsTrigger>
+                    <TabsTrigger value="MIDDLE_EAST">Moyen-Orient (Dubai/Turquie)</TabsTrigger>
 
                 </TabsList>
 
@@ -257,7 +288,7 @@ export default function AdminPartnersPage() {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
                                 <div className="space-y-1">
-                                    <CardTitle>Réseau Logistique - {activeTab === 'ALL' ? 'Global' : activeTab}</CardTitle>
+                                    <CardTitle>Réseau Logistique — {ZONE_LABELS[activeTab] || activeTab}</CardTitle>
                                     <CardDescription>
                                         Vue d'ensemble des partenaires et de leurs performances
                                     </CardDescription>

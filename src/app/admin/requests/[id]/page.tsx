@@ -22,7 +22,9 @@ import {
   Phone,
   Mail,
   XCircle,
-  History
+  History,
+  Ship,
+  Plane
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -213,6 +215,54 @@ export default function AdminRequestDetailPage() {
 
       <div className="p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Fiche de traitement - Vue synthétique pour l'administrateur */}
+          <div className="rounded-2xl bg-primary/5 border-2 border-primary/20 p-6">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-primary">
+              <FileText className="w-5 h-5" />
+              Fiche de traitement — Détails complets
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Référence</p>
+                <p className="font-mono font-bold">{request.reference}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Mode d&apos;expédition</p>
+                <p className="font-medium flex items-center gap-1">
+                  {request.transport_mode === 'AIR' ? (
+                    <><Plane className="w-4 h-4" /> Aérien</>
+                  ) : (
+                    <><Ship className="w-4 h-4" /> Maritime</>
+                  )}
+                </p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Pays acheteur</p>
+                <p className="font-medium">{request.buyer_country || "—"}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Pays d&apos;achat</p>
+                <p className="font-medium">{request.country?.name || "—"}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Budget Min</p>
+                <p className="font-medium">${request.budget_min?.toLocaleString() || "—"}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Budget Max</p>
+                <p className="font-medium text-primary">${request.budget_max?.toLocaleString() || "—"}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Délai souhaité</p>
+                <p className="font-medium">{request.deadline ? format(new Date(request.deadline), "d MMM yyyy", { locale: fr }) : "—"}</p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground uppercase">Créé le</p>
+                <p className="font-medium">{format(new Date(request.created_at), "d MMM yyyy à HH:mm", { locale: fr })}</p>
+              </div>
+            </div>
+          </div>
+
           {/* Main Info */}
           <div className="rounded-2xl bg-card border border-border p-6">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
@@ -234,16 +284,37 @@ export default function AdminRequestDetailPage() {
                 <p className="font-medium">{request.quantity} {request.unit}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Budget Max</p>
+                <p className="text-sm text-muted-foreground">Budget</p>
                 <p className="font-medium text-lg text-primary">
-                  ${request.budget_max?.toLocaleString()}
+                  ${request.budget_min?.toLocaleString() || "0"} — ${request.budget_max?.toLocaleString()}
                 </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Mode d&apos;expédition</p>
+                <p className="font-medium flex items-center gap-1">
+                  {request.transport_mode === 'AIR' ? (
+                    <><Plane className="w-4 h-4" /> Par avion (Aérien)</>
+                  ) : (
+                    <><Ship className="w-4 h-4" /> Maritime</>
+                  )}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Origine acheteur</p>
+                <p className="font-medium">{request.buyer_country || "Non renseigné"}</p>
               </div>
             </div>
 
             <div className="mt-8 p-4 rounded-xl bg-muted/50">
               <p className="text-sm text-muted-foreground mb-2">Description / Spécifications</p>
               <p className="text-sm whitespace-pre-wrap">{request.specifications?.description || "Aucune description fournie."}</p>
+              {(request.specifications?.brand || request.specifications?.model) && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <p className="text-xs text-muted-foreground">
+                    Marque: {request.specifications?.brand || "—"} • Modèle: {request.specifications?.model || "—"}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
