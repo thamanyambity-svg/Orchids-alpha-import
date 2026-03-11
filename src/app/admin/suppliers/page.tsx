@@ -150,7 +150,7 @@ export default function AdminSuppliersPage() {
         } else if (activeTab !== 'ALL') {
             const allowedCodes = ZONE_FILTERS[activeTab]
             matchesTab = allowedCodes
-                ? (s.country_code && allowedCodes.includes(s.country_code.toUpperCase()))
+                ? Boolean(s.country_code && allowedCodes.includes(s.country_code.toUpperCase()))
                 : false
         }
 
