@@ -21,12 +21,10 @@ Après régénération :
 
 ---
 
-### 2. Retirer .env.local du suivi git (si pas déjà fait)
+### 2. Retirer .env.local du suivi git ✅ FAIT
 
 ```bash
-git rm --cached .env.local
-git commit -m "chore: remove .env.local from git tracking"
-git push
+# Déjà exécuté dans le commit 6097c3a
 ```
 
 ---
@@ -73,7 +71,7 @@ Vercel → Project Settings → General → **Node.js Version** → sélectionne
 - [ ] `STRIPE_WEBHOOK_SECRET` configuré dans Vercel
 - [ ] `OPENAI_API_KEY` ajoutée dans Vercel
 - [ ] Node.js 20.x sélectionné dans Vercel
-- [ ] `.env.local` retiré du suivi git et push effectué
+- [x] `.env.local` retiré du suivi git et push effectué ✅
 - [ ] Workflow n8n mis à jour et importé
 
 ---
@@ -98,4 +96,7 @@ Attention : réécrit l’historique. Les collaborateurs devront refaire un `git
 - `src/lib/workflow.ts` — correction overflow VARCHAR(20) pour les références d’ordres
 - `next.config.ts` — restriction des domaines d’images (remotePatterns)
 - `n8n_alpha_import_workflow.json` — nœuds dédiés pour document, partner_status, report, reminder
-- `.env.example` — modèle des variables d’environnement
+- `.env.example` — modèle des variables d'environnement
+- `src/components/admin/edit-partner-dialog.tsx` — correction type PartnerWithUser (contract_status)
+- `src/components/admin/sidebar.tsx` — typage navItems avec badge optionnel
+- `src/components/dashboard/messaging-card.tsx` — typage payload realtime + alt img

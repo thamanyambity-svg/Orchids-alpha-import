@@ -43,7 +43,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
     const channel = supabase
       .channel('messages_changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-        setMessages((prev) => [...prev, payload.new])
+        setMessages((prev) => [...prev, payload.new as Message])
       })
       .subscribe()
 
@@ -111,7 +111,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
                 {isPartner && (
                   <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-primary/10 flex items-center justify-center">
                     {partner?.avatar_url ? (
-                      <img src={partner.avatar_url} alt={partner.full_name} className="w-full h-full object-cover" />
+                      <img src={partner.avatar_url} alt={partner.full_name ?? ''} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-[10px] font-bold text-primary">{partner?.full_name?.charAt(0)}</span>
                     )}

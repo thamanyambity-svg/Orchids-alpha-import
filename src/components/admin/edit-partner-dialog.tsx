@@ -21,10 +21,10 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
-import type { PartnerProfile, Profile } from "@/lib/types"
+import type { PartnerProfile, Profile, ContractStatus } from "@/lib/types"
 
 /** Partenaire avec infos user, ou objet fusionné (id=user_id, full_name, etc.) */
-export interface PartnerWithUser extends Partial<PartnerProfile> {
+export interface PartnerWithUser extends Omit<Partial<PartnerProfile>, 'contract_status'> {
     id: string
     user_id?: string
     user?: Profile
@@ -32,7 +32,7 @@ export interface PartnerWithUser extends Partial<PartnerProfile> {
     company_name?: string
     city?: string
     status?: string
-    contract_status?: string
+    contract_status?: ContractStatus | string
     performance_score?: number
     assigned_cities?: string[]
 }

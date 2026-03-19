@@ -25,7 +25,7 @@ import {
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
-const navItems = [
+const navItems: { href: string; label: string; icon: typeof LayoutDashboard; badge?: number }[] = [
   { href: "/admin", label: "Tableau de Bord", icon: LayoutDashboard },
   { href: "/admin/requests", label: "Demandes", icon: ClipboardList },
   { href: "/admin/shipping", label: "Expéditions", icon: Ship },
