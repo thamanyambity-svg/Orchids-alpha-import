@@ -85,6 +85,70 @@
     {
       "parameters": {
         "method": "POST",
+        "url": "={{ $env.APP_URL || 'https://aonosekehouseinvestmentdrc.site' }}/api/webhooks/n8n-events?action=document",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ event: $json.body?.event, data: $json.body?.data, timestamp: $json.body?.timestamp || new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "name": "Handle Document Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 420],
+      "notesInFlow": true,
+      "notes": "document_uploaded → déclenche traitement document / OCR"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.APP_URL || 'https://aonosekehouseinvestmentdrc.site' }}/api/webhooks/n8n-events?action=partner_status",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ event: $json.body?.event, data: $json.body?.data, timestamp: $json.body?.timestamp || new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "name": "Handle Partner Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 480],
+      "notesInFlow": true,
+      "notes": "partner_status_update → mise à jour statut partenaire"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.APP_URL || 'https://aonosekehouseinvestmentdrc.site' }}/api/webhooks/n8n-events?action=report",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ event: $json.body?.event, data: $json.body?.data, timestamp: $json.body?.timestamp || new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "name": "Handle Certified Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 540],
+      "notesInFlow": true,
+      "notes": "certified_report_requested → génération rapport certifié"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.APP_URL || 'https://aonosekehouseinvestmentdrc.site' }}/api/webhooks/n8n-events?action=reminder",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ event: $json.body?.event, data: $json.body?.data, timestamp: $json.body?.timestamp || new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "name": "Handle Reminder Deposit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 600],
+      "notesInFlow": true,
+      "notes": "reminder_awaiting_deposit → relance acompte en attente"
+    },
+    {
+      "parameters": {
+        "method": "POST",
         "url": "={{ $env.APP_URL || 'https://aonosekehouseinvestmentdrc.site' }}/api/webhooks/n8n-events?action=log",
         "sendBody": true,
         "specifyBody": "json",
@@ -94,7 +158,7 @@
       "name": "Log Other Events",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [700, 600],
+      "position": [700, 660],
       "notesInFlow": true,
       "notes": "Enregistre les événements non routés dans audit_logs de l'app."
     }
@@ -107,11 +171,11 @@
       "main": [
         [{ "node": "Notify Admin (Slack)", "type": "main", "index": 0 }],
         [{ "node": "Notify Finance (Slack)", "type": "main", "index": 0 }],
-        [{ "node": "Log Other Events", "type": "main", "index": 0 }],
+        [{ "node": "Handle Document Upload", "type": "main", "index": 0 }],
         [{ "node": "Start OCR AI", "type": "main", "index": 0 }],
-        [{ "node": "Log Other Events", "type": "main", "index": 0 }],
-        [{ "node": "Log Other Events", "type": "main", "index": 0 }],
-        [{ "node": "Log Other Events", "type": "main", "index": 0 }],
+        [{ "node": "Handle Partner Status", "type": "main", "index": 0 }],
+        [{ "node": "Handle Certified Report", "type": "main", "index": 0 }],
+        [{ "node": "Handle Reminder Deposit", "type": "main", "index": 0 }],
         [{ "node": "Log Other Events", "type": "main", "index": 0 }]
       ]
     }
