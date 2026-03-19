@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/lib/supabase/client"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, Check, Building2, Globe2, ShieldCheck, Upload, AlertCircle, Banknote, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -12,11 +12,8 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
-// Initialize Supabase client
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Use shared client (placeholders during build, real config at runtime)
+const supabase = createClient()
 
 type Step = 1 | 2 | 3 | 4
 
