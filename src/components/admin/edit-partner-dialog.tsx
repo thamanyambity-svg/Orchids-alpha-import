@@ -21,9 +21,11 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
-import type { PartnerProfile, Profile, ContractStatus } from "@/lib/types"
+import type { PartnerProfile, Profile } from "@/lib/types"
 
 /** Partenaire avec infos user, ou objet fusionné (id=user_id, full_name, etc.) */
+// On exclut 'contract_status' de PartnerProfile via Omit car PartnerProfile.contract_status
+// est un union strict (ContractStatus), alors qu'ici on accepte string pour les valeurs de formulaire.
 export interface PartnerWithUser extends Omit<Partial<PartnerProfile>, 'contract_status'> {
     id: string
     user_id?: string
@@ -32,7 +34,7 @@ export interface PartnerWithUser extends Omit<Partial<PartnerProfile>, 'contract
     company_name?: string
     city?: string
     status?: string
-    contract_status?: ContractStatus | string
+    contract_status?: string
     performance_score?: number
     assigned_cities?: string[]
 }
