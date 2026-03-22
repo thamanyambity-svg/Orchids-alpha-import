@@ -13,9 +13,6 @@ import {
   type PeriodPreset,
 } from '@/lib/finance/period-range'
 
-export type { PeriodPreset, PeriodFilter }
-export { computeDateRange } from '@/lib/finance/period-range'
-
 export interface DossierStatusCount {
   status: string
   count: number

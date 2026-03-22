@@ -20,11 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import type { PeriodFilter, PeriodPreset } from '@/lib/finance/period-range'
 import {
   getFinanceDashboardData,
   type FinanceDashboardData,
-  type PeriodFilter,
-  type PeriodPreset,
 } from '@/app/actions/finance/get-dashboard-data'
 
 interface FinanceDashboardProps {
