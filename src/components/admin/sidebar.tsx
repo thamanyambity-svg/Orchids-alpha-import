@@ -20,7 +20,8 @@ import {
   Mail,
   Ship,
   ClipboardList,
-  FileCheck
+  FileCheck,
+  BarChart3
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
@@ -35,6 +36,7 @@ const navItems: { href: string; label: string; icon: typeof LayoutDashboard; bad
   { href: "/admin/finances", label: "Transactions", icon: Wallet },
   { href: "/admin/risks", label: "Gestion des Risques", icon: Shield },
   { href: "/admin/customs", label: "Douanes & Conformité", icon: FileCheck },
+  { href: "/admin/finance", label: "Finance", icon: BarChart3 },
   { href: "/admin/reporting", label: "Journal d'Audit", icon: Activity },
   { href: "/admin/settings", label: "Paramètres", icon: Settings },
   { href: "/admin/support", label: "Support", icon: LifeBuoy },
