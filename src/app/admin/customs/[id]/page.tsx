@@ -16,6 +16,7 @@ import { TaxLinesEditor } from "@/components/admin/customs/tax-lines-editor"
 import type { TaxLineDisplay } from "@/components/admin/customs/tax-lines-editor"
 import { DeclarationValidationPanel } from "@/components/admin/customs/declaration-validation-panel"
 import { CustomsChat } from "@/components/customs/customs-chat"
+import { DownloadReportButton } from "@/components/admin/customs/download-report-button"
 import { DownloadInvoiceButton } from "@/components/pdf/download-invoice-button"
 import { getCustomsMessages } from "@/app/actions/customs/messaging"
 import { getStatusBadgeVariant, getStatusLabel } from "@/lib/customs/status-display"
@@ -243,11 +244,12 @@ export default async function CustomsFileDetailPage({ params }: Props) {
         inverseBubbles
       />
 
-      {activeInvoice ? (
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <DownloadReportButton fileId={file.id} variant="outline" />
+        {activeInvoice ? (
           <DownloadInvoiceButton invoiceId={activeInvoice.id} variant="default" />
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   )
 }
