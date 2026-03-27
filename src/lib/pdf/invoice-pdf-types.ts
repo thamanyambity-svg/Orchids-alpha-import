@@ -36,7 +36,7 @@ export const COMPANY_INFO = {
   name: 'Alpha Import Exchange',
   subtitle: 'Une filiale du Groupe A.Onoseke House Investment DRC',
   address: '332/40, av. Révolution, Q/Résidentiel, C/Limete, V/Kinshasa, P/Kinshasa',
-  email: 'ansangahouse@gmail.com',
+  email: 'contact@aonosekehouseinvestmentdrc.site',
   rccm: 'CD/KNM/RCCM/21-A-01949',
   id_nat: 'XX-XXXXX-XXXXXXX',
   bank: 'Rawbank — IBAN CD XX XXXX XXXX XXXX XXXX XXXX XXXX',
