@@ -37,6 +37,7 @@ export const COMPANY_INFO = {
   subtitle: 'Une filiale du Groupe A.Onoseke House Investment DRC',
   address: '332/40, av. Révolution, Q/Résidentiel, C/Limete, V/Kinshasa, P/Kinshasa',
   email: 'contact@aonosekehouseinvestmentdrc.site',
+  phone: '+243 999 894 788 / +243 818 924 674',
   rccm: 'CD/KNM/RCCM/21-A-01949',
   id_nat: 'XX-XXXXX-XXXXXXX',
   bank: 'Rawbank — IBAN CD XX XXXX XXXX XXXX XXXX XXXX XXXX',
