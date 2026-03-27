@@ -11,14 +11,14 @@ export interface ApprovePartnerResult {
   passwordLink: string | null
 }
 
+const APPROVABLE_STATUSES = ['PENDING', 'APPROVED_KYC', 'DEPOSIT_PAID'] as const
+
 function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) throw new Error('Configuration Supabase incomplète.')
   return createClient(url, key)
 }
-
-const APPROVABLE_STATUSES = ['PENDING', 'APPROVED_KYC', 'DEPOSIT_PAID'] as const
 
 /**
  * Approuve une candidature partenaire :
