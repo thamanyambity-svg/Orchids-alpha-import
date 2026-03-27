@@ -8,6 +8,12 @@ function csvCell(value: unknown): string {
   return `"${str.replace(/"/g, '""')}"`
 }
 
+// Build a CSV row padded to `colCount` columns, with specific values at given indices.
+// All other cells are empty.
+function paddedRow(colCount: number, SEP: string, values: Record<number, unknown>): string {
+  return Array.from({ length: colCount }, (_, i) => csvCell(values[i] ?? '')).join(SEP)
+}
+
 // Human-readable label for workflow statuses
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Brouillon',
@@ -83,21 +89,7 @@ export async function GET() {
       .filter(r => !['DRAFT', 'REJECTED'].includes(r.status))
       .reduce((sum, r) => sum + (Number(r.budget_max) || 0), 0)
 
-    // --- Assemble CSV lines ---
-    // sep= hint tells Excel which separator to use when double-clicking the file
-    const SEP = ';'
-    const lines: string[] = []
-
-    // Excel separator hint (must be the very first line, no BOM before it)
-    lines.push(`sep=${SEP}`)
-
-    // Company header block
-    lines.push(`${csvCell('ALPHA IMPORT EXCHANGE RDC')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}`)
-    lines.push(`${csvCell('A.Onoseke House Investment DRC')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}`)
-    lines.push(`${csvCell(`Exporté le : ${exportDate}`)}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell('')}${SEP}${csvCell(`Total dossiers : ${(requests ?? []).length}`)}${SEP}${csvCell(`Volume projeté : ${totalVolume.toLocaleString('fr-FR')} USD`)}`)
-    lines.push('') // blank separator row
-
-    // Column headers
+    // Column headers (defined early so header block and total row can reference headers.length)
     const headers = [
       'Référence',
       'Date de création',
@@ -113,6 +105,26 @@ export async function GET() {
       'Partenaire assigné',
       'Email partenaire',
     ]
+    const COL = headers.length // 13 — single source of truth
+
+    // --- Assemble CSV lines ---
+    // sep= hint tells Excel which separator to use when double-clicking the file
+    const SEP = ';'
+    const lines: string[] = []
+
+    // Excel separator hint (must be the very first line, no BOM before it)
+    lines.push(`sep=${SEP}`)
+
+    // Company header block — use paddedRow so column count stays in sync with headers
+    lines.push(paddedRow(COL, SEP, { 0: 'ALPHA IMPORT EXCHANGE RDC' }))
+    lines.push(paddedRow(COL, SEP, { 0: 'A.Onoseke House Investment DRC' }))
+    lines.push(paddedRow(COL, SEP, {
+      0: `Exporté le : ${exportDate}`,
+      [COL - 2]: `Total dossiers : ${(requests ?? []).length}`,
+      [COL - 1]: `Volume projeté : ${totalVolume.toLocaleString('fr-FR')} USD`,
+    }))
+    lines.push('') // blank separator row
+
     lines.push(headers.map(csvCell).join(SEP))
 
     // Data rows
@@ -121,12 +133,10 @@ export async function GET() {
     }
 
     lines.push('') // blank row before totals
-    lines.push([
-      csvCell('TOTAL VOLUME PROJETÉ (hors brouillons & rejetés)'),
-      ...Array(11).fill(csvCell('')),
-      csvCell(''),
-      csvCell(`${totalVolume.toLocaleString('fr-FR')} USD`),
-    ].join(SEP))
+    lines.push(paddedRow(COL, SEP, {
+      0: 'TOTAL VOLUME PROJETÉ (hors brouillons & rejetés)',
+      [COL - 1]: `${totalVolume.toLocaleString('fr-FR')} USD`,
+    }))
 
     // BOM (\uFEFF) must come first for Excel to detect UTF-8 correctly
     const csvContent = '\uFEFF' + lines.join('\r\n')
