@@ -118,7 +118,7 @@ export function PublicFooter() {
 
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} A.Onoseke Investment / Alpha A Ambity. Tous droits réservés.
+            © {new Date().getFullYear()} A.Onoseke House Investment DRC. Tous droits réservés.
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />

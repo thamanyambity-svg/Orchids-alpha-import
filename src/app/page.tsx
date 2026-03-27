@@ -199,7 +199,7 @@ export default function HomePage() {
             >
               {/* BRANDING */}
               <div className="mb-8">
-                <span className="text-sm font-medium tracking-widest text-gold/80 uppercase">Une filiale du Groupe A.Onoseke House Investment RDC</span>
+                <span className="text-sm font-medium tracking-widest text-gold/80 uppercase">Une filiale du Groupe A.Onoseke House Investment DRC</span>
                 <div className="h-0.5 w-24 bg-gold/50 mx-auto mt-2" />
               </div>
 
@@ -253,7 +253,7 @@ export default function HomePage() {
               </h2>
               <p className="text-xl text-gray-400 leading-relaxed font-light">
                 Alpha Import Exchange redéfinit les standards de l'importation en RDC.
-                Adossés à la solidité financière du <span className="text-white font-medium">Groupe A.Onoseke House Investment</span>,
+                Adossés à la solidité financière du <span className="text-white font-medium">Groupe A.Onoseke House Investment DRC</span>,
                 nous ne sommes pas de simples transitaires. <strong>Nous sommes votre partenaire d'achat global.</strong>
               </p>
             </div>

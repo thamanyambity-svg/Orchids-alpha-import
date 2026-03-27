@@ -44,7 +44,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.5 }}
               >
                 <h1 className="text-4xl sm:text-6xl font-bold mb-6">
-                  A.Onoseke House Investment RDC : <br />
+                  A.Onoseke House Investment DRC : <br />
                   <span className="text-gradient-gold">Bâtisseurs d&apos;un Avenir Congolais</span>
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
@@ -72,7 +72,7 @@ export default function AboutPage() {
                 <h2 className="text-3xl font-bold">Une vision audacieuse née en 2019</h2>
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
-                    Fondé en 2019, le Groupe A.Onoseke House Investment RDC est né d&apos;une volonté audacieuse de redéfinir l&apos;entrepreneuriat en République Démocratique du Congo.
+                    Fondé en 2019, le Groupe A.Onoseke House Investment DRC est né d&apos;une volonté audacieuse de redéfinir l&apos;entrepreneuriat en République Démocratique du Congo.
                   </p>
                   <p>
                     Cette structure est le fruit de la synergie entre deux visionnaires qui ont uni leur expertise pour créer un écosystème d&apos;affaires robuste, capable de répondre aux défis complexes du marché congolais tout en s&apos;ouvrant à l&apos;international.
@@ -337,7 +337,7 @@ export default function AboutPage() {
         <section className="py-24 text-center border-t border-border">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-3xl font-bold mb-6">
-              A.Onoseke House Investment RDC
+              A.Onoseke House Investment DRC
             </h2>
             <p className="text-xl text-muted-foreground italic">
               L&apos;architecte de votre potentiel, le partenaire de votre croissance.
