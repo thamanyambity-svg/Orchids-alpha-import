@@ -285,12 +285,12 @@ export async function checkOrderTransitionGuards(
   currentStatus: OrderStatus,
   targetStatus: OrderStatus
 ): Promise<GuardResult> {
-  if (targetStatus === 'AWAITING_DEPOSIT') {
+  if (currentStatus === 'PENDING' && targetStatus === 'AWAITING_DEPOSIT') {
     const result = await guardBuyerKycVerified(supabase, orderId)
     if (!result.allowed) return result
   }
 
-  if (targetStatus === 'SOURCING') {
+  if (currentStatus === 'FUNDED' && targetStatus === 'SOURCING') {
     const result = await guardPartnerContractActive(supabase, orderId)
     if (!result.allowed) return result
   }
