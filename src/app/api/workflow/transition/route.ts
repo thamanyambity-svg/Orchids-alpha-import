@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseAdminClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import {
     canTransitionRequest,
@@ -7,6 +8,7 @@ import {
     REQUEST_TRANSITIONS,
     ORDER_TRANSITIONS
 } from '@/lib/workflow'
+import { checkOrderTransitionGuards } from '@/lib/server-actions/compliance-guards'
 import { UserRole, RequestStatus, OrderStatus } from '@/lib/types'
 
 // Define request body types for stronger typing
@@ -118,6 +120,16 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({
                     error: `Transition forbidden: ${currentStatus} -> ${target} for role ${userRole}`
                 }, { status: 403 })
+            }
+
+            // Prérequis de sécurité, conformité et douane (KYC, contrat partenaire, dossier douanier)
+            const supabaseAdmin = createSupabaseAdminClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            )
+            const guardResult = await checkOrderTransitionGuards(supabaseAdmin, id, currentStatus, target)
+            if (!guardResult.allowed) {
+                return NextResponse.json({ error: guardResult.reason }, { status: 422 })
             }
 
             // Execute Transition

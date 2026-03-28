@@ -34,10 +34,11 @@ export interface InvoicePdfData {
 
 export const COMPANY_INFO = {
   name: 'Alpha Import Exchange',
-  subtitle: 'Une filiale du Groupe A.Onoseke House Investment RDC',
-  address: 'Kinshasa, République Démocratique du Congo',
+  subtitle: 'Une filiale du Groupe A.Onoseke House Investment DRC',
+  address: '332/40, av. Révolution, Q/Résidentiel, C/Limete, V/Kinshasa, P/Kinshasa',
   email: 'contact@aonosekehouseinvestmentdrc.site',
-  rccm: 'CD/KIN/RCCM/XX-XXXXX',
+  phone: '+243 999 894 788 / +243 818 924 674',
+  rccm: 'CD/KNM/RCCM/21-A-01949',
   id_nat: 'XX-XXXXX-XXXXXXX',
   bank: 'Rawbank — IBAN CD XX XXXX XXXX XXXX XXXX XXXX XXXX',
 } as const

@@ -406,6 +406,7 @@ export function CustomsInvoiceTemplate({ data }: CustomsInvoiceTemplateProps) {
             <Text style={s.companySubtitle}>{COMPANY_INFO.subtitle}</Text>
             <Text style={s.companyDetail}>{COMPANY_INFO.address}</Text>
             <Text style={s.companyDetail}>{COMPANY_INFO.email}</Text>
+            <Text style={s.companyDetail}>Tél : {COMPANY_INFO.phone}</Text>
             <Text style={s.companyDetail}>RCCM : {COMPANY_INFO.rccm}</Text>
             <Text style={s.companyDetail}>ID Nat : {COMPANY_INFO.id_nat}</Text>
             <Text style={s.companyDetail}>{COMPANY_INFO.bank}</Text>
@@ -519,7 +520,7 @@ export function CustomsInvoiceTemplate({ data }: CustomsInvoiceTemplateProps) {
             <Text style={s.footerTextBold}>{data.invoice_number}</Text>
           </View>
           <View style={s.footerRow}>
-            <Text style={s.footerText}>{COMPANY_INFO.email}</Text>
+            <Text style={s.footerText}>{COMPANY_INFO.email} — Tél : {COMPANY_INFO.phone}</Text>
             <Text style={s.footerText}>
               RCCM : {COMPANY_INFO.rccm} — ID Nat : {COMPANY_INFO.id_nat}
             </Text>

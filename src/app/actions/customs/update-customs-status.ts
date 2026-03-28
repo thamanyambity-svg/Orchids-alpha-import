@@ -10,6 +10,7 @@ import {
   verifyTransitionAllowed,
   type CustomsFileStatus,
 } from '@/lib/server-actions/customs-guard'
+import { checkCustomsTransitionGuards } from '@/lib/server-actions/compliance-guards'
 
 export interface UpdateCustomsStatusInput {
   customsFileId: string
@@ -92,6 +93,19 @@ export async function updateCustomsStatus(
     }
 
     const supabaseAdmin = createSupabaseAdminClient()
+
+    // Prérequis réglementaires : conformité fiscale et comptable
+    const complianceCheck = await checkCustomsTransitionGuards(
+      supabaseAdmin,
+      input.customsFileId,
+      currentStatus,
+      input.newStatus
+    )
+
+    if (!complianceCheck.allowed) {
+      return fail(complianceCheck.reason ?? 'Prérequis réglementaire non rempli.')
+    }
+
     const clientIp = await getClientIp()
 
     const { data: updatedFile, error: updateError } = await supabaseAdmin

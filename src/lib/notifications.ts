@@ -16,7 +16,7 @@ function getSupabase(): SupabaseClient | null {
 // We'll use a verified sender or a test one.
 // For Resend testing, you usually must send to your own email unless you verify a domain.
 // We'll try to use a generic sender.
-const SENDER_EMAIL = 'A.Onoseke Investment <contact@aonosekehouseinvestmentdrc.site>'
+const SENDER_EMAIL = 'A.Onoseke House Investment DRC <contact@aonosekehouseinvestmentdrc.site>'
 
 type NotificationType = RequestStatus | OrderStatus
 
@@ -141,7 +141,7 @@ export async function sendStatusNotification(
                 <!-- Footer -->
                 <div style="background-color: #fafafa; padding: 24px; text-align: center; border-top: 1px solid #e4e4e7;">
                     <p style="font-size: 12px; color: #71717a; margin: 0;">
-                        Ceci est un message automatique de la plateforme A.Onoseke Investment.<br>
+                        Ceci est un message automatique de la plateforme A.Onoseke House Investment DRC.<br>
                         Kinshasa, RDC • Guangzhou, Chine<br>
                         <strong>Tél / WhatsApp :</strong> +243 999 894 788 • +243 818 924 674
                     </p>

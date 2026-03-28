@@ -15,7 +15,7 @@ export default function TermsPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">1. Objet</h2>
                     <p>
-                        Les présentes CGU régissent l'utilisation de la plateforme <strong>Alpha Import Exchange</strong> (une filiale de Groupe A.Onoseke House Investment RDC), dédiée à la facilitation des importations.
+                        Les présentes CGU régissent l'utilisation de la plateforme <strong>Alpha Import Exchange</strong> (une filiale de Groupe A.Onoseke House Investment DRC), dédiée à la facilitation des importations.
                         En accédant au site, vous acceptez sans réserve ces conditions.
                     </p>
                 </section>
