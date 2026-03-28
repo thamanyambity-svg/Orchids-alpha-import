@@ -93,7 +93,7 @@ export async function GET() {
         budget_min: r.budget_min != null ? Number(r.budget_min) : null,
         budget_max: r.budget_max != null ? Number(r.budget_max) : null,
         buyer_country: (r as Record<string, unknown>).buyer_country ?? "N/A",
-        product_name: (r as Record<string, unknown>).product_name ?? "",
+        product_name: (r as Record<string, unknown>).product_name ?? "N/A",
         partner_name: partner?.full_name ?? "Non assigné",
         partner_email: partner?.email ?? "N/A",
       }
