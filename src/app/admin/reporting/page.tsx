@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { 
   BarChart3, 
   Download, 
+  FileSpreadsheet,
   History, 
   TrendingUp, 
   Activity,
@@ -40,8 +41,12 @@ export default function ReportingPage() {
     }
   }
 
-  function handleExport() {
+  function handleExportCsv() {
     window.open('/api/admin/reporting/export', '_blank')
+  }
+
+  function handleExportXlsx() {
+    window.open('/api/admin/reporting/export-xlsx', '_blank')
   }
 
   if (loading) return <div className="p-8">Chargement du rapport...</div>
@@ -56,10 +61,16 @@ export default function ReportingPage() {
           <h1 className="text-3xl font-bold">Reporting & Audit</h1>
           <p className="text-muted-foreground">Vue d&apos;ensemble de l&apos;activité et traçabilité Alpha.</p>
         </div>
-        <Button onClick={handleExport} className="gap-2">
-          <Download className="w-4 h-4" />
-          Exporter CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleExportCsv} variant="outline" className="gap-2">
+            <Download className="w-4 h-4" />
+            Exporter CSV
+          </Button>
+          <Button onClick={handleExportXlsx} className="gap-2">
+            <FileSpreadsheet className="w-4 h-4" />
+            Exporter Excel
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
