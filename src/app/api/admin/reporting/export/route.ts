@@ -41,9 +41,8 @@ export async function GET() {
         status,
         budget_max,
         budget_min,
-        currency,
-        origin_country,
-        description,
+        buyer_country,
+        product_name,
         created_at,
         updated_at,
         buyer:profiles!buyer_id(full_name, email, phone),
@@ -63,7 +62,7 @@ export async function GET() {
     const dataRows = (requests ?? []).map(r => {
       const buyer = r.buyer as any
       const partner = r.partner as any
-      const currency = (r as any).currency || 'USD'
+      const currency = 'USD'
       const budgetMax = r.budget_max != null ? Number(r.budget_max).toLocaleString('fr-FR') : 'N/A'
       const budgetMin = (r as any).budget_min != null ? Number((r as any).budget_min).toLocaleString('fr-FR') : 'N/A'
 
@@ -77,8 +76,8 @@ export async function GET() {
         STATUS_LABELS[r.status] || r.status,
         `${budgetMin} ${currency}`,
         `${budgetMax} ${currency}`,
-        (r as any).origin_country || 'N/A',
-        (r as any).description || '',
+        (r as any).buyer_country || 'N/A',
+        (r as any).product_name || '',
         partner?.full_name || 'Non assigné',
         partner?.email || 'N/A',
       ]
@@ -100,8 +99,8 @@ export async function GET() {
       'Statut',
       'Budget min',
       'Budget max',
-      "Pays d'origine",
-      'Description',
+      "Pays de l'acheteur",
+      'Produit',
       'Partenaire assigné',
       'Email partenaire',
     ]
