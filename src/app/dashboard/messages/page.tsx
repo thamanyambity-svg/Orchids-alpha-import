@@ -15,7 +15,13 @@ import { createClient } from "@/lib/supabase/client"
 
 export default function MessagesPage() {
   const [loading, setLoading] = useState(true)
-  const [messages, setMessages] = useState<any[]>([])
+  const [messages, setMessages] = useState<{
+    id: string
+    content: string
+    created_at: string
+    sender?: { full_name: string; status: string }
+    recipient?: { full_name: string }
+  }[]>([])
   const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {

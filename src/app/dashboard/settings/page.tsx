@@ -40,16 +40,39 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
-  const [countries, setCountries] = useState<any[]>([])
-  const [kycDocuments, setKycDocuments] = useState<any[]>([])
+  const [profile, setProfile] = useState<{
+    id?: string
+    full_name?: string
+    phone?: string
+    company_name?: string
+    city?: string
+    country_id?: string
+    avatar_url?: string
+    email?: string
+    role?: string
+    status?: string
+    activity_type?: string
+  } | null>(null)
+  const [countries, setCountries] = useState<{
+    id: string
+    name: string
+    code?: string
+    flag?: string
+  }[]>([])
+  const [kycDocuments, setKycDocuments] = useState<{
+    id: string
+    type: string
+    created_at: string
+    file_url: string
+    status?: string
+  }[]>([])
   const [kycModalOpen, setKycModalOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || !profile) return
 
     if (file.size > 2 * 1024 * 1024) {
       toast.error("L'image ne doit pas dépasser 2MB")
@@ -83,7 +106,7 @@ export default function SettingsPage() {
       toast.success("Photo de profil mise à jour")
     } catch (error) {
       console.error('Error uploading avatar:', error)
-      toast.error("Erreur upload: " + (error as any).message)
+      toast.error("Erreur upload: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setUploadingAvatar(false)
     }
@@ -128,7 +151,7 @@ export default function SettingsPage() {
       setCountries(countriesRes.data || [])
     } catch (error) {
       console.error('Error fetching settings data:', error)
-      toast.error("Erreur chargement: " + (error as any).message)
+      toast.error("Erreur chargement: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setLoading(false)
     }
@@ -148,6 +171,7 @@ export default function SettingsPage() {
 
   async function handleUpdateProfile(e: React.FormEvent) {
     e.preventDefault()
+    if (!profile) return
     setSaving(true)
     try {
       const { error } = await supabase

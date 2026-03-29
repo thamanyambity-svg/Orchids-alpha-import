@@ -33,7 +33,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default function PartnerSuppliersPage() {
-  const [suppliers, setSuppliers] = useState<any[]>([])
+  const [suppliers, setSuppliers] = useState<{
+    id: string
+    name: string
+    capacity?: string
+    contact_email?: string
+    contact_phone?: string
+    validated_by_admin?: boolean
+    rating?: string
+    created_at: string
+  }[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [isAdding, setIsAdding] = useState(false)

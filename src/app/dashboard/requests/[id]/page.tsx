@@ -51,9 +51,35 @@ const statusColors: Record<string, string> = {
 export default function RequestDetailsPage() {
   const { id } = useParams()
   const _router = useRouter()
-  const [request, setRequest] = useState<any>(null)
-  const [order, setOrder] = useState<any>(null)
-  const [documents, setDocuments] = useState<any[]>([])
+  const [request, setRequest] = useState<{
+    status: string
+    category: string
+    reference: string
+    quantity: number
+    unit: string
+    budget_max: number
+    specifications?: { description?: string }
+    countries?: { name: string; flag: string }
+    assigned_partner?: { full_name: string; company_name: string; email: string; phone: string }
+    created_at: string
+    [key: string]: unknown
+  } | null>(null)
+  const [order, setOrder] = useState<{
+    id: string
+    deposit_paid: boolean
+    deposit_amount: number
+    balance_paid: boolean
+    balance_amount: number
+    updated_at: string
+    created_at: string
+  } | null>(null)
+  const [documents, setDocuments] = useState<{
+    id: string
+    type: string
+    created_at: string
+    service: string
+    file_url: string
+  }[]>([])
   const [loading, setLoading] = useState(true)
 
   const documentTypeLabels: Record<string, string> = {

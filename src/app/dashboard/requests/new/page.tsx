@@ -201,7 +201,22 @@ const steps = [
   { id: 3, title: "Récapitulatif", icon: FileText },
 ]
 
-const mockPartners: Record<string, any> = {
+interface MockPartner {
+  id: string
+  full_name: string
+  company_name: string
+  bio: string
+  whatsapp_number: string
+  email: string
+  phone: string
+  experience_years: number
+  total_orders_handled: number
+  performance_score: number
+  country_name: string
+  avatar_url?: string
+}
+
+const mockPartners: Record<string, MockPartner> = {
   "CHN": {
     id: "p1",
     full_name: "Chen Wei",
@@ -274,8 +289,15 @@ export default function NewRequestPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  const [countries, setCountries] = useState<any[]>([])
-  const [selectedPartner, setSelectedPartner] = useState<any>(null)
+  const [countries, setCountries] = useState<{
+    id: string
+    name: string
+    code: string
+    flag?: string
+    is_active: boolean
+    coordinates?: { lat: number; lng: number }
+  }[]>([])
+  const [selectedPartner, setSelectedPartner] = useState<MockPartner | null>(null)
 
   const [formData, setFormData] = useState({
     buyerCountry: "",
@@ -285,7 +307,17 @@ export default function NewRequestPage() {
     transportMode: "SEA", // Default
   })
 
-  const [items, setItems] = useState<any[]>([
+  const [items, setItems] = useState<{
+    id: string
+    productName: string
+    description: string
+    quantity: string
+    unit: string
+    budgetMin: string
+    budgetMax: string
+    carBrand: string
+    carModel: string
+  }[]>([
     { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
   ])
 
@@ -299,7 +331,7 @@ export default function NewRequestPage() {
     }
   }
 
-  const updateItem = (id: string, field: string, value: any) => {
+  const updateItem = (id: string, field: string, value: string) => {
     setItems(items.map(item => {
       if (item.id === id) {
         const newItem = { ...item, [field]: value }
@@ -406,8 +438,8 @@ export default function NewRequestPage() {
 
       // Rediriger vers la demande créée pour accéder au paiement dès validation
       router.push(`/dashboard/requests/${created[0].id}`)
-    } catch (error: any) {
-      toast.error(error.message || "Une erreur est survenue")
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Une erreur est survenue")
     } finally {
       setIsLoading(false)
     }

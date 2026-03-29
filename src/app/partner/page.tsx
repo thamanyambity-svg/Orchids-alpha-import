@@ -40,7 +40,16 @@ const statusColors: Record<string, string> = {
   }
 
 export default function PartnerDashboardPage() {
-  const [requests, setRequests] = useState<any[]>([])
+  const [requests, setRequests] = useState<{
+    id: string
+    reference: string
+    status: string
+    product_name: string
+    quantity: string
+    budget: number
+    created_at: string
+    buyer_profiles?: { full_name: string; company_name: string }
+  }[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     assigned: 0,

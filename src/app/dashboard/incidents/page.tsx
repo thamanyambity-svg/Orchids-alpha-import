@@ -27,10 +27,26 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog"
 
+interface Incident {
+  id: string
+  type: string
+  status: string
+  description: string
+  decision?: string
+  created_at: string
+  import_requests?: { product_name: string; reference: string }
+}
+
+interface IncidentRequest {
+  id: string
+  product_name: string
+  reference: string
+}
+
 export default function IncidentsPage() {
   const [loading, setLoading] = useState(true)
-  const [incidents, setIncidents] = useState<any[]>([])
-  const [requests, setRequests] = useState<any[]>([])
+  const [incidents, setIncidents] = useState<Incident[]>([])
+  const [requests, setRequests] = useState<IncidentRequest[]>([])
   const [isReporting, setIsReporting] = useState(false)
   const [open, setOpen] = useState(false)
   
@@ -103,8 +119,8 @@ export default function IncidentsPage() {
       setOpen(false)
       setFormData({ requestId: "", type: "LATE_DELIVERY", description: "" })
       toast.success("Incident signalé avec succès. Notre équipe va l'analyser.")
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors du signalement")
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Erreur lors du signalement")
     } finally {
       setIsReporting(false)
     }

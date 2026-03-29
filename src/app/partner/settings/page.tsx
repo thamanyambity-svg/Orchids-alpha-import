@@ -25,14 +25,24 @@ export default function PartnerSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
-  const [country, setCountry] = useState<any>(null)
+  const [profile, setProfile] = useState<{
+    id?: string
+    full_name?: string
+    phone?: string
+    company_name?: string
+    email?: string
+    avatar_url?: string
+    city?: string
+    country_id?: string
+    countries?: { flag?: string; name?: string }
+  } | null>(null)
+  const [country, setCountry] = useState<{ flag?: string; name?: string } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || !profile) return
 
     if (file.size > 2 * 1024 * 1024) {
       toast.error("L'image ne doit pas dépasser 2MB")
@@ -100,6 +110,7 @@ export default function PartnerSettingsPage() {
 
   async function handleUpdateProfile(e: React.FormEvent) {
     e.preventDefault()
+    if (!profile) return
     setSaving(true)
     try {
       const { error } = await supabase

@@ -19,7 +19,14 @@ import { createClient } from "@/lib/supabase/client"
 
 export default function TransactionsPage() {
   const [loading, setLoading] = useState(true)
-  const [transactions, setTransactions] = useState<any[]>([])
+  const [transactions, setTransactions] = useState<{
+    id: string
+    status: string
+    amount: number
+    created_at: string
+    stripe_payment_intent_id?: string
+    import_requests?: { product_name: string; reference: string }
+  }[]>([])
   const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {

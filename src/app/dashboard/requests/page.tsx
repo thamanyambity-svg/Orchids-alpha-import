@@ -43,7 +43,16 @@ const statusLabels: Record<string, string> = {
 export default function RequestsPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-  const [requests, setRequests] = useState<any[]>([])
+  const [requests, setRequests] = useState<{
+    id: string
+    product_name: string
+    reference: string
+    category: string
+    status: string
+    budget_max: number
+    created_at: string
+    countries?: { name: string; flag: string }
+  }[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

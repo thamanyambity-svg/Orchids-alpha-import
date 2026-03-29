@@ -80,9 +80,9 @@ export default function ContactPage() {
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
       setContactType("")
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending message:", error)
-      toast.error("Erreur lors de l'envoi : " + error.message)
+      toast.error("Erreur lors de l'envoi : " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setIsLoading(false)
     }
