@@ -319,7 +319,7 @@ export default function AdminRequestDetailPage() {
 
             <div className="mt-8 p-4 rounded-xl bg-muted/50">
               <p className="text-sm text-muted-foreground mb-2">Description / Spécifications</p>
-              <p className="text-sm whitespace-pre-wrap">{String(request.specifications?.description ?? "") || "Aucune description fournie."}</p>
+              <p className="text-sm whitespace-pre-wrap">{String(request.specifications?.description ?? "Aucune description fournie.")}</p>
               {(request.specifications?.brand || request.specifications?.model) ? (
                 <div className="mt-3 pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground">
