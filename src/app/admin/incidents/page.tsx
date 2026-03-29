@@ -3,22 +3,15 @@
 import { useEffect, useState } from "react"
 import {
   AlertTriangle,
-  Search,
-  Filter,
-  MoreVertical,
   CheckCircle2,
-  XCircle,
-  Clock,
   ShieldAlert,
-  Snowflake,
-  Play
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import type { Incident, IncidentStatus, Order, Profile } from "@/lib/types"
+import type { Incident, Order, Profile } from "@/lib/types"
 
 export default function AdminIncidentsPage() {
   const [incidents, setIncidents] = useState<(Incident & { order: Order, reporter: Profile })[]>([])

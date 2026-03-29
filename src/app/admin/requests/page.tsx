@@ -1,17 +1,14 @@
 "use client"
 
 import { useEffect, useState, Suspense } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import {
   FileText,
   Search,
-  Filter,
   MoreVertical,
   CheckCircle2,
   XCircle,
   UserPlus,
   Clock,
-  ArrowRight,
   Shield,
   AlertTriangle,
   Info,

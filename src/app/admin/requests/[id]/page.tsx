@@ -7,11 +7,8 @@ import {
   ArrowLeft,
   Package,
   User,
-  Calendar,
   DollarSign,
   FileText,
-  Upload,
-  CheckCircle2,
   Clock,
   AlertCircle,
   MoreVertical,
@@ -21,7 +18,6 @@ import {
   Building2,
   Phone,
   Mail,
-  XCircle,
   History,
   Ship,
   Plane
@@ -73,7 +69,7 @@ export default function AdminRequestDetailPage() {
   const [documents, setDocuments] = useState<any[]>([])
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [updating, setUpdating] = useState(false)
+  const [_updating, setUpdating] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {

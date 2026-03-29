@@ -3,16 +3,15 @@
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Ship, Anchor, Plane, FileText, DollarSign, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 // Detailed cost calculation simulation
-function calculateDetailedCosts(amount: number, transportMode: string, countryCode: string) {
+function calculateDetailedCosts(amount: number, transportMode: string, _countryCode: string) {
     // Base rates
     const freightRate = transportMode === 'AIR' ? 0.35 : 0.15
     const customsRate = 0.25 // Standard tariff
@@ -43,7 +42,7 @@ function getRequiredDocuments(countryCode: string) {
 
 export default function AdminShippingPage() {
     const [shipments, setShipments] = useState<any[]>([])
-    const [loading, setLoading] = useState(true)
+    const [_loading, setLoading] = useState(true)
     const supabase = createClient()
 
     useEffect(() => {

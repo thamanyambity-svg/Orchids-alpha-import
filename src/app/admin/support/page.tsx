@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     Table,
@@ -15,13 +15,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AlertTriangle, MessageSquare, CheckCircle2, Clock, Search, ExternalLink } from "lucide-react"
+import { AlertTriangle, MessageSquare, CheckCircle2, Clock } from "lucide-react"
 
 export default function AdminSupportPage() {
     const [incidents, setIncidents] = useState<any[]>([])
     const [messages, setMessages] = useState<any[]>([])
     const [avgResponseHours, setAvgResponseHours] = useState<number | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [_loading, setLoading] = useState(true)
     const supabase = createClient()
 
     useEffect(() => {

@@ -4,23 +4,14 @@ import { useEffect, useState } from "react"
 import {
   Wallet,
   Search,
-  ArrowUpRight,
-  ArrowDownRight,
   ShieldCheck,
   Clock,
-  CheckCircle2,
-  Lock,
-  Unlock,
-  Info,
-  MoreVertical,
   TrendingUp
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import type { Order, Payment, Profile } from "@/lib/types"
 
 export default function AdminFinancesPage() {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -58,7 +49,7 @@ export default function AdminFinancesPage() {
     .filter(t => t.status === 'SUCCEEDED')
     .reduce((acc, curr) => acc + Number(curr.amount), 0)
 
-  const pendingCount = transactions.filter(t => t.status === 'PENDING').length
+  const _pendingCount = transactions.filter(t => t.status === 'PENDING').length
 
   // Filtering
   const filteredTx = transactions.filter(t =>

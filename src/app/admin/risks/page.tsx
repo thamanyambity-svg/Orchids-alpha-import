@@ -13,13 +13,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { ShieldAlert, AlertTriangle, TrendingUp, UserX, AlertOctagon, CheckCircle2 } from "lucide-react"
+import { ShieldAlert, AlertTriangle, TrendingUp, AlertOctagon } from "lucide-react"
 import { toast } from "sonner"
 
 export default function AdminRisksPage() {
     const [highRiskOrders, setHighRiskOrders] = useState<any[]>([])
     const [restrictedSuppliers, setRestrictedSuppliers] = useState<any[]>([])
-    const [loading, setLoading] = useState(true)
+    const [_loading, setLoading] = useState(true)
     const supabase = createClient()
 
     useEffect(() => {

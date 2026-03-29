@@ -22,8 +22,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, MoreHorizontal, User, ShieldCheck, ShieldAlert, Mail, Phone, MapPin } from "lucide-react"
-import Link from "next/link"
+import { Search, MoreHorizontal, User, ShieldCheck, ShieldAlert, Mail, Phone } from "lucide-react"
 import { toast } from "sonner"
 
 interface BuyerWithStats {
