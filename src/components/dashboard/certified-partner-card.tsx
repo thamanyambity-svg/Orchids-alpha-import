@@ -2,12 +2,6 @@
 
 import { Star, ShieldCheck, LayoutGrid, FileText, CreditCard, MessageSquare, Mail, Phone, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 /** Partenaire affiché : peut venir de partner_profiles+user ou d'un fallback */
 export interface PartnerDisplay {

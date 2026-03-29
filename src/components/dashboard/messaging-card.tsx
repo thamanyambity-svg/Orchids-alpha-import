@@ -1,7 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { MessageSquare, Send, Mic, Paperclip, Loader2 } from "lucide-react"
+import { MessageSquare, Mic, Paperclip, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useEffect, useState, useRef } from "react"

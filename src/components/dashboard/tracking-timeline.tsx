@@ -92,7 +92,7 @@ export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
             <div className="space-y-8 pl-4 relative border-l-2 border-primary/20 ml-2">
                 {events.map((event, index) => {
                     const statusOpt = statusOptions.find(o => o.value === event.status) || { label: event.status, icon: CheckCircle2 }
-                    const Icon = statusOpt.icon
+                    const _Icon = statusOpt.icon
                     const isLatest = index === 0
 
                     return (

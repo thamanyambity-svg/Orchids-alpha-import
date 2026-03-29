@@ -9,16 +9,12 @@ import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
-  Users,
   ShoppingCart,
   CircleDollarSign,
   MessageSquare,
   Headphones,
   Settings,
   LogOut,
-  ChevronRight,
-  User,
-  BadgeCheck,
   AlertTriangle
 } from "lucide-react"
 
@@ -35,8 +31,8 @@ const navItems = [
 
 export function DashboardSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
-  const [profile, setProfile] = useState<any>(null)
+  const _router = useRouter()
+  const [_profile, setProfile] = useState<any>(null)
   const supabase = createClient()
 
   useEffect(() => {

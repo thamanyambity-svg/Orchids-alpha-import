@@ -4,7 +4,7 @@
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Check, Building2, Globe2, ShieldCheck, Upload, AlertCircle, Banknote, Shield } from "lucide-react"
+import { ArrowRight, Check, Building2, ShieldCheck, Upload, AlertCircle, Banknote, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -49,7 +49,7 @@ export function PartnerWizard() {
         const filePath = `partner-applications/${fileName}`
 
         try {
-            const { data, error } = await supabase.storage
+            const { data: _data, error } = await supabase.storage
                 .from('project-uploads')
                 .upload(filePath, file)
 

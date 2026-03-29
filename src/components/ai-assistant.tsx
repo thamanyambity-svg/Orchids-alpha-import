@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { MessageSquare, X, Send, Bot, Minimize2, ShieldCheck, ArrowRight } from "lucide-react"
+import { MessageSquare, X, Send, Minimize2, ShieldCheck, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"

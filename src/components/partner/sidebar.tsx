@@ -12,8 +12,7 @@ import {
   Settings,
   LogOut,
   ChevronRight,
-  MapPin,
-  Shield
+  MapPin
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"

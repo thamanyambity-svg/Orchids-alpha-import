@@ -6,7 +6,6 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import {
     MapPin,
-    Calendar,
     Truck,
     Plus,
     Trash2,
@@ -15,7 +14,6 @@ import {
     AlertCircle,
     Clock,
     Plane,
-    Ship
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -159,7 +157,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
             if (error) throw error
             toast.success("Événement supprimé")
             fetchEvents()
-        } catch (error) {
+        } catch (_error) {
             toast.error("Erreur lors de la suppression")
         }
     }
@@ -251,7 +249,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                 ) : (
                     events.map((event) => {
                         const statusOpt = statusOptions.find(o => o.value === event.status) || { label: event.status, icon: CheckCircle2 }
-                        const Icon = statusOpt.icon
+                        const _Icon = statusOpt.icon
 
                         return (
                             <div key={event.id} className="relative pl-8 group">
