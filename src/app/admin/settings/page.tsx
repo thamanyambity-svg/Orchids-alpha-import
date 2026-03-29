@@ -241,7 +241,7 @@ export default function AdminSettingsPage() {
               <CardHeader>
                 <CardTitle>Informations Personnelles</CardTitle>
                 <CardDescription>
-                  Mettez à jour vos coordonnées d'administrateur.
+                  Mettez à jour vos coordonnées d&apos;administrateur.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -328,13 +328,13 @@ export default function AdminSettingsPage() {
               <CardHeader>
                 <CardTitle>Informations Institutionnelles</CardTitle>
                 <CardDescription>
-                  Détails de l'entité administratrice.
+                  Détails de l&apos;entité administratrice.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="company_name">Nom de l'institution</Label>
+                    <Label htmlFor="company_name">Nom de l&apos;institution</Label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -394,7 +394,7 @@ export default function AdminSettingsPage() {
             <CardHeader>
               <CardTitle>Sécurité du compte</CardTitle>
               <CardDescription>
-                Gérez votre mot de passe et l'authentification à deux facteurs.
+                Gérez votre mot de passe et l&apos;authentification à deux facteurs.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

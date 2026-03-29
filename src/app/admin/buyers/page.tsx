@@ -124,7 +124,7 @@ export default function AdminBuyersPage() {
                     <div className="space-y-1">
                         <CardTitle>Liste des Clients</CardTitle>
                         <CardDescription>
-                            Vue d'ensemble de tous les comptes acheteurs
+                            Vue d&apos;ensemble de tous les comptes acheteurs
                         </CardDescription>
                     </div>
                     <div className="relative w-full md:w-64">

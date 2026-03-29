@@ -345,7 +345,7 @@ export default function SettingsPage() {
                           disabled
                         />
                       </div>
-                      <p className="text-[10px] text-muted-foreground">L'email ne peut pas être modifié pour des raisons de sécurité.</p>
+                      <p className="text-[10px] text-muted-foreground">L&apos;email ne peut pas être modifié pour des raisons de sécurité.</p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Téléphone</Label>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                 <CardContent className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="company_name">Nom de l'entreprise</Label>
+                      <Label htmlFor="company_name">Nom de l&apos;entreprise</Label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -468,7 +468,7 @@ export default function SettingsPage() {
                         <p className="font-medium">Adresse Email</p>
                         <CheckCircle2 className="w-4 h-4 text-success" />
                       </div>
-                      <p className="text-sm text-muted-foreground">Votre adresse email a été vérifiée lors de l'inscription.</p>
+                      <p className="text-sm text-muted-foreground">Votre adresse email a été vérifiée lors de l&apos;inscription.</p>
                     </div>
                   </div>
 
@@ -498,7 +498,7 @@ export default function SettingsPage() {
                         <p className="font-medium">Identité (KYC)</p>
                         <Plus className="w-4 h-4 text-primary" />
                       </div>
-                      <p className="text-sm text-muted-foreground">Téléchargez une pièce d'identité valide (Passeport, CNI).</p>
+                      <p className="text-sm text-muted-foreground">Téléchargez une pièce d&apos;identité valide (Passeport, CNI).</p>
                     </div>
                   </div>
 

@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const origin = process.env.NEXT_PUBLIC_APP_URL || request.headers.get('origin') || 'http://localhost:3000'
 
     const session = await stripe.checkout.sessions.create({
-      // @ts-ignore
+      // @ts-expect-error — Stripe types lag behind the API; field exists at runtime
       automatic_payment_methods: { enabled: true },
       mode: 'payment',
       line_items: [

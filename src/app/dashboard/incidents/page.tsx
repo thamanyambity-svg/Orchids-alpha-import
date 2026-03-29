@@ -157,7 +157,7 @@ export default function IncidentsPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Type d'incident</Label>
+                  <Label>Type d&apos;incident</Label>
                   <Select 
                     value={formData.type} 
                     onValueChange={(v) => setFormData({...formData, type: v})}
@@ -259,7 +259,7 @@ export default function IncidentsPage() {
                 <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
                 <h3 className="font-semibold text-muted-foreground">Aucun incident signalé</h3>
                 <p className="text-sm text-muted-foreground">
-                  Nous espérons que vous n'en aurez jamais besoin !
+                  Nous espérons que vous n&apos;en aurez jamais besoin !
                 </p>
               </div>
             )}

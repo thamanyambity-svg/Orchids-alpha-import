@@ -167,7 +167,7 @@ export default function PartnerSettingsPage() {
                 <CardHeader>
                   <CardTitle>Informations Générales</CardTitle>
                   <CardDescription>
-                    Vos coordonnées de contact et informations d'entreprise.
+                    Vos coordonnées de contact et informations d&apos;entreprise.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -208,7 +208,7 @@ export default function PartnerSettingsPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="company_name">Nom de l'entreprise</Label>
+                        <Label htmlFor="company_name">Nom de l&apos;entreprise</Label>
                         <div className="relative">
                           <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
@@ -261,7 +261,7 @@ export default function PartnerSettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Sécurité</CardTitle>
-                  <CardDescription>Protégez l'accès à vos dossiers de sourcing.</CardDescription>
+                  <CardDescription>Protégez l&apos;accès à vos dossiers de sourcing.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-4 rounded-lg border border-border">
@@ -291,7 +291,7 @@ export default function PartnerSettingsPage() {
                   <div className="text-2xl">{country?.flag || '🌐'}</div>
                   <div>
                     <p className="font-bold">{country?.name || 'Non assigné'}</p>
-                    <p className="text-xs text-muted-foreground">Zone d'opération exclusive</p>
+                    <p className="text-xs text-muted-foreground">Zone d&apos;opération exclusive</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-success bg-success/10 p-2 rounded-lg">
@@ -319,9 +319,9 @@ export default function PartnerSettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground mb-4">
-                Besoin d'aide avec un dossier ou une mise à jour de statut ?
+                Besoin d&apos;aide avec un dossier ou une mise à jour de statut ?
               </p>
-              <Button variant="outline" className="w-full text-xs">Contacter l'Admin</Button>
+              <Button variant="outline" className="w-full text-xs">Contacter l&apos;Admin</Button>
             </CardContent>
           </Card>
         </div>

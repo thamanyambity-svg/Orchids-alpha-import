@@ -174,7 +174,7 @@ export default function PartnerRequestsPage() {
             </div>
             <h3 className="text-lg font-semibold mb-2">Aucun dossier trouvé</h3>
             <p className="text-muted-foreground max-w-sm mx-auto">
-              Vous n'avez pas encore de dossiers assignés ou aucun ne correspond à votre recherche.
+              Vous n&apos;avez pas encore de dossiers assignés ou aucun ne correspond à votre recherche.
             </p>
           </div>
         )}

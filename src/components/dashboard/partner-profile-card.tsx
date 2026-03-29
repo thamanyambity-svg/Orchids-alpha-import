@@ -77,13 +77,13 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
               </div>
               <div className="flex items-center gap-1 text-muted-foreground text-sm">
                 <Calendar className="w-4 h-4" />
-                <span>{partner.experience_years} ans d'exp.</span>
+                <span>{partner.experience_years} ans d&apos;exp.</span>
               </div>
             </div>
           </div>
 
           <p className="text-muted-foreground leading-relaxed italic">
-            "{partner.bio}"
+            &quot;{partner.bio}&quot;
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -125,9 +125,9 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
       </div>
 
       <div className="mt-6 pt-6 border-t border-primary/10 flex items-center justify-between text-xs text-muted-foreground">
-        <p>Vérifié par l'équipe de conformité AlphaIX</p>
+        <p>Vérifié par l&apos;équipe de conformité AlphaIX</p>
         <div className="flex items-center gap-1 text-primary">
-          <span>Voir l'historique complet</span>
+          <span>Voir l&apos;historique complet</span>
           <ArrowRight className="w-3 h-3" />
         </div>
       </div>

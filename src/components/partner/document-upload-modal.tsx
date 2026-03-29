@@ -137,7 +137,7 @@ export function DocumentUploadModal({
         <DialogHeader>
           <DialogTitle>Ajouter un document</DialogTitle>
           <DialogDescription>
-            Téléversez un document pour ce dossier. Il sera visible par l'administrateur et le client.
+            Téléversez un document pour ce dossier. Il sera visible par l&apos;administrateur et le client.
           </DialogDescription>
         </DialogHeader>
 

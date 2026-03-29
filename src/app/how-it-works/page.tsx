@@ -314,7 +314,7 @@ export default function HowItWorksPage() {
                     </div>
                   </div>
                   <p className="text-white/90 text-sm italic">
-                    "Notre priorité est la sécurité de vos fonds et la conformité de vos marchandises."
+                    &quot;Notre priorité est la sécurité de vos fonds et la conformité de vos marchandises.&quot;
                   </p>
                 </div>
               </motion.div>

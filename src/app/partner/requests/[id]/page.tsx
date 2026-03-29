@@ -210,13 +210,13 @@ export default function PartnerRequestDetailPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => updateStatus('EXECUTING')}>
-                Marquer comme "En cours"
+                Marquer comme &quot;En cours&quot;
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => updateStatus('SHIPPED')}>
-                Marquer comme "Expédié"
+                Marquer comme &quot;Expédié&quot;
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => updateStatus('DELIVERED')}>
-                Marquer comme "Livré"
+                Marquer comme &quot;Livré&quot;
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
