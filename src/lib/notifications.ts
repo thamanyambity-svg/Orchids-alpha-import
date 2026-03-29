@@ -104,7 +104,7 @@ export async function sendStatusNotification(
     toEmail: string,
     userName: string,
     status: NotificationType,
-    orderId?: string
+    _orderId?: string
 ) {
     // Only send if we have a template and subject for this status
     const subject = SUBJECTS[status]

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendToN8N } from '@/lib/webhooks'
 
-export async function POST(req: Request) {
+export async function POST(_req: Request) {
   const supabase = await createClient()
 
   // Find import requests awaiting deposit for more than 24h

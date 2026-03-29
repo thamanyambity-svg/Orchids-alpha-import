@@ -2,14 +2,13 @@ import type { Metadata, Viewport } from "next"
 import { DM_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
-import { Toaster } from "@/components/ui/sonner"
 
-const fontSans = DM_Sans({
+const _fontSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
 })
 
-const fontMono = JetBrains_Mono({
+const _fontMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
