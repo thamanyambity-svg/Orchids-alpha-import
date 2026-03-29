@@ -118,7 +118,7 @@ export function KycUploadModal({
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <Shield className="w-6 h-6 text-primary" />
           </div>
-          <DialogTitle>Vérification d'identité (KYC)</DialogTitle>
+          <DialogTitle>Vérification d&apos;identité (KYC)</DialogTitle>
           <DialogDescription>
             Soumettez vos documents pour vérifier votre compte et augmenter vos limites.
           </DialogDescription>

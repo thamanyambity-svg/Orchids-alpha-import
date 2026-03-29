@@ -212,7 +212,7 @@ export default function HomePage() {
 
               {/* SOUS-TITRE (H2) */}
               <h2 className="text-lg sm:text-xl lg:text-2xl text-gray-400 font-light mb-10 max-w-3xl mx-auto">
-                <strong className="text-white font-normal">Facilitation d'Achats • Sourcing Stratégique • Importation de Précision</strong>
+                <strong className="text-white font-normal">Facilitation d&apos;Achats • Sourcing Stratégique • Importation de Précision</strong>
                 <span className="text-sm mt-4 block text-gray-500">
                   Accédez aux meilleurs fournisseurs de <span className="text-white">Chine, Dubaï (UAE), Turquie, Thaïlande et Japon</span> sans les risques liés à la distance.
                 </span>
@@ -252,9 +252,9 @@ export default function HomePage() {
                 IMPORTATION <span className="text-gold">5 ÉTOILES</span>, SANS FRONTIÈRES.
               </h2>
               <p className="text-xl text-gray-400 leading-relaxed font-light">
-                Alpha Import Exchange redéfinit les standards de l'importation en RDC.
+                Alpha Import Exchange redéfinit les standards de l&apos;importation en RDC.
                 Adossés à la solidité financière du <span className="text-white font-medium">Groupe A.Onoseke House Investment DRC</span>,
-                nous ne sommes pas de simples transitaires. <strong>Nous sommes votre partenaire d'achat global.</strong>
+                nous ne sommes pas de simples transitaires. <strong>Nous sommes votre partenaire d&apos;achat global.</strong>
               </p>
             </div>
 
@@ -361,7 +361,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4 uppercase">3. Logistique de Bout en Bout</h3>
                 <p className="text-gray-400 leading-relaxed">
-                  Du sourcing à l'entrepôt du fournisseur jusqu'à votre porte à Kinshasa.
+                  Du sourcing à l&apos;entrepôt du fournisseur jusqu&apos;à votre porte à Kinshasa.
                 </p>
               </motion.div>
             </div>
@@ -374,7 +374,7 @@ export default function HomePage() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 className="text-3xl sm:text-4xl font-bold mb-16 font-mono text-gold tracking-widest uppercase">
-              // COMMENT ÇA MARCHE ?
+              {"// COMMENT ÇA MARCHE ?"}
             </h2>
 
             <div className="grid md:grid-cols-3 gap-12 relative">
@@ -457,7 +457,7 @@ export default function HomePage() {
                       <h3 className="text-xl font-bold text-white mb-2 tracking-wider uppercase">{step.title}</h3>
                       <p className="text-gold/70 text-xs uppercase tracking-widest mb-4 font-medium">{step.subtitle}</p>
                       <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-1">
-                        "{step.text}"
+                        &quot;{step.text}&quot;
                       </p>
                       <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center justify-center gap-2 border border-white/10 rounded-full py-2 px-4 group-hover:bg-white/5 transition-colors">
                         Voir le détail <span className="text-lg">→</span>

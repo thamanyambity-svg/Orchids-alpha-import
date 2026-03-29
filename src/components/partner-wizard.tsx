@@ -194,7 +194,7 @@ export function PartnerWizard() {
                                 </div>
                                 <div className="mt-8 flex justify-end">
                                     <Button onClick={() => setOpen(false)}>
-                                        J'ai lu et compris
+                                        J&apos;ai lu et compris
                                     </Button>
                                 </div>
                             </div>
@@ -212,8 +212,8 @@ export function PartnerWizard() {
                     Charte de Partenariat Officiel
                 </h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                    Devenir partenaire Alpha A Ambity n'est pas une simple inscription.
-                    C'est un engagement contractuel fort basé sur 4 piliers fondamentaux.
+                    Devenir partenaire Alpha A Ambity n&apos;est pas une simple inscription.
+                    C&apos;est un engagement contractuel fort basé sur 4 piliers fondamentaux.
                     <br />
                     <span className="text-sm font-medium text-amber-500 mt-2 block">
                         Veuillez lire attentivement chaque section avant de vous engager.
@@ -263,7 +263,7 @@ export function PartnerWizard() {
                 <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors w-full max-w-md">
                     <input type="checkbox" className="w-5 h-5 accent-primary" id="accept-charter" />
                     <span className="text-sm">
-                        Je certifie avoir lu et accepté l'intégralité des 4 articles de la Charte de Partenariat ci-dessus.
+                        Je certifie avoir lu et accepté l&apos;intégralité des 4 articles de la Charte de Partenariat ci-dessus.
                     </span>
                 </label>
 
@@ -337,7 +337,7 @@ export function PartnerWizard() {
 
             <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                    <Label>Nom de l'entreprise</Label>
+                    <Label>Nom de l&apos;entreprise</Label>
                     <Input
                         name="company_name"
                         placeholder="Ex: Trading Import SARL"
@@ -445,7 +445,7 @@ export function PartnerWizard() {
             </div>
             <div className="mt-10">
                 <Button onClick={() => router.push('/')} variant="outline">
-                    Retour à l'accueil
+                    Retour à l&apos;accueil
                 </Button>
             </div>
         </div>

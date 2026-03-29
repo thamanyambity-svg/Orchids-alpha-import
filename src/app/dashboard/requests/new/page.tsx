@@ -468,7 +468,7 @@ export default function NewRequestPage() {
               <div className="space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold mb-1">Sélection du pays d'achat</h2>
+                    <h2 className="text-2xl font-bold mb-1">Sélection du pays d&apos;achat</h2>
                     <p className="text-muted-foreground">
                       Choisissez le pays où vous souhaitez effectuer votre achat pour voir votre partenaire dédié.
                     </p>
@@ -482,7 +482,7 @@ export default function NewRequestPage() {
                 <div className="grid md:grid-cols-2 gap-8 items-start">
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold">Pays d'origine de l'acheteur *</Label>
+                      <Label className="text-base font-semibold">Pays d&apos;origine de l&apos;acheteur *</Label>
                       <Select
                         value={formData.buyerCountry}
                         onValueChange={(value) => setFormData({ ...formData, buyerCountry: value })}
@@ -504,7 +504,7 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold">Pays d'achat *</Label>
+                      <Label className="text-base font-semibold">Pays d&apos;achat *</Label>
                       <Select
                         value={formData.country}
                         onValueChange={(value) => setFormData({ ...formData, country: value })}
@@ -556,7 +556,7 @@ export default function NewRequestPage() {
                       </h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         AlphaIX vous connecte directement avec un expert local certifié.
-                        Chaque pays dispose d'une équipe dédiée pour garantir la sécurité
+                        Chaque pays dispose d&apos;une équipe dédiée pour garantir la sécurité
                         de vos fonds et la conformité de vos produits.
                       </p>
                     </div>
@@ -578,7 +578,7 @@ export default function NewRequestPage() {
                         <Globe2 className="w-12 h-12 text-muted-foreground/30 mb-4" />
                         <h3 className="font-semibold text-muted-foreground">Sélectionnez un pays</h3>
                         <p className="text-sm text-muted-foreground max-w-[200px] mt-2">
-                          Le profil de votre partenaire certifié s'affichera ici.
+                          Le profil de votre partenaire certifié s&apos;affichera ici.
                         </p>
                       </div>
                     )}
@@ -626,7 +626,7 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <Label className="font-semibold">Mode d'Expédition *</Label>
+                      <Label className="font-semibold">Mode d&apos;Expédition *</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Maritime */}
                         <div
@@ -680,7 +680,7 @@ export default function NewRequestPage() {
                       <AlertCircle className="h-4 w-4 text-blue-500" />
                       <AlertTitle className="text-blue-700">Information Importante</AlertTitle>
                       <AlertDescription className="text-blue-600/80">
-                        Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l'objet d'une fiche de commande séparée pour un meilleur suivi douanier et logistique.
+                        Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l&apos;objet d&apos;une fiche de commande séparée pour un meilleur suivi douanier et logistique.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -842,7 +842,7 @@ export default function NewRequestPage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-1">Vérification finale</h2>
                   <p className="text-muted-foreground">
-                    Relisez votre demande avant l'envoi à votre partenaire. {items.length > 1 && <span className="text-primary font-medium">{items.length} fiches seront créées.</span>}
+                    Relisez votre demande avant l&apos;envoi à votre partenaire. {items.length > 1 && <span className="text-primary font-medium">{items.length} fiches seront créées.</span>}
                   </p>
                 </div>
 
@@ -851,7 +851,7 @@ export default function NewRequestPage() {
                     <div className="p-6 rounded-2xl bg-muted/30 border border-border">
                       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-primary" />
-                        Récapitulatif de l'Importation
+                        Récapitulatif de l&apos;Importation
                       </h3>
                       <div className="grid grid-cols-2 gap-y-4 text-sm mb-6 pb-6 border-b border-border/50">
                         <div className="col-span-2">
@@ -884,11 +884,11 @@ export default function NewRequestPage() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
+                          <p className="text-muted-foreground">Pays d&apos;origine (Acheteur)</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.buyerCountry)?.name || formData.buyerCountry}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Pays d'achat</p>
+                          <p className="text-muted-foreground">Pays d&apos;achat</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.country)?.name || formData.country}</p>
                         </div>
                         <div>

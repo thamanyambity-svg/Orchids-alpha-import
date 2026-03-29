@@ -120,7 +120,7 @@ export default function MessagesPage() {
                 <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
                 <h3 className="font-semibold text-muted-foreground">Aucun message pour le moment</h3>
                 <p className="text-sm text-muted-foreground">
-                  Vos conversations avec les partenaires apparaîtront ici dès qu'une commande sera lancée.
+                  Vos conversations avec les partenaires apparaîtront ici dès qu&apos;une commande sera lancée.
                 </p>
               </div>
             )}

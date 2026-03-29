@@ -214,7 +214,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Date de l'événement</Label>
+                                <Label>Date de l&apos;événement</Label>
                                 <Input
                                     type="datetime-local"
                                     value={formData.event_date}

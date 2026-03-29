@@ -141,7 +141,7 @@ export default function PartnerSuppliersPage() {
             </DialogHeader>
             <form onSubmit={handleAddSupplier} className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nom de l'entreprise</Label>
+                <Label htmlFor="name">Nom de l&apos;entreprise</Label>
                 <Input 
                   id="name" 
                   placeholder="Ex: Shenzhen Tech Ltd" 
@@ -286,7 +286,7 @@ export default function PartnerSuppliersPage() {
             </div>
             <h3 className="text-lg font-semibold mb-2">Aucun fournisseur</h3>
             <p className="text-muted-foreground max-w-sm mx-auto mb-6">
-              Vous n'avez pas encore ajouté de fournisseurs à votre catalogue local.
+              Vous n&apos;avez pas encore ajouté de fournisseurs à votre catalogue local.
             </p>
             <Dialog>
               <DialogTrigger asChild>
@@ -298,7 +298,7 @@ export default function PartnerSuppliersPage() {
                 </DialogHeader>
                 <form onSubmit={handleAddSupplier} className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nom de l'entreprise</Label>
+                    <Label htmlFor="name">Nom de l&apos;entreprise</Label>
                     <Input 
                       id="name" 
                       placeholder="Ex: Shenzhen Tech Ltd" 

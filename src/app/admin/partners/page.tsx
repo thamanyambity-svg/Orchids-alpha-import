@@ -290,7 +290,7 @@ export default function AdminPartnersPage() {
                                 <div className="space-y-1">
                                     <CardTitle>Réseau Logistique — {ZONE_LABELS[activeTab] || activeTab}</CardTitle>
                                     <CardDescription>
-                                        Vue d'ensemble des partenaires et de leurs performances
+                                        Vue d&apos;ensemble des partenaires et de leurs performances
                                     </CardDescription>
                                 </div>
                                 <div className="relative w-full md:w-64">

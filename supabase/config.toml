@@ -1,0 +1,32 @@
+# =============================================================================
+# Supabase local / CI configuration
+# Fichier versionné — ne contient aucun secret.
+# Les variables sensibles (DB URL, anon key, service key) restent dans .env.local
+# et dans les secrets GitHub Actions / Vercel.
+# =============================================================================
+
+[project]
+id = ""  # renseigné par `supabase link` (pas de secret)
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false

@@ -306,7 +306,7 @@ export default function RequestDetailsPage() {
             ) : (
               <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
                 <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                <p className="text-sm text-muted-foreground">Aucun document n'a encore été ajouté.</p>
+                <p className="text-sm text-muted-foreground">Aucun document n&apos;a encore été ajouté.</p>
               </div>
             )}
           </section>

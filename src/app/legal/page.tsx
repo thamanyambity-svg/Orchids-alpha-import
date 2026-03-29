@@ -15,7 +15,7 @@ export default function LegalPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">1. Éditeur du Site</h2>
                     <p>
-                        Le site <strong>Alpha A Ambity</strong> (accessible à l'adresse https://aonosekehouseinvestmentdrc.site) est édité par la société <strong>A.ONOSEKE INVESTMENT</strong>.
+                        Le site <strong>Alpha A Ambity</strong> (accessible à l&apos;adresse https://aonosekehouseinvestmentdrc.site) est édité par la société <strong>A.ONOSEKE INVESTMENT</strong>.
                     </p>
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                         <li><strong>Siège Social :</strong> Kinshasa, République Démocratique du Congo</li>
@@ -36,7 +36,7 @@ export default function LegalPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">3. Propriété Intellectuelle</h2>
                     <p>
-                        L'ensemble de ce site relève de la législation internationale sur le droit d'auteur et la propriété intellectuelle.
+                        L&apos;ensemble de ce site relève de la législation internationale sur le droit d&apos;auteur et la propriété intellectuelle.
                         Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.
                     </p>
                 </section>
