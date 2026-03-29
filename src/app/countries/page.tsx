@@ -4,13 +4,10 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Globe, 
-  ChevronRight, 
   TrendingUp, 
   ShieldCheck, 
   Zap,
   Building2,
-  Ship,
-  Factory,
   CheckCircle2,
   ArrowRight
 } from "lucide-react"

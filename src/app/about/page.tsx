@@ -4,7 +4,6 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import {
   History,
-  Target,
   Users,
   Globe2,
   Cpu,

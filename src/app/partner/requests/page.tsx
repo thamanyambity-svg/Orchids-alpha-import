@@ -8,7 +8,6 @@ import {
   Package, 
   ArrowRight,
   Clock,
-  CheckCircle2,
   AlertCircle
 } from "lucide-react"
 import Link from "next/link"

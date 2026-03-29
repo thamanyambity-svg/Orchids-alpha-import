@@ -3,21 +3,17 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   Shield,
-  ArrowRight,
   Lock,
   Eye,
   FileCheck,
   Globe2,
   Wallet,
-  Users,
   CheckCircle2,
-  ChevronRight,
   Ship,
   Factory,
-  Landmark,
   Package,
   PenTool
 } from "lucide-react"
@@ -55,7 +51,7 @@ const heroImages = [
   }
 ]
 
-const features = [
+const _features = [
   {
     icon: Lock,
     title: "Fonds sécurisés",
@@ -78,7 +74,7 @@ const features = [
   }
 ]
 
-const steps = [
+const _steps = [
   {
     number: "01",
     title: "Formulez votre demande",
@@ -111,7 +107,7 @@ const steps = [
   }
 ]
 
-const countries = [
+const _countries = [
   {
     code: "CHN",
     name: "Chine",
@@ -149,7 +145,7 @@ const countries = [
   },
 ]
 
-const stats = [
+const _stats = [
   { value: "100%", label: "Fonds sécurisés" },
   { value: "1:1", label: "Partenaire par pays" },
   { value: "60/40", label: "Modèle de paiement" },
@@ -157,7 +153,7 @@ const stats = [
 ]
 
 export default function HomePage() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [_currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     const timer = setInterval(() => {

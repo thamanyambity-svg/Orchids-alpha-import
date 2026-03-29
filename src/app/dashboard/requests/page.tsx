@@ -53,7 +53,7 @@ export default function RequestsPage() {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
-        const { data, error } = await supabase
+        const { data, error: _error } = await supabase
           .from("import_requests")
           .select(`
             *,

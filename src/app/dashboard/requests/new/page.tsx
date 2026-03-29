@@ -16,8 +16,6 @@ import {
   Sparkles,
   Plus,
   Trash2,
-  Car,
-  Settings2,
   AlertCircle,
   Ship,
   Plane

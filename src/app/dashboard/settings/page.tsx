@@ -1,22 +1,17 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
 import {
   User,
   Building2,
   ShieldCheck,
-  Bell,
   Lock,
-  CreditCard,
   Camera,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   Save,
   Mail,
   Phone,
-  Globe,
   MapPin,
   ExternalLink,
   Plus,

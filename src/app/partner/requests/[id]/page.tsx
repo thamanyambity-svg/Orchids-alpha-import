@@ -2,16 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { motion } from "framer-motion"
 import { 
   ArrowLeft, 
   Package, 
-  User, 
-  Calendar, 
-  DollarSign, 
   FileText,
   Upload,
-  CheckCircle2,
   Clock,
   AlertCircle,
   MoreVertical,
@@ -57,7 +52,7 @@ const documentTypeLabels: Record<string, string> = {
 
 export default function PartnerRequestDetailPage() {
   const params = useParams()
-  const router = useRouter()
+  const _router = useRouter()
   const [request, setRequest] = useState<any>(null)
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -132,7 +127,7 @@ export default function PartnerRequestDetailPage() {
 
       setDocuments(documents.filter(d => d.id !== id))
       toast.success("Document supprimé")
-    } catch (error) {
+    } catch (_error) {
       toast.error("Erreur lors de la suppression")
     }
   }

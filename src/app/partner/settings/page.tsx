@@ -10,7 +10,6 @@ import {
   Mail, 
   Phone,
   Camera,
-  MapPin,
   Building2,
   Upload
 } from "lucide-react"

@@ -6,16 +6,12 @@ import {
   MessageSquare, 
   Search, 
   Loader2,
-  Calendar,
-  Send,
   User,
   ShieldCheck
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "sonner"
 
 export default function MessagesPage() {
   const [loading, setLoading] = useState(true)

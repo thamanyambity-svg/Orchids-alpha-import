@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { motion } from "framer-motion"
+
 import {
   ArrowLeft,
   FileText,
@@ -50,7 +50,7 @@ const statusColors: Record<string, string> = {
 
 export default function RequestDetailsPage() {
   const { id } = useParams()
-  const router = useRouter()
+  const _router = useRouter()
   const [request, setRequest] = useState<any>(null)
   const [order, setOrder] = useState<any>(null)
   const [documents, setDocuments] = useState<any[]>([])
