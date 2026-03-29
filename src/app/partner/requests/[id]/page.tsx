@@ -28,6 +28,36 @@ import {
 import { toast } from "sonner"
 import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
 
+interface BuyerProfileInfo {
+  full_name: string | null
+  company_name: string | null
+  activity_type: string | null
+}
+
+interface PartnerRequest {
+  id: string
+  category: string
+  reference: string
+  quantity: number | null
+  unit: string | null
+  budget_min: number | null
+  budget_max: number | null
+  created_at: string
+  description: string | null
+  status: string
+  buyer_profiles: BuyerProfileInfo | null
+  [key: string]: unknown
+}
+
+interface RequestDocument {
+  id: string
+  type: string
+  created_at: string
+  service: string | null
+  file_url: string
+  [key: string]: unknown
+}
+
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
   VALIDATED: "À traiter",
@@ -53,8 +83,8 @@ const documentTypeLabels: Record<string, string> = {
 export default function PartnerRequestDetailPage() {
   const params = useParams()
   const _router = useRouter()
-  const [request, setRequest] = useState<Record<string, unknown> | null>(null)
-  const [documents, setDocuments] = useState<Record<string, unknown>[]>([])
+  const [request, setRequest] = useState<PartnerRequest | null>(null)
+  const [documents, setDocuments] = useState<RequestDocument[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
@@ -84,8 +114,8 @@ export default function PartnerRequestDetailPage() {
         ])
 
         if (requestRes.error) throw requestRes.error
-        setRequest(requestRes.data)
-        setDocuments(docsRes.data || [])
+        setRequest(requestRes.data as PartnerRequest)
+        setDocuments((docsRes.data || []) as RequestDocument[])
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error("Erreur lors de la récupération des données")
@@ -104,7 +134,7 @@ export default function PartnerRequestDetailPage() {
       .eq('request_id', params.id)
       .order('created_at', { ascending: false })
     
-    if (!error) setDocuments(data || [])
+    if (!error) setDocuments((data || []) as RequestDocument[])
   }
 
   const deleteDocument = async (id: string, url: string) => {

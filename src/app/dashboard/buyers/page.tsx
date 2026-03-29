@@ -12,9 +12,35 @@ import { CertifiedPartnerCard } from "@/components/dashboard/certified-partner-c
 import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
 
+interface CountryInfo {
+  name: string
+  code: string
+}
+
+interface BuyerProfile {
+  id: string
+  full_name: string | null
+  status: string | null
+  countries: CountryInfo | null
+}
+
+interface AssignedPartner {
+  id: string
+  full_name: string | null
+  countries: CountryInfo | null
+  [key: string]: unknown
+}
+
+interface BuyerRequest {
+  id: string
+  status: string | null
+  assigned_partner: AssignedPartner | null
+  [key: string]: unknown
+}
+
 export default function DashboardPage() {
-  const [profile, setProfile] = useState<Record<string, unknown> | null>(null)
-  const [request, setRequest] = useState<Record<string, unknown> | null>(null)
+  const [profile, setProfile] = useState<BuyerProfile | null>(null)
+  const [request, setRequest] = useState<BuyerRequest | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -29,7 +55,7 @@ export default function DashboardPage() {
             .select('*, countries(name, code)')
             .eq('id', user.id)
             .single()
-          setProfile(profileData)
+          setProfile(profileData as BuyerProfile | null)
 
           // Fetch latest request with partner info
           const { data: requestData } = await supabase
@@ -40,7 +66,7 @@ export default function DashboardPage() {
             .limit(1)
             .maybeSingle()
           
-          setRequest(requestData)
+          setRequest(requestData as BuyerRequest | null)
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
