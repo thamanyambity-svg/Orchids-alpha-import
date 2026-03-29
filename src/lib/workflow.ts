@@ -202,7 +202,7 @@ export async function executeTransition(
                 .single()
 
             if (requestWithBuyer?.buyer) {
-                const buyer = requestWithBuyer.buyer as any
+                const buyer = requestWithBuyer.buyer as unknown as { email: string; full_name: string | null }
                 await sendStatusNotification(
                     buyer.email,
                     buyer.full_name || 'Client',
@@ -307,7 +307,7 @@ export async function executeTransition(
                 .single()
 
             if (orderWithBuyer?.request) {
-                const buyer = (orderWithBuyer.request as any).buyer
+                const buyer = (orderWithBuyer.request as unknown as { buyer: { email: string; full_name: string | null } | null }).buyer
                 if (buyer) {
                     await sendStatusNotification(
                         buyer.email,

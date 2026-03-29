@@ -98,7 +98,7 @@ export async function GET() {
         id: r.reference || r.id.slice(0, 6),
         realId: r.id,
         product: r.product_name || r.category,
-        partner: (r.partner as any)?.full_name || "Non assigné",
+        partner: (r.partner as { full_name: string } | null)?.full_name || "Non assigné",
         status: r.status,
         statusColor: getStatusColor(r.status)
       })) || [],
@@ -115,8 +115,8 @@ export async function GET() {
         time: formatTimeAgo(new Date(alert.created_at))
       })) || []
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 

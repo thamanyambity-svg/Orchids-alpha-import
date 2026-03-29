@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing requestId or action' }, { status: 400 })
     }
 
-    let result: any = null
+    let result: Record<string, unknown> | null = null
     let n8nEvent = ''
 
     switch (action) {
@@ -145,10 +145,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, data: result })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Admin request action error:`, error)
     return NextResponse.json(
-      { error: error.message || 'Action failed' },
+      { error: error instanceof Error ? error.message : 'Action failed' },
       { status: 500 }
     )
   }

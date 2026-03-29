@@ -60,11 +60,11 @@ export async function GET() {
 
     // --- Build rows ---
     const dataRows = (requests ?? []).map(r => {
-      const buyer = r.buyer as any
-      const partner = r.partner as any
+      const buyer = r.buyer as unknown as { full_name: string; email: string; phone: string } | null
+      const partner = r.partner as unknown as { full_name: string; email: string } | null
       const currency = 'USD'
       const budgetMax = r.budget_max != null ? Number(r.budget_max).toLocaleString('fr-FR') : 'N/A'
-      const budgetMin = (r as any).budget_min != null ? Number((r as any).budget_min).toLocaleString('fr-FR') : 'N/A'
+      const budgetMin = r.budget_min != null ? Number(r.budget_min).toLocaleString('fr-FR') : 'N/A'
 
       return [
         r.reference,
@@ -76,8 +76,8 @@ export async function GET() {
         STATUS_LABELS[r.status] || r.status,
         `${budgetMin} ${currency}`,
         `${budgetMax} ${currency}`,
-        (r as any).buyer_country || 'N/A',
-        (r as any).product_name || '',
+        r.buyer_country || 'N/A',
+        r.product_name || '',
         partner?.full_name || 'Non assigné',
         partner?.email || 'N/A',
       ]
@@ -146,7 +146,7 @@ export async function GET() {
         'Content-Disposition': `attachment; filename="${exportFileName}"`,
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }

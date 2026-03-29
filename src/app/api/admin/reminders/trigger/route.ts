@@ -58,7 +58,7 @@ export async function POST(_req: Request) {
     console.error('Analysis error:', analysisError)
   } else {
     for (const request of pendingAnalysis || []) {
-      const partnerProfile = (request.partner as any)?.profiles
+      const partnerProfile = (request.partner as { profiles: { email: string; full_name: string } | null } | null)?.profiles
       await sendToN8N('reminder_partner_analysis', {
         requestId: request.id,
         reference: request.reference,

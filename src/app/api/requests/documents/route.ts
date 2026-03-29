@@ -62,10 +62,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(data)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Document record creation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to record document' },
+      { error: error instanceof Error ? error.message : 'Failed to record document' },
       { status: 500 }
     )
   }

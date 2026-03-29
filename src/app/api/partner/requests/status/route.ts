@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(data)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Partner status update error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to update status' },
+      { error: error instanceof Error ? error.message : 'Failed to update status' },
       { status: 500 }
     )
   }

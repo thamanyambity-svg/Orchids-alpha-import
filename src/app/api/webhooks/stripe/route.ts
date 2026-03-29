@@ -12,7 +12,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 export async function POST(request: Request) {
     // Initialize Stripe inside handler to avoid build-time errors
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2024-12-18.acacia' as any,
+        apiVersion: '2024-12-18.acacia' as Stripe.LatestApiVersion,
     })
     const body = await request.text()
     const signature = (await headers()).get('stripe-signature') as string
@@ -22,9 +22,10 @@ export async function POST(request: Request) {
     try {
         if (!signature || !webhookSecret) return new NextResponse('Missing signature or secret', { status: 400 })
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    } catch (error: any) {
-        console.error(`Webhook signature verification failed: ${error.message}`)
-        return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 })
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.error(`Webhook signature verification failed: ${message}`)
+        return new NextResponse(`Webhook Error: ${message}`, { status: 400 })
     }
 
     // Initialize Admin Supabase Client (Service Role)
