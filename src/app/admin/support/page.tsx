@@ -17,9 +17,30 @@ import {
 } from "@/components/ui/table"
 import { AlertTriangle, MessageSquare, CheckCircle2, Clock } from "lucide-react"
 
+interface SupportIncident {
+    id: string
+    type: string
+    status: string
+    created_at: string
+    resolved_at: string | null
+    order_id: string
+    order?: {
+        reference: string
+        request?: { buyer?: { email: string; full_name: string | null } | null } | null
+    } | null
+}
+
+interface SupportMessage {
+    id: string
+    content: string
+    is_read: boolean
+    created_at: string
+    sender?: { email: string; full_name: string | null } | null
+}
+
 export default function AdminSupportPage() {
-    const [incidents, setIncidents] = useState<any[]>([])
-    const [messages, setMessages] = useState<any[]>([])
+    const [incidents, setIncidents] = useState<SupportIncident[]>([])
+    const [messages, setMessages] = useState<SupportMessage[]>([])
     const [avgResponseHours, setAvgResponseHours] = useState<number | null>(null)
     const [_loading, setLoading] = useState(true)
     const supabase = createClient()

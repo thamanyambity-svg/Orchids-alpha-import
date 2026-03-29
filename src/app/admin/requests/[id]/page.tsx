@@ -62,12 +62,28 @@ const documentTypeLabels: Record<string, string> = {
   OTHER: "Autre document",
 }
 
+import type { ImportRequest, Profile, PartnerProfile, Order, RequestDocument } from "@/lib/types"
+
+type RequestWithRelations = ImportRequest & {
+  buyer?: Profile | null
+  assigned_partner?: (PartnerProfile & { user?: Profile | null; company_name?: string; phone?: string | null; email?: string }) | null
+  country?: { id: string; code: string; name: string; region: string | null; is_active: boolean; created_at: string; flag?: string } | null
+  transport_mode?: string
+  buyer_country?: string
+  product_name?: string
+}
+
+type RequestDocumentExtended = RequestDocument & {
+  type?: string
+  service?: string
+}
+
 export default function AdminRequestDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [request, setRequest] = useState<any>(null)
-  const [documents, setDocuments] = useState<any[]>([])
-  const [order, setOrder] = useState<any>(null)
+  const [request, setRequest] = useState<RequestWithRelations | null>(null)
+  const [documents, setDocuments] = useState<RequestDocumentExtended[]>([])
+  const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [_updating, setUpdating] = useState(false)
   const supabase = createClient()
@@ -116,7 +132,7 @@ export default function AdminRequestDetailPage() {
     if (params.id) fetchData()
   }, [params.id])
 
-  const handleAction = async (action: string, data?: any) => {
+  const handleAction = async (action: string, data?: Record<string, unknown>) => {
     setUpdating(true)
     try {
       const response = await fetch('/api/admin/requests', {
@@ -137,8 +153,8 @@ export default function AdminRequestDetailPage() {
         .eq('id', params.id)
         .single()
       setRequest(updatedReq)
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
+    } catch (error: unknown) {
+      toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setUpdating(false)
     }
@@ -303,14 +319,14 @@ export default function AdminRequestDetailPage() {
 
             <div className="mt-8 p-4 rounded-xl bg-muted/50">
               <p className="text-sm text-muted-foreground mb-2">Description / Spécifications</p>
-              <p className="text-sm whitespace-pre-wrap">{request.specifications?.description || "Aucune description fournie."}</p>
-              {(request.specifications?.brand || request.specifications?.model) && (
+              <p className="text-sm whitespace-pre-wrap">{String(request.specifications?.description ?? "") || "Aucune description fournie."}</p>
+              {(request.specifications?.brand || request.specifications?.model) ? (
                 <div className="mt-3 pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground">
-                    Marque: {request.specifications?.brand || "—"} • Modèle: {request.specifications?.model || "—"}
+                    Marque: {String(request.specifications?.brand ?? "") || "—"} • Modèle: {String(request.specifications?.model ?? "") || "—"}
                   </p>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -334,7 +350,7 @@ export default function AdminRequestDetailPage() {
                       </div>
                       <div>
                         <p className="text-sm font-bold">
-                          {documentTypeLabels[doc.type] || doc.type}
+                          {doc.type ? (documentTypeLabels[doc.type] || doc.type) : doc.name || 'Document'}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(doc.created_at), "d MMM yyyy", { locale: fr })} • {doc.service}

@@ -25,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck, Edit, ExternalLink, FileEdit } from "lucide-react"
 import Link from "next/link"
-import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
+import { EditPartnerDialog, type PartnerWithUser } from "@/components/admin/edit-partner-dialog"
 
 interface PartnerWithDetails {
     id: string
@@ -48,7 +48,7 @@ export default function AdminPartnersPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
     const [activeTab, setActiveTab] = useState("ALL")
-    const [editingPartner, setEditingPartner] = useState<any>(null)
+    const [editingPartner, setEditingPartner] = useState<PartnerWithDetails | null>(null)
 
     const supabase = createClient()
 
@@ -75,7 +75,7 @@ export default function AdminPartnersPage() {
 
             // Fetch partner specific details
             const partnersData = await Promise.all(
-                (profiles || []).map(async (profile: any) => {
+                (profiles || []).map(async (profile: { id: string; email: string; full_name: string | null; phone: string | null; city: string | null; status: string; country?: { code: string; name: string; region: string | null } | null }) => {
                     const { data: partnerDetails } = await supabase
                         .from('partner_profiles')
                         .select('*')
@@ -91,7 +91,7 @@ export default function AdminPartnersPage() {
                         city: profile.city,
                         country: profile.country?.name || "N/A",
                         country_code: profile.country?.code || "UNK",
-                        zone: getZone(profile.country?.code),
+                        zone: getZone(profile.country?.code ?? ""),
                         status: profile.status,
                         contract_status: partnerDetails?.contract_status || 'PENDING',
                         performance_score: partnerDetails?.performance_score || 0,
@@ -109,7 +109,18 @@ export default function AdminPartnersPage() {
     }
 
 
-    const [applications, setApplications] = useState<any[]>([])
+interface PartnerApplicationSummary {
+    id: string
+    company_name: string
+    email: string
+    phone: string | null
+    status: string
+    created_at: string
+    company_details?: { address?: string } | null
+    documents?: unknown[] | null
+}
+
+    const [applications, setApplications] = useState<PartnerApplicationSummary[]>([])
 
     useEffect(() => {
         fetchPartners()
@@ -411,7 +422,7 @@ export default function AdminPartnersPage() {
 
             <EditPartnerDialog
                 open={!!editingPartner}
-                partner={editingPartner}
+                partner={editingPartner as PartnerWithUser}
                 onClose={() => setEditingPartner(null)}
                 onUpdate={fetchPartners}
             />

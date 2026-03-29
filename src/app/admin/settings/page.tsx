@@ -31,18 +31,37 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+interface AdminProfile {
+  id: string
+  email: string
+  full_name: string
+  phone: string
+  company_name: string
+  country_id: string | null
+  city: string | null
+  status: string
+  role?: string
+  avatar_url?: string | null
+}
+
+interface CountryOption {
+  id: string
+  name: string
+  code?: string
+}
+
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
-  const [countries, setCountries] = useState<any[]>([])
+  const [profile, setProfile] = useState<AdminProfile | null>(null)
+  const [countries, setCountries] = useState<CountryOption[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || !profile) return
 
     if (file.size > 2 * 1024 * 1024) {
       toast.error("L'image ne doit pas dépasser 2MB")
@@ -72,7 +91,7 @@ export default function AdminSettingsPage() {
 
       if (updateError) throw updateError
 
-      setProfile({ ...profile, avatar_url: publicUrl })
+      setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : prev)
       toast.success("Photo de profil mise à jour")
     } catch (error) {
       console.error('Error uploading avatar:', error)
@@ -120,6 +139,7 @@ export default function AdminSettingsPage() {
 
   async function handleUpdateProfile(e: React.FormEvent) {
     e.preventDefault()
+    if (!profile) return
     setSaving(true)
     try {
       const { error } = await supabase
@@ -280,7 +300,7 @@ export default function AdminSettingsPage() {
                         id="full_name"
                         className="pl-9"
                         value={profile?.full_name || ''}
-                        onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                        onChange={(e) => setProfile(prev => prev ? { ...prev, full_name: e.target.value } : prev)}
                         placeholder="Admin Alpha"
                       />
                     </div>
@@ -305,7 +325,7 @@ export default function AdminSettingsPage() {
                         id="phone"
                         className="pl-9"
                         value={profile?.phone || ''}
-                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                        onChange={(e) => setProfile(prev => prev ? { ...prev, phone: e.target.value } : prev)}
                         placeholder="+243..."
                       />
                     </div>
@@ -341,7 +361,7 @@ export default function AdminSettingsPage() {
                         id="company_name"
                         className="pl-9"
                         value={profile?.company_name || ''}
-                        onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
+                        onChange={(e) => setProfile(prev => prev ? { ...prev, company_name: e.target.value } : prev)}
                         placeholder="Alpha Trading SARL"
                       />
                     </div>
@@ -350,7 +370,7 @@ export default function AdminSettingsPage() {
                     <Label htmlFor="country">Pays</Label>
                     <Select
                       value={profile?.country_id || ''}
-                      onValueChange={(val) => setProfile({ ...profile, country_id: val })}
+                      onValueChange={(val) => setProfile(prev => prev ? { ...prev, country_id: val } : prev)}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Sélectionnez un pays" />
@@ -372,7 +392,7 @@ export default function AdminSettingsPage() {
                         id="city"
                         className="pl-9"
                         value={profile?.city || ''}
-                        onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                        onChange={(e) => setProfile(prev => prev ? { ...prev, city: e.target.value } : prev)}
                         placeholder="Kinshasa"
                       />
                     </div>

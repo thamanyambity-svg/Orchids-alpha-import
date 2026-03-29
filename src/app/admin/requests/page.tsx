@@ -31,8 +31,15 @@ import {
 import { toast } from "sonner"
 import type { ImportRequest, RequestStatus, PartnerProfile, Profile } from "@/lib/types"
 
+type RequestWithRelations = ImportRequest & {
+  buyer: Profile
+  partner?: Profile
+  country?: { name: string; code: string } | null
+  transport_mode?: string
+}
+
 function AdminRequestsContent() {
-  const [requests, setRequests] = useState<(ImportRequest & { buyer: Profile, partner?: Profile })[]>([])
+  const [requests, setRequests] = useState<RequestWithRelations[]>([])
   const [partners, setPartners] = useState<(PartnerProfile & { user: Profile })[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -71,16 +78,16 @@ function AdminRequestsContent() {
 
       if (partError) throw partError
 
-      setRequests(reqData as any)
-      setPartners(partData as any)
-    } catch (error: any) {
-      toast.error("Erreur lors du chargement des données: " + error.message)
+      setRequests((reqData ?? []) as RequestWithRelations[])
+      setPartners((partData ?? []) as (PartnerProfile & { user: Profile })[])
+    } catch (error: unknown) {
+      toast.error("Erreur lors du chargement des données: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setLoading(false)
     }
   }
 
-  async function handleAdminAction(action: string, requestId: string, data?: any) {
+  async function handleAdminAction(action: string, requestId: string, data?: Record<string, unknown>) {
     try {
       const response = await fetch('/api/admin/requests', {
         method: 'POST',
@@ -93,8 +100,8 @@ function AdminRequestsContent() {
 
       toast.success("Opération réussie")
       fetchData()
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
+    } catch (error: unknown) {
+      toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
     }
   }
 
@@ -115,7 +122,7 @@ function AdminRequestsContent() {
       req.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.buyer?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "ALL" || req.status === statusFilter
-    const matchesCountry = !countryFilter || (req as any).country?.code === countryFilter
+    const matchesCountry = !countryFilter || req.country?.code === countryFilter
     return matchesSearch && matchesStatus && matchesCountry
   })
 
@@ -233,10 +240,10 @@ function AdminRequestsContent() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">{req.category}</div>
-                      <div className="text-xs text-muted-foreground">Source: {(req as any).country?.name || "N/A"}</div>
+                      <div className="text-xs text-muted-foreground">Source: {req.country?.name || "N/A"}</div>
                       <div className="mt-1">
                         <Badge variant="outline" className="text-[10px] gap-1">
-                          {(req as any).transport_mode === 'AIR' ? (
+                          {req.transport_mode === 'AIR' ? (
                             <><Plane className="w-2.5 h-2.5 shrink-0" /> Aérien</>
                           ) : (
                             <><Ship className="w-2.5 h-2.5 shrink-0" /> Maritime</>

@@ -16,9 +16,35 @@ import {
 import { FileCheck, Package, MapPin } from "lucide-react"
 import Link from "next/link"
 
+interface CustomsEvent {
+  id: string
+  event_date: string
+  status: string
+  location: string
+  request_id: string
+  description: string | null
+  request?: {
+    reference: string
+    buyer?: { full_name: string | null; email: string } | null
+    country?: { name: string; code: string } | null
+  } | null
+}
+
+interface PendingOrder {
+  id: string
+  reference: string
+  status: string
+  request_id: string
+  request?: {
+    reference: string
+    buyer?: { full_name: string | null } | null
+    country?: { name: string; code: string } | null
+  } | null
+}
+
 export default function AdminCustomsPage() {
-  const [customsEvents, setCustomsEvents] = useState<any[]>([])
-  const [pendingOrders, setPendingOrders] = useState<any[]>([])
+  const [customsEvents, setCustomsEvents] = useState<CustomsEvent[]>([])
+  const [pendingOrders, setPendingOrders] = useState<PendingOrder[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 

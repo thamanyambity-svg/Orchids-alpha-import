@@ -35,9 +35,9 @@ export default function AdminIncidentsPage() {
         .order("created_at", { ascending: false })
 
       if (error) throw error
-      setIncidents(data as any)
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
+      setIncidents((data ?? []) as (Incident & { order: Order; reporter: Profile })[])
+    } catch (error: unknown) {
+      toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setLoading(false)
     }
@@ -63,8 +63,8 @@ export default function AdminIncidentsPage() {
 
       toast.success("Commande gelée automatiquement pour analyse")
       fetchIncidents()
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
+    } catch (error: unknown) {
+      toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
     }
   }
 
@@ -91,8 +91,8 @@ export default function AdminIncidentsPage() {
 
       toast.success("Incident résolu. Commande dégelée.")
       fetchIncidents()
-    } catch (error: any) {
-      toast.error("Erreur: " + error.message)
+    } catch (error: unknown) {
+      toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
     }
   }
 

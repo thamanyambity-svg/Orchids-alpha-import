@@ -37,12 +37,24 @@ interface Country {
     name: string
 }
 
+interface PartnerApplication {
+    id: string
+    company_name: string
+    email: string
+    phone: string | null
+    status: string
+    company_details?: { address?: string; rccm?: string; id_nat?: string; tax_id?: string } | null
+    documents?: { name: string; url: string }[] | null
+    agreements?: { finance_accepted?: boolean; privacy_accepted?: boolean } | null
+    created_at: string
+}
+
 export default function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
     const router = useRouter()
     const supabase = createClient()
 
-    const [application, setApplication] = useState<any>(null)
+    const [application, setApplication] = useState<PartnerApplication | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [countries, setCountries] = useState<Country[]>([])
 
@@ -103,7 +115,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
             setPasswordLink(result.data.passwordLink)
             setApproveDialogOpen(false)
             setSuccessDialogOpen(true)
-            setApplication((prev: any) => ({ ...prev, status: 'ACTIVE' }))
+            setApplication((prev: PartnerApplication | null) => prev ? { ...prev, status: 'ACTIVE' } : prev)
             toast.success("Compte partenaire créé avec succès.")
         } catch (err) {
             console.error(err)
@@ -203,7 +215,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                         <CardContent>
                             <div className="grid gap-2">
                                 {application.documents && Array.isArray(application.documents) ? (
-                                    application.documents.map((doc: any, i: number) => (
+                                    application.documents.map((doc: { name: string; url: string }, i: number) => (
                                         <div key={i} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
                                             <div className="flex items-center gap-3">
                                                 <FileText className="w-5 h-5 text-blue-500" />

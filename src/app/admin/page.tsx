@@ -16,13 +16,14 @@ import {
   LayoutGrid,
   ListFilter
 } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, LucideIcon> = {
   Wallet,
   FileText,
   Ship,
@@ -38,9 +39,58 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
 
+interface DashboardStat {
+  icon: string
+  label: string
+  color: string
+  trend?: string
+  value: string | number
+}
+
+interface DashboardPartner {
+  name: string
+  country: string
+  performance: number
+  volume: string | number
+  status: string
+  iso_code?: string
+  cities?: string[]
+}
+
+interface DashboardRequest {
+  realId: string
+  id: string
+  product: string
+  partner: string
+  statusColor: string
+  status: string
+}
+
+interface DashboardAuditLog {
+  action: string
+  target: string
+  user: string
+  time: string
+  status: string
+}
+
+interface DashboardAlert {
+  title: string
+  location: string
+  time: string
+}
+
+interface DashboardData {
+  stats: DashboardStat[]
+  partners: DashboardPartner[]
+  recentRequests: DashboardRequest[]
+  auditLogs: DashboardAuditLog[]
+  criticalAlerts: DashboardAlert[]
+}
+
 export default function AdminDashboardPage() {
   const router = useRouter()
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -109,7 +159,7 @@ export default function AdminDashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat: any, i: number) => {
+        {stats.map((stat: DashboardStat, i: number) => {
           const Icon = ICON_MAP[stat.icon] || Wallet
 
           // Determine link target based on label logic
@@ -186,7 +236,7 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {partners.length > 0 ? partners.map((p: any, i: number) => (
+                {partners.length > 0 ? partners.map((p: DashboardPartner, i: number) => (
                   <tr key={i} className="group hover:bg-white/5 transition-colors">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
@@ -234,7 +284,7 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
           <div className="space-y-4">
-            {recentRequests.length > 0 ? recentRequests.map((req: any, i: number) => (
+            {recentRequests.length > 0 ? recentRequests.map((req: DashboardRequest, i: number) => (
               <Link key={i} href={`/admin/requests/${req.realId}`} className="block">
                 <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
                   <div className="flex flex-col items-center">
@@ -272,7 +322,7 @@ export default function AdminDashboardPage() {
             <Button variant="ghost" size="sm" className="text-[10px] text-white/40">Synchronisé</Button>
           </div>
           <div className="space-y-4">
-            {auditLogs.length > 0 ? auditLogs.map((log: any, i: number) => (
+            {auditLogs.length > 0 ? auditLogs.map((log: DashboardAuditLog, i: number) => (
               <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-white/5 group hover:border-white/10 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
@@ -305,7 +355,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className="space-y-4">
-            {criticalAlerts.length > 0 ? criticalAlerts.map((alert: any, i: number) => (
+            {criticalAlerts.length > 0 ? criticalAlerts.map((alert: DashboardAlert, i: number) => (
               <div key={i} className="p-4 rounded-xl bg-destructive/5 border border-destructive/20 group hover:border-destructive/40 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded bg-destructive/10 flex items-center justify-center flex-shrink-0">

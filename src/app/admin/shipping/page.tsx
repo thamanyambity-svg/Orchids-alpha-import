@@ -40,8 +40,21 @@ function getRequiredDocuments(countryCode: string) {
     return baseDocs
 }
 
+interface ShipmentWithRelations {
+    id: string
+    reference: string
+    total_amount: number
+    status: string
+    request_id: string
+    request?: {
+        transport_mode?: string
+        buyer?: { full_name: string | null } | null
+        country?: { code: string; name: string } | null
+    } | null
+}
+
 export default function AdminShippingPage() {
-    const [shipments, setShipments] = useState<any[]>([])
+    const [shipments, setShipments] = useState<ShipmentWithRelations[]>([])
     const [_loading, setLoading] = useState(true)
     const supabase = createClient()
 
@@ -116,7 +129,7 @@ export default function AdminShippingPage() {
                     <CardContent>
                         <div className="text-2xl font-bold text-emerald-900">
                             ${shipments.reduce((acc, s) => {
-                                const costs = calculateDetailedCosts(s.total_amount, s.request?.transport_mode, s.request?.country?.code)
+                                const costs = calculateDetailedCosts(s.total_amount, s.request?.transport_mode ?? 'SEA', s.request?.country?.code ?? 'CHN')
                                 return acc + costs.total
                             }, 0).toLocaleString()}
                         </div>

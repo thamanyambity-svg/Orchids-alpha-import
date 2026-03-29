@@ -16,9 +16,24 @@ import {
 import { ShieldAlert, AlertTriangle, TrendingUp, AlertOctagon } from "lucide-react"
 import { toast } from "sonner"
 
+interface HighRiskOrder {
+    id: string
+    reference: string
+    total_amount: number
+    status: string
+    created_at: string
+    request?: { buyer?: { full_name: string | null } | null } | null
+}
+
+interface RestrictedSupplier {
+    id: string
+    name: string
+    status: string
+}
+
 export default function AdminRisksPage() {
-    const [highRiskOrders, setHighRiskOrders] = useState<any[]>([])
-    const [restrictedSuppliers, setRestrictedSuppliers] = useState<any[]>([])
+    const [highRiskOrders, setHighRiskOrders] = useState<HighRiskOrder[]>([])
+    const [restrictedSuppliers, setRestrictedSuppliers] = useState<RestrictedSupplier[]>([])
     const [_loading, setLoading] = useState(true)
     const supabase = createClient()
 

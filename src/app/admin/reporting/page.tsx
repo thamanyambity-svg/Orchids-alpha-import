@@ -14,8 +14,29 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
+interface ReportingStats {
+  totalVolume: number
+  activeRequests: number
+  totalTransactions: number
+  statusDistribution: Record<string, number>
+}
+
+interface ReportingAuditLog {
+  id: string
+  action: string
+  target_type: string
+  created_at: string
+  details?: Record<string, unknown> | null
+  actor?: { full_name: string | null; email: string | null } | null
+}
+
+interface ReportingData {
+  stats: ReportingStats
+  auditLogs: ReportingAuditLog[]
+}
+
 export default function ReportingPage() {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<ReportingData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -30,8 +51,8 @@ export default function ReportingPage() {
       const result = await res.json()
       if (result.error) throw new Error(result.error)
       setData(result)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
     } finally {
       setLoading(false)
     }
@@ -47,6 +68,7 @@ export default function ReportingPage() {
 
   if (loading) return <div className="p-8">Chargement du rapport...</div>
   if (error) return <div className="p-8 text-destructive">Erreur: {error}</div>
+  if (!data) return <div className="p-8 text-destructive">Aucune donnée disponible</div>
 
   const { stats, auditLogs } = data
 
@@ -125,7 +147,7 @@ export default function ReportingPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {auditLogs.map((log: any) => (
+              {auditLogs.map((log: ReportingAuditLog) => (
                 <div key={log.id} className="flex items-start gap-4 p-3 rounded-lg border bg-card/50">
                   <div className={`mt-1 w-2 h-2 rounded-full ${
                     log.action.includes('REJECT') || log.action.includes('DELETE') 
@@ -167,7 +189,7 @@ export default function ReportingPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {Object.entries(stats.statusDistribution).map(([status, count]: [string, any]) => (
+              {(Object.entries(stats.statusDistribution) as [string, number][]).map(([status, count]) => (
                 <div key={status} className="flex items-center justify-between p-2 rounded-md hover:bg-secondary/50 transition-colors">
                   <Badge variant="outline" className="font-mono">{status}</Badge>
                   <span className="font-bold">{count}</span>

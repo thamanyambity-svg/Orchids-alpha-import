@@ -13,8 +13,19 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 
+interface Transaction {
+  id: string
+  created_at: string
+  type: string
+  status: string
+  amount: number
+  stripe_payment_id: string | null
+  user?: { full_name: string | null; email: string } | null
+  order?: { reference: string } | null
+}
+
 export default function AdminFinancesPage() {
-  const [transactions, setTransactions] = useState<any[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const supabase = createClient()
@@ -37,8 +48,8 @@ export default function AdminFinancesPage() {
 
       if (error) throw error
       setTransactions(data || [])
-    } catch (error: any) {
-      toast.error("Erreur chargement finances: " + error.message)
+    } catch (error: unknown) {
+      toast.error("Erreur chargement finances: " + (error instanceof Error ? error.message : String(error)))
     } finally {
       setLoading(false)
     }
