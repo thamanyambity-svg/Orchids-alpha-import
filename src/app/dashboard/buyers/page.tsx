@@ -11,36 +11,19 @@ import { TransactionHistory } from "@/components/dashboard/transaction-history"
 import { CertifiedPartnerCard } from "@/components/dashboard/certified-partner-card"
 import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
-
-interface CountryInfo {
-  name: string
-  code: string
-}
+import type { ImportRequestWithRelations } from "@/lib/types"
+import type { PartnerDisplay } from "@/components/dashboard/certified-partner-card"
 
 interface BuyerProfile {
   id: string
   full_name: string | null
   status: string | null
-  countries: CountryInfo | null
-}
-
-interface AssignedPartner {
-  id: string
-  full_name: string | null
-  countries: CountryInfo | null
-  [key: string]: unknown
-}
-
-interface BuyerRequest {
-  id: string
-  status: string | null
-  assigned_partner: AssignedPartner | null
-  [key: string]: unknown
+  countries: { name: string; code: string } | null
 }
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<BuyerProfile | null>(null)
-  const [request, setRequest] = useState<BuyerRequest | null>(null)
+  const [request, setRequest] = useState<ImportRequestWithRelations | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
