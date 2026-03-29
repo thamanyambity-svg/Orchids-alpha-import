@@ -116,9 +116,9 @@ export function DocumentUploadModal({
       onSuccess()
       onOpenChange(false)
       resetForm()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error)
-      toast.error(`Erreur: ${error.message}`)
+      toast.error(`Erreur: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setUploading(false)
     }

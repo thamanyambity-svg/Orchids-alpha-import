@@ -32,7 +32,7 @@ const navItems = [
 export function DashboardSidebar() {
   const pathname = usePathname()
   const _router = useRouter()
-  const [_profile, setProfile] = useState<any>(null)
+  const [_profile, setProfile] = useState<Record<string, unknown> | null>(null)
   const supabase = createClient()
 
   useEffect(() => {

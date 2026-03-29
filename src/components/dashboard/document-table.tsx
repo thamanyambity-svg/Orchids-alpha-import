@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 export function DocumentTable({ requestId }: { requestId?: string }) {
-  const [documents, setDocuments] = useState<any[]>([])
+  const [documents, setDocuments] = useState<{ file_name: string; type: string; status: string; created_at: string; file_url?: string }[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 

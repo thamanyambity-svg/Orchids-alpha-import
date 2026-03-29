@@ -8,7 +8,7 @@ interface WorldMapProps {
   mapboxToken: string
   selectedCountry?: string
   onCountrySelect: (countryCode: string) => void
-  partners?: Record<string, any>
+  partners?: Record<string, { full_name: string; company_name: string; cities?: string[]; performance_score: number; total_orders_handled: number }>
 }
 
 // Zones Alpha : Turquie, Dubai, Chine, Japon, Thaïlande uniquement
@@ -37,7 +37,7 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
       style: "mapbox://styles/mapbox/standard",
       center: [90, 25], // Centre Asie + Moyen-Orient (Chine, Turquie, Dubai, Japon, Thaïlande)
       zoom: 2.8,
-      projection: { name: 'globe' } as any,
+      projection: { name: 'globe' } as mapboxgl.MapOptions['projection'],
       pitch: 25,
       bearing: -10
     })

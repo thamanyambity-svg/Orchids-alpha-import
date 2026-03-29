@@ -65,11 +65,11 @@ const statusOptions = [
 ]
 
 // Icon helpers (using simple lucid icons for now to avoid import chaos)
-function PackageIcon(props: any) { return <div {...props}><Truck className="w-4 h-4" /></div> }
-function BuildingIcon(props: any) { return <div {...props}><MapPin className="w-4 h-4" /></div> }
-function FileTextIcon(props: any) { return <div {...props}><CheckCircle2 className="w-4 h-4" /></div> }
-function ArrowRightIcon(props: any) { return <div {...props}><Clock className="w-4 h-4" /></div> }
-function ScaleIcon(props: any) { return <div {...props}><CheckCircle2 className="w-4 h-4" /></div> }
+function PackageIcon(props: React.ComponentProps<"div">) { return <div {...props}><Truck className="w-4 h-4" /></div> }
+function BuildingIcon(props: React.ComponentProps<"div">) { return <div {...props}><MapPin className="w-4 h-4" /></div> }
+function FileTextIcon(props: React.ComponentProps<"div">) { return <div {...props}><CheckCircle2 className="w-4 h-4" /></div> }
+function ArrowRightIcon(props: React.ComponentProps<"div">) { return <div {...props}><Clock className="w-4 h-4" /></div> }
+function ScaleIcon(props: React.ComponentProps<"div">) { return <div {...props}><CheckCircle2 className="w-4 h-4" /></div> }
 
 
 export function TrackingEditor({ requestId }: TrackingEditorProps) {
@@ -137,8 +137,8 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                 event_date: new Date().toISOString().split('T')[0]
             })
             fetchEvents() // Refresh list
-        } catch (error: any) {
-            toast.error("Erreur: " + error.message)
+        } catch (error: unknown) {
+            toast.error("Erreur: " + (error instanceof Error ? error.message : String(error)))
         } finally {
             setSubmitting(false)
         }

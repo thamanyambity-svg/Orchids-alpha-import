@@ -168,7 +168,7 @@ export function PartnerWizard() {
     /* -------------------------------------------------------------------------- */
 
     // Dialog wrapper for details
-    const CharterDialog = ({ type, icon: Icon }: { type: keyof typeof charterDetails, icon: any }) => {
+    const CharterDialog = ({ type, icon: Icon }: { type: keyof typeof charterDetails, icon: React.ComponentType<{ className?: string }> }) => {
         const detail = charterDetails[type]
         const [open, setOpen] = useState(false)
 

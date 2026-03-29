@@ -53,8 +53,8 @@ const documentTypeLabels: Record<string, string> = {
 export default function PartnerRequestDetailPage() {
   const params = useParams()
   const _router = useRouter()
-  const [request, setRequest] = useState<any>(null)
-  const [documents, setDocuments] = useState<any[]>([])
+  const [request, setRequest] = useState<Record<string, unknown> | null>(null)
+  const [documents, setDocuments] = useState<Record<string, unknown>[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
@@ -152,9 +152,9 @@ export default function PartnerRequestDetailPage() {
       const { data } = await response.json()
       setRequest({ ...request, status: data.status })
       toast.success(`Statut mis à jour : ${statusLabels[newStatus]}`)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating status:', error)
-      toast.error(`Erreur: ${error.message}`)
+      toast.error(`Erreur: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setUpdating(false)
     }

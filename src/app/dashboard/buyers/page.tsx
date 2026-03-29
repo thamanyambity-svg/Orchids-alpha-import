@@ -13,8 +13,8 @@ import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
-  const [profile, setProfile] = useState<any>(null)
-  const [request, setRequest] = useState<any>(null)
+  const [profile, setProfile] = useState<Record<string, unknown> | null>(null)
+  const [request, setRequest] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 export function TransactionHistory({ requestId }: { requestId?: string }) {
-  const [payments, setPayments] = useState<any[]>([])
+  const [payments, setPayments] = useState<{ created_at: string; type: string; amount: number; currency: string; status: string }[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 

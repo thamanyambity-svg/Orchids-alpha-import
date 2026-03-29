@@ -21,8 +21,8 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle, showBackButton = true, children }: DashboardHeaderProps) {
-  const [profile, setProfile] = useState<any>(null)
-  const [notifications, setNotifications] = useState<any[]>([])
+  const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string } | null>(null)
+  const [notifications, setNotifications] = useState<{ id: string; is_read: boolean; title: string; message: string; created_at: string }[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const supabase = createClient()
 
@@ -65,7 +65,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
             },
             (payload) => {
               console.log('🔔 New Notification:', payload.new)
-              setNotifications((prev) => [payload.new, ...prev])
+              setNotifications((prev) => [payload.new as typeof prev[number], ...prev])
               setUnreadCount((prev) => prev + 1)
               // Optionally play sound
             }
