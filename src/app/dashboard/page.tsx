@@ -11,37 +11,19 @@ import { TransactionHistory } from "@/components/dashboard/transaction-history"
 import { CertifiedPartnerCard } from "@/components/dashboard/certified-partner-card"
 import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
-
-interface CountryInfo {
-  name: string
-  code: string
-}
+import type { ImportRequestWithRelations } from "@/lib/types"
 
 interface DashboardProfile {
   full_name: string | null
   email: string | null
   avatar_url: string | null
-  countries: CountryInfo | null
-  [key: string]: unknown
-}
-
-interface AssignedPartner {
-  id: string
-  full_name: string | null
-  countries: CountryInfo | null
-  [key: string]: unknown
-}
-
-interface DashboardRequest {
-  id: string
-  status: string | null
-  assigned_partner: AssignedPartner | null
+  countries: { name: string; code: string } | null
   [key: string]: unknown
 }
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<DashboardProfile | null>(null)
-  const [request, setRequest] = useState<DashboardRequest | null>(null)
+  const [request, setRequest] = useState<ImportRequestWithRelations | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -77,7 +59,7 @@ export default function DashboardPage() {
             .limit(1)
             .maybeSingle()
 
-          setRequest(requestData as DashboardRequest | null)
+          setRequest(requestData as ImportRequestWithRelations | null)
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)

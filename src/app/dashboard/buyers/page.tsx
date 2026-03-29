@@ -12,7 +12,6 @@ import { CertifiedPartnerCard } from "@/components/dashboard/certified-partner-c
 import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
 import type { ImportRequestWithRelations } from "@/lib/types"
-import type { PartnerDisplay } from "@/components/dashboard/certified-partner-card"
 
 interface BuyerProfile {
   id: string
@@ -49,7 +48,7 @@ export default function DashboardPage() {
             .limit(1)
             .maybeSingle()
           
-          setRequest(requestData as BuyerRequest | null)
+          setRequest(requestData as ImportRequestWithRelations | null)
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
