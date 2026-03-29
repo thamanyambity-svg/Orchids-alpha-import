@@ -127,17 +127,16 @@ export default function AdminDashboardPage() {
   // Zones Alpha : Turquie, Dubai, Chine, Japon, Thaïlande uniquement
   const ALLOWED_CODES = ['CHN', 'CN', 'TUR', 'TR', 'ARE', 'UAE', 'AE', 'JPN', 'JP', 'THA', 'TH']
   const SHORT_TO_ISO: Record<string, string> = { CN: 'CHN', TR: 'TUR', AE: 'ARE', JP: 'JPN', TH: 'THA' }
-  const partnersMap = partners?.reduce((acc: Record<string, unknown>, p: { iso_code?: string; name?: string; performance?: number; cities?: string[] }) => {
+  const partnersMap = partners?.reduce((acc: Record<string, { full_name: string; company_name: string; cities?: string[]; performance_score: number; total_orders_handled: number }>, p: { iso_code?: string; name?: string; performance?: number; cities?: string[] }) => {
     const code = (p.iso_code || '').toUpperCase()
     if (code && code !== 'N/A' && ALLOWED_CODES.includes(code)) {
       const mapCode = ['CN', 'TR', 'AE', 'JP', 'TH'].includes(code) ? SHORT_TO_ISO[code] : code
       acc[mapCode] = {
-        full_name: p.name,
+        full_name: p.name || 'Partenaire',
         company_name: "Partenaire Certifié",
         performance_score: p.performance || 5.0,
-        total_orders_handled: "120+",
+        total_orders_handled: 120,
         cities: p.cities,
-        ...p
       }
     }
     return acc
