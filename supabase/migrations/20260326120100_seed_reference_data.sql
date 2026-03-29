@@ -67,6 +67,33 @@ ON CONFLICT (code) DO UPDATE
     default_rate_percent = EXCLUDED.default_rate_percent,
     is_active            = EXCLUDED.is_active;
 
+-- ─── Réconciliation schéma exchange_rates ──────────────────────────────────────
+-- La table peut préexister avec un schéma différent (ex. set_by NOT NULL,
+-- pas de effective_at).  On aligne les colonnes attendues avant l'INSERT.
+
+ALTER TABLE public.exchange_rates
+  ADD COLUMN IF NOT EXISTS effective_at timestamptz NOT NULL DEFAULT now();
+
+ALTER TABLE public.exchange_rates
+  ADD COLUMN IF NOT EXISTS superseded_at timestamptz;
+
+ALTER TABLE public.exchange_rates
+  ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT now();
+
+-- Si set_by existe avec NOT NULL, le rendre nullable (le seed n'a pas d'acteur).
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+     WHERE table_schema = 'public'
+       AND table_name   = 'exchange_rates'
+       AND column_name  = 'set_by'
+       AND is_nullable  = 'NO'
+  ) THEN
+    ALTER TABLE public.exchange_rates ALTER COLUMN set_by DROP NOT NULL;
+  END IF;
+END $$;
+
 -- ─── Taux initial USD → CDF (indicatif mars 2026) ────────────────────────────
 -- Pas de contrainte UNIQUE sur (from_currency, to_currency) : insertion
 -- conditionnelle si aucune ligne « active » (superseded_at IS NULL) pour cette paire.
