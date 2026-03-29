@@ -1,6 +1,6 @@
 # Phases de développement — Alpha Import Exchange
 
-> **Version :** 1.0  
+> **Version :** 1.1  
 > **Date :** 2026-03-29  
 > **Règle transversale :** ne jamais mélanger grosse migration + grosse UI + RLS dans une seule PR.
 
@@ -139,3 +139,77 @@ Tout nouveau travail qui touche la base passe par la **Phase 1** avant le reste.
 - Recette douanes : `docs/recette-bloc-j-customs-billing.md`
 - Workflow n8n : `docs/n8n-workflow.md`
 - Email assistant : `docs/email-assistant.md`
+
+---
+
+## Instructions Cursor / Agent IA
+
+> **Ce bloc est la directive obligatoire** à suivre après chaque implémentation.
+> Copie-colle ce document comme contexte de conversation si nécessaire.
+
+### Avant de commencer un travail
+
+1. **Lis** `docs/phases-developpement.md` (ce fichier) en entier.
+2. **Identifie la phase** concernée par la tâche demandée (0–4).
+3. **Vérifie Phase 0** — exécute dans l'ordre :
+   ```bash
+   npm ci && npm run typecheck && npm run test && npm run lint && npm run build
+   ```
+   Si une commande échoue, **corrige d'abord** avant de passer à la tâche.
+
+### Pendant l'implémentation
+
+4. **Respecte la séparation des phases** — une PR = une seule phase.
+   - ❌ Ne mélange jamais : migration SQL + composant UI + politique RLS dans la même PR.
+   - ✅ Une PR de migration seule (Phase 1), puis une PR d'API/guard (Phase 2), etc.
+5. **Phase 1 d'abord** — si la tâche touche la base de données, crée la migration *avant* tout code applicatif.
+6. **Nomme les migrations** par timestamp : `YYYYMMDDHHMMSS_description.sql` dans `supabase/migrations/`.
+7. **RLS obligatoire** — chaque nouvelle table doit avoir ses politiques, cohérentes avec `docs/security.md`.
+8. **Tests obligatoires** — toute modification de `src/lib/workflow.ts` doit être accompagnée de tests dans `src/lib/workflow.test.ts`.
+
+### Après l'implémentation
+
+9. **Revalide Phase 0** — relance les 5 commandes :
+   ```bash
+   npm run typecheck && npm run test && npm run lint && npm run build
+   ```
+10. **Si lint échoue** → corrige les erreurs (0 erreur requis ; warnings tolérés).
+11. **Si typecheck échoue** → corrige les types avant de committer.
+12. **Si test échoue** → corrige ou mets à jour les tests.
+13. **Résume ce qui a été fait** dans le message de commit et le corps de la PR :
+    - Phase concernée (ex. `Phase 1 — migration buyer_profiles`)
+    - Fichiers créés/modifiés
+    - Critère de sortie atteint (ex. « migration appliquée, RLS vérifiée, CI vert »)
+
+### Prochaine étape à indiquer
+
+14. **Termine toujours** par un bloc « Prochaine étape suggérée » qui indique :
+    - La phase suivante à enchaîner
+    - Le fichier ou la fonctionnalité à traiter
+    - Les pré-requis éventuels
+
+**Exemple de bloc de fin :**
+
+```
+✅ Terminé : Phase 1 — migration buyer_profiles
+   - Fichier : supabase/migrations/20260329100000_buyer_profiles.sql
+   - RLS : politique ajoutée, cohérente avec docs/security.md
+   - CI : typecheck ✓ test ✓ lint ✓ build ✓
+
+➡️ Prochaine étape : Phase 2 — créer le guard `buyer-guard.ts`
+   dans src/lib/server-actions/ suivant le pattern de admin-guard.ts.
+   Pré-requis : la migration buyer_profiles doit être appliquée (db push).
+```
+
+### Règles absolues (ne jamais enfreindre)
+
+| # | Règle |
+|---|-------|
+| R1 | Toujours valider Phase 0 avant ET après chaque implémentation |
+| R2 | Une PR = une seule phase (pas de mélange migration + UI + RLS) |
+| R3 | Phase 1 passe avant Phase 2 si la base est touchée |
+| R4 | Chaque nouvelle table a sa RLS (cf. `docs/security.md`) |
+| R5 | Chaque modification workflow a ses tests |
+| R6 | Toujours terminer par le bloc « Prochaine étape suggérée » |
+| R7 | Ne jamais supprimer ou ignorer des tests existants |
+| R8 | Seeds après migrations de structure (respecter les timestamps) |
