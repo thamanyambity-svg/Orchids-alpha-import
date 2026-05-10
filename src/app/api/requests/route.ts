@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { sendToN8N } from '@/lib/webhooks'
 
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(
+  // Vérification de la session — le buyer_id vient de la session, jamais du body
+  const supabaseSession = await createClient()
+  const { data: { user }, error: authError } = await supabaseSession.auth.getUser()
+
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+  }
+
+  // Client service-role pour l'insertion (bypass RLS uniquement pour la création)
+  const supabase = createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
@@ -12,7 +22,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const {
-      buyer_id,
       country_id,
       buyer_country,
       category,
@@ -25,6 +34,9 @@ export async function POST(request: NextRequest) {
       deadline,
       transport_mode
     } = body
+
+    // Le buyer_id est toujours l'utilisateur authentifié, jamais le body
+    const buyer_id = user.id
 
 
     // Generate a unique reference: AIX-YYYYMMDD-XXXX
@@ -57,21 +69,25 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error
 
-    // Notify n8n
-    await sendToN8N('new_request_created', {
-      requestId: data.id,
-      reference: data.reference,
-      productName: data.product_name,
-      category: data.category,
-      specifications: data.specifications, // Includes AI-predicted brand/model
-      quantity: `${data.quantity} ${data.unit}`,
-      budget: `${data.budget_min} - ${data.budget_max}`,
-      buyerId: data.buyer_id,
-      buyerCountry: data.buyer_country,
-      countryId: data.country_id,
-      transportMode: data.transport_mode,
-      isAutomobile: data.category === "Automobile & Pièces"
-    })
+    // Notify n8n (non-blocking for the API response)
+    try {
+      await sendToN8N('new_request_created', {
+        requestId: data.id,
+        reference: data.reference,
+        productName: data.product_name,
+        category: data.category,
+        specifications: data.specifications, // Includes AI-predicted brand/model
+        quantity: `${data.quantity} ${data.unit}`,
+        budget: `${data.budget_min} - ${data.budget_max}`,
+        buyerId: data.buyer_id,
+        buyerCountry: data.buyer_country,
+        countryId: data.country_id,
+        transportMode: data.transport_mode,
+        isAutomobile: data.category === "Automobile & Pièces"
+      })
+    } catch (n8nError) {
+      console.error('N8N notification failed:', n8nError)
+    }
 
     return NextResponse.json(data)
   } catch (error: any) {

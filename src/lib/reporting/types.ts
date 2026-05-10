@@ -40,6 +40,7 @@ export interface Transaction {
   // ── BLOC 1 : IDENTIFICATION & TRAÇABILITÉ ────────────────────────────────
   uid: string                 // Format strict : "AI-YYYY-TR-NNN" (ex: "AI-2026-TR-001")
   clientReference: string     // Nom légal de l'entité cliente
+  clientUserId?: string | null // UUID du compte Supabase Auth lié (null = donnée legacy)
   isoTimestamp: string        // ISO 8601 UTC strict : "YYYY-MM-DDTHH:MM:SSZ"
 
   // ── BLOC 2 : ORIGINE & DESTINATION (MULTIMODAL) ──────────────────────────
@@ -81,6 +82,7 @@ export const CLIENT_HIDDEN_FIELDS: (keyof Transaction)[] = [
   "alphaCommission",
   "responsibleAgent",
   "clientVisible",
+  "clientUserId",
 ]
 
 export type ClientTransaction = Omit<
@@ -164,6 +166,7 @@ export const CLIENT_COLUMNS = [
 export const TransactionSchema = z.object({
   uid:              z.string().regex(/^AI-\d{4}-TR-\d{3}$/, "Format UID invalide"),
   clientReference:  z.string().min(2).max(100),
+  clientUserId:     z.string().uuid().nullable().optional(),
   isoTimestamp:     z.string().datetime({ offset: false }),
   pol:              z.string().min(3),
   pod:              z.string().min(3),

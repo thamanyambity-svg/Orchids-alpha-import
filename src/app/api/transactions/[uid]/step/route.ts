@@ -50,10 +50,11 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     .single()
 
   if (error) {
+    // PGRST116 = no rows found by .single() — return 404 instead of 500
+    if (error.code === "PGRST116") {
+      return NextResponse.json({ error: "Transaction introuvable." }, { status: 404 })
+    }
     return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-  if (!data) {
-    return NextResponse.json({ error: "Transaction introuvable." }, { status: 404 })
   }
 
   return NextResponse.json(rowToTransaction(data as AlphaTransactionRow))

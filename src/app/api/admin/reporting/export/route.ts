@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { requireAdmin } from "@/lib/reporting/auth"
 
 // Escape a cell value for safe CSV inclusion (semicolon-separated, Excel-compatible)
 function csvCell(value: unknown): string {
@@ -31,6 +32,9 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 export async function GET() {
+  const authResult = await requireAdmin()
+  if (authResult instanceof NextResponse) return authResult
+
   const supabase = await createClient()
 
   try {

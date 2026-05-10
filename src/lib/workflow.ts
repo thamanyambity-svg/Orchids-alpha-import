@@ -138,6 +138,22 @@ export function getNextPossibleStatuses(
         .map(t => t.to)
 }
 
+/**
+ * Cible de statut commande lorsque le partenaire suit le miroir demande → commande
+ * (utilisé par l’API / les guards ; les cas couverts sont ceux des tests métier).
+ */
+export function orderTargetForPartnerMirroredStatus(
+    requestStatus: RequestStatus,
+    orderStatus: OrderStatus
+): OrderStatus | null {
+    if (requestStatus === 'EXECUTING' && orderStatus === 'SOURCING') return 'PURCHASED'
+    if (requestStatus === 'EXECUTING' && orderStatus === 'FUNDED') return null
+    if (requestStatus === 'SHIPPED' && orderStatus === 'PURCHASED') return 'SHIPPED'
+    if (requestStatus === 'DELIVERED' && orderStatus === 'SHIPPED') return 'DELIVERED'
+    if (requestStatus === 'SHIPPED' && orderStatus === 'SOURCING') return null
+    return null
+}
+
 // --- Shared Execution Logic ---
 
 import { SupabaseClient } from '@supabase/supabase-js'

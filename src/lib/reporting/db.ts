@@ -38,6 +38,7 @@ export function rowToTransaction(row: AlphaTransactionRow): Transaction {
   return {
     uid:              row.uid,
     clientReference:  row.client_reference,
+    clientUserId:     row.client_user_id ?? null,
     isoTimestamp:     row.iso_timestamp,
     pol:              row.pol,
     pod:              row.pod,
@@ -67,10 +68,14 @@ export function transactionToRow(
   tx: TransactionInput | Omit<Transaction, "totalValue" | "deposit60" | "balance40">,
   clientUserId?: string | null,
 ): Omit<AlphaTransactionRow, "id" | "total_value" | "deposit60" | "balance40" | "created_at" | "updated_at"> {
+  // Prefer clientUserId from the tx object (round-tripped through rowToTransaction),
+  // fall back to the explicit parameter, then null.
+  const resolvedClientUserId =
+    ("clientUserId" in tx ? tx.clientUserId : undefined) ?? clientUserId ?? null
   return {
     uid:              tx.uid,
     client_reference: tx.clientReference,
-    client_user_id:   clientUserId ?? null,
+    client_user_id:   resolvedClientUserId,
     iso_timestamp:    tx.isoTimestamp,
     pol:              tx.pol,
     pod:              tx.pod,

@@ -288,11 +288,11 @@ export default function NewRequestPage() {
   })
 
   const [items, setItems] = useState<any[]>([
-    { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
+    { id: Math.random().toString(36).substring(2, 11), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
   ])
 
   const addItem = () => {
-    setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+    setItems([...items, { id: Math.random().toString(36).substring(2, 11), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
   }
 
   const removeItem = (id: string) => {

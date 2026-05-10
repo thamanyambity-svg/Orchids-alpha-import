@@ -56,13 +56,14 @@ export async function GET() {
 
   const transactions = (data as AlphaTransactionRow[]).map(rowToTransaction)
 
-  const header = ADMIN_COLUMNS.map((k) => csvCell(COLUMN_LABELS[k] ?? k)).join(",")
+  const header = ADMIN_COLUMNS.map((k) => csvCell(COLUMN_LABELS[k] ?? k)).join(";")
   const rows   = transactions.map((tx) =>
-    ADMIN_COLUMNS.map((k) => csvCell(tx[k as keyof typeof tx])).join(","),
+    ADMIN_COLUMNS.map((k) => csvCell(tx[k as keyof typeof tx])).join(";"),
   )
 
   // UTF-8 BOM for proper Excel display of accented characters
-  const csv = "\uFEFF" + [header, ...rows].join("\r\n")
+  // sep= hint tells Excel (FR locale) which separator to use
+  const csv = "\uFEFF" + "sep=;\r\n" + [header, ...rows].join("\r\n")
 
   const exportDate = new Date().toISOString().slice(0, 10)
   const fileName   = `alpha-import-admin-${exportDate}.csv`
