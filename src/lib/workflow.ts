@@ -163,7 +163,7 @@ export async function executeTransition(
     type: 'REQUEST' | 'ORDER',
     id: string,
     targetStatus: string,
-    userId: string,
+    userId: string | null, // null = acteur système (audit affiché "Système")
     userRole: UserRole,
     reason?: string
 ) {

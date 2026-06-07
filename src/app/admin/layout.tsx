@@ -1,5 +1,6 @@
 import { AdminSidebar } from "@/components/admin/sidebar"
 import { AdminHeader } from "@/components/admin/header"
+import { RoleGuard } from "@/components/auth-role-guard"
 
 export default function AdminLayout({
   children,
@@ -7,17 +8,19 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[#020609] text-white overflow-hidden flex">
-      <AdminSidebar />
-      <main className="flex-1 ml-64 h-screen overflow-y-auto custom-scrollbar relative flex flex-col">
-        <AdminHeader />
-        <div className="flex-1 relative">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-10 pointer-events-none" />
-          <div className="relative z-10">
-            {children}
+    <RoleGuard allowedRoles={['ADMIN']}>
+      <div className="min-h-screen bg-[#020609] text-white overflow-hidden flex">
+        <AdminSidebar />
+        <main className="flex-1 ml-64 h-screen overflow-y-auto custom-scrollbar relative flex flex-col">
+          <AdminHeader />
+          <div className="flex-1 relative">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-10 pointer-events-none" />
+            <div className="relative z-10">
+              {children}
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </RoleGuard>
   )
 }

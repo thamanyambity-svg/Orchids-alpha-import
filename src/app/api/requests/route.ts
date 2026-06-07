@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { sendToN8N } from '@/lib/webhooks'
+import { rateLimit } from '@/lib/rate-limit'
 
 
 export async function POST(request: NextRequest) {
@@ -11,6 +12,12 @@ export async function POST(request: NextRequest) {
 
   if (authError || !user) {
     return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+  }
+
+  // Anti-spam : max 10 créations de demande / minute par utilisateur.
+  const rl = rateLimit(`requests:${user.id}`, 10, 60_000)
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
   // Client service-role pour l'insertion (bypass RLS uniquement pour la création)

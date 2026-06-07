@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
+import { requireAdmin } from "@/lib/reporting/auth"
 import ExcelJS from "exceljs"
 import path from "path"
 import fs from "fs"
@@ -56,6 +57,9 @@ const HEADER_ROW = 5
 const DATA_START_ROW = HEADER_ROW + 1
 
 export async function GET() {
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
+
   const supabase = await createClient()
 
   try {

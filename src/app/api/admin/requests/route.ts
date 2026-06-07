@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
+import { requireAdmin } from '@/lib/reporting/auth'
 
 
 export async function POST(request: NextRequest) {
+  // Réservé ADMIN. Le service-role n'est utilisé qu'après ce contrôle.
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -40,6 +45,7 @@ export async function POST(request: NextRequest) {
         n8nEvent = 'partner_assigned'
 
         await logAudit({
+          actorId: auth.id,
           action: 'ASSIGN_PARTNER',
           targetType: 'import_requests',
           targetId: requestId,
@@ -88,6 +94,7 @@ export async function POST(request: NextRequest) {
         n8nEvent = 'request_validated'
 
         await logAudit({
+          actorId: auth.id,
           action: 'VALIDATE_REQUEST',
           targetType: 'import_requests',
           targetId: requestId,
@@ -122,6 +129,7 @@ export async function POST(request: NextRequest) {
         n8nEvent = 'request_rejected'
 
         await logAudit({
+          actorId: auth.id,
           action: 'REJECT_REQUEST',
           targetType: 'import_requests',
           targetId: requestId,

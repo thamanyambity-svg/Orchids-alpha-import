@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendToN8N } from '@/lib/webhooks'
+import { requireAdmin } from '@/lib/reporting/auth'
 
-export async function POST(req: Request) {
+export async function POST() {
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
+
   const supabase = await createClient()
 
   // Find import requests awaiting deposit for more than 24h

@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
+import { getSessionUser } from '@/lib/reporting/auth'
 
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  // Auth requise. Client SSR (RLS) : un acheteur ne "voit" que ses commandes
+  // (orders_via_request_buyer) -> anti-IDOR sur orderId.
+  const auth = await getSessionUser()
+  if (auth instanceof NextResponse) return auth
+
+  const supabase = await createClient()
 
   try {
     const { orderId, paymentType } = await request.json()
