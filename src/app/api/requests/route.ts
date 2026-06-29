@@ -39,7 +39,17 @@ export async function POST(request: NextRequest) {
       budget_min,
       budget_max,
       deadline,
-      transport_mode
+      transport_mode,
+      // Champs intake standard international
+      hs_code,
+      declared_value,
+      declared_currency,
+      gross_weight_kg,
+      volume_cbm,
+      packages,
+      incoterm,
+      insurance_requested,
+      cgv_accepted
     } = body
 
     // Le buyer_id est toujours l'utilisateur authentifié, jamais le body
@@ -68,6 +78,15 @@ export async function POST(request: NextRequest) {
         budget_min,
         budget_max,
         deadline,
+        hs_code: hs_code || null,
+        declared_value: declared_value ?? null,
+        declared_currency: declared_currency || 'USD',
+        gross_weight_kg: gross_weight_kg ?? null,
+        volume_cbm: volume_cbm ?? null,
+        packages: packages ?? null,
+        incoterm: incoterm || null,
+        insurance_requested: !!insurance_requested,
+        cgv_accepted_at: cgv_accepted ? new Date().toISOString() : null,
         status: "PENDING",
         reference
       })
