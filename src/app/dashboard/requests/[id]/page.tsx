@@ -80,10 +80,7 @@ export default function RequestDetailsPage() {
               *,
               countries (name, flag),
               assigned_partner:partner_profiles (
-                full_name,
-                company_name,
-                email,
-                phone
+                user:profiles!partner_profiles_user_id_fkey ( full_name, company_name, email, phone )
               )
             `)
           .eq("id", id)
@@ -339,17 +336,17 @@ export default function RequestDetailsPage() {
               </h3>
               <div className="space-y-4">
                 <div>
-                  <p className="font-bold text-sm">{request.assigned_partner.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{request.assigned_partner.company_name}</p>
+                  <p className="font-bold text-sm">{request.assigned_partner.user?.full_name}</p>
+                  <p className="text-xs text-muted-foreground">{request.assigned_partner.user?.company_name}</p>
                 </div>
                 <div className="space-y-2 pt-2 border-t border-border">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Phone className="w-3 h-3" />
-                    {request.assigned_partner.phone}
+                    {request.assigned_partner.user?.phone}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Mail className="w-3 h-3" />
-                    {request.assigned_partner.email}
+                    {request.assigned_partner.user?.email}
                   </div>
                 </div>
               </div>

@@ -57,11 +57,12 @@ export default function RequestsPage() {
           .from("import_requests")
           .select(`
             *,
-            countries (name, flag)
+            countries (name, code, flag)
           `)
           .eq("buyer_id", user.id)
           .order("created_at", { ascending: false })
 
+        if (error) console.error('requests fetch error:', error)
         if (data) {
           setRequests(data)
         }

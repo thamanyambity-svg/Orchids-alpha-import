@@ -4,386 +4,52 @@
 
    ▲ Next.js 15.5.12 (Turbopack)
    - Local:        http://localhost:3000
-   - Network:      http://192.168.1.69:3000
+   - Network:      http://192.168.1.65:3000
    - Environments: .env.local
 
  ✓ Starting...
  ○ Compiling middleware ...
- ✓ Compiled middleware in 1929ms
- ✓ Ready in 7.3s
+ ✓ Compiled middleware in 1847ms
+ ✓ Ready in 5.7s
  ○ Compiling /login ...
- ✓ Compiled /login in 35.5s
- GET /login 200 in 573ms
- GET /login 200 in 1073ms
- ○ Compiling /favicon.ico ...
- ✓ Compiled /favicon.ico in 2.1s
- GET /favicon.ico 200 in 2576ms
- ○ Compiling /admin ...
- ✓ Compiled /admin in 6.8s
- GET /admin 200 in 7108ms
- ○ Compiling /api/admin/dashboard ...
- ✓ Compiled /api/admin/dashboard in 1646ms
- GET /api/admin/notifications 200 in 4147ms
- GET /api/admin/dashboard 200 in 4922ms
- GET /api/admin/notifications 200 in 2188ms
- GET /api/admin/dashboard 200 in 3878ms
- ○ Compiling /admin/requests ...
- ✓ Compiled /admin/requests in 2s
- GET /admin/requests 200 in 2498ms
- ○ Compiling /admin/shipping ...
- ✓ Compiled /admin/shipping in 1595ms
- GET /admin/shipping 200 in 2047ms
- ○ Compiling /admin/finances ...
- ✓ Compiled /admin/finances in 1301ms
- GET /admin/finances 200 in 1587ms
- ○ Compiling /admin/risks ...
- ✓ Compiled /admin/risks in 1203ms
- GET /admin/risks 200 in 1629ms
- GET /api/admin/notifications 200 in 2186ms
- ○ Compiling /admin/customs ...
- ✓ Compiled /admin/customs in 1306ms
- GET /admin/customs 200 in 1729ms
- GET /favicon.ico?favicon.0b3bf435.ico 200 in 550ms
- ○ Compiling /admin/reporting ...
- ✓ Compiled /admin/reporting in 1237ms
- GET /admin/reporting 200 in 1817ms
- ✓ Compiled /api/admin/reporting/stats in 383ms
- GET /api/admin/reporting/stats 200 in 2463ms
- GET /api/admin/reporting/stats 200 in 2019ms
- ○ Compiling /admin/settings ...
- ✓ Compiled /admin/settings in 1549ms
- GET /admin/settings 200 in 2011ms
- ○ Compiling /admin/support ...
- ✓ Compiled /admin/support in 1174ms
- GET /admin/support 200 in 1403ms
- ○ Compiling /admin/emails ...
- ✓ Compiled /admin/emails in 2.9s
- GET /admin/emails 200 in 3346ms
- GET /login 200 in 364ms
+ ✓ Compiled /login in 21s
+ GET /login 200 in 22671ms
  ○ Compiling / ...
- ✓ Compiled / in 1157ms
- GET / 200 in 1386ms
- ○ Compiling /countries ...
- ✓ Compiled /countries in 1889ms
- GET /countries 200 in 2914ms
- ○ Compiling /how-it-works ...
- ✓ Compiled /how-it-works in 2s
- GET /how-it-works 200 in 2910ms
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1566576721346-d4a3b4eaad5b?auto=format&fit=crop&q=80&w=800 404
- ○ Compiling /about ...
- ✓ Compiled /about in 1404ms
- GET /about 200 in 1623ms
- GET /login 200 in 1247ms
- GET /login 200 in 242ms
- GET /admin 200 in 204ms
- GET /api/admin/notifications 200 in 2132ms
- GET /api/admin/dashboard 200 in 3398ms
- GET /api/admin/notifications 200 in 1857ms
- GET /api/admin/dashboard 200 in 3028ms
- GET /admin 200 in 1285ms
- GET /favicon.ico 200 in 458ms
- GET /api/admin/notifications 200 in 1862ms
- GET /api/admin/dashboard 200 in 3607ms
- GET /api/admin/notifications 200 in 1909ms
- GET /api/admin/dashboard 200 in 3017ms
- ○ Compiling /admin/partners ...
- ✓ Compiled /admin/partners in 2.6s
- GET /admin/partners 200 in 3126ms
- GET /admin/partners 200 in 183ms
- GET /admin/shipping 200 in 912ms
- GET /admin/requests 200 in 560ms
- GET /admin/finances 200 in 795ms
- GET /api/admin/dashboard 200 in 2836ms
- GET /admin/finances 200 in 158ms
- GET /api/admin/dashboard 200 in 3231ms
- GET /api/admin/notifications 200 in 2559ms
- GET /admin/shipping 200 in 173ms
+ ✓ Compiled / in 4.3s
+Image with src "/logo-alpha-import.png?v=4" is using a query string which is not configured in images.localPatterns. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-localpatterns
+ GET / 200 in 6007ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 4s
+ GET /favicon.ico 200 in 4785ms
+ GET /login 200 in 1138ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 7.6s
+ GET /admin 200 in 8209ms
+ ○ Compiling /api/admin/dashboard ...
+ ✓ Compiled /api/admin/dashboard in 2.4s
+ GET /api/admin/notifications 200 in 11000ms
+ GET /api/admin/dashboard 200 in 14164ms
+ GET /api/admin/notifications 200 in 2639ms
+ GET /api/admin/dashboard 200 in 7055ms
+ ○ Compiling /admin/requests ...
+ ✓ Compiled /admin/requests in 2.4s
+ GET /admin/requests 200 in 2782ms
  ○ Compiling /admin/requests/[id] ...
- ✓ Compiled /admin/requests/[id] in 1184ms
- GET /admin/requests/b333fec7-d5f3-4782-984c-9a4b03405dfb 200 in 3364ms
- GET /admin/requests 200 in 455ms
- GET /api/admin/notifications 200 in 2017ms
- GET /admin/requests/dd20a738-b507-4aac-bda4-1696c296246e 200 in 318ms
- GET /admin/requests 200 in 511ms
- GET /admin/shipping 200 in 322ms
+ ✓ Compiled /admin/requests/[id] in 2.5s
+ GET /admin/requests/dd20a738-b507-4aac-bda4-1696c296246e 200 in 3912ms
+ GET /api/admin/notifications 200 in 2323ms
+ ○ Compiling /admin/shipping ...
+ ✓ Compiled /admin/shipping in 1459ms
+ GET /admin/shipping 200 in 2191ms
+ GET /admin/requests/b333fec7-d5f3-4782-984c-9a4b03405dfb 200 in 473ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 601ms
  ○ Compiling /admin/buyers ...
- ✓ Compiled /admin/buyers in 1054ms
- GET /admin/buyers 200 in 1304ms
- GET /api/admin/notifications 200 in 2422ms
- GET /admin/partners 200 in 279ms
- GET /api/admin/notifications 200 in 2160ms
- GET /api/admin/notifications 200 in 2122ms
- ○ Compiling /admin/suppliers ...
- ✓ Compiled /admin/suppliers in 1998ms
- GET /admin/suppliers 200 in 2418ms
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
-TypeError: fetch failed
-    at async _handleRequest (../../../src/lib/fetch.ts:184:14)
-    at async _request (../../../src/lib/fetch.ts:157:16)
-    at async (../../src/GoTrueClient.ts:1765:16)
-    at async SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1602:14)
-    at async SupabaseAuthClient._getUser (../../src/GoTrueClient.ts:1754:14)
-    at async (../../src/GoTrueClient.ts:1734:14)
-    at async (../../src/GoTrueClient.ts:1510:18) {
-  [cause]: [Error: getaddrinfo ENOTFOUND qmlkdefuraglbhwdywyc.supabase.co] {
-    errno: -3008,
-    code: 'ENOTFOUND',
-    syscall: 'getaddrinfo',
-    hostname: 'qmlkdefuraglbhwdywyc.supabase.co'
-  }
-}
- GET /api/admin/notifications 401 in 1621ms
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
- GET /login 200 in 379ms
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
-[TypeError: fetch failed] {
-  [cause]: [Error: getaddrinfo ENOTFOUND slelguoygbfzlpylpxfs.supabase.co] {
-    errno: -3008,
-    code: 'ENOTFOUND',
-    syscall: 'getaddrinfo',
-    hostname: 'slelguoygbfzlpylpxfs.supabase.co'
-  }
-}
-TypeError: fetch failed
-    at async _handleRequest (../../../src/lib/fetch.ts:184:14)
-    at async _request (../../../src/lib/fetch.ts:157:16)
-    at async (../../src/GoTrueClient.ts:1765:16)
-    at async SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1602:14)
-    at async SupabaseAuthClient._getUser (../../src/GoTrueClient.ts:1754:14)
-    at async (../../src/GoTrueClient.ts:1734:14)
-    at async (../../src/GoTrueClient.ts:1510:18) {
-  [cause]: [Error: getaddrinfo ENOTFOUND qmlkdefuraglbhwdywyc.supabase.co] {
-    errno: -3008,
-    code: 'ENOTFOUND',
-    syscall: 'getaddrinfo',
-    hostname: 'qmlkdefuraglbhwdywyc.supabase.co'
-  }
-}
- GET /api/admin/notifications 401 in 783ms
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
-Error: fetch failed
-    at context.fetch (/private/tmp/oai-clone/node_modules/next/dist/server/web/sandbox/context.js:321:60)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:577:23
-    at _handleRequest (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:931:24)
-    at _request (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:918:24)
-    at /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4282:225
-    at SupabaseAuthClient._useSession (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4151:26)
-    at async SupabaseAuthClient._getUser (/private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4267:20)
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4251:20
-    at async /private/tmp/oai-clone/.next/server/edge/chunks/node_modules_@supabase_auth-js_dist_module_33c852e9._.js:4099:28 {
-  
-}
- GET /login 200 in 823ms
- GET /admin 200 in 790ms
- GET /api/admin/notifications 200 in 2443ms
- GET /api/admin/dashboard 200 in 3107ms
- GET /api/admin/notifications 200 in 1854ms
- GET /api/admin/dashboard 200 in 3275ms
- GET /admin/reporting 200 in 251ms
- GET /api/admin/reporting/stats 200 in 2104ms
- GET /api/admin/reporting/stats 200 in 1911ms
- GET /api/admin/notifications 200 in 2079ms
- GET /api/admin/notifications 200 in 2212ms
- GET /admin/customs 200 in 416ms
- GET /admin/requests/bfb0278d-3ba8-4a60-8ed2-fb69ec7d94c4 200 in 228ms
- GET /admin/customs 200 in 220ms
- GET /admin/risks 200 in 256ms
- GET /admin/finances 200 in 512ms
- GET /api/admin/notifications 200 in 2033ms
- GET /admin/suppliers 200 in 210ms
- GET /admin/partners 200 in 208ms
- GET /admin/requests 200 in 182ms
- GET /admin/partners 200 in 159ms
- GET /api/admin/notifications 200 in 2137ms
- GET /admin/suppliers 200 in 176ms
- GET /api/admin/notifications 200 in 2558ms
- ✓ Compiled in 1318ms
- GET /api/admin/notifications 200 in 3750ms
- ✓ Compiled in 824ms
- ✓ Compiled in 579ms
- GET /api/admin/notifications 200 in 2245ms
- ✓ Compiled middleware in 13ms
- ✓ Compiled in 4s
- GET /admin/suppliers 200 in 1889ms
- GET /admin/suppliers 200 in 459ms
- GET /api/admin/notifications 200 in 2454ms
- GET /api/admin/notifications 200 in 2792ms
- GET /api/admin/notifications 200 in 2446ms
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/api/admin/notifications/[__metadata_id__]/route/app-paths-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/api/admin/notifications/[__metadata_id__]/route/app-paths-manifest.json'
-}
- ○ Compiling /_error ...
- ✓ Compiled /_error in 18.8s
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.hpfknuwefud'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.hpfknuwefud'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/api/admin/notifications/[__metadata_id__]/route/app-paths-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/api/admin/notifications/[__metadata_id__]/route/app-paths-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.tuzdkexy3'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.tuzdkexy3'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.7kz13ws18my'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.7kz13ws18my'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.kpv77lug6wh'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.kpv77lug6wh'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.ft33dsvqb5q'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.ft33dsvqb5q'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.19dm1qoxodj'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.19dm1qoxodj'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.zls8xkcgyxj'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.zls8xkcgyxj'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.3xfdnf1hrrg'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.3xfdnf1hrrg'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.cguwtn7iut5'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.cguwtn7iut5'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.6yxkn2h9tyo'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.6yxkn2h9tyo'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/server/app/login/page/app-build-manifest.json'
-}
- ⨯ [Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.wkncuig47ii'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.wkncuig47ii'
-}
-[Error: ENOENT: no such file or directory, open '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.cr971xrxxqt'] {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/private/tmp/oai-clone/.next/static/development/_buildManifest.js.tmp.cr971xrxxqt'
-}
+ ✓ Compiled /admin/buyers in 1626ms
+ GET /admin/buyers 200 in 1987ms
+ ○ Compiling /admin/partners ...
+ ✓ Compiled /admin/partners in 1428ms
+ GET /admin/partners 200 in 1714ms
+ GET /api/admin/notifications 200 in 3559ms
+ GET /login 200 in 289ms
+[?25h
