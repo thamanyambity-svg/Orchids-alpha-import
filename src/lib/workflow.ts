@@ -158,6 +158,49 @@ export function orderTargetForPartnerMirroredStatus(
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
+/**
+ * Création d'order UNIQUE et cohérente pour une demande validée.
+ * Utilisée par api/admin/requests (VALIDATE) ET workflow.executeTransition
+ * pour éviter deux chemins divergents.
+ * Règles : commission 10%, split 60/40, statut AWAITING_DEPOSIT (le webhook
+ * Stripe transitionne AWAITING_DEPOSIT -> FUNDED au paiement de l'acompte).
+ */
+export async function createOrderForRequest(
+    supabase: SupabaseClient,
+    request: { id: string; reference?: string | null; budget_max?: number | null; budget_min?: number | null }
+) {
+    const amount = Number(request.budget_max || request.budget_min || 0)
+    const commission = amount * 0.10
+    const payout = amount - commission
+
+    let baseRef = request.reference || 'REF'
+    if (baseRef.length > 15) baseRef = baseRef.slice(-15)
+    const orderRef = `ORD-${baseRef}`
+
+    const { data, error } = await supabase
+        .from('orders')
+        .insert({
+            request_id: request.id,
+            reference: orderRef,
+            total_amount: amount,
+            alpha_commission: commission,
+            partner_payout: payout,
+            status: 'AWAITING_DEPOSIT',
+            deposit_amount: amount * 0.60,
+            balance_amount: amount * 0.40,
+            validated_by_admin: true,
+            deposit_paid: false,
+            balance_paid: false,
+            is_frozen: false,
+            escrow_activated: false,
+        })
+        .select()
+        .single()
+
+    if (error) throw error
+    return data
+}
+
 export async function executeTransition(
     supabase: SupabaseClient,
     type: 'REQUEST' | 'ORDER',
@@ -240,37 +283,8 @@ export async function executeTransition(
                 .single()
 
             if (requestData) {
-                const amount = requestData.budget_max || requestData.budget_min || 0
-                const commission = amount * 0.10 // 10% default
-                const payout = amount - commission
-
-                // Generate Order Reference (Max 20 chars)
-                let baseRef = requestData.reference || 'REF'
-                if (baseRef.length > 15) {
-                    baseRef = baseRef.slice(-15)
-                }
-                const orderRef = `ORD-${baseRef}`
-
-                const { error: orderError } = await supabase.from('orders').insert({
-                    request_id: id,
-                    reference: orderRef,
-                    total_amount: amount,
-                    alpha_commission: commission,
-                    partner_payout: payout,
-                    status: 'PENDING', // Starts as PENDING for User to Accept
-                    deposit_amount: amount * 0.60,
-                    balance_amount: amount * 0.40,
-                    validated_by_admin: true,
-                    deposit_paid: false,
-                    balance_paid: false,
-                    is_frozen: false,
-                    escrow_activated: false
-                })
-
-                if (orderError) {
-                    console.error("Failed to auto-generate order:", orderError)
-                    throw orderError
-                }
+                // Chemin unifié (cf. createOrderForRequest) — plus de divergence.
+                await createOrderForRequest(supabase, requestData)
             }
         }
 

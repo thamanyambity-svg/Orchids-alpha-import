@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
 import { requireAdmin } from '@/lib/reporting/auth'
+import { createOrderForRequest } from '@/lib/workflow'
 
 
 export async function POST(request: NextRequest) {
@@ -68,28 +69,8 @@ export async function POST(request: NextRequest) {
 
         if (reqError) throw reqError
 
-        // 2. Create Order
-        const orderRef = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-        const totalAmount = requestData.budget_max || 0
-        const commission = totalAmount * 0.1
-
-        const { data: orderData, error: orderError } = await supabase
-          .from('orders')
-          .insert({
-            reference: orderRef,
-            request_id: requestId,
-            total_amount: totalAmount,
-            alpha_commission: commission,
-            partner_payout: totalAmount - commission,
-            status: 'AWAITING_DEPOSIT',
-            validated_by_admin: true,
-            deposit_amount: totalAmount * 0.6,
-            balance_amount: totalAmount * 0.4,
-          })
-          .select()
-          .single()
-
-        if (orderError) throw orderError
+        // 2. Create Order — chemin UNIQUE (cf. createOrderForRequest)
+        const orderData = await createOrderForRequest(supabase, requestData)
         result = { request: requestData, order: orderData }
         n8nEvent = 'request_validated'
 
@@ -98,16 +79,16 @@ export async function POST(request: NextRequest) {
           action: 'VALIDATE_REQUEST',
           targetType: 'import_requests',
           targetId: requestId,
-          details: { orderId: orderData.id, reference: orderRef }
+          details: { orderId: orderData.id, reference: orderData.reference }
         })
 
         // Trigger certified report generation (Alpha Compliance Report)
         await sendToN8N('certified_report_requested', {
           requestId,
           orderId: orderData.id,
-          orderReference: orderRef,
-          amount: totalAmount,
-          clientName: requestData.user_id, // In a real app, you'd fetch the user's name
+          orderReference: orderData.reference,
+          amount: orderData.total_amount,
+          clientName: requestData.buyer_id,
           timestamp: new Date().toISOString()
         })
         break
