@@ -69,8 +69,21 @@ export async function POST(request: NextRequest) {
 
         if (reqError) throw reqError
 
-        // 2. Create Order — chemin UNIQUE (cf. createOrderForRequest)
-        const orderData = await createOrderForRequest(supabase, requestData)
+        // 1b. Cotation soumise par le partenaire : son total prime, et on la valide.
+        const { data: quote } = await supabase
+          .from('request_quotes')
+          .select('id, total_amount')
+          .eq('request_id', requestId)
+          .in('status', ['SUBMITTED', 'DRAFT'])
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        if (quote?.id) {
+          await supabase.from('request_quotes').update({ status: 'APPROVED' }).eq('id', quote.id)
+        }
+
+        // 2. Create Order — chemin UNIQUE (total = cotation si dispo, sinon budget)
+        const orderData = await createOrderForRequest(supabase, requestData, quote?.total_amount)
         result = { request: requestData, order: orderData }
         n8nEvent = 'request_validated'
 

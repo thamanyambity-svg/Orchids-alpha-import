@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { TrackingEditor } from "@/components/admin/tracking-editor"
+import { QuoteSummary } from "@/components/quote-summary"
 import {
   ArrowLeft,
   Package,
@@ -215,6 +216,10 @@ export default function AdminRequestDetailPage() {
 
       <div className="p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Cotation soumise par le partenaire (lecture) */}
+          <div className="rounded-2xl bg-card border border-border p-6">
+            <QuoteSummary requestId={request.id} />
+          </div>
           {/* Fiche de traitement - Vue synthétique pour l'administrateur */}
           <div className="rounded-2xl bg-primary/5 border-2 border-primary/20 p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-primary">

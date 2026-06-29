@@ -167,9 +167,11 @@ import { SupabaseClient } from '@supabase/supabase-js'
  */
 export async function createOrderForRequest(
     supabase: SupabaseClient,
-    request: { id: string; reference?: string | null; budget_max?: number | null; budget_min?: number | null }
+    request: { id: string; reference?: string | null; budget_max?: number | null; budget_min?: number | null },
+    amountOverride?: number | null
 ) {
-    const amount = Number(request.budget_max || request.budget_min || 0)
+    // Si une cotation validée existe, son total prime sur le budget estimé.
+    const amount = Number(amountOverride || request.budget_max || request.budget_min || 0)
     const commission = amount * 0.10
     const payout = amount - commission
 

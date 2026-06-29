@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
+import { QuoteForm } from "@/components/partner/quote-form"
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -226,6 +227,10 @@ export default function PartnerRequestDetailPage() {
 
       <div className="p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Cotation partenaire -> soumission à l'admin */}
+          <div className="rounded-2xl bg-card border border-border p-6">
+            <QuoteForm requestId={request.id} status={request.status} />
+          </div>
           {/* Informations principales */}
           <div className="rounded-2xl bg-card border border-border p-6">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
