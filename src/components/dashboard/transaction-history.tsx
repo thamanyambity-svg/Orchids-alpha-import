@@ -105,11 +105,11 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                      tx.status === "PAID" || tx.status === "BLOCKED"
-                        ? "bg-primary/20 text-primary border border-primary/30" 
+                      tx.status === "BLOCKED" || tx.status === "RELEASED"
+                        ? "bg-primary/20 text-primary border border-primary/30"
                         : "bg-secondary/50 text-muted-foreground border border-white/5"
                     }`}>
-                      {tx.status}
+                      {tx.status === "BLOCKED" ? "Sécurisé" : tx.status === "RELEASED" ? "Libéré" : tx.status === "REFUNDED" ? "Remboursé" : "En attente"}
                     </span>
                   </td>
                 </tr>

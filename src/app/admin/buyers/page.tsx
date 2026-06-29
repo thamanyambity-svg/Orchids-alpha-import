@@ -52,44 +52,26 @@ export default function AdminBuyersPage() {
     async function fetchBuyers() {
         setIsLoading(true)
         try {
-            // 1. Fetch profiles with role 'BUYER'
+            // 1 seule requête : profiles BUYER + count agrégé des import_requests (embed)
             const { data: profiles, error: profilesError } = await supabase
                 .from('profiles')
-                .select('*')
+                .select('*, import_requests:import_requests!import_requests_buyer_id_fkey(count)')
                 .eq('role', 'BUYER')
                 .order('created_at', { ascending: false })
 
             if (profilesError) throw profilesError
 
-            // 2. For each buyer, fetch stats (this could be optimized with a view or RPC)
-            // For now, we'll do promise.all which is acceptable for < 1000 users
-            const buyersWithStats = await Promise.all(
-                (profiles || []).map(async (profile) => {
-                    // Count Requests
-                    const { count: requestsCount } = await supabase
-                        .from('import_requests')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('buyer_id', profile.id)
-
-                    // Count Active Orders (non-closed)
-                    // We need to join via requests: orders -> requests -> buyer_id
-                    // Or if orders table has buyer_id (check schema? usually it links to request)
-                    // Let's assume we filter requests first then count orders.
-                    // Optimization: just count requests for now as "Activity"
-
-                    return {
-                        id: profile.id,
-                        email: profile.email,
-                        full_name: profile.full_name || "Sans nom",
-                        phone: profile.phone,
-                        city: profile.city || profile.country_id, // Fallback
-                        status: profile.status,
-                        created_at: profile.created_at,
-                        total_requests: requestsCount || 0,
-                        active_orders: 0 // TODO: Implement order counting if critical
-                    }
-                })
-            )
+            const buyersWithStats = (profiles || []).map((profile: any) => ({
+                id: profile.id,
+                email: profile.email,
+                full_name: profile.full_name || "Sans nom",
+                phone: profile.phone,
+                city: profile.city || profile.country_id,
+                status: profile.status,
+                created_at: profile.created_at,
+                total_requests: profile.import_requests?.[0]?.count || 0,
+                active_orders: 0
+            }))
 
             setBuyers(buyersWithStats)
         } catch (error) {
