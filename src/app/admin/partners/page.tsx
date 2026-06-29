@@ -30,6 +30,7 @@ import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
 interface PartnerWithDetails {
     id: string
     user_id: string
+    partner_profile_id: string | null
     email: string
     full_name: string | null
     phone: string | null
@@ -68,7 +69,7 @@ export default function AdminPartnersPage() {
                 .select(`
                     *,
                     country:countries(code, name, region),
-                    partner_details:partner_profiles!partner_profiles_user_id_fkey ( contract_status, performance_score, total_orders_handled )
+                    partner_details:partner_profiles!partner_profiles_user_id_fkey ( id, contract_status, performance_score, total_orders_handled )
                 `)
                 .eq('role', 'PARTNER')
                 .order('created_at', { ascending: false })
@@ -80,6 +81,7 @@ export default function AdminPartnersPage() {
                 return {
                     id: profile.id,
                     user_id: profile.id,
+                    partner_profile_id: pd.id || null,
                     email: profile.email,
                     full_name: profile.full_name || "Sans nom",
                     phone: profile.phone,
@@ -378,6 +380,13 @@ export default function AdminPartnersPage() {
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
                                                                 <DropdownMenuLabel>Gestion</DropdownMenuLabel>
+                                                                {partner.partner_profile_id && (
+                                                                    <DropdownMenuItem asChild>
+                                                                        <Link href={`/admin/partners/${partner.partner_profile_id}`}>
+                                                                            <ExternalLink className="w-4 h-4 mr-2" /> Commandes & performance
+                                                                        </Link>
+                                                                    </DropdownMenuItem>
+                                                                )}
                                                                 <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
                                                                     Contacter
                                                                 </DropdownMenuItem>
