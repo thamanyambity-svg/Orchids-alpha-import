@@ -111,7 +111,7 @@ export default function TransactionsPage() {
                 transition={{ delay: index * 0.05 }}
                 className="bg-card border border-border p-4 rounded-xl hover:bg-accent/50 transition-colors group"
               >
-                {(() => { const meta = statusMeta(transaction.status); return (
+                {(() => { const meta = statusMeta(transaction.status); return (<>
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -146,7 +146,17 @@ export default function TransactionsPage() {
                     </div>
                   </div>
                 </div>
-                ) })()}
+
+                {/* Détail comptable (type Bolloré) */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 mt-4 pt-4 border-t border-border text-xs">
+                  <div><span className="text-muted-foreground">Type</span><p className="font-medium">{transaction.type === 'DEPOSIT_60' ? 'Acompte (60%)' : transaction.type === 'BALANCE_40' ? 'Solde (40%)' : transaction.type || '—'}</p></div>
+                  <div><span className="text-muted-foreground">Moyen de paiement</span><p className="font-medium capitalize">{transaction.payment_method || '—'}</p></div>
+                  <div><span className="text-muted-foreground">Devise</span><p className="font-medium">{transaction.currency || 'USD'}</p></div>
+                  <div><span className="text-muted-foreground">Référence transaction</span><p className="font-mono break-all">{transaction.transaction_ref || '—'}</p></div>
+                  <div><span className="text-muted-foreground">Date de paiement</span><p className="font-medium">{transaction.paid_at ? new Date(transaction.paid_at).toLocaleString() : '—'}</p></div>
+                  <div><span className="text-muted-foreground">Commande</span><p className="font-mono">{transaction.orders?.reference || '—'}</p></div>
+                </div>
+                </>) })()}
               </motion.div>
             ))}
 
