@@ -46,7 +46,7 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
   loading: () => <div className="w-full h-[400px] rounded-3xl bg-[#0a0e14] animate-pulse border border-white/5" />
 })
 
-const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ""
 
 export default function AdminDashboardPage() {
   const router = useRouter()

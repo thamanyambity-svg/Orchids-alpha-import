@@ -42,7 +42,7 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
   loading: () => <div className="w-full h-[400px] rounded-2xl bg-muted animate-pulse border border-border" />
 })
 
-const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ""
 
 const AUTO_BRANDS = [
   { name: "Toyota", models: ["Hilux", "Land Cruiser", "Prado", "Corolla", "RAV4", "Fortuner", "Hiace"] },
@@ -846,6 +846,30 @@ export default function NewRequestPage() {
                               onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)}
                             />
                           </div>
+                        </div>
+                      </div>
+
+                      {/* Détails douaniers & cargo (normes internationales) */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border/50">
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Code HS (douanier)</Label>
+                          <Input className="h-12" placeholder="Ex: 8703.23" value={item.hsCode} onChange={(e) => updateItem(item.id, "hsCode", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Valeur déclarée ($)</Label>
+                          <Input className="h-12" type="number" placeholder="Valeur marchandise" value={item.declaredValue} onChange={(e) => updateItem(item.id, "declaredValue", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Nb colis</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 10" value={item.packages} onChange={(e) => updateItem(item.id, "packages", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Poids brut (kg)</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 1200" value={item.weightKg} onChange={(e) => updateItem(item.id, "weightKg", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Volume (CBM)</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 18" value={item.volumeCbm} onChange={(e) => updateItem(item.id, "volumeCbm", e.target.value)} />
                         </div>
                       </div>
                     </div>
