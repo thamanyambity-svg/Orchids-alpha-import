@@ -20,24 +20,34 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 
 const statusColors: Record<string, string> = {
+  DRAFT: "bg-muted text-muted-foreground",
   PENDING: "bg-secondary text-secondary-foreground",
+  ANALYSIS: "bg-blue-500/10 text-blue-500",
   VALIDATED: "bg-primary/10 text-primary",
+  REJECTED: "bg-destructive/10 text-destructive",
+  AWAITING_DEPOSIT: "bg-amber-500/10 text-amber-600",
+  AWAITING_BALANCE: "bg-amber-500/10 text-amber-600",
   EXECUTING: "bg-blue-500/10 text-blue-500",
   SHIPPED: "bg-purple-500/10 text-purple-500",
   DELIVERED: "bg-green-500/10 text-green-500",
-    CLOSED: "bg-green-600/10 text-green-600",
-    CANCELLED: "bg-destructive/10 text-destructive",
-  }
-  
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    VALIDATED: "À traiter",
-    EXECUTING: "En cours",
-    SHIPPED: "Expédié",
-    DELIVERED: "Livré",
-    CLOSED: "Terminé",
-    CANCELLED: "Annulé",
-  }
+  INCIDENT: "bg-destructive/10 text-destructive",
+  CLOSED: "bg-green-600/10 text-green-600",
+}
+
+const statusLabels: Record<string, string> = {
+  DRAFT: "Brouillon",
+  PENDING: "En attente",
+  ANALYSIS: "En analyse",
+  VALIDATED: "À traiter",
+  REJECTED: "Rejeté",
+  AWAITING_DEPOSIT: "Attente acompte",
+  AWAITING_BALANCE: "Attente solde",
+  EXECUTING: "En cours",
+  SHIPPED: "Expédié",
+  DELIVERED: "Livré",
+  INCIDENT: "Incident",
+  CLOSED: "Terminé",
+}
 
 export default function PartnerRequestsPage() {
   const [requests, setRequests] = useState<any[]>([])
@@ -64,10 +74,7 @@ export default function PartnerRequestsPage() {
           .from('import_requests')
           .select(`
             *,
-            buyer_profiles (
-              full_name,
-              company_name
-            )
+            buyer:profiles!import_requests_buyer_id_fkey ( full_name, company_name )
           `)
           .eq('assigned_partner_id', partner.id)
           .order('created_at', { ascending: false })
@@ -145,11 +152,11 @@ export default function PartnerRequestsPage() {
                     </div>
                     <h3 className="font-semibold text-lg mb-1 truncate">{request.product_name}</h3>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                      <span>{request.buyer_profiles?.company_name || request.buyer_profiles?.full_name}</span>
+                      <span>{request.buyer?.company_name || request.buyer?.full_name || '—'}</span>
                       <span>•</span>
                       <span>{request.quantity}</span>
                       <span>•</span>
-                      <span>Budget: {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}</span>
+                      <span>Budget: {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget_max ?? request.budget_min ?? 0)}</span>
                     </div>
                   </div>
 

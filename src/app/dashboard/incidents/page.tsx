@@ -39,7 +39,7 @@ export default function IncidentsPage() {
   
   const [formData, setFormData] = useState({
     requestId: "",
-    type: "LATE_DELIVERY",
+    type: "DELAY",
     description: ""
   })
 
@@ -54,20 +54,20 @@ export default function IncidentsPage() {
           .from("incidents")
           .select(`
             *,
-            import_requests:order_id (product_name, reference)
+            orders:order_id ( reference, import_requests ( product_name, reference ) )
           `)
           .eq("reported_by", user.id)
           .order("created_at", { ascending: false })
-        
+
         if (incidentsData) setIncidents(incidentsData)
 
-        // Fetch requests for the dropdown
-        const { data: requestsData } = await supabase
-          .from("import_requests")
-          .select("id, product_name, reference")
-          .eq("buyer_id", user.id)
-        
-        if (requestsData) setRequests(requestsData)
+        // Dropdown = commandes de l'acheteur (incidents.order_id -> orders)
+        const { data: ordersData } = await supabase
+          .from("orders")
+          .select("id, reference, import_requests!inner ( product_name, reference, buyer_id )")
+          .eq("import_requests.buyer_id", user.id)
+
+        if (ordersData) setRequests(ordersData)
       }
       setLoading(false)
     }
@@ -96,7 +96,7 @@ export default function IncidentsPage() {
         })
         .select(`
           *,
-          import_requests:order_id (product_name, reference)
+          orders:order_id ( reference, import_requests ( product_name, reference ) )
         `)
         .single()
 
@@ -104,7 +104,7 @@ export default function IncidentsPage() {
 
       setIncidents([data, ...incidents])
       setOpen(false)
-      setFormData({ requestId: "", type: "LATE_DELIVERY", description: "" })
+      setFormData({ requestId: "", type: "DELAY", description: "" })
       toast.success("Incident signalé avec succès. Notre équipe va l'analyser.")
     } catch (error: any) {
       toast.error(error.message || "Erreur lors du signalement")
@@ -150,7 +150,7 @@ export default function IncidentsPage() {
                     <SelectContent>
                       {requests.map(req => (
                         <SelectItem key={req.id} value={req.id}>
-                          {req.product_name} ({req.reference})
+                          {req.import_requests?.product_name || "Commande"} ({req.reference})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -166,11 +166,10 @@ export default function IncidentsPage() {
                       <SelectValue placeholder="Type de problème" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="LATE_DELIVERY">Retard de livraison</SelectItem>
-                      <SelectItem value="PRODUCT_ISSUE">Problème de qualité produit</SelectItem>
-                      <SelectItem value="PAYMENT_ERROR">Erreur de paiement</SelectItem>
-                      <SelectItem value="PARTNER_ISSUE">Problème avec le partenaire</SelectItem>
-                      <SelectItem value="OTHER">Autre</SelectItem>
+                      <SelectItem value="DELAY">Retard de livraison</SelectItem>
+                      <SelectItem value="NON_CONFORMITY">Non-conformité / qualité produit</SelectItem>
+                      <SelectItem value="LOSS">Perte / casse</SelectItem>
+                      <SelectItem value="FRAUD">Fraude</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -232,7 +231,7 @@ export default function IncidentsPage() {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <FileText className="w-3 h-3" />
-                          {incident.import_requests?.reference || "N/A"}
+                          {incident.orders?.import_requests?.reference || incident.orders?.reference || "N/A"}
                         </div>
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
