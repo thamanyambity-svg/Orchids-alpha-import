@@ -122,13 +122,12 @@ export default function AdminSettingsPage() {
     e.preventDefault()
     setSaving(true)
     try {
+      // SÉCURITÉ : role/status ne sont jamais modifiés via ce formulaire (un admin
+      // changeant son profil ne doit pas pouvoir se réécrire role/status). UPDATE
+      // sur champs éditables uniquement.
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: profile.id, // Ensure ID is included for upsert
-          email: profile.email, // Ensure email is preserved
-          role: profile.role || 'ADMIN', // Default role if missing
-          status: profile.status || 'VERIFIED',
+        .update({
           full_name: profile.full_name,
           phone: profile.phone,
           company_name: profile.company_name,

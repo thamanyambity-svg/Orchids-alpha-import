@@ -155,13 +155,11 @@ export default function SettingsPage() {
     e.preventDefault()
     setSaving(true)
     try {
+      // SÉCURITÉ : ne jamais envoyer role/status depuis le client (escalade de
+      // privilège). UPDATE seulement (pas upsert) sur les champs éditables.
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: profile.id,
-          email: profile.email,
-          role: profile.role || 'BUYER',
-          status: profile.status || 'PENDING',
+        .update({
           full_name: profile.full_name,
           phone: profile.phone,
           company_name: profile.company_name,
