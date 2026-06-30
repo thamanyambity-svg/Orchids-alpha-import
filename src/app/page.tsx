@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { PublicHeader } from "@/components/public-header"
 import { PublicFooter } from "@/components/public-footer"
+import { GoldParticles, Counter } from "@/components/motion/primitives"
 import {
   Dialog,
   DialogContent,
@@ -187,6 +188,13 @@ export default function HomePage() {
             />
 
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
+
+            {/* Lueur ambre (lumières de quai) */}
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(232,169,60,0.14),transparent_70%)]" />
+            {/* Particules or scintillantes */}
+            <GoldParticles className="absolute inset-0 z-[1] pointer-events-none" count={70} />
+            {/* Grain premium */}
+            <div className="absolute inset-0 z-[1] opacity-[0.04] pointer-events-none mix-blend-overlay" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 flex flex-col items-center text-center">
@@ -237,6 +245,28 @@ export default function HomePage() {
             >
               {['🇨🇳', '🇦🇪', '🇹🇷', '🇹🇭', '🇯🇵'].map((flag, i) => (
                 <span key={i} className="text-3xl sm:text-4xl drop-shadow-md cursor-help hover:scale-110 transition-transform" title="Pays Partenaire">{flag}</span>
+              ))}
+            </motion.div>
+
+            {/* Bandeau de confiance — compteurs animés */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.8 }}
+              className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] backdrop-blur-md max-w-4xl w-full"
+            >
+              {[
+                { v: 5, suffix: "", label: "Corridors certifiés" },
+                { v: 100, suffix: "%", label: "Fonds sécurisés" },
+                { v: 60, suffix: "/40", label: "Paiement séquencé" },
+                { v: 1, prefix: "", suffix: "/pays", label: "Partenaire exclusif" },
+              ].map((s, i) => (
+                <div key={i} className="px-4 py-6 text-center bg-black/20">
+                  <div className="text-3xl sm:text-4xl font-bold text-gradient-gold">
+                    <Counter value={s.v} suffix={s.suffix} prefix={s.prefix} />
+                  </div>
+                  <div className="text-[11px] uppercase tracking-wider text-gray-400 mt-1">{s.label}</div>
+                </div>
               ))}
             </motion.div>
           </div>
