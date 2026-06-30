@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
+import { QuoteForm } from "@/components/partner/quote-form"
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -73,10 +74,9 @@ export default function PartnerRequestDetailPage() {
             .from('import_requests')
             .select(`
               *,
-              buyer_profiles (
+              buyer:profiles!import_requests_buyer_id_fkey (
                 full_name,
-                company_name,
-                activity_type
+                company_name
               )
             `)
             .eq('id', params.id)
@@ -209,15 +209,17 @@ export default function PartnerRequestDetailPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => updateStatus('EXECUTING')}>
-                Marquer comme &quot;En cours&quot;
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => updateStatus('SHIPPED')}>
-                Marquer comme &quot;Expédié&quot;
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => updateStatus('DELIVERED')}>
-                Marquer comme &quot;Livré&quot;
-              </DropdownMenuItem>
+              {/* Transitions REQUEST valides pour un partenaire (cf. workflow.ts).
+                  Le partenaire démarre l'analyse ; la suite passe par les commandes. */}
+              {request.status === 'PENDING' ? (
+                <DropdownMenuItem onClick={() => updateStatus('ANALYSIS')}>
+                  Démarrer l&apos;analyse
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem disabled>
+                  Aucune action disponible à ce stade
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -225,6 +227,10 @@ export default function PartnerRequestDetailPage() {
 
       <div className="p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Cotation partenaire -> soumission à l'admin */}
+          <div className="rounded-2xl bg-card border border-border p-6">
+            <QuoteForm requestId={request.id} status={request.status} />
+          </div>
           {/* Informations principales */}
           <div className="rounded-2xl bg-card border border-border p-6">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">

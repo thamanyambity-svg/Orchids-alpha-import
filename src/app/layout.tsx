@@ -70,6 +70,7 @@ export const metadata: Metadata = {
 }
 
 import { AiAssistant } from "@/components/ai-assistant"
+import { SmoothScroll } from "@/components/smooth-scroll"
 
 // ... imports remain same ...
 
@@ -82,6 +83,7 @@ export default function RootLayout({
     <html lang="fr" className="dark">
       <body className="min-h-screen font-sans">
         <Providers>
+          <SmoothScroll />
           {children}
           <AiAssistant />
         </Providers>

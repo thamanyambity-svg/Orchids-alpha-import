@@ -1,0 +1,55 @@
+
+> nextjs-new@1.0.1 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.12 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.65:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 1847ms
+ ✓ Ready in 5.7s
+ ○ Compiling /login ...
+ ✓ Compiled /login in 21s
+ GET /login 200 in 22671ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4.3s
+Image with src "/logo-alpha-import.png?v=4" is using a query string which is not configured in images.localPatterns. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-localpatterns
+ GET / 200 in 6007ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 4s
+ GET /favicon.ico 200 in 4785ms
+ GET /login 200 in 1138ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 7.6s
+ GET /admin 200 in 8209ms
+ ○ Compiling /api/admin/dashboard ...
+ ✓ Compiled /api/admin/dashboard in 2.4s
+ GET /api/admin/notifications 200 in 11000ms
+ GET /api/admin/dashboard 200 in 14164ms
+ GET /api/admin/notifications 200 in 2639ms
+ GET /api/admin/dashboard 200 in 7055ms
+ ○ Compiling /admin/requests ...
+ ✓ Compiled /admin/requests in 2.4s
+ GET /admin/requests 200 in 2782ms
+ ○ Compiling /admin/requests/[id] ...
+ ✓ Compiled /admin/requests/[id] in 2.5s
+ GET /admin/requests/dd20a738-b507-4aac-bda4-1696c296246e 200 in 3912ms
+ GET /api/admin/notifications 200 in 2323ms
+ ○ Compiling /admin/shipping ...
+ ✓ Compiled /admin/shipping in 1459ms
+ GET /admin/shipping 200 in 2191ms
+ GET /admin/requests/b333fec7-d5f3-4782-984c-9a4b03405dfb 200 in 473ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 601ms
+ ○ Compiling /admin/buyers ...
+ ✓ Compiled /admin/buyers in 1626ms
+ GET /admin/buyers 200 in 1987ms
+ ○ Compiling /admin/partners ...
+ ✓ Compiled /admin/partners in 1428ms
+ GET /admin/partners 200 in 1714ms
+ GET /api/admin/notifications 200 in 3559ms
+ GET /login 200 in 289ms
+[?25h

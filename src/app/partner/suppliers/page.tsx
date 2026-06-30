@@ -81,6 +81,14 @@ export default function PartnerSuppliersPage() {
     }
   }
 
+  async function toggleSupplier(s: any) {
+    const next = s.status === 'SUSPENDED' ? 'ACTIVE' : 'SUSPENDED'
+    const { error } = await supabase.from('suppliers').update({ status: next }).eq('id', s.id)
+    if (error) { toast.error("Échec de la mise à jour"); return }
+    setSuppliers(prev => prev.map(x => x.id === s.id ? { ...x, status: next } : x))
+    toast.success(next === 'SUSPENDED' ? "Fournisseur désactivé" : "Fournisseur réactivé")
+  }
+
   const handleAddSupplier = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsAdding(true)
@@ -101,7 +109,8 @@ export default function PartnerSuppliersPage() {
         .insert([{
           ...newSupplier,
           partner_id: partner.id,
-          status: 'PENDING'
+          status: 'ACTIVE',
+          application_status: 'PENDING'
         }])
 
       if (error) throw error
@@ -246,8 +255,12 @@ export default function PartnerSuppliersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Modifier</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Désactiver</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className={supplier.status === 'SUSPENDED' ? '' : 'text-destructive'}
+                          onClick={() => toggleSupplier(supplier)}
+                        >
+                          {supplier.status === 'SUSPENDED' ? 'Réactiver' : 'Désactiver'}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

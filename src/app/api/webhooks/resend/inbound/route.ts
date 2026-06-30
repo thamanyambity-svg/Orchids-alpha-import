@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { analyzeEmail } from '@/lib/email-ai'
+import { verifySvixSignature } from '@/lib/webhook-verify'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
+const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
@@ -31,8 +33,20 @@ function parseEmailAddress(raw: string): { email: string; name?: string } {
  * Configurer dans Resend Dashboard > Webhooks > email.received
  */
 export async function POST(request: NextRequest) {
+  // Vérification de signature Svix (Resend) — fail-closed.
+  if (!RESEND_WEBHOOK_SECRET) {
+    console.error('[resend] RESEND_WEBHOOK_SECRET non configuré')
+    return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
+  }
+
+  // Corps brut requis pour vérifier la signature (ne pas re-sérialiser).
+  const rawBody = await request.text()
+  if (!verifySvixSignature(rawBody, request.headers, RESEND_WEBHOOK_SECRET)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+  }
+
   try {
-    const event = (await request.json()) as ResendInboundEvent
+    const event = JSON.parse(rawBody) as ResendInboundEvent
 
     if (event.type !== 'email.received') {
       return NextResponse.json({ received: false })

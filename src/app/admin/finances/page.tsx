@@ -54,8 +54,10 @@ export default function AdminFinancesPage() {
   }
 
   // KPIs
+  // Volume facturable = paiements réussis de type DEPOSIT/BALANCE uniquement.
+  // REFUND/ADJUSTMENT exclus (sinon ils gonflent volume + commission 10%).
   const totalVolume = transactions
-    .filter(t => t.status === 'SUCCEEDED')
+    .filter(t => t.status === 'SUCCEEDED' && ['DEPOSIT', 'BALANCE'].includes(t.type))
     .reduce((acc, curr) => acc + Number(curr.amount), 0)
 
   const pendingCount = transactions.filter(t => t.status === 'PENDING').length
@@ -164,6 +166,8 @@ export default function AdminFinancesPage() {
                     <td className="px-6 py-4 text-right">
                       {tx.status === 'SUCCEEDED' ? (
                         <Badge className="bg-success/10 text-success border-success/20">Succès</Badge>
+                      ) : tx.status === 'PENDING' ? (
+                        <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20">En attente</Badge>
                       ) : (
                         <Badge variant="destructive">Échec</Badge>
                       )}

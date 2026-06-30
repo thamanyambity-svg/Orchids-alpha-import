@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { TrackingEditor } from "@/components/admin/tracking-editor"
+import { QuoteSummary } from "@/components/quote-summary"
 import {
   ArrowLeft,
   Package,
@@ -137,7 +138,7 @@ export default function AdminRequestDetailPage() {
       // Re-fetch data
       const { data: updatedReq } = await supabase
         .from('import_requests')
-        .select('*, buyer:profiles!import_requests_buyer_id_fkey(*), assigned_partner:partner_profiles(*)')
+        .select('*, buyer:profiles!import_requests_buyer_id_fkey(*), assigned_partner:partner_profiles(*, user:profiles(*)), country:countries(*)')
         .eq('id', params.id)
         .single()
       setRequest(updatedReq)
@@ -215,6 +216,10 @@ export default function AdminRequestDetailPage() {
 
       <div className="p-6 grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Cotation soumise par le partenaire (lecture) */}
+          <div className="rounded-2xl bg-card border border-border p-6">
+            <QuoteSummary requestId={request.id} />
+          </div>
           {/* Fiche de traitement - Vue synthétique pour l'administrateur */}
           <div className="rounded-2xl bg-primary/5 border-2 border-primary/20 p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-primary">
@@ -456,17 +461,17 @@ export default function AdminRequestDetailPage() {
                   </div>
                   <div>
                     <p className="font-bold text-sm">{request.assigned_partner.user?.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{request.assigned_partner.company_name}</p>
+                    <p className="text-xs text-muted-foreground">{request.assigned_partner.user?.company_name}</p>
                   </div>
                 </div>
                 <div className="space-y-2 pt-2 border-t border-border">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Phone className="w-3 h-3" />
-                    {request.assigned_partner.phone}
+                    {request.assigned_partner.user?.phone}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Mail className="w-3 h-3" />
-                    {request.assigned_partner.email}
+                    {request.assigned_partner.user?.email}
                   </div>
                 </div>
               </div>

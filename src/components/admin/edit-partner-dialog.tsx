@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import {
     Dialog,
@@ -65,6 +65,20 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
         contract_status: partner?.contract_status || "PENDING",
         // We treat country as read-only or tricky to edit without a list, let's skip for now or keep generic
     })
+
+    // Resync le formulaire quand le partenaire sélectionné change (le dialog n'est
+    // pas démonté entre deux éditions -> sans ça, l'ancien formData persiste).
+    useEffect(() => {
+        setFormData({
+            full_name: partner?.full_name || "",
+            company_name: partner?.company_name || "",
+            city: partner?.city || "",
+            assigned_cities: partner?.assigned_cities ? partner.assigned_cities.join(", ") : "",
+            performance_score: partner?.performance_score || 0,
+            status: partner?.status || "PENDING",
+            contract_status: partner?.contract_status || "PENDING",
+        })
+    }, [partner])
 
     async function handleSave() {
         setLoading(true)

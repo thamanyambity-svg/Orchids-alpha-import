@@ -26,6 +26,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { TrustBanner, CostEstimate, NextSteps } from "@/components/dashboard/request-trust"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
@@ -41,7 +42,7 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
   loading: () => <div className="w-full h-[400px] rounded-2xl bg-muted animate-pulse border border-border" />
 })
 
-const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3pnYyJ9.ZdDwUw5iIt2F6SKW26HWLw"
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ""
 
 const AUTO_BRANDS = [
   { name: "Toyota", models: ["Hilux", "Land Cruiser", "Prado", "Corolla", "RAV4", "Fortuner", "Hiace"] },
@@ -285,14 +286,16 @@ export default function NewRequestPage() {
     category: "",
     deadline: "",
     transportMode: "SEA", // Default
+    incoterm: "FOB",
+    insuranceRequested: false,
+    cgvAccepted: false,
   })
 
-  const [items, setItems] = useState<any[]>([
-    { id: Math.random().toString(36).substring(2, 11), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
-  ])
+  const newItem = () => ({ id: Math.random().toString(36).substring(2, 11), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "", hsCode: "", declaredValue: "", weightKg: "", volumeCbm: "", packages: "" })
+  const [items, setItems] = useState<any[]>([newItem()])
 
   const addItem = () => {
-    setItems([...items, { id: Math.random().toString(36).substring(2, 11), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+    setItems([...items, newItem()])
   }
 
   const removeItem = (id: string) => {
@@ -361,6 +364,10 @@ export default function NewRequestPage() {
   }
 
   async function handleSubmit() {
+    if (!formData.cgvAccepted) {
+      toast.error("Veuillez accepter les conditions générales avant de soumettre")
+      return
+    }
     setIsLoading(true)
     try {
       const supabase = createClient()
@@ -390,7 +397,16 @@ export default function NewRequestPage() {
             budget_min: parseFloat(item.budgetMin),
             budget_max: parseFloat(item.budgetMax),
             deadline: formData.deadline || null,
-            transport_mode: formData.transportMode
+            transport_mode: formData.transportMode,
+            hs_code: item.hsCode || null,
+            declared_value: item.declaredValue ? parseFloat(item.declaredValue) : null,
+            declared_currency: "USD",
+            gross_weight_kg: item.weightKg ? parseFloat(item.weightKg) : null,
+            volume_cbm: item.volumeCbm ? parseFloat(item.volumeCbm) : null,
+            packages: item.packages ? parseInt(item.packages) : null,
+            incoterm: formData.incoterm,
+            insurance_requested: formData.insuranceRequested,
+            cgv_accepted: formData.cgvAccepted,
           })
         })
       })
@@ -404,7 +420,8 @@ export default function NewRequestPage() {
       }
 
       const created = await Promise.all(results.map(r => r.json()))
-      toast.success(`${items.length} demande(s) créée(s) ! Prochaine étape : paiement 60%.`)
+      const refs = created.map((c: any) => c.reference).filter(Boolean).join(", ")
+      toast.success(`Demande créée — Réf ${refs}. Un email de confirmation vous sera envoyé. Prochaine étape : analyse & cotation.`)
 
       // Rediriger vers la demande créée pour accéder au paiement dès validation
       router.push(`/dashboard/requests/${created[0].id}`)
@@ -773,6 +790,15 @@ export default function NewRequestPage() {
                         />
                       </div>
 
+                      {/* Douane & logistique (standard international) */}
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div className="space-y-1"><Label className="text-xs">Code HS</Label><Input className="h-11" placeholder="ex: 8703.23" value={item.hsCode} onChange={(e) => updateItem(item.id, "hsCode", e.target.value)} /></div>
+                        <div className="space-y-1"><Label className="text-xs">Valeur déclarée ($)</Label><Input type="number" className="h-11" value={item.declaredValue} onChange={(e) => updateItem(item.id, "declaredValue", e.target.value)} /></div>
+                        <div className="space-y-1"><Label className="text-xs">Poids brut (kg)</Label><Input type="number" className="h-11" value={item.weightKg} onChange={(e) => updateItem(item.id, "weightKg", e.target.value)} /></div>
+                        <div className="space-y-1"><Label className="text-xs">Volume (CBM)</Label><Input type="number" className="h-11" value={item.volumeCbm} onChange={(e) => updateItem(item.id, "volumeCbm", e.target.value)} /></div>
+                        <div className="space-y-1"><Label className="text-xs">Colis</Label><Input type="number" className="h-11" value={item.packages} onChange={(e) => updateItem(item.id, "packages", e.target.value)} /></div>
+                      </div>
+
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="space-y-2">
                           <Label className="font-semibold">Quantité *</Label>
@@ -822,6 +848,30 @@ export default function NewRequestPage() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Détails douaniers & cargo (normes internationales) */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border/50">
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Code HS (douanier)</Label>
+                          <Input className="h-12" placeholder="Ex: 8703.23" value={item.hsCode} onChange={(e) => updateItem(item.id, "hsCode", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Valeur déclarée ($)</Label>
+                          <Input className="h-12" type="number" placeholder="Valeur marchandise" value={item.declaredValue} onChange={(e) => updateItem(item.id, "declaredValue", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Nb colis</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 10" value={item.packages} onChange={(e) => updateItem(item.id, "packages", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Poids brut (kg)</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 1200" value={item.weightKg} onChange={(e) => updateItem(item.id, "weightKg", e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Volume (CBM)</Label>
+                          <Input className="h-12" type="number" placeholder="Ex: 18" value={item.volumeCbm} onChange={(e) => updateItem(item.id, "volumeCbm", e.target.value)} />
+                        </div>
+                      </div>
                     </div>
                   ))}
 
@@ -833,6 +883,23 @@ export default function NewRequestPage() {
                     <Plus className="w-4 h-4 mr-2" />
                     Ajouter un autre produit à cette demande
                   </Button>
+
+                  {/* Incoterm + assurance (partagés) */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="font-semibold">Incoterm souhaité</Label>
+                      <Select value={formData.incoterm} onValueChange={(v) => setFormData({ ...formData, incoterm: v })}>
+                        <SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
+                        <SelectContent>{["FOB", "CIF", "EXW", "DDP", "DAP", "CFR"].map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </div>
+                    <label className="flex items-center gap-3 rounded-xl border border-border p-4 cursor-pointer hover:border-primary/50">
+                      <input type="checkbox" className="w-4 h-4 accent-primary" checked={formData.insuranceRequested} onChange={(e) => setFormData({ ...formData, insuranceRequested: e.target.checked })} />
+                      <span className="text-sm"><span className="font-semibold">Assurance cargo</span> — couverture optionnelle pendant le transport.</span>
+                    </label>
+                  </div>
+
+                  <TrustBanner partnerName={selectedPartner?.company_name || selectedPartner?.full_name} countryName={selectedPartner?.country_name} />
                 </div>
               </div>
             )}
@@ -961,6 +1028,13 @@ export default function NewRequestPage() {
                           <Badge variant="secondary">Virement</Badge>
                         </div>
                       </div>
+
+                      <CostEstimate total={items.reduce((s, it) => s + (parseFloat(it.budgetMax) || 0), 0)} />
+                      <NextSteps />
+                      <label className="flex items-start gap-3 p-4 rounded-xl border border-border cursor-pointer hover:border-primary/50">
+                        <input type="checkbox" className="w-4 h-4 mt-0.5 accent-primary" checked={formData.cgvAccepted} onChange={(e) => setFormData({ ...formData, cgvAccepted: e.target.checked })} />
+                        <span className="text-xs">J&apos;accepte les <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline">conditions générales</a> et le contrat d&apos;importation. Le devis reste non engageant jusqu&apos;à validation.</span>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -985,7 +1059,7 @@ export default function NewRequestPage() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
-                <Button size="lg" onClick={handleSubmit} disabled={isLoading} className="px-10 bg-primary hover:bg-primary/90">
+                <Button size="lg" onClick={handleSubmit} disabled={isLoading || !formData.cgvAccepted} className="px-10 bg-primary hover:bg-primary/90">
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   ) : (

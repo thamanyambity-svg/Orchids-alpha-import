@@ -47,41 +47,28 @@ export default function AdminSuppliersPage() {
     async function fetchSuppliers() {
         setIsLoading(true)
         try {
-            // 1. Fetch all suppliers
+            // 1 seule requête : suppliers -> partner_profiles -> profiles + countries
+            // (suppliers.partner_id référence partner_profiles.id, PAS profiles.id).
             const { data: suppliersData, error } = await supabase
                 .from('suppliers')
-                .select('*')
+                .select(`
+                    *,
+                    partner:partner_profiles (
+                        profile:profiles!partner_profiles_user_id_fkey ( full_name, company_name ),
+                        country:countries ( code )
+                    )
+                `)
                 .order('created_at', { ascending: false })
 
             if (error) throw error
 
-            // 2. Fetch partner names + country for each supplier
-            const enrichedSuppliers = await Promise.all(
-                (suppliersData || []).map(async (supplier) => {
-                    let partnerName = "Inconnu"
-                    let countryCode: string | undefined
-                    if (supplier.partner_id) {
-                        const { data: profile } = await supabase
-                            .from('profiles')
-                            .select(`
-                                full_name,
-                                company_name,
-                                country:countries(code)
-                            `)
-                            .eq('id', supplier.partner_id)
-                            .single()
-
-                        partnerName = profile?.company_name || profile?.full_name || "Partenaire Inconnu"
-                        countryCode = (profile?.country as { code?: string })?.code
-                    }
-
-                    return {
-                        ...supplier,
-                        partner_name: partnerName,
-                        country_code: countryCode
-                    }
-                })
-            )
+            const enrichedSuppliers = (suppliersData || []).map((supplier: any) => ({
+                ...supplier,
+                partner_name: supplier.partner?.profile?.company_name
+                    || supplier.partner?.profile?.full_name
+                    || "Partenaire Inconnu",
+                country_code: supplier.partner?.country?.code,
+            }))
 
             setSuppliers(enrichedSuppliers)
         } catch (error) {

@@ -1,102 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { createClient } from '@supabase/supabase-js'
-import { sendToN8N } from '@/lib/webhooks'
+import { createClient } from '@/lib/supabase/server'
+import { getSessionUser } from '@/lib/reporting/auth'
 
-
+/**
+ * LECTURE SEULE.
+ * Sert à la page de retour (/payment/success) pour afficher la confirmation.
+ * La source de vérité financière (transactions, payments, flags, transition) est
+ * gérée EXCLUSIVEMENT par le webhook Stripe (/api/webhooks/stripe). Cette route
+ * n'écrit RIEN.
+ */
 export async function GET(request: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  // Auth requise + client SSR (RLS) pour le contrôle d'appartenance.
+  const auth = await getSessionUser()
+  if (auth instanceof NextResponse) return auth
+
+  const supabase = await createClient()
 
   try {
     const sessionId = request.nextUrl.searchParams.get('session_id')
-
     if (!sessionId) {
-      return NextResponse.json(
-        { error: 'session_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'session_id is required' }, { status: 400 })
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
-    if (session.payment_status !== 'paid') {
-      return NextResponse.json(
-        { error: 'Payment not completed' },
-        { status: 400 }
-      )
-    }
-
     const orderId = session.metadata?.orderId
-    const paymentType = session.metadata?.paymentType as 'DEPOSIT_60' | 'BALANCE_40'
+    const paymentType = session.metadata?.paymentType as 'DEPOSIT_60' | 'BALANCE_40' | undefined
     const orderReference = session.metadata?.orderReference
 
     if (!orderId || !paymentType) {
-      return NextResponse.json(
-        { error: 'Invalid session metadata' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid session metadata' }, { status: 400 })
     }
 
-    const { data: existingPayment } = await supabase
-      .from('payments')
+    // Contrôle d'appartenance : la commande doit être visible par l'utilisateur via RLS.
+    const { data: ownedOrder } = await supabase
+      .from('orders')
       .select('id')
-      .eq('transaction_ref', session.payment_intent as string)
-      .single()
+      .eq('id', orderId)
+      .maybeSingle()
 
-    if (!existingPayment) {
-      const { error: paymentError } = await supabase
-        .from('payments')
-        .insert({
-          order_id: orderId,
-          type: paymentType,
-          amount: (session.amount_total || 0) / 100,
-          currency: session.currency?.toUpperCase() || 'USD',
-          status: 'BLOCKED',
-          payment_method: 'stripe',
-          transaction_ref: session.payment_intent as string,
-          paid_at: new Date().toISOString(),
-        })
-
-      if (paymentError) {
-        console.error('Failed to insert payment record:', paymentError)
-      }
-
-      const updateField = paymentType === 'DEPOSIT_60' ? 'deposit_paid' : 'balance_paid'
-      const { error: orderError } = await supabase
-        .from('orders')
-        .update({ [updateField]: true })
-        .eq('id', orderId)
-
-      if (orderError) {
-        console.error('Failed to update order:', orderError)
-      }
-
-      // Notify n8n
-      await sendToN8N('payment_confirmed', {
-        orderId,
-        paymentType,
-        amount: (session.amount_total || 0) / 100,
-        transactionRef: session.payment_intent,
-        orderReference
-      });
-
-      // Trigger PDF Receipt Generation
-      await sendToN8N('payment_receipt_requested', {
-        orderId,
-        paymentType,
-        amount: (session.amount_total || 0) / 100,
-        currency: session.currency?.toUpperCase() || 'USD',
-        customerEmail: session.customer_details?.email,
-        customerName: session.customer_details?.name,
-        transactionRef: session.payment_intent,
-        orderReference,
-        timestamp: new Date().toISOString()
-      });
+    if (!ownedOrder) {
+      return NextResponse.json({ error: 'Accès refusé — commande non accessible.' }, { status: 403 })
     }
-
 
     return NextResponse.json({
       orderReference,
@@ -106,9 +52,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Payment verification error:', error)
-    return NextResponse.json(
-      { error: 'Failed to verify payment' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to verify payment' }, { status: 500 })
   }
 }

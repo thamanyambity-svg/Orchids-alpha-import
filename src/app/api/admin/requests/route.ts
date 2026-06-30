@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
+import { requireAdmin } from '@/lib/reporting/auth'
+import { createOrderForRequest } from '@/lib/workflow'
 
 
 export async function POST(request: NextRequest) {
+  // Réservé ADMIN. Le service-role n'est utilisé qu'après ce contrôle.
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -40,6 +46,7 @@ export async function POST(request: NextRequest) {
         n8nEvent = 'partner_assigned'
 
         await logAudit({
+          actorId: auth.id,
           action: 'ASSIGN_PARTNER',
           targetType: 'import_requests',
           targetId: requestId,
@@ -62,45 +69,39 @@ export async function POST(request: NextRequest) {
 
         if (reqError) throw reqError
 
-        // 2. Create Order
-        const orderRef = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-        const totalAmount = requestData.budget_max || 0
-        const commission = totalAmount * 0.1
+        // 1b. Cotation soumise par le partenaire : son total prime, et on la valide.
+        const { data: quote } = await supabase
+          .from('request_quotes')
+          .select('id, total_amount')
+          .eq('request_id', requestId)
+          .in('status', ['SUBMITTED', 'DRAFT'])
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        if (quote?.id) {
+          await supabase.from('request_quotes').update({ status: 'APPROVED' }).eq('id', quote.id)
+        }
 
-        const { data: orderData, error: orderError } = await supabase
-          .from('orders')
-          .insert({
-            reference: orderRef,
-            request_id: requestId,
-            total_amount: totalAmount,
-            alpha_commission: commission,
-            partner_payout: totalAmount - commission,
-            status: 'AWAITING_DEPOSIT',
-            validated_by_admin: true,
-            deposit_amount: totalAmount * 0.6,
-            balance_amount: totalAmount * 0.4,
-          })
-          .select()
-          .single()
-
-        if (orderError) throw orderError
+        // 2. Create Order — chemin UNIQUE (total = cotation si dispo, sinon budget)
+        const orderData = await createOrderForRequest(supabase, requestData, quote?.total_amount)
         result = { request: requestData, order: orderData }
         n8nEvent = 'request_validated'
 
         await logAudit({
+          actorId: auth.id,
           action: 'VALIDATE_REQUEST',
           targetType: 'import_requests',
           targetId: requestId,
-          details: { orderId: orderData.id, reference: orderRef }
+          details: { orderId: orderData.id, reference: orderData.reference }
         })
 
         // Trigger certified report generation (Alpha Compliance Report)
         await sendToN8N('certified_report_requested', {
           requestId,
           orderId: orderData.id,
-          orderReference: orderRef,
-          amount: totalAmount,
-          clientName: requestData.user_id, // In a real app, you'd fetch the user's name
+          orderReference: orderData.reference,
+          amount: orderData.total_amount,
+          clientName: requestData.buyer_id,
           timestamp: new Date().toISOString()
         })
         break
@@ -122,6 +123,7 @@ export async function POST(request: NextRequest) {
         n8nEvent = 'request_rejected'
 
         await logAudit({
+          actorId: auth.id,
           action: 'REJECT_REQUEST',
           targetType: 'import_requests',
           targetId: requestId,

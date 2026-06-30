@@ -20,24 +20,34 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 
 const statusColors: Record<string, string> = {
+  DRAFT: "bg-muted text-muted-foreground",
   PENDING: "bg-secondary text-secondary-foreground",
+  ANALYSIS: "bg-blue-500/10 text-blue-500",
   VALIDATED: "bg-primary/10 text-primary",
+  REJECTED: "bg-destructive/10 text-destructive",
+  AWAITING_DEPOSIT: "bg-amber-500/10 text-amber-600",
+  AWAITING_BALANCE: "bg-amber-500/10 text-amber-600",
   EXECUTING: "bg-blue-500/10 text-blue-500",
   SHIPPED: "bg-purple-500/10 text-purple-500",
   DELIVERED: "bg-green-500/10 text-green-500",
-    CLOSED: "bg-green-600/10 text-green-600",
-    CANCELLED: "bg-destructive/10 text-destructive",
-  }
-  
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    VALIDATED: "À traiter",
-    EXECUTING: "En cours",
-    SHIPPED: "Expédié",
-    DELIVERED: "Livré",
-    CLOSED: "Terminé",
-    CANCELLED: "Annulé",
-  }
+  INCIDENT: "bg-destructive/10 text-destructive",
+  CLOSED: "bg-green-600/10 text-green-600",
+}
+
+const statusLabels: Record<string, string> = {
+  DRAFT: "Brouillon",
+  PENDING: "En attente",
+  ANALYSIS: "En analyse",
+  VALIDATED: "À traiter",
+  REJECTED: "Rejeté",
+  AWAITING_DEPOSIT: "Attente acompte",
+  AWAITING_BALANCE: "Attente solde",
+  EXECUTING: "En cours",
+  SHIPPED: "Expédié",
+  DELIVERED: "Livré",
+  INCIDENT: "Incident",
+  CLOSED: "Terminé",
+}
 
 export default function PartnerDashboardPage() {
   const [requests, setRequests] = useState<any[]>([])
@@ -68,10 +78,7 @@ export default function PartnerDashboardPage() {
           .from('import_requests')
           .select(`
             *,
-            buyer_profiles (
-              full_name,
-              company_name
-            )
+            buyer:profiles!import_requests_buyer_id_fkey ( full_name, company_name )
           `)
           .eq('assigned_partner_id', partner.id)
           .order('created_at', { ascending: false })
@@ -82,7 +89,7 @@ export default function PartnerDashboardPage() {
         
         // Calculate stats
         const assigned = data?.length || 0
-        const inProgress = data?.filter(r => ['VALIDATED', 'EXECUTING', 'SHIPPED'].includes(r.status)).length || 0
+        const inProgress = data?.filter(r => ['ANALYSIS', 'VALIDATED', 'AWAITING_DEPOSIT', 'EXECUTING', 'SHIPPED'].includes(r.status)).length || 0
         const completed = data?.filter(r => r.status === 'CLOSED').length || 0
         
         setStats({
@@ -177,12 +184,12 @@ export default function PartnerDashboardPage() {
                         </div>
                         <p className="font-medium truncate">{request.product_name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {request.buyer_profiles?.company_name || request.buyer_profiles?.full_name} • {request.quantity}
+                          {request.buyer?.company_name || request.buyer?.full_name || '—'} • {request.quantity}
                         </p>
                       </div>
                       <div className="text-right hidden sm:block">
                         <p className="font-semibold">
-                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget_max ?? request.budget_min ?? 0)}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(request.created_at), "d MMM yyyy", { locale: fr })}

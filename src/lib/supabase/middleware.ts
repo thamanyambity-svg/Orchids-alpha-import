@@ -38,34 +38,63 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/register')
-  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/admin') ||
-    (request.nextUrl.pathname.startsWith('/partner') && !request.nextUrl.pathname.startsWith('/partner-request'))
+  const path = request.nextUrl.pathname
 
-  if (!user && isDashboard) {
+  const isAuthPage = path.startsWith('/login') || path.startsWith('/register')
+  const isAdminArea = path.startsWith('/admin')
+  const isPartnerArea =
+    path.startsWith('/partner') && !path.startsWith('/partner-request')
+  const isBuyerArea = path.startsWith('/dashboard')
+  const isProtected = isAdminArea || isPartnerArea || isBuyerArea
+
+  // Non authentifié sur une zone protégée -> login.
+  if (!user && isProtected) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  if (user && isAuthPage) {
+  // Authentifié : on résout le rôle seulement quand utile (zone protégée / page d'auth).
+  if (user && (isAuthPage || isProtected)) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', user.id)
-      .single()
+      .maybeSingle()
 
-    const url = request.nextUrl.clone()
-    if (profile?.role === 'ADMIN') {
-      url.pathname = '/admin'
-    } else if (profile?.role === 'PARTNER') {
-      url.pathname = '/partner'
-    } else {
-      url.pathname = '/dashboard'
+    const role = profile?.role as 'ADMIN' | 'PARTNER' | 'BUYER' | undefined
+
+    // Pas de profil/rôle exploitable -> /login (sans boucle).
+    if (!role) {
+      if (!isAuthPage) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.redirect(url)
+      }
+      return supabaseResponse
     }
-    return NextResponse.redirect(url)
+
+    const home =
+      role === 'ADMIN' ? '/admin' : role === 'PARTNER' ? '/partner' : '/dashboard'
+
+    // Déjà connecté sur une page d'auth -> son espace.
+    if (isAuthPage) {
+      const url = request.nextUrl.clone()
+      url.pathname = home
+      return NextResponse.redirect(url)
+    }
+
+    // Le rôle doit correspondre à la zone, sinon redirection vers son espace.
+    const allowed =
+      (isAdminArea && role === 'ADMIN') ||
+      (isPartnerArea && role === 'PARTNER') ||
+      (isBuyerArea && role === 'BUYER')
+
+    if (!allowed) {
+      const url = request.nextUrl.clone()
+      url.pathname = home
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse

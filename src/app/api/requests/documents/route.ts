@@ -1,26 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { sendToN8N } from '@/lib/webhooks'
-
+import { getSessionUser } from '@/lib/reporting/auth'
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  // Auth requise. Client SSR (RLS) : les policies request_documents imposent que
+  // l'utilisateur soit lié à la demande (buyer/partner assigné/admin).
+  const session = await getSessionUser()
+  if (session instanceof NextResponse) return session
+
+  // Anti-spam : max 30 enregistrements de documents / minute par utilisateur.
+  const rl = rateLimit(`documents:${session.id}`, 30, 60_000)
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  const supabase = await createClient()
 
   try {
     const body = await request.json()
-    const {
-      requestId,
-      service,
-      type,
-      fileUrl,
-      fileName,
-      fileSize,
-      uploadedBy,
-      status
-    } = body
+    const { requestId, service, type, fileUrl, fileName, fileSize, status } = body
+
+    if (!requestId || !type || !fileUrl || !fileName) {
+      return NextResponse.json(
+        { error: 'Champs requis manquants (requestId, type, fileUrl, fileName)' },
+        { status: 400 }
+      )
+    }
+
+    // Contrôle d'appartenance explicite -> 403 propre (en plus du RLS).
+    const { data: ownedRequest } = await supabase
+      .from('import_requests')
+      .select('id')
+      .eq('id', requestId)
+      .maybeSingle()
+
+    if (!ownedRequest) {
+      return NextResponse.json({ error: 'Accès refusé — demande non accessible.' }, { status: 403 })
+    }
 
     const { data, error } = await supabase
       .from('request_documents')
@@ -31,7 +49,7 @@ export async function POST(request: NextRequest) {
         file_url: fileUrl,
         file_name: fileName,
         file_size: fileSize,
-        uploaded_by: uploadedBy,
+        uploaded_by: session.id, // <-- dérivé de la session, jamais du body
         status: status || 'PENDING'
       })
       .select()
@@ -56,7 +74,7 @@ export async function POST(request: NextRequest) {
         documentId: data.id,
         fileUrl,
         fileName,
-        uploadedBy,
+        uploadedBy: session.id,
         timestamp: new Date().toISOString()
       })
     }

@@ -80,8 +80,8 @@ export default function ReportingPage() {
             <TrendingUp className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalVolume.toLocaleString()} €</div>
-            <p className="text-xs text-muted-foreground">Cumul des budgets max validés</p>
+            <div className="text-2xl font-bold">${stats.totalVolume.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Cumul des budgets max validés (USD)</p>
           </CardContent>
         </Card>
 
@@ -102,19 +102,19 @@ export default function ReportingPage() {
             <CheckCircle2 className="w-4 h-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTransactions.toLocaleString()} €</div>
-            <p className="text-xs text-muted-foreground">Somme des paiements confirmés</p>
+            <div className="text-2xl font-bold">${stats.totalTransactions.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Somme des paiements confirmés (USD)</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Taux de Résolution</CardTitle>
+            <CardTitle className="text-sm font-medium">Demandes clôturées</CardTitle>
             <BarChart3 className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">98.5%</div>
-            <p className="text-xs text-muted-foreground">+0.5% ce mois-ci</p>
+            <div className="text-2xl font-bold">{(stats.statusDistribution?.CLOSED ?? 0).toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Total des demandes au statut CLOSED</p>
           </CardContent>
         </Card>
       </div>

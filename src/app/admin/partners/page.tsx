@@ -30,6 +30,7 @@ import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
 interface PartnerWithDetails {
     id: string
     user_id: string
+    partner_profile_id: string | null
     email: string
     full_name: string | null
     phone: string | null
@@ -62,43 +63,38 @@ export default function AdminPartnersPage() {
             // optimized fetch: get profiles + partner_details + country in one go if possible, 
             // but for safety with current relationships, let's keep it robust.
             // Actually, we can join profiles with countries.
+            // 1 seule requête : profiles PARTNER + country + partner_profiles (embed)
             const { data: profiles, error: profilesError } = await supabase
                 .from('profiles')
                 .select(`
                     *,
-                    country:countries(code, name, region)
+                    country:countries(code, name, region),
+                    partner_details:partner_profiles!partner_profiles_user_id_fkey ( id, contract_status, performance_score, total_orders_handled )
                 `)
                 .eq('role', 'PARTNER')
                 .order('created_at', { ascending: false })
 
             if (profilesError) throw profilesError
 
-            // Fetch partner specific details
-            const partnersData = await Promise.all(
-                (profiles || []).map(async (profile: any) => {
-                    const { data: partnerDetails } = await supabase
-                        .from('partner_profiles')
-                        .select('*')
-                        .eq('user_id', profile.id)
-                        .single()
-
-                    return {
-                        id: profile.id,
-                        user_id: profile.id,
-                        email: profile.email,
-                        full_name: profile.full_name || "Sans nom",
-                        phone: profile.phone,
-                        city: profile.city,
-                        country: profile.country?.name || "N/A",
-                        country_code: profile.country?.code || "UNK",
-                        zone: getZone(profile.country?.code),
-                        status: profile.status,
-                        contract_status: partnerDetails?.contract_status || 'PENDING',
-                        performance_score: partnerDetails?.performance_score || 0,
-                        total_orders_handled: partnerDetails?.total_orders_handled || 0
-                    }
-                })
-            )
+            const partnersData = (profiles || []).map((profile: any) => {
+                const pd = profile.partner_details?.[0] || {}
+                return {
+                    id: profile.id,
+                    user_id: profile.id,
+                    partner_profile_id: pd.id || null,
+                    email: profile.email,
+                    full_name: profile.full_name || "Sans nom",
+                    phone: profile.phone,
+                    city: profile.city,
+                    country: profile.country?.name || "N/A",
+                    country_code: profile.country?.code || "UNK",
+                    zone: getZone(profile.country?.code),
+                    status: profile.status,
+                    contract_status: pd.contract_status || 'PENDING',
+                    performance_score: pd.performance_score || 0,
+                    total_orders_handled: pd.total_orders_handled || 0
+                }
+            })
 
             setPartners(partnersData)
         } catch (error) {
@@ -384,6 +380,13 @@ export default function AdminPartnersPage() {
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
                                                                 <DropdownMenuLabel>Gestion</DropdownMenuLabel>
+                                                                {partner.partner_profile_id && (
+                                                                    <DropdownMenuItem asChild>
+                                                                        <Link href={`/admin/partners/${partner.partner_profile_id}`}>
+                                                                            <ExternalLink className="w-4 h-4 mr-2" /> Commandes & performance
+                                                                        </Link>
+                                                                    </DropdownMenuItem>
+                                                                )}
                                                                 <DropdownMenuItem onClick={() => navigator.clipboard.writeText(partner.email)}>
                                                                     Contacter
                                                                 </DropdownMenuItem>
