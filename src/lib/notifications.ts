@@ -3,7 +3,17 @@ import { RequestStatus, OrderStatus } from './types'
 import { createClient } from '@supabase/supabase-js'
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+
+let _supabase: ReturnType<typeof createClient> | null = null
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+  }
+  return _supabase
+}
 
 
 // We'll use a verified sender or a test one.
@@ -166,10 +176,10 @@ export async function sendStatusNotification(
         // --- NEW: Insert into Real-Time Notifications Table ---
         try {
             // Find user ID by email (we need to link it to a profile)
-            const { data: userProfile } = await supabase.from('profiles').select('id').eq('email', toEmail).single()
+            const { data: userProfile } = await getSupabase().from('profiles').select('id').eq('email', toEmail).single()
 
             if (userProfile) {
-                const { error: dbError } = await supabase.from('notifications').insert({
+                const { error: dbError } = await getSupabase().from('notifications').insert({
                     user_id: userProfile.id,
                     title: subject?.replace(/<[^>]*>?/gm, '') || 'Nouvelle Notification', // Strip HTML if any
                     message: `Statut mis à jour : ${status}`,
