@@ -7,7 +7,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { useLanguage } from "@/lib/i18n-context"
 
 const NAV_LINKS = [
-  { key: "nav.about", label: "Qui sommes-nous", href: "#qui-sommes-nous" },
+  { key: "nav.about", label: "Qui sommes-nous", href: "/about" },
   { key: "nav.services", label: "Services", href: "#services" },
   { key: "nav.partners", label: "Partenaires", href: "#partenaires" },
   { key: "nav.how-it-works", label: "Comment ça marche", href: "#comment-ca-marche" },
@@ -51,10 +51,12 @@ export default function Navbar() {
 
         <div className="hidden lg:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
-            <motion.a key={link.key} href={link.href} className="relative font-condensed text-xs tracking-[0.35em] uppercase text-white/55 hover:text-white transition-colors duration-200 group" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
-              {t(link.key, link.label)}
-              <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-250 origin-left" />
-            </motion.a>
+            <Link key={link.key} href={link.href}>
+              <motion.span className="relative font-condensed text-xs tracking-[0.35em] uppercase text-white/55 hover:text-white transition-colors duration-200 group cursor-pointer" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
+                {t(link.key, link.label)}
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-250 origin-left" />
+              </motion.span>
+            </Link>
           ))}
         </div>
 
@@ -77,9 +79,11 @@ export default function Navbar() {
       <motion.div className="fixed top-0 left-0 right-0 bottom-0 z-40 flex flex-col pt-24 px-8 pb-10 lg:hidden" initial={false} animate={menuOpen ? { opacity: 1, pointerEvents: "auto" as const } : { opacity: 0, pointerEvents: "none" as const }} transition={{ duration: 0.3 }} style={{ background: "rgba(6,16,30,0.97)", backdropFilter: "blur(20px)" }}>
         <div className="flex flex-col gap-1 flex-1">
           {NAV_LINKS.map((link, i) => (
-            <motion.a key={link.key} href={link.href} onClick={() => setMenuOpen(false)} className="font-display text-4xl text-white/70 hover:text-white hover:text-gradient-gold py-4 border-b border-white/6 transition-colors duration-200" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
-              {t(link.key, link.label)}
-            </motion.a>
+            <Link key={link.key} href={link.href} onClick={() => setMenuOpen(false)}>
+              <motion.span className="block font-display text-4xl text-white/70 hover:text-white hover:text-gradient-gold py-4 border-b border-white/6 transition-colors duration-200 cursor-pointer" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
+                {t(link.key, link.label)}
+              </motion.span>
+            </Link>
           ))}
         </div>
         <div className="flex items-center justify-center mt-6">
