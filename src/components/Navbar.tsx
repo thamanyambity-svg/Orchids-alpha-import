@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { key: "nav.about", label: "Qui sommes-nous", href: "/about" },
   { key: "nav.services", label: "Services", href: "#services" },
   { key: "nav.partners", label: "Partenaires", href: "#partenaires" },
-  { key: "nav.how-it-works", label: "Comment ça marche", href: "#comment-ca-marche" },
+  { key: "nav.how-it-works", label: "Comment ça marche", href: "/how-it-works" },
   { key: "nav.quote", label: "Devis", href: "#devis" },
   { key: "nav.contact", label: "Contact", href: "#contact" },
 ]
