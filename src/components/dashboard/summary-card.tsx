@@ -3,8 +3,10 @@
 import { motion } from "framer-motion"
 import { ChevronRight, Package } from "lucide-react"
 import type { ImportRequest } from "@/lib/types"
+import { useLanguage } from "@/lib/i18n-context"
 
 export function SummaryCard({ request }: { request?: ImportRequest | null }) {
+  const { t } = useLanguage()
   if (!request) {
     return (
       <motion.div 
@@ -13,7 +15,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
         className="glass rounded-2xl p-6 relative overflow-hidden group flex flex-col items-center justify-center min-h-[200px]"
       >
         <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">Aucune demande active</p>
-        <p className="text-[10px] text-muted-foreground uppercase mt-2">Créez une nouvelle demande pour commencer</p>
+        <p className="text-[10px] text-muted-foreground uppercase mt-2">{t("summary.create_prompt", "Créez une nouvelle demande pour commencer")}</p>
       </motion.div>
     )
   }
@@ -74,7 +76,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
           <div className="flex justify-between mt-2 text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">
             <span>Sourcing</span>
             <span>{request.budget_min}$ / {request.budget_max}$</span>
-            <span>Finalisé</span>
+            <span>{t("summary.finalized", "Finalisé")}</span>
           </div>
         </div>
       </div>

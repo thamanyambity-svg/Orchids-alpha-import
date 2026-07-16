@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,6 +19,7 @@ import {
 import { AlertTriangle, MessageSquare, CheckCircle2, Clock, Search, ExternalLink } from "lucide-react"
 
 export default function AdminSupportPage() {
+    const { t } = useLanguage()
     const [incidents, setIncidents] = useState<any[]>([])
     const [messages, setMessages] = useState<any[]>([])
     const [avgResponseHours, setAvgResponseHours] = useState<number | null>(null)
@@ -149,7 +151,7 @@ export default function AdminSupportPage() {
                                         <TableHead>Type</TableHead>
                                         <TableHead>Commande</TableHead>
                                         <TableHead>Client</TableHead>
-                                        <TableHead>Statut</TableHead>
+                                        <TableHead>{t("admin.support.status", "Statut")}</TableHead>
                                         <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -189,7 +191,7 @@ export default function AdminSupportPage() {
                 <TabsContent value="messages" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Messagerie</CardTitle>
+                            <CardTitle>{t("admin.support.messaging", "Messagerie")}</CardTitle>
                             <CardDescription>Derniers messages reçus</CardDescription>
                         </CardHeader>
                         <CardContent>

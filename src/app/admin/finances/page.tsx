@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   Wallet,
   Search,
@@ -23,6 +24,7 @@ import { toast } from "sonner"
 import type { Order, Payment, Profile } from "@/lib/types"
 
 export default function AdminFinancesPage() {
+  const { t } = useLanguage()
   const [transactions, setTransactions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -114,7 +116,7 @@ export default function AdminFinancesPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Rechercher (Stripe ID, Nom)..."
+              placeholder={t("admin.finances.search", "Rechercher (Stripe ID, Nom)...")}
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -132,7 +134,7 @@ export default function AdminFinancesPage() {
                 <th className="px-6 py-4">Commande</th>
                 <th className="px-6 py-4">Stripe ID</th>
                 <th className="px-6 py-4 text-right">Montant</th>
-                <th className="px-6 py-4 text-right">Statut</th>
+                <th className="px-6 py-4 text-right">{t("admin.finances.status", "Statut")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">

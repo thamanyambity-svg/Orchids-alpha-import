@@ -22,6 +22,7 @@ import {
 import { Upload, X, Loader2, FileText } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface DocumentUploadModalProps {
   requestId: string
@@ -53,6 +54,7 @@ export function DocumentUploadModal({
   onOpenChange, 
   onSuccess 
 }: DocumentUploadModalProps) {
+  const { t } = useLanguage()
   const [file, setFile] = useState<File | null>(null)
   const [service, setService] = useState("")
   const [type, setType] = useState("")
@@ -67,7 +69,7 @@ export function DocumentUploadModal({
 
   const handleUpload = async () => {
     if (!file || !service || !type) {
-      toast.error("Veuillez remplir tous les champs")
+      toast.error(t("partner.document.fill_all", "Veuillez remplir tous les champs"))
       return
     }
 
@@ -135,7 +137,7 @@ export function DocumentUploadModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajouter un document</DialogTitle>
+          <DialogTitle>{t("partner.document.add", "Ajouter un document")}</DialogTitle>
           <DialogDescription>
             Téléversez un document pour ce dossier. Il sera visible par l'administrateur et le client.
           </DialogDescription>
@@ -214,7 +216,7 @@ export function DocumentUploadModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={uploading}>
-            Annuler
+            {t("partner.document.cancel", "Annuler")}
           </Button>
           <Button onClick={handleUpload} disabled={uploading}>
             {uploading ? (

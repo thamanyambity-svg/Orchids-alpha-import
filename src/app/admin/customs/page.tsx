@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +18,7 @@ import { FileCheck, Package, MapPin } from "lucide-react"
 import Link from "next/link"
 
 export default function AdminCustomsPage() {
+  const { t } = useLanguage()
   const [customsEvents, setCustomsEvents] = useState<any[]>([])
   const [pendingOrders, setPendingOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -97,7 +99,7 @@ export default function AdminCustomsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">En Transit / Livraison</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("admin.customs.orders_in_progress", "Commandes en cours")}</CardTitle>
             <Package className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
@@ -121,9 +123,9 @@ export default function AdminCustomsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Lieu</TableHead>
+                <TableHead>{t("admin.customs.date", "Date")}</TableHead>
+                <TableHead>{t("admin.customs.status", "Statut")}</TableHead>
+                <TableHead>{t("admin.customs.location", "Lieu")}</TableHead>
                 <TableHead>Demande</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Description</TableHead>
@@ -165,7 +167,7 @@ export default function AdminCustomsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Commandes en attente de dédouanement</CardTitle>
+          <CardTitle>{t("admin.customs.pending_clearance", "Commandes en attente de dédouanement")}</CardTitle>
           <CardDescription>
             Expéditions pouvant arriver en douane prochainement
           </CardDescription>

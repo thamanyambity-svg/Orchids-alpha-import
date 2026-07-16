@@ -1,10 +1,12 @@
 "use client"
 
 import { FileText, MoreHorizontal, Loader2 } from "lucide-react"
+import { useLanguage } from "@/lib/i18n-context"
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 export function DocumentTable({ requestId }: { requestId?: string }) {
+  const { t } = useLanguage()
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -53,14 +55,14 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
             <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-white/5">
               <th className="px-6 py-4 font-normal">Document</th>
               <th className="px-6 py-4 font-normal">Type</th>
-              <th className="px-6 py-4 font-normal">Statut</th>
+              <th className="px-6 py-4 font-normal">{t("document_table.status", "Statut")}</th>
               <th className="px-6 py-4 font-normal text-right">Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {documents.length === 0 && !loading ? (
               <tr>
-                <td colSpan={4} className="px-6 py-10 text-center text-muted-foreground text-xs uppercase">Aucun document trouvé</td>
+                <td colSpan={4} className="px-6 py-10 text-center text-muted-foreground text-xs uppercase">{t("document_table.empty", "Aucun document trouvé")}</td>
               </tr>
             ) : (
               documents.map((doc, idx) => (

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useLanguage } from "@/lib/i18n-context"
 import { Bell, AlertTriangle, MessageSquare, Mail, Activity, ChevronRight } from "lucide-react"
 import {
   DropdownMenu,
@@ -13,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 
 export function NotificationCenter() {
+  const { t } = useLanguage()
   const [data, setData] = useState<{
     total: number
     items: { type: string; count: number; label: string; href: string }[]
@@ -61,14 +63,14 @@ export function NotificationCenter() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72" sideOffset={8}>
         <div className="px-3 py-2 border-b">
-          <p className="text-sm font-semibold">Notifications</p>
+          <p className="text-sm font-semibold">{t("admin.notifications.title", "Notifications")}</p>
           <p className="text-xs text-muted-foreground">
-            {total === 0 ? "Aucune alerte" : `${total} alerte${total > 1 ? "s" : ""} à traiter`}
+            {total === 0 ? t("admin.notifications.no_alerts", "Aucune alerte") : `${total} ${t("admin.notifications.alert", "alerte")}${total > 1 ? "s" : ""} ${t("admin.notifications.to_process", "à traiter")}`}
           </p>
         </div>
         {items.length === 0 ? (
           <div className="py-6 text-center text-sm text-muted-foreground">
-            Tout est à jour
+            {t("admin.notifications.all_clear", "Tout est à jour")}
           </div>
         ) : (
           items.map((item) => (
@@ -80,7 +82,7 @@ export function NotificationCenter() {
                 {iconMap[item.type] ?? <Activity className="w-4 h-4" />}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.count} élément(s)</p>
+                  <p className="text-xs text-muted-foreground">{item.count} {t("admin.notifications.items_suffix", "élément(s)")}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </Link>
@@ -90,7 +92,7 @@ export function NotificationCenter() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/admin/reporting" className="text-center justify-center text-xs text-muted-foreground">
-            Voir tout
+            {t("admin.notifications.see_all", "Voir tout")}
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

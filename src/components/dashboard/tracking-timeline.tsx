@@ -15,6 +15,7 @@ import {
     FileText
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface TrackingEvent {
     id: string
@@ -29,21 +30,23 @@ interface TrackingTimelineProps {
 }
 
 const statusOptions = [
-    { value: "ORDER_PLACED", label: "Commande passée", icon: CheckCircle2 },
-    { value: "PREPARING", label: "Préparation / Emballage", icon: Package },
-    { value: "PICKUP", label: "Enlèvement (Usine)", icon: Truck },
-    { value: "WAREHOUSE_ORIGIN", label: "Entrepôt Départ", icon: MapPin },
-    { value: "CUSTOMS_EXPORT", label: "Douane Export", icon: FileText },
-    { value: "DEPARTED_ORIGIN", label: "Départ Origine", icon: Plane },
-    { value: "TRANSIT", label: "En Transit", icon: Clock },
-    { value: "ARRIVED_DESTINATION", label: "Arrivée Destination", icon: MapPin },
-    { value: "CUSTOMS_IMPORT", label: "Douane Import", icon: FileText },
-    { value: "AVAILABLE_PICKUP", label: "Disponible pour retrait", icon: CheckCircle2 },
-    { value: "DELIVERED", label: "Livré au client", icon: CheckCircle2 },
-    { value: "DELAYED", label: "Retardé / Incident", icon: AlertCircle },
+    { value: "ORDER_PLACED", labelKey: "tracking.ORDER_PLACED", label: "Commande passée", icon: CheckCircle2 },
+    { value: "PREPARING", labelKey: "tracking.PREPARING", label: "Préparation / Emballage", icon: Package },
+    { value: "PICKUP", labelKey: "tracking.PICKUP", label: "Enlèvement (Usine)", icon: Truck },
+    { value: "WAREHOUSE_ORIGIN", labelKey: "tracking.WAREHOUSE_ORIGIN", label: "Entrepôt Départ", icon: MapPin },
+    { value: "CUSTOMS_EXPORT", labelKey: "tracking.CUSTOMS_EXPORT", label: "Douane Export", icon: FileText },
+    { value: "DEPARTED_ORIGIN", labelKey: "tracking.DEPARTED_ORIGIN", label: "Départ Origine", icon: Plane },
+    { value: "TRANSIT", labelKey: "tracking.TRANSIT", label: "En Transit", icon: Clock },
+    { value: "ARRIVED_DESTINATION", labelKey: "tracking.ARRIVED_DESTINATION", label: "Arrivée Destination", icon: MapPin },
+    { value: "CUSTOMS_IMPORT", labelKey: "tracking.CUSTOMS_IMPORT", label: "Douane Import", icon: FileText },
+    { value: "AVAILABLE_PICKUP", labelKey: "tracking.AVAILABLE_PICKUP", label: "Disponible pour retrait", icon: CheckCircle2 },
+    { value: "DELIVERED", labelKey: "tracking.DELIVERED", label: "Livré au client", icon: CheckCircle2 },
+    { value: "DELAYED", labelKey: "tracking.DELAYED", label: "Retardé / Incident", icon: AlertCircle },
 ]
 
 export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
+    const { t } = useLanguage()
+
     const [events, setEvents] = useState<TrackingEvent[]>([])
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
@@ -86,12 +89,12 @@ export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
         <div className="bg-card border border-border rounded-2xl p-6">
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                 <Truck className="w-5 h-5 text-primary" />
-                Suivi de l'expédition
+                {t("tracking.title", "Suivi de l'expédition")}
             </h3>
 
             <div className="space-y-8 pl-4 relative border-l-2 border-primary/20 ml-2">
                 {events.map((event, index) => {
-                    const statusOpt = statusOptions.find(o => o.value === event.status) || { label: event.status, icon: CheckCircle2 }
+                    const statusOpt = statusOptions.find(o => o.value === event.status) || { labelKey: "", label: event.status, icon: CheckCircle2 }
                     const Icon = statusOpt.icon
                     const isLatest = index === 0
 
@@ -105,7 +108,7 @@ export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
                             <div className="space-y-1.5">
                                 <div className="flex items-center flex-wrap gap-2">
                                     <span className={`font-bold ${isLatest ? 'text-primary text-lg' : 'text-foreground'}`}>
-                                        {statusOpt.label}
+                                        {t(statusOpt.labelKey, statusOpt.label)}
                                     </span>
                                     {isLatest && <Badge className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5">Actuel</Badge>}
                                 </div>

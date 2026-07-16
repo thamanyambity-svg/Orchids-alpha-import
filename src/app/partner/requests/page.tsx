@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   Search, 
   Filter, 
@@ -40,6 +41,7 @@ const statusColors: Record<string, string> = {
   }
 
 export default function PartnerRequestsPage() {
+  const { t } = useLanguage()
   const [requests, setRequests] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -101,7 +103,7 @@ export default function PartnerRequestsPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
-              placeholder="Rechercher par référence ou produit..." 
+              placeholder={t("partner.requests.search", "Rechercher par référence ou produit...")} 
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,7 +142,7 @@ export default function PartnerRequestsPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColors[request.status]}`}>
-                        {statusLabels[request.status]}
+                          {t("partner.requests.status_" + request.status, statusLabels[request.status])}
                       </span>
                     </div>
                     <h3 className="font-semibold text-lg mb-1 truncate">{request.product_name}</h3>

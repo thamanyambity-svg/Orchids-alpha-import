@@ -11,10 +11,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/lib/i18n-context"
 
 type Step = 1 | 2 | 3 | 4
 
 export function PartnerWizard() {
+    const { t } = useLanguage()
     const router = useRouter()
     const [step, setStep] = useState<Step>(1)
     const [isLoading, setIsLoading] = useState(false)
@@ -63,10 +65,10 @@ export function PartnerWizard() {
                 .getPublicUrl(filePath)
 
             setDocuments(prev => [...prev, { name: docType, url: publicUrl }])
-            toast.success(`${docType} téléchargé avec succès`)
+            toast.success(t("partner_wizard.upload_success", "Téléchargement réussi"))
         } catch (error) {
             console.error(error)
-            toast.error("Erreur lors du téléchargement")
+            toast.error(t("partner_wizard.upload_error", "Erreur lors du téléchargement"))
         } finally {
             setUploading(false)
         }
@@ -99,10 +101,10 @@ export function PartnerWizard() {
             if (error) throw error
 
             setStep(4) // Success step
-            toast.success("Candidature envoyée avec succès !")
+            toast.success(t("partner_wizard.submit_success", "Candidature envoyée avec succès !"))
         } catch (error) {
             console.error(error)
-            toast.error("Erreur lors de l'envoi de la candidature")
+            toast.error(t("partner_wizard.submit_error", "Erreur lors de l'envoi de la candidature"))
         } finally {
             setIsLoading(false)
         }
@@ -113,8 +115,8 @@ export function PartnerWizard() {
     /* -------------------------------------------------------------------------- */
     const charterDetails = {
         trust: {
-            title: "Confiance & Transparence (Article 1)",
-            content: `
+            title: t("partner_wizard.article1_title", "Confiance & Transparence (Article 1)"),
+            content: t("partner_wizard.article1_content", `
             <h4 class="font-bold mb-2">1.1. Obligations de Transparence</h4>
             <p class="mb-2">Le Partenaire s'engage à fournir des informations exactes, complètes et actualisées concernant son identité, sa structure juridique et ses activités commerciales. Toute dissimulation d'information (fausses déclarations, documents falsifiés, prête-noms) entraînera la résiliation immédiate de ce partenariat et des poursuites judiciaires.</p>
             
@@ -123,11 +125,11 @@ export function PartnerWizard() {
             
             <h4 class="font-bold mb-2">1.3. Lutte Anti-Fraude</h4>
             <p>Nous appliquons une tolérance zéro envers la fraude, la corruption et le blanchiment d'argent. Tout soupçon d'activité illicite sera immédiatement signalé aux autorités compétentes (Cellule de Renseignement Financier).</p>
-        `
+        `)
         },
         privacy: {
-            title: "Confidentialité & Protection des Données (Article 2)",
-            content: `
+            title: t("partner_wizard.article2_title", "Confidentialité & Protection des Données (Article 2)"),
+            content: t("partner_wizard.article2_content", `
             <h4 class="font-bold mb-2">2.1. Accord de Non-Divulgation (NDA)</h4>
             <p class="mb-2">Alpha A Ambity et le Partenaire s'engagent à garder strictement confidentielles toutes les informations échangées (fichiers clients, stratégies tarifaires, données fournisseurs, secrets commerciaux).</p>
             
@@ -136,11 +138,11 @@ export function PartnerWizard() {
             
             <h4 class="font-bold mb-2">2.3. Sécurité Informatique</h4>
             <p>Toutes les données sensibles (documents d'identité, preuves financières) sont stockées de manière cryptée. L'accès est restreint aux seuls administrateurs chargés de la conformité (Compliance Officers).</p>
-        `
+        `)
         },
         legal: {
-            title: "Conformité Légale & Fiscale (Article 3)",
-            content: `
+            title: t("partner_wizard.article3_title", "Conformité Légale & Fiscale (Article 3)"),
+            content: t("partner_wizard.article3_content", `
             <h4 class="font-bold mb-2">3.1. Existence Légale</h4>
             <p class="mb-2">Le Partenaire doit être une entité légalement constituée dans son pays de résidence. Il doit fournir un Registre de Commerce (RCCM, K-Bis, Trade License) valide et datant de moins de 3 mois lors de l'inscription.</p>
             
@@ -149,11 +151,11 @@ export function PartnerWizard() {
             
             <h4 class="font-bold mb-2">3.3. Respect des Normes Internationales</h4>
             <p>Le Partenaire s'interdit d'importer des produits prohibés (contrefaçons, produits dangereux, substances illicites). Alpha A Ambity se réserve le droit d'inspecter toute cargaison suspecte.</p>
-        `
+        `)
         },
         financial: {
-            title: "Engagements Financiers & Caution (Article 4)",
-            content: `
+            title: t("partner_wizard.article4_title", "Engagements Financiers & Caution (Article 4)"),
+            content: t("partner_wizard.article4_content", `
             <h4 class="font-bold mb-2">4.1. Dépôt de Garantie (Caution)</h4>
             <p class="mb-2">Pour accéder aux services d'achat et de logistique, le Partenaire doit constituer un dépôt de garantie (Caution). Ce montant sert à couvrir les risques de défaut de paiement, d'annulation tardive ou de pénalités logistiques.</p>
             
@@ -162,7 +164,7 @@ export function PartnerWizard() {
             
             <h4 class="font-bold mb-2">4.3. Restitution de la Caution</h4>
             <p>La caution est remboursable intégralement après une période probatoire de 12 mois sans incident de paiement, ou lors de la clôture du compte partenaire (sous réserve qu'aucune dette ne soit active).</p>
-        `
+        `)
         }
     }
 
@@ -178,7 +180,7 @@ export function PartnerWizard() {
         return (
             <>
                 <Button variant="link" onClick={() => setOpen(true)} className="p-0 h-auto font-semibold text-primary mt-2">
-                    Lire le détail complet &rarr;
+                    {t("partner_wizard.read_detail", "Lire le détail complet →")}
                 </Button>
 
                 {/* Simple Modal overlay (using local state since we don't assume shadcn Dialog is perfectly available/configured in this context without imports) 
@@ -197,7 +199,7 @@ export function PartnerWizard() {
                                 </div>
                                 <div className="mt-8 flex justify-end">
                                     <Button onClick={() => setOpen(false)}>
-                                        J'ai lu et compris
+                                        {t("partner_wizard.read_understood", "J'ai lu et compris")}
                                     </Button>
                                 </div>
                             </div>
@@ -212,14 +214,13 @@ export function PartnerWizard() {
         <div className="space-y-8">
             <div className="text-center mb-10">
                 <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-amber-500 mb-4">
-                    Charte de Partenariat Officiel
+                    {t("partner_wizard.charter_title", "Charte de Partenariat Officiel")}
                 </h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                    Devenir partenaire Alpha A Ambity n'est pas une simple inscription.
-                    C'est un engagement contractuel fort basé sur 4 piliers fondamentaux.
+                    {t("partner_wizard.charter_desc", "Devenir partenaire Alpha A Ambity n'est pas une simple inscription. C'est un engagement contractuel fort basé sur 4 piliers fondamentaux.")}
                     <br />
                     <span className="text-sm font-medium text-amber-500 mt-2 block">
-                        Veuillez lire attentivement chaque section avant de vous engager.
+                        {t("partner_wizard.charter_warning", "Veuillez lire attentivement chaque section avant de vous engager.")}
                     </span>
                 </p>
             </div>
@@ -227,36 +228,36 @@ export function PartnerWizard() {
             <div className="grid gap-6 md:grid-cols-2">
                 <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
                     <ShieldCheck className="w-10 h-10 text-primary mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">1. Confiance & Transparence</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.trust_card_title", "1. Confiance & Transparence")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
-                        Transparence totale sur les activités. Tolérance zéro envers la fraude. Traçabilité exigée.
+                        {t("partner_wizard.trust_card_desc", "Transparence totale sur les activités. Tolérance zéro envers la fraude. Traçabilité exigée.")}
                     </p>
                     <CharterDialog type="trust" icon={ShieldCheck} />
                 </Card>
 
                 <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
                     <Shield className="w-10 h-10 text-primary mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">2. Confidentialité (NDA)</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.privacy_card_title", "2. Confidentialité (NDA)")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
-                        Protection absolue de votre fichier client et de vos données commerciales. Secret des affaires.
+                        {t("partner_wizard.privacy_card_desc", "Protection absolue de votre fichier client et de vos données commerciales. Secret des affaires.")}
                     </p>
                     <CharterDialog type="privacy" icon={Shield} />
                 </Card>
 
                 <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
                     <Building2 className="w-10 h-10 text-primary mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">3. Conformité Légale</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.legal_card_title", "3. Conformité Légale")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
-                        Structures juridiques vérifiées (RCCM, ID NAT). Respect des lois douanières et fiscales.
+                        {t("partner_wizard.legal_card_desc", "Structures juridiques vérifiées (RCCM, ID NAT). Respect des lois douanières et fiscales.")}
                     </p>
                     <CharterDialog type="legal" icon={Building2} />
                 </Card>
 
                 <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
                     <Banknote className="w-10 h-10 text-primary mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">4. Engagement Financier</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.financial_card_title", "4. Engagement Financier")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
-                        Solvabilité prouvée. Dépôt de garantie obligatoire. Conditions de paiement strictes.
+                        {t("partner_wizard.financial_card_desc", "Solvabilité prouvée. Dépôt de garantie obligatoire. Conditions de paiement strictes.")}
                     </p>
                     <CharterDialog type="financial" icon={Banknote} />
                 </Card>
@@ -266,7 +267,7 @@ export function PartnerWizard() {
                 <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors w-full max-w-md">
                     <input type="checkbox" className="w-5 h-5 accent-primary" id="accept-charter" />
                     <span className="text-sm">
-                        Je certifie avoir lu et accepté l'intégralité des 4 articles de la Charte de Partenariat ci-dessus.
+                        {t("partner_wizard.accept_charter", "Je certifie avoir lu et accepté l'intégralité des 4 articles de la Charte de Partenariat ci-dessus.")}
                     </span>
                 </label>
 
@@ -276,13 +277,13 @@ export function PartnerWizard() {
                         if (checkbox.checked) {
                             setStep(2)
                         } else {
-                            toast.error("Veuillez cocher la case pour accepter la charte.")
+                            toast.error(t("partner_wizard.checkbox_required", "Veuillez cocher la case pour accepter la charte."))
                         }
                     }}
                     size="lg"
                     className="group min-w-[200px]"
                 >
-                    Valider ces engagements
+                    {t("partner_wizard.validate", "Valider ces engagements")}
                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
             </div>
@@ -293,9 +294,9 @@ export function PartnerWizard() {
     const Step2Finance = () => (
         <div className="space-y-6 max-w-2xl mx-auto">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Engagements Financiers</h2>
+                <h2 className="text-3xl font-bold mb-4">{t("partner_wizard.finance_title", "Engagements Financiers")}</h2>
                 <p className="text-muted-foreground">
-                    Comprendre le modèle économique est essentiel pour devenir partenaire.
+                    {t("partner_wizard.finance_desc", "Comprendre le modèle économique est essentiel pour devenir partenaire.")}
                 </p>
             </div>
 
@@ -303,16 +304,15 @@ export function PartnerWizard() {
                 <div className="flex items-start gap-4">
                     <AlertCircle className="w-6 h-6 text-amber-500 mt-1 flex-shrink-0" />
                     <div className="space-y-4">
-                        <h3 className="text-xl font-semibold text-amber-500">Caution de Garantie</h3>
+                        <h3 className="text-xl font-semibold text-amber-500">{t("partner_wizard.deposit_title", "Caution de Garantie")}</h3>
                         <p className="text-muted-foreground text-sm leading-relaxed">
-                            Pour valider votre compte Partenaire, une caution remboursable sera exigée après validation de votre dossier juridique.
-                            Cette caution sert à couvrir les risques liés aux premières commandes et démontre votre sérieux.
+                            {t("partner_wizard.deposit_desc", "Pour valider votre compte Partenaire, une caution remboursable sera exigée après validation de votre dossier juridique. Cette caution sert à couvrir les risques liés aux premières commandes et démontre votre sérieux.")}
                         </p>
                         <div className="p-4 rounded-lg bg-background/50 text-sm">
                             <ul className="list-disc pl-5 space-y-2">
-                                <li>Montant fixé selon volume prévisionnel.</li>
-                                <li>Fonds séquestrés sur compte tiers sécurisé.</li>
-                                <li>Remboursable après 12 mois sans incident.</li>
+                                <li>{t("partner_wizard.deposit_bullet1", "Montant fixé selon volume prévisionnel.")}</li>
+                                <li>{t("partner_wizard.deposit_bullet2", "Fonds séquestrés sur compte tiers sécurisé.")}</li>
+                                <li>{t("partner_wizard.deposit_bullet3", "Remboursable après 12 mois sans incident.")}</li>
                             </ul>
                         </div>
                     </div>
@@ -320,9 +320,9 @@ export function PartnerWizard() {
             </Card>
 
             <div className="flex justify-between pt-8">
-                <Button variant="ghost" onClick={() => setStep(1)}>Retour</Button>
+                <Button variant="ghost" onClick={() => setStep(1)}>{t("partner_wizard.back", "Retour")}</Button>
                 <Button onClick={() => setStep(3)} size="lg">
-                    Je confirme ma capacité financière
+                    {t("partner_wizard.confirm_finance", "Je confirme ma capacité financière")}
                     <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
             </div>
@@ -332,46 +332,46 @@ export function PartnerWizard() {
     const Step3Form = () => (
         <div className="max-w-3xl mx-auto space-y-8">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Dossier Juridique</h2>
+                <h2 className="text-3xl font-bold mb-4">{t("partner_wizard.form_title", "Dossier Juridique")}</h2>
                 <p className="text-muted-foreground">
-                    Veuillez fournir les informations légales de votre entreprise.
+                    {t("partner_wizard.form_desc", "Veuillez fournir les informations légales de votre entreprise.")}
                 </p>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                    <Label>Nom de l'entreprise</Label>
+                    <Label>{t("partner_wizard.company_label", "Nom de l'entreprise")}</Label>
                     <Input
                         name="company_name"
-                        placeholder="Ex: Trading Import SARL"
+                        placeholder={t("partner_wizard.company_placeholder", "Ex: Trading Import SARL")}
                         value={formData.company_name}
                         onChange={handleInputChange}
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label>Adresse Email Professionnelle</Label>
+                    <Label>{t("partner_wizard.email_label", "Adresse Email Professionnelle")}</Label>
                     <Input
                         name="email"
                         type="email"
-                        placeholder="contact@entreprise.com"
+                        placeholder={t("partner_wizard.email_placeholder", "contact@entreprise.com")}
                         value={formData.email}
                         onChange={handleInputChange}
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label>Téléphone / WhatsApp</Label>
+                    <Label>{t("partner_wizard.phone_label", "Téléphone / WhatsApp")}</Label>
                     <Input
                         name="phone"
-                        placeholder="+243..."
+                        placeholder={t("partner_wizard.phone_placeholder", "+243...")}
                         value={formData.phone}
                         onChange={handleInputChange}
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label>Adresse du Siège</Label>
+                    <Label>{t("partner_wizard.address_label", "Adresse du Siège")}</Label>
                     <Input
                         name="address"
-                        placeholder="Adresse complète"
+                        placeholder={t("partner_wizard.address_placeholder", "Adresse complète")}
                         value={formData.address}
                         onChange={handleInputChange}
                     />
@@ -379,7 +379,7 @@ export function PartnerWizard() {
             </div>
 
             <div className="border-t border-border pt-6 mt-6">
-                <h3 className="text-lg font-semibold mb-4 text-gradient-gold">Documents Officiels</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gradient-gold">{t("partner_wizard.documents_title", "Documents Officiels")}</h3>
                 <div className="grid gap-6 md:grid-cols-3">
                     <Card className="p-4 border-dashed border-2 flex flex-col items-center justify-center text-center gap-2 hover:bg-muted/50 cursor-pointer relative overflow-hidden">
                         <input
@@ -388,7 +388,7 @@ export function PartnerWizard() {
                             onChange={(e) => handleFileUpload(e, 'RCCM')}
                         />
                         <Upload className="w-6 h-6 text-muted-foreground" />
-                        <span className="text-sm font-medium">Registre Commerce (RCCM)</span>
+                        <span className="text-sm font-medium">{t("partner_wizard.rccm_label", "Registre Commerce (RCCM)")}</span>
                         {documents.find(d => d.name === 'RCCM') && <Check className="w-4 h-4 text-green-500" />}
                     </Card>
 
@@ -399,7 +399,7 @@ export function PartnerWizard() {
                             onChange={(e) => handleFileUpload(e, 'ID_NAT')}
                         />
                         <Upload className="w-6 h-6 text-muted-foreground" />
-                        <span className="text-sm font-medium">Identification Nationale</span>
+                        <span className="text-sm font-medium">{t("partner_wizard.id_nat_label", "Identification Nationale")}</span>
                         {documents.find(d => d.name === 'ID_NAT') && <Check className="w-4 h-4 text-green-500" />}
                     </Card>
 
@@ -410,21 +410,21 @@ export function PartnerWizard() {
                             onChange={(e) => handleFileUpload(e, 'TAX_ID')}
                         />
                         <Upload className="w-6 h-6 text-muted-foreground" />
-                        <span className="text-sm font-medium">Numéro Impôt</span>
+                        <span className="text-sm font-medium">{t("partner_wizard.tax_label", "Numéro Impôt")}</span>
                         {documents.find(d => d.name === 'TAX_ID') && <Check className="w-4 h-4 text-green-500" />}
                     </Card>
                 </div>
-                {uploading && <p className="text-xs text-primary mt-2 animate-pulse text-center">Téléchargement en cours...</p>}
+                {uploading && <p className="text-xs text-primary mt-2 animate-pulse text-center">{t("partner_wizard.uploading", "Téléchargement en cours...")}</p>}
             </div>
 
             <div className="flex justify-between pt-8">
-                <Button variant="ghost" onClick={() => setStep(2)}>Retour</Button>
+                <Button variant="ghost" onClick={() => setStep(2)}>{t("partner_wizard.back", "Retour")}</Button>
                 <Button
                     onClick={handleSubmit}
                     size="lg"
                     disabled={isLoading || !formData.email || !formData.company_name}
                 >
-                    {isLoading ? "Envoi..." : "Soumettre ma candidature"}
+                    {isLoading ? t("partner_wizard.sending", "Envoi...") : t("partner_wizard.submit", "Soumettre ma candidature")}
                 </Button>
             </div>
         </div>
@@ -435,20 +435,19 @@ export function PartnerWizard() {
             <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check className="w-12 h-12 text-green-500" />
             </div>
-            <h2 className="text-4xl font-bold mb-6">Candidature Reçue !</h2>
+            <h2 className="text-4xl font-bold mb-6">{t("partner_wizard.success_title", "Candidature Reçue !")}</h2>
             <p className="text-xl text-muted-foreground mb-8">
-                Votre dossier a été transmis à notre service de conformité.
-                Un administrateur va vérifier vos documents sous 24h à 48h.
+                {t("partner_wizard.success_desc", "Votre dossier a été transmis à notre service de conformité. Un administrateur va vérifier vos documents sous 24h à 48h.")}
             </p>
             <div className="bg-card p-6 rounded-lg max-w-md mx-auto text-sm text-left space-y-2 border border-border">
-                <p><strong>Prochaines étapes :</strong></p>
-                <p>1. Validation des documents légaux.</p>
-                <p>2. Envoi du contrat de partenariat et facture de caution.</p>
-                <p>3. Ouverture de votre compte Partenaire sécurisé.</p>
+                <p><strong>{t("partner_wizard.next_steps", "Prochaines étapes :")}</strong></p>
+                <p>{t("partner_wizard.step1", "1. Validation des documents légaux.")}</p>
+                <p>{t("partner_wizard.step2", "2. Envoi du contrat de partenariat et facture de caution.")}</p>
+                <p>{t("partner_wizard.step3", "3. Ouverture de votre compte Partenaire sécurisé.")}</p>
             </div>
             <div className="mt-10">
                 <Button onClick={() => router.push('/')} variant="outline">
-                    Retour à l'accueil
+                    {t("partner_wizard.back_home", "Retour à l'accueil")}
                 </Button>
             </div>
         </div>
@@ -477,10 +476,10 @@ export function PartnerWizard() {
                     ))}
                 </div>
                 <div className="flex justify-between mt-2 text-xs text-muted-foreground font-medium px-2">
-                    <span>Valeurs</span>
-                    <span>Finance</span>
-                    <span>Dossier</span>
-                    <span>Validation</span>
+                    <span>{t("partner_wizard.step_values", "Valeurs")}</span>
+                    <span>{t("partner_wizard.step_finance", "Finance")}</span>
+                    <span>{t("partner_wizard.step_dossier", "Dossier")}</span>
+                    <span>{t("partner_wizard.step_validation", "Validation")}</span>
                 </div>
             </div>
 

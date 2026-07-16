@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   ArrowLeft, 
   Package, 
@@ -58,6 +59,7 @@ const documentTypeLabels: Record<string, string> = {
 export default function PartnerRequestDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { t } = useLanguage()
   const [request, setRequest] = useState<any>(null)
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -191,7 +193,7 @@ export default function PartnerRequestDetailPage() {
         <Button variant="ghost" asChild className="mb-4">
           <Link href="/partner/requests" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Retour aux dossiers
+            {t("partner.request.back", "Retour aux dossiers")}
           </Link>
         </Button>
       </div>
@@ -204,19 +206,19 @@ export default function PartnerRequestDetailPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button disabled={updating}>
-                {updating ? "Mise à jour..." : "Modifier le statut"}
+                {updating ? t("partner.request.updating", "Mise à jour...") : t("partner.request.change_status", "Modifier le statut")}
                 <MoreVertical className="ml-2 w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => updateStatus('EXECUTING')}>
-                Marquer comme "En cours"
+                {t("partner.request.mark_in_progress", "Marquer comme \"En cours\"")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => updateStatus('SHIPPED')}>
-                Marquer comme "Expédié"
+                {t("partner.request.mark_shipped", "Marquer comme \"Expédié\"")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => updateStatus('DELIVERED')}>
-                Marquer comme "Livré"
+                {t("partner.request.mark_delivered", "Marquer comme \"Livré\"")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -270,7 +272,7 @@ export default function PartnerRequestDetailPage() {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <FileText className="w-5 h-5 text-primary" />
-                  Documents du dossier
+                  {t("partner.request.documents", "Documents du dossier")}
                 </h3>
                 <Button 
                   size="sm" 
@@ -279,7 +281,7 @@ export default function PartnerRequestDetailPage() {
                   onClick={() => setUploadModalOpen(true)}
                 >
                   <Upload className="w-4 h-4" />
-                  Ajouter
+                  {t("partner.request.add", "Ajouter")}
                 </Button>
               </div>
 
@@ -314,7 +316,7 @@ export default function PartnerRequestDetailPage() {
                           variant="ghost" 
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           onClick={() => deleteDocument(doc.id, doc.file_url)}
-                          title="Supprimer"
+                          title={t("partner.request.delete", "Supprimer")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

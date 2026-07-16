@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   LayoutDashboard,
   Users,
@@ -23,17 +24,18 @@ import {
 } from "lucide-react"
 
 const navItems = [
-  { href: "/dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
+  { href: "/dashboard", labelKey: "dashboard.sidebar.dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
   // { href: "/dashboard/buyers", label: "Acheteurs", icon: Users }, // Removed for client view
-  { href: "/dashboard/requests", label: "Commandes", icon: ShoppingCart },
-  { href: "/dashboard/transactions", label: "Transactions", icon: CircleDollarSign },
-  { href: "/dashboard/messages", label: "Messagerie", icon: MessageSquare },
-  { href: "/dashboard/support", label: "Support", icon: Headphones },
-  { href: "/dashboard/incidents", label: "Incidents", icon: AlertTriangle },
+  { href: "/dashboard/requests", labelKey: "dashboard.sidebar.orders", label: "Commandes", icon: ShoppingCart },
+  { href: "/dashboard/transactions", labelKey: "dashboard.sidebar.transactions", label: "Transactions", icon: CircleDollarSign },
+  { href: "/dashboard/messages", labelKey: "dashboard.sidebar.messaging", label: "Messagerie", icon: MessageSquare },
+  { href: "/dashboard/support", labelKey: "dashboard.sidebar.support", label: "Support", icon: Headphones },
+  { href: "/dashboard/incidents", labelKey: "dashboard.sidebar.incidents", label: "Incidents", icon: AlertTriangle },
 ]
 
 
 export function DashboardSidebar() {
+  const { t } = useLanguage()
   const pathname = usePathname()
   const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
@@ -96,7 +98,7 @@ export function DashboardSidebar() {
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
                     isActive ? "text-primary" : "text-muted-foreground"
                   )} />
-                  <span className="font-medium tracking-tight">{item.label}</span>
+                  <span className="font-medium tracking-tight">{t(item.labelKey, item.label)}</span>
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-indicator"
@@ -119,14 +121,14 @@ export function DashboardSidebar() {
           )}
         >
           <Settings className="w-5 h-5 group-hover:rotate-45 transition-transform duration-300" />
-          <span className="font-medium tracking-tight">Réglages</span>
+          <span className="font-medium tracking-tight">{t("dashboard.sidebar.settings", "Réglages")}</span>
         </Link>
         <button
           onClick={handleLogout}
           className="flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-destructive/70 hover:text-destructive hover:bg-destructive/5 w-full transition-all duration-300 group"
         >
           <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
-          <span className="font-medium tracking-tight">Déconnexion</span>
+          <span className="font-medium tracking-tight">{t("dashboard.sidebar.logout", "Déconnexion")}</span>
         </button>
       </div>
     </aside>

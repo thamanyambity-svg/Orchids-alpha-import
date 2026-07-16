@@ -6,6 +6,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { CheckCircle2, ArrowRight, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface PaymentDetails {
   orderReference: string
@@ -15,6 +16,7 @@ interface PaymentDetails {
 }
 
 function PaymentSuccessContent() {
+  const { t } = useLanguage()
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
   const [loading, setLoading] = useState(true)
@@ -54,7 +56,7 @@ function PaymentSuccessContent() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Vérification du paiement...</p>
+          <p className="text-muted-foreground">{t("payment.verifying", "Vérification du paiement...")}</p>
         </div>
       </div>
     )
@@ -67,9 +69,9 @@ function PaymentSuccessContent() {
           <div className="bg-destructive/10 text-destructive p-4 rounded-lg mb-6">
             {error}
           </div>
-          <Button asChild>
+            <Button asChild>
             <Link href="/dashboard/requests">
-              Retour aux demandes
+              {t("payment.back_to_requests", "Retour aux demandes")}
             </Link>
           </Button>
         </div>
@@ -94,25 +96,25 @@ function PaymentSuccessContent() {
             <CheckCircle2 className="w-10 h-10 text-emerald-500" />
           </motion.div>
 
-          <h1 className="text-2xl font-bold mb-2">Paiement réussi !</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("payment.success.title", "Paiement réussi !")}</h1>
           <p className="text-muted-foreground mb-6">
-            Votre paiement a été traité avec succès.
+            {t("payment.success.message", "Votre paiement a été traité avec succès.")}
           </p>
 
           {paymentDetails && (
             <div className="bg-muted/50 rounded-xl p-4 mb-6 text-left space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Commande</span>
+                <span className="text-muted-foreground">{t("payment.success.order", "Commande")}</span>
                 <span className="font-medium">{paymentDetails.orderReference}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Type</span>
+                <span className="text-muted-foreground">{t("payment.success.type", "Type")}</span>
                 <span className="font-medium">
-                  {paymentDetails.paymentType === 'DEPOSIT_60' ? 'Acompte (60%)' : 'Solde (40%)'}
+                  {paymentDetails.paymentType === 'DEPOSIT_60' ? t("payment.success.deposit_60", "Acompte (60%)") : t("payment.success.balance_40", "Solde (40%)")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Montant</span>
+                <span className="text-muted-foreground">{t("payment.success.amount", "Montant")}</span>
                 <span className="font-semibold text-emerald-600">
                   ${(paymentDetails.amount / 100).toFixed(2)}
                 </span>
@@ -123,13 +125,13 @@ function PaymentSuccessContent() {
           <div className="space-y-3">
             <Button asChild className="w-full">
               <Link href="/dashboard/requests" className="flex items-center justify-center gap-2">
-                Voir mes demandes
+                {t("payment.view_requests", "Voir mes demandes")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild className="w-full">
               <Link href="/dashboard">
-                Retour au tableau de bord
+                {t("payment.back_dashboard", "Retour au tableau de bord")}
               </Link>
             </Button>
           </div>
@@ -140,8 +142,9 @@ function PaymentSuccessContent() {
 }
 
 export default function PaymentSuccessPage() {
+  const { t } = useLanguage()
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">{t("payment.loading", "Chargement...")}</div>}>
       <PaymentSuccessContent />
     </Suspense>
   )

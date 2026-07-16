@@ -6,8 +6,10 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { XCircle, ArrowLeft, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/lib/i18n-context"
 
 function PaymentCancelContent() {
+  const { t } = useLanguage()
   const searchParams = useSearchParams()
   const orderId = searchParams.get("order_id")
 
@@ -28,14 +30,14 @@ function PaymentCancelContent() {
             <XCircle className="w-10 h-10 text-amber-500" />
           </motion.div>
 
-          <h1 className="text-2xl font-bold mb-2">Paiement annulé</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("payment.cancel.title", "Paiement annulé")}</h1>
           <p className="text-muted-foreground mb-6">
-            Votre paiement a été annulé. Aucun montant n&apos;a été débité de votre compte.
+            {t("payment.cancel.message", "Votre paiement a été annulé. Aucun montant n'a été débité de votre compte.")}
           </p>
 
           <div className="bg-muted/50 rounded-xl p-4 mb-6">
             <p className="text-sm text-muted-foreground">
-              Si vous avez rencontré un problème, n&apos;hésitez pas à nous contacter ou à réessayer.
+              {t("payment.cancel.help", "Si vous avez rencontré un problème, n'hésitez pas à nous contacter ou à réessayer.")}
             </p>
           </div>
 
@@ -44,14 +46,14 @@ function PaymentCancelContent() {
               <Button asChild className="w-full">
                 <Link href={`/dashboard/requests/${orderId}`} className="flex items-center justify-center gap-2">
                   <RefreshCw className="w-4 h-4" />
-                  Réessayer le paiement
+                  {t("payment.cancel.retry", "Réessayer le paiement")}
                 </Link>
               </Button>
             )}
             <Button variant="outline" asChild className="w-full">
               <Link href="/dashboard/requests" className="flex items-center justify-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                Retour aux demandes
+                {t("payment.cancel.back_to_requests", "Retour aux demandes")}
               </Link>
             </Button>
           </div>
@@ -62,8 +64,9 @@ function PaymentCancelContent() {
 }
 
 export default function PaymentCancelPage() {
+  const { t } = useLanguage()
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">{t("payment.loading", "Chargement...")}</div>}>
       <PaymentCancelContent />
     </Suspense>
   )

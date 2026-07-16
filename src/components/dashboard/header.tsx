@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { BackButton } from "@/components/back-button"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   Popover,
   PopoverContent,
@@ -19,6 +20,7 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle, showBackButton = true, children }: DashboardHeaderProps) {
+  const { t } = useLanguage()
   const [profile, setProfile] = useState<any>(null)
   const [notifications, setNotifications] = useState<any[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
@@ -118,7 +120,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
         <div className="relative hidden lg:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Rechercher une transaction..."
+            placeholder={t("dashboard.header.search", "Rechercher une transaction...")}
             className="w-80 pl-9 h-10 bg-white/5 border-white/10 rounded-xl focus:bg-white/10 transition-all"
           />
         </div>
@@ -139,7 +141,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0 bg-[#0a0e14] border-white/10" align="end">
               <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                <h4 className="font-semibold text-white">Notifications</h4>
+                <h4 className="font-semibold text-white">{t("dashboard.header.notifications", "Notifications")}</h4>
                 {unreadCount > 0 && <span className="text-xs text-muted-foreground">{unreadCount} non lues</span>}
               </div>
               <div className="max-h-[300px] overflow-y-auto">
@@ -179,7 +181,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-colors">
               <img
                 src={profile?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
-                alt="Profile"
+                alt={t("dashboard.header.profile", "Profile")}
                 className="w-full h-full object-cover"
               />
             </div>

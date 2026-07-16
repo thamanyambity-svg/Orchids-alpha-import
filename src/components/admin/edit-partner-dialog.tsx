@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import {
     Dialog,
@@ -45,6 +46,7 @@ interface EditPartnerDialogProps {
 }
 
 export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPartnerDialogProps) {
+    const { t } = useLanguage()
     const [loading, setLoading] = useState(false)
     const supabase = createClient()
 
@@ -99,12 +101,12 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
 
             if (partnerError) throw partnerError
 
-            toast.success("Partenaire mis à jour avec succès")
+            toast.success(t("admin.edit_partner.update_success", "Partenaire mis à jour avec succès"))
             onUpdate()
             onClose()
         } catch (error: unknown) {
             console.error("Error updating partner:", error)
-            toast.error("Erreur lors de la mise à jour: " + (error instanceof Error ? error.message : "Erreur inconnue"))
+            toast.error(t("admin.edit_partner.update_error", "Erreur lors de la mise à jour") + ": " + (error instanceof Error ? error.message : t("admin.edit_partner.unknown_error", "Erreur inconnue")))
         } finally {
             setLoading(false)
         }
@@ -116,16 +118,16 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Modifier le Partenaire</DialogTitle>
+                    <DialogTitle>{t("admin.edit_partner.title", "Modifier le Partenaire")}</DialogTitle>
                     <DialogDescription>
-                        Mettez à jour les informations du profil et du contrat.
+                        {t("admin.edit_partner.description", "Mettez à jour les informations du profil et du contrat.")}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="full_name">Nom complet</Label>
+                            <Label htmlFor="full_name">{t("admin.edit_partner.full_name", "Nom complet")}</Label>
                             <Input
                                 id="full_name"
                                 value={formData.full_name}
@@ -133,19 +135,19 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="company_name">Entreprise</Label>
+                            <Label htmlFor="company_name">{t("admin.edit_partner.company_name", "Entreprise")}</Label>
                             <Input
                                 id="company_name"
                                 value={formData.company_name}
                                 onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
-                                placeholder="Nom de la société"
+                                placeholder={t("admin.edit_partner.company_placeholder", "Nom de la société")}
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="city">Ville (Siège)</Label>
+                            <Label htmlFor="city">{t("admin.edit_partner.city", "Ville (Siège)")}</Label>
                             <Input
                                 id="city"
                                 value={formData.city}
@@ -153,36 +155,36 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="status">Statut KYC</Label>
+                            <Label htmlFor="status">{t("admin.edit_partner.kyc_status", "Statut KYC")}</Label>
                             <Select
                                 value={formData.status}
                                 onValueChange={(val) => setFormData({ ...formData, status: val })}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selectionner" />
+                                    <SelectValue placeholder={t("admin.edit_partner.select_placeholder", "Selectionner")} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="PENDING">PENDING (En attente)</SelectItem>
-                                    <SelectItem value="VERIFIED">VERIFIED (Validé)</SelectItem>
-                                    <SelectItem value="SUSPENDED">SUSPENDED (Suspendu)</SelectItem>
+                                    <SelectItem value="PENDING">{t("admin.edit_partner.pending", "PENDING (En attente)")}</SelectItem>
+                                    <SelectItem value="VERIFIED">{t("admin.edit_partner.verified", "VERIFIED (Validé)")}</SelectItem>
+                                    <SelectItem value="SUSPENDED">{t("admin.edit_partner.suspended", "SUSPENDED (Suspendu)")}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="assigned_cities">Villes couvertes (séparées par des virgules)</Label>
+                        <Label htmlFor="assigned_cities">{t("admin.edit_partner.assigned_cities", "Villes couvertes (séparées par des virgules)")}</Label>
                         <Input
                             id="assigned_cities"
                             value={formData.assigned_cities}
                             onChange={(e) => setFormData({ ...formData, assigned_cities: e.target.value })}
-                            placeholder="Ex: Shanghai, Ningbo, Shenzhen"
+                            placeholder={t("admin.edit_partner.cities_placeholder", "Ex: Shanghai, Ningbo, Shenzhen")}
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="performance">Performance /5</Label>
+                            <Label htmlFor="performance">{t("admin.edit_partner.performance", "Performance /5")}</Label>
                             <Input
                                 id="performance"
                                 type="number"
@@ -194,18 +196,18 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="contract">Statut Contrat</Label>
+                            <Label htmlFor="contract">{t("admin.edit_partner.contract_status", "Statut Contrat")}</Label>
                             <Select
                                 value={formData.contract_status}
                                 onValueChange={(val) => setFormData({ ...formData, contract_status: val })}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selectionner" />
+                                    <SelectValue placeholder={t("admin.edit_partner.select_placeholder", "Selectionner")} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="PENDING">En Négociation</SelectItem>
-                                    <SelectItem value="ACTIVE">Actif / Signé</SelectItem>
-                                    <SelectItem value="TERMINATED">Terminé</SelectItem>
+                                    <SelectItem value="PENDING">{t("admin.edit_partner.negotiating", "En Négociation")}</SelectItem>
+                                    <SelectItem value="ACTIVE">{t("admin.edit_partner.active", "Actif / Signé")}</SelectItem>
+                                    <SelectItem value="TERMINATED">{t("admin.edit_partner.terminated", "Terminé")}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -214,9 +216,9 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose} disabled={loading}>Annuler</Button>
+                    <Button variant="outline" onClick={onClose} disabled={loading}>{t("admin.edit_partner.cancel", "Annuler")}</Button>
                     <Button onClick={handleSave} disabled={loading}>
-                        {loading ? "Sauvegarde..." : "Enregistrer"}
+                        {loading ? t("admin.edit_partner.saving", "Sauvegarde...") : t("admin.edit_partner.save", "Enregistrer")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

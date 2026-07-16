@@ -3,19 +3,21 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n-context"
 
 const tabs = ["GLOBAL", "SOURCING", "LOGISTIQUE", "DOCUMENTATION"]
 
 export function StatusTabs({ status }: { status?: string }) {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("GLOBAL")
 
-  const displayStatus = status || 'En attente'
+  const displayStatus = status || t("status_tabs.pending", "En attente")
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-mono tracking-[0.2em] text-muted-foreground uppercase flex items-center gap-2">
-          Statut de la demande <span className="text-primary ml-2">{displayStatus}</span>
+          {t("status_tabs.title", "Statut de la demande")} <span className="text-primary ml-2">{displayStatus}</span>
         </h2>
       </div>
       

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -47,6 +48,7 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 export default function AdminEmailsPage() {
+  const { t } = useLanguage()
   const [emails, setEmails] = useState<
     Array<{
       id: string
@@ -111,7 +113,7 @@ export default function AdminEmailsPage() {
             Boîte Mail contact@aonosekehouseinvestmentdrc.site
           </h1>
           <p className="text-muted-foreground mt-1">
-            Emails reçus avec analyse IA — catégorisation, priorité et suggestion de réponse
+            {t("admin.emails.received_with_ai", "Emails reçus avec analyse IA")} — catégorisation, priorité et suggestion de réponse
           </p>
         </div>
       </div>
@@ -151,7 +153,7 @@ export default function AdminEmailsPage() {
                   <TableHead>Sujet</TableHead>
                   <TableHead>IA Catégorie</TableHead>
                   <TableHead>Priorité</TableHead>
-                  <TableHead>Statut</TableHead>
+                  <TableHead>{t("admin.emails.status", "Statut")}</TableHead>
                   <TableHead>Reçu le</TableHead>
                   <TableHead className="w-32">Actions</TableHead>
                 </TableRow>

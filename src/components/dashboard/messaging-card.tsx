@@ -8,8 +8,10 @@ import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 import type { Message, Profile } from "@/lib/types"
+import { useLanguage } from "@/lib/i18n-context"
 
 export function MessagingCard({ partner }: { partner?: Profile | null }) {
+  const { t } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [newMessage, setNewMessage] = useState("")
@@ -145,7 +147,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
               <Mic className="w-4 h-4" />
             </button>
             <Button size="sm" className="h-8 rounded-lg" onClick={handleSend} disabled={!partner}>
-              Envoyer
+              {t("messaging.send", "Envoyer")}
             </Button>
           </div>
         </div>

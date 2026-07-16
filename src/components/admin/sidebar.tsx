@@ -22,29 +22,31 @@ import {
   ClipboardList,
   FileCheck
 } from "lucide-react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import type { LucideIcon } from "lucide-react"
 
-type NavItem = { href: string; label: string; icon: LucideIcon; badge?: number }
+type NavItem = { href: string; label: string; labelKey: string; icon: LucideIcon; badge?: number }
 
 const navItems: NavItem[] = [
-  { href: "/admin", label: "Tableau de Bord", icon: LayoutDashboard },
-  { href: "/admin/requests", label: "Demandes", icon: ClipboardList },
-  { href: "/admin/shipping", label: "Expéditions", icon: Ship },
-  { href: "/admin/buyers", label: "Acheteurs", icon: Users },
-  { href: "/admin/partners", label: "Partenaires", icon: UserCheck },
-  { href: "/admin/suppliers", label: "Fournisseurs", icon: Box },
-  { href: "/admin/finances", label: "Transactions", icon: Wallet },
-  { href: "/admin/risks", label: "Gestion des Risques", icon: Shield },
-  { href: "/admin/customs", label: "Douanes & Conformité", icon: FileCheck },
-  { href: "/admin/reporting", label: "Journal d'Audit", icon: Activity },
-  { href: "/admin/settings", label: "Paramètres", icon: Settings },
-  { href: "/admin/support", label: "Support", icon: LifeBuoy },
-  { href: "/admin/emails", label: "Boîte Mail IA", icon: Mail },
+  { href: "/admin", label: "Tableau de Bord", labelKey: "admin.sidebar.dashboard", icon: LayoutDashboard },
+  { href: "/admin/requests", label: "Demandes", labelKey: "admin.sidebar.requests", icon: ClipboardList },
+  { href: "/admin/shipping", label: "Expéditions", labelKey: "admin.sidebar.shipping", icon: Ship },
+  { href: "/admin/buyers", label: "Acheteurs", labelKey: "admin.sidebar.buyers", icon: Users },
+  { href: "/admin/partners", label: "Partenaires", labelKey: "admin.sidebar.partners", icon: UserCheck },
+  { href: "/admin/suppliers", label: "Fournisseurs", labelKey: "admin.sidebar.suppliers", icon: Box },
+  { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
+  { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
+  { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
+  { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },
+  { href: "/admin/settings", label: "Paramètres", labelKey: "admin.sidebar.settings", icon: Settings },
+  { href: "/admin/support", label: "Support", labelKey: "admin.sidebar.support", icon: LifeBuoy },
+  { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
 ]
 
 export function AdminSidebar() {
+  const { t } = useLanguage()
   const pathname = usePathname()
   const router = useRouter()
   const [user, setUser] = useState<{ full_name: string | null; role: string | null } | null>(null)
@@ -61,8 +63,8 @@ export function AdminSidebar() {
           .single()
 
         setUser({
-          full_name: profile?.full_name || "Administrateur",
-          role: profile?.role === 'admin' ? 'Admin Principal' : 'Utilisateur'
+          full_name: profile?.full_name || t("admin.sidebar.administrator", "Administrateur"),
+          role: profile?.role === 'admin' ? t("admin.sidebar.admin_principal", "Admin Principal") : t("admin.sidebar.user", "Utilisateur")
         })
       }
     }
@@ -111,7 +113,7 @@ export function AdminSidebar() {
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
                     isActive ? "text-[#ffd700]" : ""
                   )} />
-                  <span className="font-medium tracking-wide">{item.label}</span>
+                  <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
 
                   {item.badge && (
                     <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-white rounded-full">
@@ -139,7 +141,7 @@ export function AdminSidebar() {
               <Crown className="w-4 h-4 text-[#ffd700]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{user?.full_name || "Chargement..."}</p>
+              <p className="text-xs font-semibold text-white truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
               <p className="text-[10px] text-white/40 uppercase tracking-tighter">{user?.role || "..."}</p>
             </div>
           </div>
@@ -148,7 +150,7 @@ export function AdminSidebar() {
             className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-colors border border-white/5"
           >
             <LogOut className="w-3.5 h-3.5" />
-            Déconnexion
+            {t("admin.sidebar.logout", "Déconnexion")}
           </button>
         </div>
       </div>

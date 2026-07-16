@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   BarChart3, 
   Download, 
@@ -18,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 
 export default function ReportingPage() {
+  const { t } = useLanguage()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -156,7 +158,7 @@ export default function ReportingPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Distribution des Statuts</CardTitle>
+            <CardTitle>{t("admin.reporting.status_distribution", "Distribution des Statuts")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

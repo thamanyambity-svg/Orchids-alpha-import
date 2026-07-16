@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -34,6 +35,7 @@ interface SupplierWithPartner {
 }
 
 export default function AdminSuppliersPage() {
+    const { t } = useLanguage()
     const [suppliers, setSuppliers] = useState<SupplierWithPartner[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
@@ -193,7 +195,7 @@ export default function AdminSuppliersPage() {
 
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Validation Fournisseurs</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("admin.suppliers.title", "Validation Fournisseurs")}</h1>
                     <p className="text-muted-foreground mr-4">
                         {suppliers.length} fournisseurs • {toValidateCount} à valider
                     </p>
@@ -235,7 +237,7 @@ export default function AdminSuppliersPage() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Rechercher..."
+                            placeholder={t("admin.suppliers.search", "Rechercher...")}
                             className="pl-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -250,7 +252,7 @@ export default function AdminSuppliersPage() {
                                 <TableHead>Zone</TableHead>
                                 <TableHead>Partenaire Responsable</TableHead>
                                 <TableHead>Capacité</TableHead>
-                                <TableHead>Statut</TableHead>
+                                <TableHead>{t("admin.suppliers.status", "Statut")}</TableHead>
                                 <TableHead className="text-right">Action</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -273,7 +275,7 @@ export default function AdminSuppliersPage() {
                                                 </div>
                                                 <div>
                                                     <div className="font-medium">{supplier.name}</div>
-                                                    <div className="text-xs text-muted-foreground">{supplier.contact_email || "Email manquant"}</div>
+                                                    <div className="text-xs text-muted-foreground">{supplier.contact_email || t("admin.suppliers.missing_email", "Email manquant")}</div>
                                                 </div>
                                             </div>
                                         </TableCell>
@@ -299,7 +301,7 @@ export default function AdminSuppliersPage() {
                                         <TableCell>
                                             {supplier.validated_by_admin ? (
                                                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Validé
+                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> {t("admin.suppliers.validated", "Validé")}
                                                 </Badge>
                                             ) : (
                                                 <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   ArrowLeft,
   FileText,
@@ -51,6 +52,7 @@ const statusColors: Record<string, string> = {
 export default function RequestDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
+  const { t } = useLanguage()
   const [request, setRequest] = useState<any>(null)
   const [order, setOrder] = useState<any>(null)
   const [documents, setDocuments] = useState<any[]>([])
@@ -140,11 +142,11 @@ export default function RequestDetailsPage() {
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard/requests" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Retour aux demandes
+            {t("dashboard.request.back", "Retour aux demandes")}
           </Link>
         </Button>
         <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[request.status]}`}>
-          {statusLabels[request.status]}
+          {t("dashboard.request.status_" + request.status, statusLabels[request.status])}
         </div>
       </div>
 
@@ -183,7 +185,7 @@ export default function RequestDetailsPage() {
             <section className="bg-card border border-border rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-primary" />
-                Prochaine étape : Paiement 60%
+                {t("dashboard.request.next_step", "Prochaine étape : Paiement 60%")}
               </h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Votre demande est en cours de validation. Dès qu&apos;elle sera validée par notre équipe, vous pourrez procéder au paiement de l&apos;acompte (60%) via :
@@ -207,7 +209,7 @@ export default function RequestDetailsPage() {
               </div>
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-primary" />
-                Facturation & Paiement (Modèle 60/40)
+                {t("dashboard.request.billing", "Facturation & Paiement (Modèle 60/40)")}
               </h2>
 
               <div className="space-y-6">
@@ -272,7 +274,7 @@ export default function RequestDetailsPage() {
           <section className="bg-card border border-border rounded-2xl p-6">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
-              Documents du dossier
+              {t("dashboard.request.documents", "Documents du dossier")}
             </h2>
 
             {documents.length > 0 ? (

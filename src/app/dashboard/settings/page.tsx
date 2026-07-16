@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   User,
   Building2,
@@ -42,6 +43,7 @@ import {
 import { KycUploadModal } from "@/components/dashboard/kyc-upload-modal"
 
 export default function SettingsPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -172,7 +174,7 @@ export default function SettingsPage() {
         .eq('id', profile.id)
 
       if (error) throw error
-      toast.success("Profil mis à jour avec succès")
+      toast.success(t("dashboard.settings.profile_updated", "Profil mis à jour avec succès"))
     } catch (error) {
       console.error('Error updating profile:', error)
       toast.error("Erreur lors de la mise à jour")
@@ -194,8 +196,8 @@ export default function SettingsPage() {
   return (
     <div className="pb-10">
       <DashboardHeader
-        title="Mon Profil"
-        subtitle="Consultez et gérez vos informations personnelles"
+        title={t("dashboard.settings.title", "Mon Profil")}
+        subtitle={t("dashboard.settings.subtitle", "Consultez et gérez vos informations personnelles")}
       />
 
       <div className="p-6 max-w-5xl mx-auto">
@@ -261,7 +263,7 @@ export default function SettingsPage() {
           <TabsList className="bg-background border border-border p-1">
             <TabsTrigger value="profile" className="gap-2">
               <User className="w-4 h-4" />
-              Profil Personnel
+              {t("dashboard.settings.personal_profile", "Profil Personnel")}
             </TabsTrigger>
             <TabsTrigger value="company" className="gap-2">
               <Building2 className="w-4 h-4" />
@@ -432,7 +434,7 @@ export default function SettingsPage() {
                 <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
                   <Button type="submit" disabled={saving} className="ml-auto gap-2">
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    Sauvegarder les infos entreprise
+                    {t("dashboard.settings.save_company", "Sauvegarder les infos entreprise")}
                   </Button>
                 </CardFooter>
               </Card>
@@ -444,7 +446,7 @@ export default function SettingsPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Statut de vérification</CardTitle>
+                    <CardTitle>{t("dashboard.settings.verification_status", "Statut de vérification")}</CardTitle>
                     <CardDescription>
                       Vérifiez votre identité pour augmenter vos limites de transaction.
                     </CardDescription>
@@ -465,7 +467,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium">Adresse Email</p>
+                        <p className="font-medium">{t("dashboard.settings.email_address", "Adresse Email")}</p>
                         <CheckCircle2 className="w-4 h-4 text-success" />
                       </div>
                       <p className="text-sm text-muted-foreground">Votre adresse email a été vérifiée lors de l'inscription.</p>
@@ -478,7 +480,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium">Numéro de Téléphone</p>
+                        <p className="font-medium">{t("dashboard.settings.phone_number", "Numéro de Téléphone")}</p>
                         {profile?.phone ? (
                           <CheckCircle2 className="w-4 h-4 text-success" />
                         ) : (
@@ -504,7 +506,7 @@ export default function SettingsPage() {
 
                   {kycDocuments.length > 0 && (
                     <div className="space-y-3 pt-4">
-                      <h4 className="text-sm font-semibold">Documents soumis</h4>
+                      <h4 className="text-sm font-semibold">{t("dashboard.settings.submitted_documents", "Documents soumis")}</h4>
                       <div className="grid gap-3">
                         {kycDocuments.map((doc) => (
                           <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">

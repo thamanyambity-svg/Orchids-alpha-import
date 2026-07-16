@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   FileText, 
   CheckCircle2, 
@@ -40,6 +41,7 @@ const statusColors: Record<string, string> = {
   }
 
 export default function PartnerDashboardPage() {
+  const { t } = useLanguage()
   const [requests, setRequests] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
@@ -103,17 +105,17 @@ export default function PartnerDashboardPage() {
   }, [])
 
   const statItems = [
-    { label: "Dossiers assignés", value: stats.assigned.toString(), icon: FileText, trend: "+0 cette semaine" },
-    { label: "En cours", value: stats.inProgress.toString(), icon: Clock, color: "text-warning" },
-    { label: "Complétés", value: stats.completed.toString(), icon: CheckCircle2, color: "text-success" },
-    { label: "Performance", value: stats.performance, icon: Star, color: "text-primary" },
+    { label: t("partner.home.assigned", "Dossiers assignés"), value: stats.assigned.toString(), icon: FileText, trend: t("partner.home.this_week", "+0 cette semaine") },
+    { label: t("partner.home.in_progress", "En cours"), value: stats.inProgress.toString(), icon: Clock, color: "text-warning" },
+    { label: t("partner.home.completed", "Complétés"), value: stats.completed.toString(), icon: CheckCircle2, color: "text-success" },
+    { label: t("partner.home.performance", "Performance"), value: stats.performance, icon: Star, color: "text-primary" },
   ]
 
   return (
     <div>
       <DashboardHeader 
-        title="Espace Partenaire" 
-        subtitle="Gérez vos dossiers assignés"
+        title={t("partner.home.title", "Espace Partenaire")} 
+        subtitle={t("partner.home.subtitle", "Gérez vos dossiers assignés")}
       />
 
       <div className="p-6">
@@ -147,17 +149,17 @@ export default function PartnerDashboardPage() {
           <div className="lg:col-span-2">
             <div className="rounded-xl bg-card border border-border">
               <div className="p-5 border-b border-border flex items-center justify-between">
-                <h2 className="font-semibold">Dossiers récents</h2>
+                <h2 className="font-semibold">{t("partner.home.recent_folders", "Dossiers récents")}</h2>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/partner/requests" className="flex items-center gap-1">
-                    Voir tout
+                    {t("partner.home.view_all", "Voir tout")}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
               </div>
               <div className="divide-y divide-border">
                 {loading ? (
-                  <div className="p-10 text-center text-muted-foreground">Chargement...</div>
+                  <div className="p-10 text-center text-muted-foreground">{t("partner.home.loading", "Chargement...")}</div>
                 ) : requests.length > 0 ? (
                   requests.slice(0, 5).map((request) => (
                     <Link 
@@ -172,7 +174,7 @@ export default function PartnerDashboardPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
                           <span className={`px-2 py-0.5 rounded text-xs ${statusColors[request.status]}`}>
-                            {statusLabels[request.status]}
+                            {t("partner.home.status_" + request.status, statusLabels[request.status])}
                           </span>
                         </div>
                         <p className="font-medium truncate">{request.product_name}</p>
@@ -194,7 +196,7 @@ export default function PartnerDashboardPage() {
                 ) : (
                   <div className="p-10 text-center">
                     <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">Aucun dossier assigné pour le moment.</p>
+                    <p className="text-muted-foreground">{t("partner.home.no_folders", "Aucun dossier assigné pour le moment.")}</p>
                   </div>
                 )}
               </div>
@@ -203,11 +205,11 @@ export default function PartnerDashboardPage() {
 
           <div className="space-y-6">
             <div className="rounded-xl bg-card border border-border p-5">
-              <h3 className="font-semibold mb-4">Performance</h3>
+              <h3 className="font-semibold mb-4">{t("partner.home.performance_title", "Performance")}</h3>
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-1 text-sm">
-                    <span>Taux de réussite</span>
+                    <span>{t("partner.home.success_rate", "Taux de réussite")}</span>
                     <span className="font-semibold">98%</span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -216,7 +218,7 @@ export default function PartnerDashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1 text-sm">
-                    <span>Respect des délais</span>
+                    <span>{t("partner.home.deadline_compliance", "Respect des délais")}</span>
                     <span className="font-semibold">95%</span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -225,7 +227,7 @@ export default function PartnerDashboardPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1 text-sm">
-                    <span>Satisfaction acheteurs</span>
+                    <span>{t("partner.home.buyer_satisfaction", "Satisfaction acheteurs")}</span>
                     <span className="font-semibold">4.8/5</span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -236,11 +238,11 @@ export default function PartnerDashboardPage() {
             </div>
 
             <div className="rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 p-5">
-              <h3 className="font-semibold mb-2">Fournisseurs actifs</h3>
+              <h3 className="font-semibold mb-2">{t("partner.home.active_suppliers", "Fournisseurs actifs")}</h3>
               <p className="text-3xl font-bold text-primary mb-4">12</p>
               <Button variant="outline" className="w-full" asChild>
                 <Link href="/partner/suppliers">
-                  Gérer les fournisseurs
+                  {t("partner.home.manage_suppliers", "Gérer les fournisseurs")}
                 </Link>
               </Button>
             </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   Users,
   UserCheck,
@@ -50,6 +51,7 @@ const MAPBOX_TOKEN = "pk.eyJ1IjoiYW9ub3MiLCJhIjoiY21rNGlobXhzMDBmZTNmczk1dWpld3p
 
 export default function AdminDashboardPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -192,7 +194,7 @@ export default function AdminDashboardPage() {
                   <th className="pb-4 text-[10px] font-bold text-white/20 uppercase tracking-widest">Pays</th>
                   <th className="pb-4 text-[10px] font-bold text-white/20 uppercase tracking-widest">Performance</th>
                   <th className="pb-4 text-[10px] font-bold text-white/20 uppercase tracking-widest">Volume</th>
-                  <th className="pb-4 text-[10px] font-bold text-white/20 uppercase tracking-widest text-right">Statut</th>
+                  <th className="pb-4 text-[10px] font-bold text-white/20 uppercase tracking-widest text-right">{t("admin.status", "Statut")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">

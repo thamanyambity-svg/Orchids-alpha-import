@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   AlertTriangle,
   Search,
@@ -21,6 +22,7 @@ import { toast } from "sonner"
 import type { Incident, IncidentStatus, Order, Profile } from "@/lib/types"
 
 export default function AdminIncidentsPage() {
+  const { t } = useLanguage()
   const [incidents, setIncidents] = useState<(Incident & { order: Order, reporter: Profile })[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -131,7 +133,7 @@ export default function AdminIncidentsPage() {
                 <th className="px-6 py-4">Incident / Commande</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Signalé par</th>
-                <th className="px-6 py-4">Statut</th>
+                <th className="px-6 py-4">{t("admin.status", "Statut")}</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>

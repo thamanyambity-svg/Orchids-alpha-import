@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   AlertTriangle, 
   Plus, 
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/dialog"
 
 export default function IncidentsPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [incidents, setIncidents] = useState<any[]>([])
   const [requests, setRequests] = useState<any[]>([])
@@ -76,7 +78,7 @@ export default function IncidentsPage() {
 
   async function handleReportIncident() {
     if (!formData.requestId || !formData.description) {
-      toast.error("Veuillez remplir tous les champs")
+      toast.error(t("dashboard.incidents.fill_fields", "Veuillez remplir tous les champs"))
       return
     }
 
@@ -189,7 +191,7 @@ export default function IncidentsPage() {
                   disabled={isReporting}
                 >
                   {isReporting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                  Envoyer le signalement
+                  {t("dashboard.incidents.send", "Envoyer le signalement")}
                 </Button>
               </div>
             </DialogContent>

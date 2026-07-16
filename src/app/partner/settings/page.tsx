@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   User, 
   ShieldCheck, 
@@ -23,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { toast } from "sonner"
 
 export default function PartnerSettingsPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -116,7 +118,7 @@ export default function PartnerSettingsPage() {
         .eq('id', profile.id)
 
       if (error) throw error
-      toast.success("Profil mis à jour avec succès")
+      toast.success(t("partner.settings.profile_updated", "Profil mis à jour avec succès"))
     } catch (error) {
       console.error('Error updating profile:', error)
       toast.error("Erreur lors de la mise à jour")
@@ -136,7 +138,7 @@ export default function PartnerSettingsPage() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Paramètres Partenaire</h1>
+        <h1 className="text-3xl font-bold">{t("partner.settings.title", "Paramètres Partenaire")}</h1>
         <p className="text-muted-foreground">Gérez vos informations de partenaire local et la sécurité de votre compte.</p>
       </div>
 
@@ -146,7 +148,7 @@ export default function PartnerSettingsPage() {
             <TabsList className="bg-background border border-border p-1">
               <TabsTrigger value="profile" className="gap-2">
                 <User className="w-4 h-4" />
-                Profil
+                {t("partner.settings.profile", "Profil")}
               </TabsTrigger>
               <TabsTrigger value="security" className="gap-2">
                 <Lock className="w-4 h-4" />
@@ -221,7 +223,7 @@ export default function PartnerSettingsPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email professionnel</Label>
+                        <Label htmlFor="email">{t("partner.settings.professional_email", "Email professionnel")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
@@ -233,7 +235,7 @@ export default function PartnerSettingsPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Téléphone</Label>
+                        <Label htmlFor="phone">{t("partner.settings.phone", "Téléphone")}</Label>
                         <div className="relative">
                           <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
@@ -268,7 +270,7 @@ export default function PartnerSettingsPage() {
                     <div className="flex items-center gap-3">
                       <Lock className="w-5 h-5 text-primary" />
                       <div>
-                        <p className="font-medium">Mot de passe</p>
+                        <p className="font-medium">{t("partner.settings.password", "Mot de passe")}</p>
                         <p className="text-sm text-muted-foreground">Modifié récemment</p>
                       </div>
                     </div>
@@ -283,7 +285,7 @@ export default function PartnerSettingsPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-semibold">Juridiction & Statut</CardTitle>
+              <CardTitle className="text-sm font-semibold">{t("partner.settings.jurisdiction", "Juridiction & Statut")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
@@ -302,8 +304,8 @@ export default function PartnerSettingsPage() {
 
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Statut KYC</span>
-                  <span className="text-success font-medium">Validé</span>
+                  <span className="text-muted-foreground">{t("partner.settings.kyc_status", "Statut KYC")}</span>
+                  <span className="text-success font-medium">{t("partner.settings.kyc_validated", "Validé")}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Caution déposée</span>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/lib/i18n-context"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   ArrowLeft,
@@ -16,7 +17,6 @@ import {
   Sparkles,
   Plus,
   Trash2,
-  Car,
   Settings2,
   AlertCircle,
   Ship,
@@ -187,20 +187,20 @@ const allCountries = [
 ].sort((a, b) => a.name.localeCompare(b.name))
 
 const categories = [
-  "Électronique",
-  "Textile & Habillement",
-  "Automobile & Pièces",
-  "Machines & Équipements",
-  "Cosmétiques & Beauté",
-  "Alimentation",
-  "Matériaux de construction",
-  "Autre"
+  { value: "Électronique", labelKey: "dashboard.requests.new.cat_electronics" },
+  { value: "Textile & Habillement", labelKey: "dashboard.requests.new.cat_textile" },
+  { value: "Automobile & Pièces", labelKey: "dashboard.requests.new.cat_automotive" },
+  { value: "Machines & Équipements", labelKey: "dashboard.requests.new.cat_machinery" },
+  { value: "Cosmétiques & Beauté", labelKey: "dashboard.requests.new.cat_cosmetics" },
+  { value: "Alimentation", labelKey: "dashboard.requests.new.cat_food" },
+  { value: "Matériaux de construction", labelKey: "dashboard.requests.new.cat_construction" },
+  { value: "Autre", labelKey: "dashboard.requests.new.cat_other" },
 ]
 
 const steps = [
-  { id: 1, title: "Pays & Partenaire", icon: Globe2 },
-  { id: 2, title: "Détails Produit", icon: Package },
-  { id: 3, title: "Récapitulatif", icon: FileText },
+  { id: 1, title: "Pays & Partenaire", titleKey: "dashboard.requests.new.step_country", icon: Globe2 },
+  { id: 2, title: "Détails Produit", titleKey: "dashboard.requests.new.step_product", icon: Package },
+  { id: 3, title: "Récapitulatif", titleKey: "dashboard.requests.new.step_summary", icon: FileText },
 ]
 
 const mockPartners: Record<string, any> = {
@@ -273,6 +273,7 @@ const mockPartners: Record<string, any> = {
 }
 
 export default function NewRequestPage() {
+  const { t } = useLanguage()
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -346,7 +347,7 @@ export default function NewRequestPage() {
 
   function handleNext() {
     if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
-      toast.error("Veuillez sélectionner le pays d'origine et le pays d'achat")
+      toast.error(t("dashboard.requests.new.select_countries_error", "Veuillez sélectionner le pays d'origine et le pays d'achat"))
       return
     }
     if (currentStep < 3) {
@@ -365,7 +366,7 @@ export default function NewRequestPage() {
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
+      if (!user) throw new Error(t("dashboard.requests.new.not_authenticated", "Non authentifié"))
 
       const countryId = countries.find(c => c.code === formData.country)?.id
 
@@ -400,16 +401,16 @@ export default function NewRequestPage() {
 
       if (failed) {
         const data = await failed.json()
-        throw new Error(data.error || "Erreur lors de la création d'une ou plusieurs fiches")
+        throw new Error(data.error || t("dashboard.requests.new.create_error", "Erreur lors de la création d'une ou plusieurs fiches"))
       }
 
       const created = await Promise.all(results.map(r => r.json()))
-      toast.success(`${items.length} demande(s) créée(s) ! Prochaine étape : paiement 60%.`)
+      toast.success(`${items.length} ${t("dashboard.requests.new.requests_created", "demande(s) créée(s) ! Prochaine étape : paiement 60%.")}`)
 
       // Rediriger vers la demande créée pour accéder au paiement dès validation
       router.push(`/dashboard/requests/${created[0].id}`)
     } catch (error: any) {
-      toast.error(error.message || "Une erreur est survenue")
+      toast.error(error.message || t("dashboard.requests.new.error_occurred", "Une erreur est survenue"))
     } finally {
       setIsLoading(false)
     }
@@ -419,8 +420,8 @@ export default function NewRequestPage() {
   return (
     <div>
       <DashboardHeader
-        title="Nouvelle demande"
-        subtitle="Trouvez votre partenaire certifié et lancez votre importation"
+        title={t("dashboard.requests.new.title", "Nouvelle demande")}
+        subtitle={t("dashboard.requests.new.subtitle", "Trouvez votre partenaire certifié et lancez votre importation")}
       />
 
       <div className="p-6">
@@ -429,7 +430,7 @@ export default function NewRequestPage() {
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard/requests" className="flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                Retour aux demandes
+                {t("dashboard.requests.new.back_to_requests", "Retour aux demandes")}
               </Link>
             </Button>
           </div>
@@ -448,7 +449,7 @@ export default function NewRequestPage() {
                       <step.icon className="w-5 h-5" />
                     )}
                   </div>
-                  <span className="hidden sm:block text-sm font-medium">{step.title}</span>
+                  <span className="hidden sm:block text-sm font-medium">{t(step.titleKey, step.title)}</span>
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`w-12 sm:w-24 h-0.5 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-border'
@@ -468,27 +469,27 @@ export default function NewRequestPage() {
               <div className="space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold mb-1">Sélection du pays d'achat</h2>
+                    <h2 className="text-2xl font-bold mb-1">{t("dashboard.requests.new.select_country", "Sélection du pays d'achat")}</h2>
                     <p className="text-muted-foreground">
-                      Choisissez le pays où vous souhaitez effectuer votre achat pour voir votre partenaire dédié.
+                       {t("dashboard.requests.new.select_country_desc", "Choisissez le pays où vous souhaitez effectuer votre achat pour voir votre partenaire dédié.")}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-primary bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
                     <ShieldCheck className="w-5 h-5" />
-                    <span className="text-sm font-semibold">Partenaires Certifiés 100%</span>
+                    <span className="text-sm font-semibold">{t("dashboard.requests.new.certified_partners", "Partenaires Certifiés 100%")}</span>
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8 items-start">
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold">Pays d'origine de l'acheteur *</Label>
+                      <Label className="text-base font-semibold">{t("dashboard.requests.new.buyer_country", "Pays d'origine de l'acheteur *")}</Label>
                       <Select
                         value={formData.buyerCountry}
                         onValueChange={(value) => setFormData({ ...formData, buyerCountry: value })}
                       >
                         <SelectTrigger className="h-14 text-lg">
-                          <SelectValue placeholder="Votre pays de résidence" />
+                          <SelectValue placeholder={t("dashboard.requests.new.buyer_country_placeholder", "Votre pays de résidence")} />
                         </SelectTrigger>
                         <SelectContent>
                           {allCountries.map((country) => (
@@ -504,13 +505,13 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold">Pays d'achat *</Label>
+                      <Label className="text-base font-semibold">{t("dashboard.requests.new.purchase_country", "Pays d'achat *")}</Label>
                       <Select
                         value={formData.country}
                         onValueChange={(value) => setFormData({ ...formData, country: value })}
                       >
                         <SelectTrigger className="h-14 text-lg">
-                          <SelectValue placeholder="Où achetez-vous ?" />
+                          <SelectValue placeholder={t("dashboard.requests.new.purchase_country_placeholder", "Où achetez-vous ?")} />
                         </SelectTrigger>
                         <SelectContent>
                           {countries.length > 0 ? (
@@ -540,7 +541,7 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold italic opacity-70">Aperçu géographique</Label>
+                      <Label className="text-base font-semibold italic opacity-70">{t("dashboard.requests.new.geographic_overview", "Aperçu géographique")}</Label>
                       <WorldMap
                         mapboxToken={MAPBOX_TOKEN}
                         selectedCountry={formData.country}
@@ -552,12 +553,10 @@ export default function NewRequestPage() {
                     <div className="p-4 rounded-xl bg-muted/30 border border-border">
                       <h4 className="font-semibold flex items-center gap-2 mb-2">
                         <Search className="w-4 h-4 text-primary" />
-                        Pourquoi cette étape ?
+                        {t("dashboard.requests.new.why_this_step", "Pourquoi cette étape ?")}
                       </h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        AlphaIX vous connecte directement avec un expert local certifié.
-                        Chaque pays dispose d'une équipe dédiée pour garantir la sécurité
-                        de vos fonds et la conformité de vos produits.
+                        {t("dashboard.requests.new.why_this_step_desc", "AlphaIX vous connecte directement avec un expert local certifié. Chaque pays dispose d'une équipe dédiée pour garantir la sécurité de vos fonds et la conformité de vos produits.")}
                       </p>
                     </div>
                   </div>
@@ -565,20 +564,20 @@ export default function NewRequestPage() {
                   <AnimatePresence mode="wait">
                     {selectedPartner ? (
                       <div className="space-y-4" id="partner-card-container">
-                        <Label className="text-base font-semibold">Votre partenaire dédié</Label>
+                        <Label className="text-base font-semibold">{t("dashboard.requests.new.your_dedicated_partner", "Votre partenaire dédié")}</Label>
                         <PartnerProfileCard
                           partner={selectedPartner}
                           onContact={(method) => {
-                            toast.info(`Contact via ${method} initié`)
+                            toast.info(`${t("dashboard.requests.new.contact_via", "Contact via")} ${method} ${t("dashboard.requests.new.initiated", "initié")}`)
                           }}
                         />
                       </div>
                     ) : (
                       <div className="h-full min-h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/10">
                         <Globe2 className="w-12 h-12 text-muted-foreground/30 mb-4" />
-                        <h3 className="font-semibold text-muted-foreground">Sélectionnez un pays</h3>
+                        <h3 className="font-semibold text-muted-foreground">{t("dashboard.requests.new.select_country_hint", "Sélectionnez un pays")}</h3>
                         <p className="text-sm text-muted-foreground max-w-[200px] mt-2">
-                          Le profil de votre partenaire certifié s'affichera ici.
+                          {t("dashboard.requests.new.select_country_hint_desc", "Le profil de votre partenaire certifié s'affichera ici.")}
                         </p>
                       </div>
                     )}
@@ -591,17 +590,17 @@ export default function NewRequestPage() {
               <div className="space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-2xl font-bold mb-1">Détails de votre demande</h2>
+                    <h2 className="text-2xl font-bold mb-1">{t("dashboard.requests.new.request_details", "Détails de votre demande")}</h2>
                     <p className="text-muted-foreground">
                       {formData.category === "Automobile & Pièces"
-                        ? "Précisez la marque, le modèle et les détails techniques pour une cotation précise."
-                        : "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation."}
+                        ? t("dashboard.requests.new.request_details_car_desc", "Précisez la marque, le modèle et les détails techniques pour une cotation précise.")
+                        : t("dashboard.requests.new.request_details_desc", "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation.")}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="px-3 py-1 gap-1.5 bg-primary/10 text-primary border-primary/20">
                       <Sparkles className="w-3.5 h-3.5" />
-                      IA Alpha Prédicteur Active
+                      {t("dashboard.requests.new.ai_predictor", "IA Alpha Prédicteur Active")}
                     </Badge>
                   </div>
                 </div>
@@ -609,24 +608,24 @@ export default function NewRequestPage() {
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="font-semibold">Catégorie de la demande *</Label>
+                      <Label className="font-semibold">{t("dashboard.requests.new.category", "Catégorie de la demande *")}</Label>
                       <Select
                         value={formData.category}
                         onValueChange={(value) => setFormData({ ...formData, category: value })}
                       >
                         <SelectTrigger className="h-12 border-primary/20">
-                          <SelectValue placeholder="Sélectionnez une catégorie" />
+                          <SelectValue placeholder={t("dashboard.requests.new.category_placeholder", "Sélectionnez une catégorie")} />
                         </SelectTrigger>
                         <SelectContent>
                           {categories.map((category) => (
-                            <SelectItem key={category} value={category}>{category}</SelectItem>
+                            <SelectItem key={category.value} value={category.value}>{t(category.labelKey, category.value)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-4">
-                      <Label className="font-semibold">Mode d'Expédition *</Label>
+                      <Label className="font-semibold">{t("dashboard.requests.new.transport_mode", "Mode d'Expédition *")}</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Maritime */}
                         <div
@@ -639,14 +638,14 @@ export default function NewRequestPage() {
                                 <Ship className="w-6 h-6" />
                               </div>
                               <div>
-                                <h3 className="font-bold text-sm">Maritime (Standard)</h3>
-                                <p className="text-xs text-muted-foreground mt-1">Économique • 30-45 Jours</p>
+                                <h3 className="font-bold text-sm">{t("dashboard.requests.new.maritime_standard", "Maritime (Standard)")}</h3>
+                                <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.maritime_desc", "Économique • 30-45 Jours")}</p>
                               </div>
                             </div>
                             {formData.transportMode === 'SEA' && <CheckCircle2 className="w-5 h-5 text-primary" />}
                           </div>
                           <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                            Idéal pour les grands volumes et les charges lourdes. Le choix optimisé pour réduire les coûts.
+                            {t("dashboard.requests.new.maritime_ideal", "Idéal pour les grands volumes et les charges lourdes. Le choix optimisé pour réduire les coûts.")}
                           </p>
                         </div>
 
@@ -661,14 +660,14 @@ export default function NewRequestPage() {
                                 <Plane className="w-6 h-6" />
                               </div>
                               <div>
-                                <h3 className="font-bold text-sm">Aérien (Express)</h3>
-                                <p className="text-xs text-muted-foreground mt-1">Rapide • 5-7 Jours</p>
+                                <h3 className="font-bold text-sm">{t("dashboard.requests.new.air_express", "Aérien (Express)")}</h3>
+                                <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.air_desc", "Rapide • 5-7 Jours")}</p>
                               </div>
                             </div>
                             {formData.transportMode === 'AIR' && <CheckCircle2 className="w-5 h-5 text-primary" />}
                           </div>
                           <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                            Pour les envois urgents et produits de haute valeur. Livraison prioritaire garantie.
+                            {t("dashboard.requests.new.air_ideal", "Pour les envois urgents et produits de haute valeur. Livraison prioritaire garantie.")}
                           </p>
                         </div>
                       </div>
@@ -678,9 +677,9 @@ export default function NewRequestPage() {
                   {formData.category === "Automobile & Pièces" && (
                     <Alert className="bg-blue-500/5 border-blue-500/20">
                       <AlertCircle className="h-4 w-4 text-blue-500" />
-                      <AlertTitle className="text-blue-700">Information Importante</AlertTitle>
+                      <AlertTitle className="text-blue-700">{t("dashboard.requests.new.important_info", "Information Importante")}</AlertTitle>
                       <AlertDescription className="text-blue-600/80">
-                        Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l'objet d'une fiche de commande séparée pour un meilleur suivi douanier et logistique.
+                        {t("dashboard.requests.new.auto_alert_desc", "Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l'objet d'une fiche de commande séparée pour un meilleur suivi douanier et logistique.")}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -704,7 +703,7 @@ export default function NewRequestPage() {
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                           {index + 1}
                         </div>
-                        <h3 className="font-semibold">Produit {index + 1}</h3>
+                        <h3 className="font-semibold">{t("dashboard.requests.new.product", "Produit")} {index + 1}</h3>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-6">
@@ -712,14 +711,14 @@ export default function NewRequestPage() {
                           <>
                             <div className="space-y-2">
                               <Label className="font-semibold flex items-center gap-2">
-                                Marque <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
+                                {t("dashboard.requests.new.brand", "Marque")} <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
                               </Label>
                               <Select
                                 value={item.carBrand}
                                 onValueChange={(value) => updateItem(item.id, "carBrand", value)}
                               >
                                 <SelectTrigger className="h-12">
-                                  <SelectValue placeholder="Sélectionnez une marque" />
+                                  <SelectValue placeholder={t("dashboard.requests.new.select_brand_placeholder", "Sélectionnez une marque")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {AUTO_BRANDS.map((brand) => (
@@ -730,7 +729,7 @@ export default function NewRequestPage() {
                             </div>
                             <div className="space-y-2">
                               <Label className="font-semibold flex items-center gap-2">
-                                Modèle <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
+                                {t("dashboard.requests.new.model", "Modèle")} <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
                               </Label>
                               <Select
                                 value={item.carModel}
@@ -738,7 +737,7 @@ export default function NewRequestPage() {
                                 disabled={!item.carBrand}
                               >
                                 <SelectTrigger className="h-12">
-                                  <SelectValue placeholder={item.carBrand ? "Sélectionnez un modèle" : "Choisissez d'abord la marque"} />
+                                  <SelectValue placeholder={item.carBrand ? t("dashboard.requests.new.select_model_placeholder", "Sélectionnez un modèle") : t("dashboard.requests.new.choose_brand_first", "Choisissez d'abord la marque")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {item.carBrand && AUTO_BRANDS.find(b => b.name === item.carBrand)?.models.map((model) => (
@@ -750,9 +749,9 @@ export default function NewRequestPage() {
                           </>
                         ) : (
                           <div className="space-y-2 md:col-span-2">
-                            <Label className="font-semibold">Nom du produit *</Label>
+                            <Label className="font-semibold">{t("dashboard.requests.new.product_name", "Nom du produit *")}</Label>
                             <Input
-                              placeholder="Ex: iPhone 15 Pro Max 256GB"
+                              placeholder={t("dashboard.requests.new.product_name_placeholder", "Ex: iPhone 15 Pro Max 256GB")}
                               className="h-12"
                               value={item.productName}
                               onChange={(e) => updateItem(item.id, "productName", e.target.value)}
@@ -762,11 +761,11 @@ export default function NewRequestPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="font-semibold">Description détaillée & Spécifications *</Label>
+                        <Label className="font-semibold">{t("dashboard.requests.new.detailed_description", "Description détaillée & Spécifications *")}</Label>
                         <Textarea
                           placeholder={formData.category === "Automobile & Pièces"
-                            ? "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)..."
-                            : "Couleurs, dimensions, puissance, emballage requis..."}
+                            ? t("dashboard.requests.new.description_placeholder_car", "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)...")
+                            : t("dashboard.requests.new.description_placeholder_generic", "Couleurs, dimensions, puissance, emballage requis...")}
                           className="min-h-[100px] resize-none"
                           value={item.description}
                           onChange={(e) => updateItem(item.id, "description", e.target.value)}
@@ -775,17 +774,17 @@ export default function NewRequestPage() {
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="space-y-2">
-                          <Label className="font-semibold">Quantité *</Label>
+                          <Label className="font-semibold">{t("dashboard.requests.new.quantity", "Quantité *")}</Label>
                           <Input
                             type="number"
-                            placeholder="Ex: 1"
+                            placeholder={t("dashboard.requests.new.quantity_placeholder", "Ex: 1")}
                             className="h-12"
                             value={item.quantity}
                             onChange={(e) => updateItem(item.id, "quantity", e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label className="font-semibold">Unité *</Label>
+                          <Label className="font-semibold">{t("dashboard.requests.new.unit", "Unité *")}</Label>
                           <Select
                             value={item.unit}
                             onValueChange={(value) => updateItem(item.id, "unit", value)}
@@ -794,19 +793,19 @@ export default function NewRequestPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="units">Unités</SelectItem>
+                              <SelectItem value="units">{t("dashboard.requests.new.units", "Unités")}</SelectItem>
                               <SelectItem value="kg">KG</SelectItem>
-                              <SelectItem value="tons">Tonnes</SelectItem>
-                              <SelectItem value="cartons">Cartons</SelectItem>
+                              <SelectItem value="tons">{t("dashboard.requests.new.tons", "Tonnes")}</SelectItem>
+                              <SelectItem value="cartons">{t("dashboard.requests.new.cartons", "Cartons")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-2 col-span-2">
-                          <Label className="font-semibold">Budget estimé ($)</Label>
+                          <Label className="font-semibold">{t("dashboard.requests.new.estimated_budget", "Budget estimé ($)")}</Label>
                           <div className="flex items-center gap-2">
                             <Input
                               type="number"
-                              placeholder="Min"
+                              placeholder={t("dashboard.requests.new.budget_min", "Min")}
                               className="h-12"
                               value={item.budgetMin}
                               onChange={(e) => updateItem(item.id, "budgetMin", e.target.value)}
@@ -814,7 +813,7 @@ export default function NewRequestPage() {
                             <span className="text-muted-foreground">-</span>
                             <Input
                               type="number"
-                              placeholder="Max"
+                              placeholder={t("dashboard.requests.new.budget_max", "Max")}
                               className="h-12"
                               value={item.budgetMax}
                               onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)}
@@ -831,7 +830,7 @@ export default function NewRequestPage() {
                     onClick={addItem}
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Ajouter un autre produit à cette demande
+                    {t("dashboard.requests.new.add_another_product", "Ajouter un autre produit à cette demande")}
                   </Button>
                 </div>
               </div>
@@ -840,9 +839,9 @@ export default function NewRequestPage() {
             {currentStep === 3 && (
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl font-bold mb-1">Vérification finale</h2>
+                  <h2 className="text-2xl font-bold mb-1">{t("dashboard.requests.new.final_verification", "Vérification finale")}</h2>
                   <p className="text-muted-foreground">
-                    Relisez votre demande avant l'envoi à votre partenaire. {items.length > 1 && <span className="text-primary font-medium">{items.length} fiches seront créées.</span>}
+                    {t("dashboard.requests.new.final_verification_desc", "Relisez votre demande avant l'envoi à votre partenaire.")} {items.length > 1 && <span className="text-primary font-medium">{items.length} {t("dashboard.requests.new.sheets_will_be_created", "fiches seront créées.")}</span>}
                   </p>
                 </div>
 
@@ -851,11 +850,11 @@ export default function NewRequestPage() {
                     <div className="p-6 rounded-2xl bg-muted/30 border border-border">
                       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-primary" />
-                        Récapitulatif de l'Importation
+                        {t("dashboard.requests.new.summary_title", "Récapitulatif de l'Importation")}
                       </h3>
                       <div className="grid grid-cols-2 gap-y-4 text-sm mb-6 pb-6 border-b border-border/50">
                         <div className="col-span-2">
-                          <p className="text-muted-foreground mb-2">Mode d&apos;expédition</p>
+                          <p className="text-muted-foreground mb-2">{t("dashboard.requests.new.shipping_mode", "Mode d'expédition")}</p>
                           <div className="flex gap-3">
                             <button
                               type="button"
@@ -867,7 +866,7 @@ export default function NewRequestPage() {
                               }`}
                             >
                               <Ship className="w-4 h-4" />
-                              Maritime
+                              {t("dashboard.requests.new.maritime", "Maritime")}
                             </button>
                             <button
                               type="button"
@@ -879,38 +878,38 @@ export default function NewRequestPage() {
                               }`}
                             >
                               <Plane className="w-4 h-4" />
-                              Par avion
+                              {t("dashboard.requests.new.by_air", "Par avion")}
                             </button>
                           </div>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Pays d'origine (Acheteur)</p>
+                          <p className="text-muted-foreground">{t("dashboard.requests.new.buyer_country_review", "Pays d'origine (Acheteur)")}</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.buyerCountry)?.name || formData.buyerCountry}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Pays d'achat</p>
+                          <p className="text-muted-foreground">{t("dashboard.requests.new.purchase_country_review", "Pays d'achat")}</p>
                           <p className="font-semibold">{allCountries.find(c => c.code === formData.country)?.name || formData.country}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Catégorie</p>
+                          <p className="text-muted-foreground">{t("dashboard.requests.new.category_review", "Catégorie")}</p>
                           <p className="font-semibold">{formData.category}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Nombre de fiches</p>
+                          <p className="text-muted-foreground">{t("dashboard.requests.new.sheets_count", "Nombre de fiches")}</p>
                           <p className="font-semibold">{items.length}</p>
                         </div>
                       </div>
 
                       <div className="space-y-4">
-                        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Liste des Produits</p>
+                        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("dashboard.requests.new.product_list", "Liste des Produits")}</p>
                         {items.map((item, idx) => (
                           <div key={item.id} className="p-4 rounded-xl bg-card border border-border">
                             <div className="flex justify-between items-start mb-2">
-                              <p className="font-bold text-primary"># {idx + 1} - {item.productName || "Sans nom"}</p>
+                              <p className="font-bold text-primary"># {idx + 1} - {item.productName || t("dashboard.requests.new.unnamed", "Sans nom")}</p>
                               <Badge variant="outline">{item.quantity} {item.unit}</Badge>
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
-                            <p className="text-xs font-semibold mt-2">Budget: ${item.budgetMin} - ${item.budgetMax}</p>
+                            <p className="text-xs font-semibold mt-2">{t("dashboard.requests.new.budget", "Budget")}: ${item.budgetMin} - ${item.budgetMax}</p>
                           </div>
                         ))}
                       </div>
@@ -918,7 +917,7 @@ export default function NewRequestPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <Label className="font-semibold">Partenaire Responsable</Label>
+                    <Label className="font-semibold">{t("dashboard.requests.new.responsible_partner", "Partenaire Responsable")}</Label>
                     {selectedPartner && (
                       <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
                         <div className="flex items-center gap-3 mb-3">
@@ -932,11 +931,11 @@ export default function NewRequestPage() {
                         </div>
                         <div className="space-y-2 text-xs">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Score</span>
+                            <span className="text-muted-foreground">{t("dashboard.requests.new.score", "Score")}</span>
                             <span className="font-bold text-amber-500">{selectedPartner.performance_score}/5.0</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Commandes</span>
+                            <span className="text-muted-foreground">{t("dashboard.requests.new.orders", "Commandes")}</span>
                             <span className="font-bold">{selectedPartner.total_orders_handled}+</span>
                           </div>
                         </div>
@@ -947,18 +946,18 @@ export default function NewRequestPage() {
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
                         <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
                         <p className="text-amber-700 font-medium">
-                          Vos fonds sont sécurisés via notre compte séquestre jusqu&apos;à validation de la livraison.
+                          {t("dashboard.requests.new.secured_funds", "Vos fonds sont sécurisés via notre compte séquestre jusqu'à validation de la livraison.")}
                         </p>
                       </div>
                       <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                        <p className="text-xs font-bold text-primary mb-1">Prochaine étape : Paiement 60%</p>
+                        <p className="text-xs font-bold text-primary mb-1">{t("dashboard.requests.new.next_step_payment", "Prochaine étape : Paiement 60%")}</p>
                         <p className="text-xs text-muted-foreground mb-2">
-                          Dès validation de votre demande, vous paierez l&apos;acompte (60%) via :
+                          {t("dashboard.requests.new.payment_desc", "Dès validation de votre demande, vous paierez l'acompte (60%) via :")}
                         </p>
                         <div className="flex flex-wrap gap-2 text-[10px]">
-                          <Badge variant="secondary">Carte bancaire</Badge>
-                          <Badge variant="secondary">Mobile Money</Badge>
-                          <Badge variant="secondary">Virement</Badge>
+                          <Badge variant="secondary">{t("dashboard.requests.new.card", "Carte bancaire")}</Badge>
+                          <Badge variant="secondary">{t("dashboard.requests.new.mobile_money", "Mobile Money")}</Badge>
+                          <Badge variant="secondary">{t("dashboard.requests.new.transfer", "Virement")}</Badge>
                         </div>
                       </div>
                     </div>
@@ -976,12 +975,12 @@ export default function NewRequestPage() {
                 className="px-8"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Précédent
+                {t("dashboard.requests.new.previous", "Précédent")}
               </Button>
 
               {currentStep < 3 ? (
                 <Button size="lg" onClick={handleNext} className="px-10">
-                  Suivant
+                  {t("dashboard.requests.new.next", "Suivant")}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
@@ -991,7 +990,7 @@ export default function NewRequestPage() {
                   ) : (
                     <CheckCircle2 className="w-4 h-4 mr-2" />
                   )}
-                  Confirmer et Envoyer
+                  {t("dashboard.requests.new.confirm_and_send", "Confirmer et Envoyer")}
                 </Button>
               )}
             </div>

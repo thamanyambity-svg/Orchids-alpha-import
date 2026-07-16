@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface MessageOption {
     label: string
@@ -29,6 +30,7 @@ interface Message {
 }
 
 export function AiAssistant() {
+    const { t } = useLanguage()
     const [isOpen, setIsOpen] = useState(false)
     const [isMinimized, setIsMinimized] = useState(false)
     const [isTyping, setIsTyping] = useState(false)
@@ -82,73 +84,73 @@ export function AiAssistant() {
         setMessages([{
             id: 'init',
             role: 'ai',
-            text: "Bonjour. Je suis l'Assistant Virtuel Officiel d'Alpha Import Exchange.\n\nJe suis là pour sécuriser vos opérations et vous orienter. Que souhaitez-vous faire ?",
+            text: t("ai.greeting", "Bonjour. Je suis l'Assistant Virtuel Officiel d'Alpha Import Exchange.\n\nJe suis là pour sécuriser vos opérations et vous orienter. Que souhaitez-vous faire ?"),
             timestamp: new Date(),
             options: [
-                { label: "🛍️ Devenir Acheteur (Ouvrir un Compte)", action: () => startAcquisitionFunnel(), variant: "gold" },
-                { label: "📦 Suivre un cargo", action: () => handleKeyword("suivi") },
-                { label: "💰 Paiement 60/40", action: () => handleKeyword("paiement") },
-                { label: "🤝 Devenir Partenaire", action: () => handleKeyword("partenaire") }
+                { label: t("ai.buyer", "🛍️ Devenir Acheteur (Ouvrir un Compte)"), action: () => startAcquisitionFunnel(), variant: "gold" },
+                { label: t("ai.tracking", "📦 Suivre un cargo"), action: () => handleKeyword("suivi") },
+                { label: t("ai.payment_option", "💰 Paiement 60/40"), action: () => handleKeyword("paiement") },
+                { label: t("ai.partner", "🤝 Devenir Partenaire"), action: () => handleKeyword("partenaire") }
             ]
         }])
     }
 
     const startAcquisitionFunnel = () => {
-        addUserMessage("🛍️ Devenir Acheteur")
+        addUserMessage(t("ai.buyer_short", "🛍️ Devenir Acheteur"))
         addAiMessage(
-            "Bienvenue dans le cercle Alpha Import. Pour sécuriser vos fonds et vos commandes, nous fonctionnons via un Espace Client Sécurisé.\n\nÊtes-vous une Entreprise ou un Particulier ?",
+            t("ai.welcome", "Bienvenue dans le cercle Alpha Import. Pour sécuriser vos fonds et vos commandes, nous fonctionnons via un Espace Client Sécurisé.\n\nÊtes-vous une Entreprise ou un Particulier ?"),
             [
-                { label: "🏢 Entreprise (J'ai un RCCM)", action: () => preQualify("company") },
-                { label: "👤 Particulier (Commerce personnel)", action: () => preQualify("individual") }
+                { label: t("ai.company", "🏢 Entreprise (J'ai un RCCM)"), action: () => preQualify("company") },
+                { label: t("ai.individual", "👤 Particulier (Commerce personnel)"), action: () => preQualify("individual") }
             ]
         )
     }
 
     const preQualify = (type: "company" | "individual") => {
-        addUserMessage(type === "company" ? "🏢 Entreprise" : "👤 Particulier")
+        addUserMessage(type === "company" ? t("ai.company_short", "🏢 Entreprise") : t("ai.individual_short", "👤 Particulier"))
 
         addAiMessage(
-            "C'est noté. La sécurité bancaire est notre priorité.\n\nAvant de créer votre accès, confirmez-vous avoir une Pièce d'Identité valide (Passeport ou Carte d'Électeur) prête à être scannée pour la validation KYC ?",
+            t("ai.kyc_question", "C'est noté. La sécurité bancaire est notre priorité.\n\nAvant de créer votre accès, confirmez-vous avoir une Pièce d'Identité valide (Passeport ou Carte d'Électeur) prête à être scannée pour la validation KYC ?"),
             [
-                { label: "✅ Oui, je suis prêt", action: () => showConversionCard(type), variant: "gold" },
-                { label: "ℹ️ Pourquoi est-ce obligatoire ?", action: () => explainKYC(type) }
+                { label: t("ai.ready_yes", "✅ Oui, je suis prêt"), action: () => showConversionCard(type), variant: "gold" },
+                { label: t("ai.why_kyc", "ℹ️ Pourquoi est-ce obligatoire ?"), action: () => explainKYC(type) }
             ]
         )
     }
 
     const explainKYC = (type: "company" | "individual") => {
-        addUserMessage("ℹ️ Pourquoi est-ce obligatoire ?")
+        addUserMessage(t("ai.why_kyc_short", "ℹ️ Pourquoi est-ce obligatoire ?"))
         addAiMessage(
-            "Nous appliquons les normes bancaires strictes (KYC/AML) pour garantir que chaque transaction est traçable et sécurisée.\n\nCela protège vos fonds contre l'usurpation d'identité. Une fois votre identité validée, vous accédez au paiement 60/40.",
+            t("ai.kyc_explanation", "Nous appliquons les normes bancaires strictes (KYC/AML) pour garantir que chaque transaction est traçable et sécurisée.\n\nCela protège vos fonds contre l'usurpation d'identité. Une fois votre identité validée, vous accédez au paiement 60/40."),
             [
-                { label: "✅ Je comprends, je suis prêt", action: () => showConversionCard(type), variant: "gold" }
+                { label: t("ai.understand_ready", "✅ Je comprends, je suis prêt"), action: () => showConversionCard(type), variant: "gold" }
             ]
         )
     }
 
     const showConversionCard = (type: "company" | "individual") => {
-        addUserMessage("✅ Oui, je suis prêt")
+        addUserMessage(t("ai.ready_yes_short", "✅ Oui, je suis prêt"))
 
         // Construct Deep Link
         const activityParam = type === "company" ? "retailer" : "individual" // Mapping to Register Page logic
         const registerUrl = `/register?activity_type=${activityParam}&source=chatbot_assistant`
 
         addAiMessage(
-            "Excellent. Cliquez sur le lien sécurisé ci-dessous pour activer votre Coffre-fort Importateur.\n\nJe reste ici pour vous guider après l'inscription.",
+            t("ai.account_creation", "Excellent. Cliquez sur le lien sécurisé ci-dessous pour activer votre Coffre-fort Importateur.\n\nJe reste ici pour vous guider après l'inscription."),
             undefined,
             {
-                title: "OUVERTURE DE COMPTE SÉCURISÉ",
-                description: "Accès immédiat au Dashboard Importateur.",
-                cta: "CRÉER MON COMPTE SÉCURISÉ",
+                title: t("ai.card_account_title", "OUVERTURE DE COMPTE SÉCURISÉ"),
+                description: t("ai.card_account_desc", "Accès immédiat au Dashboard Importateur."),
+                cta: t("ai.card_account_cta", "CRÉER MON COMPTE SÉCURISÉ"),
                 link: registerUrl
             }
         )
 
         // Follow-up advice
         addAiMessage(
-            "Une fois votre compte créé, n'oubliez pas :\n\n1. Validez votre identité (KYC) dans les paramètres.\n2. Attendez la validation (2h max) pour voir nos coordonnées bancaires.\n\nAvez-vous besoin d'autre chose ?",
+            t("ai.post_account", "Une fois votre compte créé, n'oubliez pas :\n\n1. Validez votre identité (KYC) dans les paramètres.\n2. Attendez la validation (2h max) pour voir nos coordonnées bancaires.\n\nAvez-vous besoin d'autre chose ?"),
             [
-                { label: "Non merci, c'est tout", action: () => addUserMessage("Merci"), variant: "outline" }
+                { label: t("ai.no_thanks", "Non merci, c'est tout"), action: () => addUserMessage(t("ai.thanks", "Merci")), variant: "outline" }
             ],
             undefined,
             2500 // Delay to show up after the card
@@ -157,23 +159,23 @@ export function AiAssistant() {
 
     const handleKeyword = (key: string) => {
         if (key === "suivi") {
-            addUserMessage("📦 Suivre un cargo")
-            addAiMessage("Pour suivre votre expédition, veuillez vous connecter à votre Espace Client et saisir votre référence AIX-.\n\nSi vous n'avez pas de compte, je vous invite à en créer un.",
-                [{ label: "Créer un compte", action: () => startAcquisitionFunnel() }]
+            addUserMessage(t("ai.tracking_short", "📦 Suivre un cargo"))
+            addAiMessage(t("ai.tracking_response", "Pour suivre votre expédition, veuillez vous connecter à votre Espace Client et saisir votre référence AIX-.\n\nSi vous n'avez pas de compte, je vous invite à en créer un."),
+                [{ label: t("ai.create_account", "Créer un compte"), action: () => startAcquisitionFunnel() }]
             )
         } else if (key === "paiement") {
-            addUserMessage("💰 Comprendre le paiement 60/40")
-            addAiMessage("Le modèle '60/40 Double Signature' sécurise votre argent :\n\n1. Vous versez 60% à la commande (Fonds Séquestrés).\n2. Nous achetons et expédions.\n3. Vous ne payez les 40% restants QU'À L'ARRIVÉE à Kinshasa.\n\nSi la marchandise n'arrive pas, vous êtes remboursé.",
-                [{ label: "Ça m'intéresse", action: () => startAcquisitionFunnel(), variant: "gold" }]
+            addUserMessage(t("ai.payment_short", "💰 Comprendre le paiement 60/40"))
+            addAiMessage(t("ai.payment_response", "Le modèle '60/40 Double Signature' sécurise votre argent :\n\n1. Vous versez 60% à la commande (Fonds Séquestrés).\n2. Nous achetons et expédions.\n3. Vous ne payez les 40% restants QU'À L'ARRIVÉE à Kinshasa.\n\nSi la marchandise n'arrive pas, vous êtes remboursé."),
+                [{ label: t("ai.interested", "Ça m'intéresse"), action: () => startAcquisitionFunnel(), variant: "gold" }]
             )
         } else if (key === "partenaire") {
-            addUserMessage("🤝 Devenir Partenaire")
-            addAiMessage("Nous recrutons des partenaires logistiques fiables en Chine, Turquie, Dubai, Japon et Thaïlande. Veuillez soumettre votre candidature via la page dédiée.",
+            addUserMessage(t("ai.partner_short", "🤝 Devenir Partenaire"))
+            addAiMessage(t("ai.partner_response", "Nous recrutons des partenaires logistiques fiables en Chine, Turquie, Dubai, Japon et Thaïlande. Veuillez soumettre votre candidature via la page dédiée."),
                 undefined,
                 {
-                    title: "CANDIDATURE PARTENAIRE",
-                    description: "Rejoignez le réseau Alpha Import.",
-                    cta: "POSTULER MAINTENANT",
+                    title: t("ai.card_partner_title", "CANDIDATURE PARTENAIRE"),
+                    description: t("ai.card_partner_desc", "Rejoignez le réseau Alpha Import."),
+                    cta: t("ai.card_partner_cta", "POSTULER MAINTENANT"),
                     link: "/partner-request"
                 }
             )
@@ -193,21 +195,21 @@ export function AiAssistant() {
             const lower = text.toLowerCase()
             if (lower.includes("aide") || lower.includes("humain") || lower.includes("parler") || lower.includes("probleme")) {
                 addAiMessage(
-                    "Je comprends que vous ayez besoin d'une assistance humaine. Nos agents sont disponibles sur WhatsApp.",
+                    t("ai.human_support_response", "Je comprends que vous ayez besoin d'une assistance humaine. Nos agents sont disponibles sur WhatsApp."),
                     undefined,
                     {
-                        title: "SUPPORT WHATSAPP",
-                        description: "Discutez avec un agent (Kinshasa/Dubai).",
-                        cta: "OUVRIR WHATSAPP",
+                        title: t("ai.card_whatsapp_title", "SUPPORT WHATSAPP"),
+                        description: t("ai.card_whatsapp_desc", "Discutez avec un agent (Kinshasa/Dubai)."),
+                        cta: t("ai.card_whatsapp_cta", "OUVRIR WHATSAPP"),
                         link: "https://wa.me/243818924674"
                     }
                 )
             } else {
                 addAiMessage(
-                    "Je suis programmé pour garantir la précision. Pour cette demande spécifique, je vous invite à contacter notre support ou à utiliser le menu.",
+                    t("ai.fallback_response", "Je suis programmé pour garantir la précision. Pour cette demande spécifique, je vous invite à contacter notre support ou à utiliser le menu."),
                     [
-                        { label: "Retour au Menu", action: () => resetChat() },
-                        { label: "Parler à un humain", action: () => handleManualSend() }
+                        { label: t("ai.back_menu", "Retour au Menu"), action: () => resetChat() },
+                        { label: t("ai.human_support", "Parler à un humain"), action: () => handleManualSend() }
                     ]
                 )
             }
@@ -235,10 +237,10 @@ export function AiAssistant() {
                                     />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white text-sm">Alpha Assistant</h3>
+                                    <h3 className="font-bold text-white text-sm">{t("ai.header_title", "Alpha Assistant")}</h3>
                                     <div className="flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] text-white/60">En ligne • Sécurisé</span>
+                                        <span className="text-[10px] text-white/60">{t("ai.header_status", "En ligne • Sécurisé")}</span>
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +342,7 @@ export function AiAssistant() {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleManualSend()}
-                                    placeholder="Posez une question..."
+                                    placeholder={t("ai.placeholder", "Posez une question...")}
                                     className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50"
                                 />
                                 <Button

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +18,7 @@ import { ShieldAlert, AlertTriangle, TrendingUp, UserX, AlertOctagon, CheckCircl
 import { toast } from "sonner"
 
 export default function AdminRisksPage() {
+    const { t } = useLanguage()
     const [highRiskOrders, setHighRiskOrders] = useState<any[]>([])
     const [restrictedSuppliers, setRestrictedSuppliers] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -71,7 +73,7 @@ export default function AdminRisksPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-red-50 border-red-200">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-red-800">Commandes à Haute Valeur</CardTitle>
+                        <CardTitle className="text-sm font-medium text-red-800">{t("admin.risks.high_value_orders", "Commandes à Haute Valeur")}</CardTitle>
                         <TrendingUp className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
@@ -82,7 +84,7 @@ export default function AdminRisksPage() {
 
                 <Card className="bg-orange-50 border-orange-200">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-orange-800">Fournisseurs Restreints</CardTitle>
+                        <CardTitle className="text-sm font-medium text-orange-800">{t("admin.risks.restricted_suppliers", "Fournisseurs Restreints")}</CardTitle>
                         <AlertOctagon className="h-4 w-4 text-orange-600" />
                     </CardHeader>
                     <CardContent>
@@ -122,7 +124,7 @@ export default function AdminRisksPage() {
                                     <TableHead>Ref</TableHead>
                                     <TableHead>Montant</TableHead>
                                     <TableHead>Client</TableHead>
-                                    <TableHead className="text-right">Statut</TableHead>
+                                    <TableHead className="text-right">{t("admin.risks.status", "Statut")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

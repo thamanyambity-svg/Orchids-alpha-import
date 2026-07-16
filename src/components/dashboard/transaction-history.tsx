@@ -1,10 +1,12 @@
 "use client"
 
 import { Clock, CheckCircle2, MoreHorizontal, Loader2 } from "lucide-react"
+import { useLanguage } from "@/lib/i18n-context"
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 export function TransactionHistory({ requestId }: { requestId?: string }) {
+  const { t } = useLanguage()
   const [payments, setPayments] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -79,13 +81,13 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
               <th className="px-6 py-4 font-normal">Date</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">Montant</th>
-              <th className="px-6 py-4 font-normal text-right">Statut</th>
+              <th className="px-6 py-4 font-normal text-right">{t("transaction.status", "Statut")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {payments.length === 0 && !loading ? (
               <tr>
-                <td colSpan={4} className="px-6 py-10 text-center text-muted-foreground text-xs uppercase">Aucune transaction trouvée</td>
+                <td colSpan={4} className="px-6 py-10 text-center text-muted-foreground text-xs uppercase">{t("transaction.empty", "Aucune transaction trouvée")}</td>
               </tr>
             ) : (
               payments.map((tx, idx) => (

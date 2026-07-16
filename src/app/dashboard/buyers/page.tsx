@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { SummaryCard } from "@/components/dashboard/summary-card"
 import { StatusTabs } from "@/components/dashboard/status-tabs"
 import { PartnerShowcase } from "@/components/dashboard/partner-showcase"
@@ -17,6 +18,8 @@ export default function DashboardPage() {
   const [request, setRequest] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+
+  const { t } = useLanguage()
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -84,7 +87,7 @@ export default function DashboardPage() {
             className="flex items-center gap-3"
           >
             <span className="text-sm text-muted-foreground uppercase tracking-widest">
-              Acheteur: {profile?.status === 'VERIFIED' ? 'Vérifié' : 'En attente'}
+              {t("dashboard.buyers.buyer", "Acheteur")}: {profile?.status === 'VERIFIED' ? t("dashboard.buyers.verified", "Vérifié") : t("dashboard.buyers.pending", "En attente")}
             </span>
             {profile?.countries && (
               <div className="flex items-center gap-2">

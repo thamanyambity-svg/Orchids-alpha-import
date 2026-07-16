@@ -13,9 +13,11 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -79,10 +81,10 @@ export default function RegisterPage() {
         }
       }
 
-      toast.success("Compte créé avec succès ! Vérifiez votre email.")
+      toast.success(t("register.success", "Compte créé avec succès ! Vérifiez votre email."))
       router.push("/login")
     } catch {
-      toast.error("Une erreur est survenue")
+      toast.error(t("register.error.generic", "Une erreur est survenue"))
     } finally {
       setIsLoading(false)
     }
@@ -108,19 +110,18 @@ export default function RegisterPage() {
             </Link>
 
           <h1 className="text-4xl font-bold mb-4">
-            Rejoignez{" "}
-            <span className="text-gradient-gold">Alpha Import Exchange RDC</span>
+            {t("register.title", "Rejoignez ")}
+            <span className="text-gradient-gold">{t("register.brand", "Alpha Import Exchange RDC")}</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-md">
-            Créez votre compte Acheteur et commencez à sécuriser vos importations 
-            dès aujourd&apos;hui.
+            {t("register.subtitle", "Créez votre compte Acheteur et commencez à sécuriser vos importations dès aujourd'hui.")}
           </p>
 
           <div className="mt-12 space-y-6">
             {[
-              { title: "Gratuit", desc: "Aucun frais d'inscription" },
-              { title: "Sécurisé", desc: "Vos données sont protégées" },
-              { title: "Simple", desc: "Processus en quelques minutes" },
+              { title: t("register.benefit.free_title", "Gratuit"), desc: t("register.benefit.free_desc", "Aucun frais d'inscription") },
+              { title: t("register.benefit.secure_title", "Sécurisé"), desc: t("register.benefit.secure_desc", "Vos données sont protégées") },
+              { title: t("register.benefit.simple_title", "Simple"), desc: t("register.benefit.simple_desc", "Processus en quelques minutes") },
             ].map((item, index) => (
               <div key={index} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -158,20 +159,20 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">Créer un compte</h2>
+          <h2 className="text-2xl font-bold mb-2">{t("register.form_title", "Créer un compte")}</h2>
           <p className="text-muted-foreground mb-8">
-            Remplissez le formulaire pour commencer
+            {t("register.form_subtitle", "Remplissez le formulaire pour commencer")}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="full_name">Nom complet *</Label>
+              <Label htmlFor="full_name">{t("register.name", "Nom complet *")}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="full_name"
                   type="text"
-                  placeholder="Jean Dupont"
+                  placeholder={t("register.name_placeholder", "Jean Dupont")}
                   className="pl-10 h-12"
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -181,13 +182,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email">{t("register.email", "Email *")}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="votre@email.com"
+                  placeholder={t("register.email_placeholder", "votre@email.com")}
                   className="pl-10 h-12"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -197,13 +198,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Téléphone *</Label>
+              <Label htmlFor="phone">{t("register.phone", "Téléphone *")}</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="+243 000 000 000"
+                  placeholder={t("register.phone_placeholder", "+243 000 000 000")}
                   className="pl-10 h-12"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -213,13 +214,13 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="company_name">Entreprise (optionnel)</Label>
+              <Label htmlFor="company_name">{t("register.company", "Entreprise (optionnel)")}</Label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="company_name"
                   type="text"
-                  placeholder="Nom de votre entreprise"
+                  placeholder={t("register.company_placeholder", "Nom de votre entreprise")}
                   className="pl-10 h-12"
                   value={formData.company_name}
                   onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
@@ -228,33 +229,33 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="activity_type">Type d&apos;activité *</Label>
+              <Label htmlFor="activity_type">{t("register.activity", "Type d'activité *")}</Label>
               <Select
                 value={formData.activity_type}
                 onValueChange={(value) => setFormData({ ...formData, activity_type: value })}
                 required
               >
                 <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Sélectionnez votre activité" />
+                  <SelectValue placeholder={t("register.activity_placeholder", "Sélectionnez votre activité")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="individual">Particulier</SelectItem>
-                  <SelectItem value="retailer">Commerce de détail</SelectItem>
-                  <SelectItem value="wholesaler">Commerce de gros</SelectItem>
-                  <SelectItem value="manufacturer">Industrie / Production</SelectItem>
-                  <SelectItem value="other">Autre</SelectItem>
+                  <SelectItem value="individual">{t("register.activity.individual", "Particulier")}</SelectItem>
+                  <SelectItem value="retailer">{t("register.activity.retailer", "Commerce de détail")}</SelectItem>
+                  <SelectItem value="wholesaler">{t("register.activity.wholesaler", "Commerce de gros")}</SelectItem>
+                  <SelectItem value="manufacturer">{t("register.activity.manufacturer", "Industrie / Production")}</SelectItem>
+                  <SelectItem value="other">{t("register.activity.other", "Autre")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe *</Label>
+              <Label htmlFor="password">{t("register.password", "Mot de passe *")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder={t("register.password_placeholder", "••••••••")}
                   className="pl-10 pr-10 h-12"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -269,7 +270,7 @@ export default function RegisterPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Minimum 8 caractères</p>
+              <p className="text-xs text-muted-foreground">{t("register.password_min", "Minimum 8 caractères")}</p>
             </div>
 
             <Button type="submit" className="w-full h-12" disabled={isLoading}>
@@ -277,7 +278,7 @@ export default function RegisterPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Créer mon compte
+                  {t("register.submit", "Créer mon compte")}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </>
               )}
@@ -285,16 +286,16 @@ export default function RegisterPage() {
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            En créant un compte, vous acceptez nos{" "}
-            <Link href="/terms" className="text-primary hover:underline">CGU</Link>
-            {" "}et notre{" "}
-            <Link href="/privacy" className="text-primary hover:underline">politique de confidentialité</Link>
+            {t("register.cgu_prefix", "En créant un compte, vous acceptez nos")}{" "}
+            <Link href="/terms" className="text-primary hover:underline">{t("register.cgu", "CGU")}</Link>
+            {" "}{t("register.privacy_and", "et notre")}{" "}
+            <Link href="/privacy" className="text-primary hover:underline">{t("register.privacy", "politique de confidentialité")}</Link>
           </p>
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Déjà un compte ?{" "}
+            {t("register.already_account", "Déjà un compte ?")}{" "}
             <Link href="/login" className="text-primary hover:underline">
-              Se connecter
+              {t("register.login_link", "Se connecter")}
             </Link>
           </p>
         </motion.div>

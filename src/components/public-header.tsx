@@ -6,15 +6,16 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const navLinks = [
-  { href: "/about", label: "Qui sommes-nous ?" },
-  { href: "/how-it-works", label: "Comment ça marche" },
-  { href: "/countries", label: "Pays partenaires" },
-  { href: "/contact", label: "Contact" },
-]
+import { useLanguage } from "@/lib/i18n-context"
 
 export function PublicHeader() {
+  const { t } = useLanguage()
+  const navLinks = [
+    { href: "/about", label: t("nav.about", "Qui sommes-nous ?") },
+    { href: "/how-it-works", label: t("nav.how-it-works", "Comment ça marche") },
+    { href: "/countries", label: t("nav.partners", "Pays partenaires") },
+    { href: "/contact", label: t("nav.contact", "Contact") },
+  ]
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
@@ -49,11 +50,11 @@ export function PublicHeader() {
 
           <div className="hidden md:flex items-center gap-3">
             <Button variant="ghost" asChild>
-              <Link href="/login">Connexion</Link>
+              <Link href="/login">{t("nav.login", "Connexion")}</Link>
             </Button>
             <Button asChild className="group">
               <Link href="/register" className="flex items-center gap-2">
-                Commencer
+                {t("nav.get_started", "Commencer")}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </Button>
@@ -89,10 +90,10 @@ export function PublicHeader() {
               ))}
               <div className="pt-4 border-t border-border space-y-3">
                 <Button variant="outline" className="w-full" asChild>
-                  <Link href="/login">Connexion</Link>
+                  <Link href="/login">{t("nav.login", "Connexion")}</Link>
                 </Button>
                 <Button className="w-full" asChild>
-                  <Link href="/register">Commencer</Link>
+                  <Link href="/register">{t("nav.get_started", "Commencer")}</Link>
                 </Button>
               </div>
             </div>

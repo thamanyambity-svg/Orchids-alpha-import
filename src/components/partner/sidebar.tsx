@@ -17,17 +17,19 @@ import {
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n-context"
 
 const navItems = [
-  { href: "/partner", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/partner/requests", label: "Dossiers assignés", icon: FileText },
-  { href: "/partner/suppliers", label: "Fournisseurs", icon: Package },
-  { href: "/partner/proofs", label: "Upload preuves", icon: Upload },
-  { href: "/partner/messages", label: "Messagerie", icon: MessageSquare },
-  { href: "/partner/settings", label: "Paramètres", icon: Settings },
+  { href: "/partner", labelKey: "partner.sidebar.dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+  { href: "/partner/requests", labelKey: "partner.sidebar.requests", label: "Dossiers assignés", icon: FileText },
+  { href: "/partner/suppliers", labelKey: "partner.sidebar.suppliers", label: "Fournisseurs", icon: Package },
+  { href: "/partner/proofs", labelKey: "partner.sidebar.proofs", label: "Upload preuves", icon: Upload },
+  { href: "/partner/messages", labelKey: "partner.sidebar.messaging", label: "Messagerie", icon: MessageSquare },
+  { href: "/partner/settings", labelKey: "partner.sidebar.settings", label: "Paramètres", icon: Settings },
 ]
 
 export function PartnerSidebar() {
+  const { t } = useLanguage()
   const pathname = usePathname()
   const router = useRouter()
 
@@ -84,7 +86,7 @@ export function PartnerSidebar() {
                   )}
                 >
                   <item.icon className="w-5 h-5" />
-                  {item.label}
+                  {t(item.labelKey, item.label)}
                   {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </Link>
               </li>
@@ -99,7 +101,7 @@ export function PartnerSidebar() {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent w-full transition-colors"
         >
           <LogOut className="w-5 h-5" />
-          Déconnexion
+          {t("partner.sidebar.logout", "Déconnexion")}
         </button>
       </div>
     </aside>

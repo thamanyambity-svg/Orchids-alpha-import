@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   User,
   ShieldCheck,
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/select"
 
 export default function AdminSettingsPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -139,7 +141,7 @@ export default function AdminSettingsPage() {
         .eq('id', profile.id)
 
       if (error) throw error
-      toast.success("Profil administrateur mis à jour")
+      toast.success(t("admin.settings.profile_updated", "Profil administrateur mis à jour"))
     } catch (error) {
       console.error('Error updating admin profile:', error)
       toast.error("Erreur lors de la mise à jour")
@@ -161,7 +163,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Paramètres Administrateur</h1>
+        <h1 className="text-3xl font-bold">{t("admin.settings.title", "Paramètres Administrateur")}</h1>
         <p className="text-muted-foreground">Gérez vos informations personnelles et la sécurité de votre compte admin.</p>
       </div>
 
@@ -223,7 +225,7 @@ export default function AdminSettingsPage() {
         <TabsList className="bg-background border border-border p-1">
           <TabsTrigger value="profile" className="gap-2">
             <User className="w-4 h-4" />
-            Profil Personnel
+            {t("admin.settings.personal_profile", "Profil Personnel")}
           </TabsTrigger>
           <TabsTrigger value="company" className="gap-2">
             <Building2 className="w-4 h-4" />
@@ -286,7 +288,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("admin.settings.email", "Email")}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -298,7 +300,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Téléphone</Label>
+                    <Label htmlFor="phone">{t("admin.settings.phone", "Téléphone")}</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -382,7 +384,7 @@ export default function AdminSettingsPage() {
               <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
                 <Button type="submit" disabled={saving} className="ml-auto gap-2">
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  Sauvegarder les infos institutionnelles
+                    {t("admin.settings.save_institutional", "Sauvegarder les infos institutionnelles")}
                 </Button>
               </CardFooter>
             </Card>
@@ -402,11 +404,11 @@ export default function AdminSettingsPage() {
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5 text-primary" />
                   <div>
-                    <p className="font-medium">Mot de passe</p>
+                    <p className="font-medium">{t("admin.settings.password", "Mot de passe")}</p>
                     <p className="text-sm text-muted-foreground">Dernière modification il y a 3 mois</p>
                   </div>
                 </div>
-                <Button variant="outline">Modifier</Button>
+                <Button variant="outline">{t("admin.settings.edit", "Modifier")}</Button>
               </div>
               <div className="flex items-center justify-between p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-3">

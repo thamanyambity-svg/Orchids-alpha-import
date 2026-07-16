@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface PartnerProfile {
   id: string
@@ -36,6 +37,7 @@ interface PartnerProfileCardProps {
 }
 
 export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardProps) {
+  const { t } = useLanguage()
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -45,7 +47,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
       <div className="absolute top-0 right-0 p-4">
         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 gap-1 px-3 py-1">
           <ShieldCheck className="w-3.5 h-3.5" />
-            Partenaire Certifié AlphaIX
+            {t("partner_card.certified", "Partenaire Certifié AlphaIX")}
         </Badge>
       </div>
 
@@ -125,7 +127,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
       </div>
 
       <div className="mt-6 pt-6 border-t border-primary/10 flex items-center justify-between text-xs text-muted-foreground">
-        <p>Vérifié par l'équipe de conformité AlphaIX</p>
+        <p>{t("partner_card.verified", "Vérifié par l'équipe de conformité AlphaIX")}</p>
         <div className="flex items-center gap-1 text-primary">
           <span>Voir l'historique complet</span>
           <ArrowRight className="w-3 h-3" />

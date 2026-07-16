@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   Plus, 
   Search, 
@@ -41,6 +42,7 @@ const statusLabels: Record<string, string> = {
 }
 
 export default function RequestsPage() {
+  const { t } = useLanguage()
   const [statusFilter, setStatusFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [requests, setRequests] = useState<any[]>([])
@@ -82,8 +84,8 @@ export default function RequestsPage() {
   return (
     <div>
       <DashboardHeader 
-        title="Mes demandes" 
-        subtitle="Gérez vos demandes d'importation"
+        title={t("dashboard.requests.title", "Mes demandes")} 
+        subtitle={t("dashboard.requests.subtitle", "Gérez vos demandes d'importation")}
       />
 
       <div className="p-6">
@@ -91,7 +93,7 @@ export default function RequestsPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
-              placeholder="Rechercher une demande..." 
+              placeholder={t("dashboard.requests.search", "Rechercher une demande...")} 
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -101,22 +103,22 @@ export default function RequestsPage() {
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
                 <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Filtrer par statut" />
+                <SelectValue placeholder={t("dashboard.requests.filter_status", "Filtrer par statut")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous les statuts</SelectItem>
-                <SelectItem value="PENDING">En attente</SelectItem>
-                <SelectItem value="ANALYSIS">En analyse</SelectItem>
-                <SelectItem value="VALIDATED">Validé</SelectItem>
-                <SelectItem value="EXECUTING">En exécution</SelectItem>
-                <SelectItem value="SHIPPED">Expédié</SelectItem>
-                <SelectItem value="DELIVERED">Livré</SelectItem>
+                <SelectItem value="all">{t("dashboard.requests.all_statuses", "Tous les statuts")}</SelectItem>
+                <SelectItem value="PENDING">{t("dashboard.requests.pending", "En attente")}</SelectItem>
+                <SelectItem value="ANALYSIS">{t("dashboard.requests.analysis", "En analyse")}</SelectItem>
+                <SelectItem value="VALIDATED">{t("dashboard.requests.validated", "Validé")}</SelectItem>
+                <SelectItem value="EXECUTING">{t("dashboard.requests.executing", "En exécution")}</SelectItem>
+                <SelectItem value="SHIPPED">{t("dashboard.requests.shipped", "Expédié")}</SelectItem>
+                <SelectItem value="DELIVERED">{t("dashboard.requests.delivered", "Livré")}</SelectItem>
               </SelectContent>
             </Select>
             <Button asChild>
               <Link href="/dashboard/requests/new" className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
-                Nouvelle demande
+                {t("dashboard.requests.new_request", "Nouvelle demande")}
               </Link>
             </Button>
           </div>
@@ -132,13 +134,13 @@ export default function RequestsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/30">
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Référence</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Produit</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Pays</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Statut</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Budget Max</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">Date</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">Action</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.reference", "Référence")}</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.product", "Produit")}</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.country", "Pays")}</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.status_col", "Statut")}</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.budget_max", "Budget Max")}</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.date", "Date")}</th>
+                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.action", "Action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,7 +180,7 @@ export default function RequestsPage() {
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="sm" asChild>
                             <Link href={`/dashboard/requests/${request.id}`} className="flex items-center gap-1">
-                              Détails
+                              {t("dashboard.requests.details", "Détails")}
                               <ArrowRight className="w-3 h-3" />
                             </Link>
                           </Button>
@@ -196,13 +198,13 @@ export default function RequestsPage() {
             {filteredRequests.length === 0 && (
               <div className="p-12 text-center">
                 <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Aucune demande trouvée</h3>
+                <h3 className="font-semibold mb-2">{t("dashboard.requests.no_requests", "Aucune demande trouvée")}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Modifiez vos filtres ou créez une nouvelle demande.
+                  {t("dashboard.requests.no_requests_hint", "Modifiez vos filtres ou créez une nouvelle demande.")}
                 </p>
                 <Button asChild>
                   <Link href="/dashboard/requests/new">
-                    Créer une demande
+                    {t("dashboard.requests.create_request", "Créer une demande")}
                   </Link>
                 </Button>
               </div>

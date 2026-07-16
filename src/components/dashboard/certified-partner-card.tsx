@@ -1,5 +1,6 @@
 "use client"
 
+import { useLanguage } from "@/lib/i18n-context"
 import { Star, ShieldCheck, LayoutGrid, FileText, CreditCard, MessageSquare, Mail, Phone, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +23,7 @@ export interface PartnerDisplay {
 }
 
 export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | null }) {
+  const { t } = useLanguage()
   const displayPartner = partner || {
     full_name: "Achignon Bilongo",
     company_name: "MAARMALA - Head Officer",
@@ -91,16 +93,16 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mb-1">
-                {partner ? "Partenaire Assigné" : "Partenaire Certifié"}
+                {partner ? t("certified_partner.assigned", "Partenaire Assigné") : t("certified_partner.certified", "Partenaire Certifié")}
               </p>
               <h3 className="text-sm font-bold tracking-widest uppercase">
-                {partner ? "VOTRE PARTENAIRE" : "CERTIFIÉ DUBAÏ"}
+                {partner ? t("certified_partner.your_partner", "VOTRE PARTENAIRE") : t("certified_partner.certified_dubai", "CERTIFIÉ DUBAÏ")}
               </h3>
             </div>
           </div>
           <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-white/5">
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <span className="text-[9px] font-mono text-primary uppercase">En ligne</span>
+            <span className="text-[9px] font-mono text-primary uppercase">{t("certified_partner.online", "En ligne")}</span>
           </div>
         </div>
 
@@ -138,10 +140,10 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
 
         <div className="grid grid-cols-4 gap-2 mb-8">
           {[
-            { icon: LayoutGrid, label: "Hub", target: "partner-showcase" },
-            { icon: FileText, label: "Docs", target: "documents-section" },
-            { icon: CreditCard, label: "Paie", target: "transactions-section" },
-            { icon: MessageSquare, label: "Chat", target: "messaging-section" },
+            { icon: LayoutGrid, label: t("certified_partner.hub", "Hub"), target: "partner-showcase" },
+            { icon: FileText, label: t("certified_partner.docs", "Docs"), target: "documents-section" },
+            { icon: CreditCard, label: t("certified_partner.payment", "Paie"), target: "transactions-section" },
+            { icon: MessageSquare, label: t("certified_partner.chat", "Chat"), target: "messaging-section" },
           ].map((item, idx) => (
             <div
               key={idx}
@@ -177,7 +179,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
           onClick={() => scrollToSection('messaging-section')}
           className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase text-xs shadow-lg shadow-primary/20"
         >
-          Ouvrir le Chat Sécurisé
+          {t("certified_partner.open_secure_chat", "Ouvrir le Chat Sécurisé")}
         </Button>
       </div>
     </div>

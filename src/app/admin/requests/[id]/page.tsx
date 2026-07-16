@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { useLanguage } from "@/lib/i18n-context"
 import { TrackingEditor } from "@/components/admin/tracking-editor"
 import {
   ArrowLeft,
@@ -69,6 +70,7 @@ const documentTypeLabels: Record<string, string> = {
 export default function AdminRequestDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { t } = useLanguage()
   const [request, setRequest] = useState<any>(null)
   const [documents, setDocuments] = useState<any[]>([])
   const [order, setOrder] = useState<any>(null)
@@ -174,7 +176,7 @@ export default function AdminRequestDetailPage() {
         <Button variant="ghost" asChild className="mb-4">
           <Link href="/admin/requests" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Retour à la liste
+            {t("admin.request.back", "Retour à la liste")}
           </Link>
         </Button>
       </div>
@@ -322,7 +324,7 @@ export default function AdminRequestDetailPage() {
           <div className="rounded-2xl bg-card border border-border p-6">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
-              Documents partagés
+              {t("admin.request.documents", "Documents partagés")}
             </h3>
 
             <div className="space-y-3">
@@ -406,7 +408,7 @@ export default function AdminRequestDetailPage() {
           <div className="rounded-2xl bg-card border border-border p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <History className="w-5 h-5 text-primary" />
-              Statut Actuel
+              {t("admin.request.current_status", "Statut Actuel")}
             </h3>
             <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">

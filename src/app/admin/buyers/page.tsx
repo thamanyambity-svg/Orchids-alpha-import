@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -38,6 +39,7 @@ interface BuyerWithStats {
 }
 
 export default function AdminBuyersPage() {
+    const { t } = useLanguage()
     const [buyers, setBuyers] = useState<BuyerWithStats[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
@@ -134,7 +136,7 @@ export default function AdminBuyersPage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
                     <div className="space-y-1">
-                        <CardTitle>Liste des Clients</CardTitle>
+                        <CardTitle>{t("admin.buyers.client_list", "Liste des Clients")}</CardTitle>
                         <CardDescription>
                             Vue d'ensemble de tous les comptes acheteurs
                         </CardDescription>
@@ -143,7 +145,7 @@ export default function AdminBuyersPage() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Rechercher (Nom, Email)..."
+                            placeholder={t("admin.buyers.search", "Rechercher (Nom, Email)...")}
                             className="pl-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -156,9 +158,9 @@ export default function AdminBuyersPage() {
                             <TableRow>
                                 <TableHead>Identité</TableHead>
                                 <TableHead>Contact</TableHead>
-                                <TableHead>Statut</TableHead>
+                                <TableHead>{t("admin.buyers.status", "Statut")}</TableHead>
                                 <TableHead>Activité</TableHead>
-                                <TableHead>Inscription</TableHead>
+                                <TableHead>{t("admin.buyers.registration", "Inscription")}</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -209,7 +211,7 @@ export default function AdminBuyersPage() {
                                                     <ShieldAlert className="w-3 h-3 mr-1" /> Suspendu
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="secondary">En attente</Badge>
+                                                <Badge variant="secondary">{t("admin.buyers.pending", "En attente")}</Badge>
                                             )}
                                         </TableCell>
                                         <TableCell>
@@ -234,7 +236,7 @@ export default function AdminBuyersPage() {
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                     <DropdownMenuItem onClick={() => navigator.clipboard.writeText(buyer.email)}>
-                                                        Copier Email
+                                                        {t("admin.buyers.copy_email", "Copier Email")}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem>Voir détails (Bientôt)</DropdownMenuItem>

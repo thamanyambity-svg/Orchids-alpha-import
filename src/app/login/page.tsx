@@ -12,9 +12,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -41,7 +43,7 @@ export default function LoginPage() {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
-        toast.error("Utilisateur non trouvé")
+        toast.error(t("login.error.user_not_found", "Utilisateur non trouvé"))
         return
       }
 
@@ -59,9 +61,9 @@ export default function LoginPage() {
         router.push("/dashboard")
       }
 
-      toast.success("Connexion réussie")
+      toast.success(t("login.success", "Connexion réussie"))
     } catch {
-      toast.error("Une erreur est survenue")
+      toast.error(t("login.error.generic", "Une erreur est survenue"))
     } finally {
       setIsLoading(false)
     }
@@ -79,12 +81,12 @@ export default function LoginPage() {
         })
 
         if (error) {
-          toast.error("Identifiants incorrects")
+          toast.error(t("login.error.invalid_credentials", "Identifiants incorrects"))
           setIsLoading(false)
           return
         }
       } catch {
-        toast.error("Erreur lors de la connexion")
+        toast.error(t("login.error.connection_error", "Erreur lors de la connexion"))
         setIsLoading(false)
         return
       } finally {
@@ -95,7 +97,7 @@ export default function LoginPage() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      toast.info("Veuillez saisir vos identifiants administrateur puis cliquer sur 'Se connecter' ou 'Accès Administration'.")
+      toast.info(t("login.admin.please_enter_credentials", "Veuillez saisir vos identifiants administrateur puis cliquer sur 'Se connecter' ou 'Accès Administration'."))
       return
     }
 
@@ -106,10 +108,10 @@ export default function LoginPage() {
       .single()
 
     if (profile?.role === "ADMIN") {
-      toast.success("Accès Administrateur accordé")
+      toast.success(t("login.admin.granted", "Accès Administrateur accordé"))
       router.push("/admin")
     } else {
-      toast.error("Vous n'avez pas les droits d'administration.")
+      toast.error(t("login.admin.no_rights", "Vous n'avez pas les droits d'administration."))
     }
   }
 
@@ -133,19 +135,18 @@ export default function LoginPage() {
           </Link>
 
           <h1 className="text-4xl font-bold mb-4">
-            Bienvenue sur votre{" "}
-            <span className="text-gradient-gold">espace sécurisé</span>
+            {t("login.title", "Bienvenue sur votre ")}
+            <span className="text-gradient-gold">{t("login.secure_space", "espace sécurisé")}</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-md">
-            Accédez à votre tableau de bord pour gérer vos importations,
-            suivre vos commandes et consulter vos documents.
+            {t("login.subtitle", "Accédez à votre tableau de bord pour gérer vos importations, suivre vos commandes et consulter vos documents.")}
           </p>
 
           <div className="mt-12 space-y-4">
             {[
-              "Suivi en temps réel de vos commandes",
-              "Documents sécurisés et horodatés",
-              "Messagerie directe avec votre partenaire",
+              t("login.feature.tracking", "Suivi en temps réel de vos commandes"),
+              t("login.feature.documents", "Documents sécurisés et horodatés"),
+              t("login.feature.messaging", "Messagerie directe avec votre partenaire"),
             ].map((feature, index) => (
               <div key={index} className="flex items-center gap-3 text-sm text-muted-foreground">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -178,20 +179,20 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">Connexion</h2>
+          <h2 className="text-2xl font-bold mb-2">{t("login.connection", "Connexion")}</h2>
           <p className="text-muted-foreground mb-8">
-            Entrez vos identifiants pour accéder à votre espace
+            {t("login.enter_credentials", "Entrez vos identifiants pour accéder à votre espace")}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("login.email", "Email")}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="votre@email.com"
+                  placeholder={t("login.email_placeholder", "votre@email.com")}
                   className="pl-10 h-12"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -202,9 +203,9 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">{t("login.password", "Mot de passe")}</Label>
                 <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                  Mot de passe oublié ?
+                  {t("login.forgot", "Mot de passe oublié ?")}
                 </Link>
               </div>
               <div className="relative">
@@ -233,7 +234,7 @@ export default function LoginPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Se connecter
+                  {t("login.submit", "Se connecter")}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </>
               )}
@@ -241,9 +242,9 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
-            Pas encore de compte ?{" "}
+            {t("login.no_account", "Pas encore de compte ?")}{" "}
             <Link href="/register" className="text-primary hover:underline">
-              Créer un compte Acheteur
+              {t("login.register", "Créer un compte Acheteur")}
             </Link>
           </p>
 
@@ -255,7 +256,7 @@ export default function LoginPage() {
               className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
             >
               <Shield className="w-3 h-3" />
-              Accès Administration
+              {t("login.admin_access", "Accès Administration")}
             </button>
 
             {/* Dev Helper - TO BE REMOVED IN PROD */}
@@ -270,7 +271,7 @@ export default function LoginPage() {
                 })
                 if (error) toast.error(error.message)
                 else {
-                  toast.success("Mode Dev Admin Activé")
+                  toast.success(t("login.dev_mode", "Mode Dev Admin Activé"))
                   // Force redirect to admin
                   window.location.href = "/admin"
                 }
@@ -279,7 +280,7 @@ export default function LoginPage() {
               className="text-xs text-red-400 hover:text-red-300 transition-colors inline-flex items-center gap-1 border border-red-500/20 px-2 py-1 rounded"
             >
               <Shield className="w-3 h-3" />
-              DEV: Auto Business Admin
+              {t("login.dev_button", "DEV: Auto Business Admin")}
             </button>
           </div>
         </motion.div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -44,6 +45,7 @@ interface PartnerWithDetails {
 }
 
 export default function AdminPartnersPage() {
+    const { t } = useLanguage()
     const [partners, setPartners] = useState<PartnerWithDetails[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
@@ -238,7 +240,7 @@ export default function AdminPartnersPage() {
                                         <TableHead>Entreprise</TableHead>
                                         <TableHead>Contact</TableHead>
                                         <TableHead>Date</TableHead>
-                                        <TableHead>Documents</TableHead>
+                                                <TableHead>{t("admin.partners.documents", "Documents")}</TableHead>
                                         <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -254,7 +256,7 @@ export default function AdminPartnersPage() {
                                             <TableRow key={app.id}>
                                                 <TableCell className="font-medium">
                                                     {app.company_name}
-                                                    <div className="text-xs text-muted-foreground">{app.company_details?.address || 'Adresse non spécifiée'}</div>
+                                                    <div className="text-xs text-muted-foreground">                                                    {app.company_details?.address || t("admin.partners.address_unspecified", "Adresse non spécifiée")}</div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div>{app.email}</div>
@@ -297,7 +299,7 @@ export default function AdminPartnersPage() {
                                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         type="search"
-                                        placeholder="Rechercher (Nom, Ville)..."
+                                        placeholder={t("admin.partners.search", "Rechercher (Nom, Ville)...")}
                                         className="pl-8"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -310,7 +312,7 @@ export default function AdminPartnersPage() {
                                         <TableRow>
                                             <TableHead>Partenaire</TableHead>
                                             <TableHead>Localisation</TableHead>
-                                            <TableHead>Contrat & Statut</TableHead>
+                                            <TableHead>{t("admin.partners.contract_status", "Contrat & Statut")}</TableHead>
                                             <TableHead>Performance</TableHead>
                                             <TableHead>Volume</TableHead>
                                             <TableHead className="text-right">Actions</TableHead>
@@ -354,7 +356,7 @@ export default function AdminPartnersPage() {
                                                                     <FileCheck className="w-3 h-3 mr-1" /> Contrat Actif
                                                                 </Badge>
                                                             ) : (
-                                                                <Badge variant="outline">En attente</Badge>
+                                                                <Badge variant="outline">{t("admin.partners.pending", "En attente")}</Badge>
                                                             )}
                                                             {partner.status !== 'VERIFIED' && (
                                                                 <span className="text-[10px] text-amber-600 font-medium px-1">
@@ -388,11 +390,11 @@ export default function AdminPartnersPage() {
                                                                     Contacter
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuItem onClick={() => setEditingPartner(partner)}>
-                                                                    <Edit className="w-4 h-4 mr-2" /> Modifier
+                                                                    <Edit className="w-4 h-4 mr-2" /> {t("admin.partners.edit", "Modifier")}
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
-                                                                <DropdownMenuItem>Voir les Fournisseurs</DropdownMenuItem>
+                                                                <DropdownMenuItem>{t("admin.partners.view_suppliers", "Voir les Fournisseurs")}</DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuItem className="text-red-600">Résilier Contrat</DropdownMenuItem>
                                                             </DropdownMenuContent>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   Headphones,
   Plus,
@@ -36,6 +37,7 @@ const faqs = [
 ]
 
 export default function SupportPage() {
+  const { t } = useLanguage()
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
@@ -130,12 +132,12 @@ export default function SupportPage() {
                     <Mail className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold">Support Email</h3>
+                    <h3 className="font-bold">{t("dashboard.support.email", "Support Email")}</h3>
                     <p className="text-xs text-muted-foreground">contact@aonosekehouseinvestmentdrc.site</p>
                   </div>
                 </div>
                 <Button variant="outline" className="w-full gap-2">
-                  Envoyer un email
+                  {t("dashboard.support.send_email", "Envoyer un email")}
                   <Mail className="w-4 h-4" />
                 </Button>
               </div>

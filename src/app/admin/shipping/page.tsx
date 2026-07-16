@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -42,6 +43,7 @@ function getRequiredDocuments(countryCode: string) {
 }
 
 export default function AdminShippingPage() {
+    const { t } = useLanguage()
     const [shipments, setShipments] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
@@ -145,7 +147,7 @@ export default function AdminShippingPage() {
                             <TableRow>
                                 <TableHead className="w-[200px]">Référence Dossier</TableHead>
                                 <TableHead>Origine / Mode</TableHead>
-                                <TableHead>Documents Requis (Normes Int.)</TableHead>
+                                <TableHead>{t("admin.shipping.required_docs", "Documents Requis (Normes Int.)")}</TableHead>
                                 <TableHead className="text-right">Valeur CIF</TableHead>
                                 <TableHead className="text-right">Détail Frais</TableHead>
                                 <TableHead className="text-right">Total Est.</TableHead>

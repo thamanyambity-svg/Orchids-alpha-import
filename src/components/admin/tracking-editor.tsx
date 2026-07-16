@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
@@ -52,18 +53,18 @@ interface TrackingEditorProps {
 }
 
 const statusOptions = [
-    { value: "ORDER_PLACED", label: "Commande passée", icon: CheckCircle2 },
-    { value: "PREPARING", label: "Préparation / Emballage", icon: PackageIcon },
-    { value: "PICKUP", label: "Enlèvement (Usine)", icon: Truck },
-    { value: "WAREHOUSE_ORIGIN", label: "Entrepôt Départ", icon: BuildingIcon },
-    { value: "CUSTOMS_EXPORT", label: "Douane Export", icon: FileTextIcon },
-    { value: "DEPARTED_ORIGIN", label: "Départ Origine (Vol/Navire)", icon: Plane },
-    { value: "TRANSIT", label: "En Transit", icon: ArrowRightIcon },
-    { value: "ARRIVED_DESTINATION", label: "Arrivée Destination", icon: MapPin },
-    { value: "CUSTOMS_IMPORT", label: "Douane Import (Kinshasa)", icon: ScaleIcon },
-    { value: "AVAILABLE_PICKUP", label: "Disponible pour retrait", icon: CheckCircle2 },
-    { value: "DELIVERED", label: "Livré au client", icon: CheckCircle2 },
-    { value: "DELAYED", label: "Retardé / Incident", icon: AlertCircle },
+    { value: "ORDER_PLACED", label: "Commande passée", labelKey: "admin.tracking.order_placed", icon: CheckCircle2 },
+    { value: "PREPARING", label: "Préparation / Emballage", labelKey: "admin.tracking.preparing", icon: PackageIcon },
+    { value: "PICKUP", label: "Enlèvement (Usine)", labelKey: "admin.tracking.pickup", icon: Truck },
+    { value: "WAREHOUSE_ORIGIN", label: "Entrepôt Départ", labelKey: "admin.tracking.warehouse_origin", icon: BuildingIcon },
+    { value: "CUSTOMS_EXPORT", label: "Douane Export", labelKey: "admin.tracking.customs_export", icon: FileTextIcon },
+    { value: "DEPARTED_ORIGIN", label: "Départ Origine (Vol/Navire)", labelKey: "admin.tracking.departed_origin", icon: Plane },
+    { value: "TRANSIT", label: "En Transit", labelKey: "admin.tracking.transit", icon: ArrowRightIcon },
+    { value: "ARRIVED_DESTINATION", label: "Arrivée Destination", labelKey: "admin.tracking.arrived_destination", icon: MapPin },
+    { value: "CUSTOMS_IMPORT", label: "Douane Import (Kinshasa)", labelKey: "admin.tracking.customs_import", icon: ScaleIcon },
+    { value: "AVAILABLE_PICKUP", label: "Disponible pour retrait", labelKey: "admin.tracking.available_pickup", icon: CheckCircle2 },
+    { value: "DELIVERED", label: "Livré au client", labelKey: "admin.tracking.delivered", icon: CheckCircle2 },
+    { value: "DELAYED", label: "Retardé / Incident", labelKey: "admin.tracking.delayed", icon: AlertCircle },
 ]
 
 // Icon helpers (using simple lucid icons for now to avoid import chaos)
@@ -75,6 +76,7 @@ function ScaleIcon(props: any) { return <div {...props}><CheckCircle2 className=
 
 
 export function TrackingEditor({ requestId }: TrackingEditorProps) {
+    const { t } = useLanguage()
     const [events, setEvents] = useState<TrackingEvent[]>([])
     const [loading, setLoading] = useState(true)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -102,7 +104,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
             setEvents(data || [])
         } catch (error) {
             console.error("Error fetching tracking:", error)
-            toast.error("Impossible de charger le suivi")
+            toast.error(t("admin.tracking.load_error", "Impossible de charger le suivi"))
         } finally {
             setLoading(false)
         }
@@ -130,7 +132,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
 
             if (error) throw error
 
-            toast.success("Étape ajoutée avec succès")
+            toast.success(t("admin.tracking.step_added", "Étape ajoutée avec succès"))
             setIsDialogOpen(false)
             setFormData({
                 status: "",
@@ -140,7 +142,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
             })
             fetchEvents() // Refresh list
         } catch (error: any) {
-            toast.error("Erreur: " + error.message)
+            toast.error(t("admin.tracking.error_prefix", "Erreur") + ": " + error.message)
         } finally {
             setSubmitting(false)
         }
@@ -148,7 +150,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
 
     // Delete Event
     const handleDelete = async (id: string) => {
-        if (!confirm("Voulez-vous vraiment supprimer cet événement ?")) return
+        if (!confirm(t("admin.tracking.confirm_delete", "Voulez-vous vraiment supprimer cet événement ?"))) return
 
         try {
             const { error } = await supabase
@@ -157,10 +159,10 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                 .eq('id', id)
 
             if (error) throw error
-            toast.success("Événement supprimé")
+            toast.success(t("admin.tracking.event_deleted", "Événement supprimé"))
             fetchEvents()
         } catch (error) {
-            toast.error("Erreur lors de la suppression")
+            toast.error(t("admin.tracking.delete_error", "Erreur lors de la suppression"))
         }
     }
 
@@ -169,34 +171,34 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                     <Truck className="w-5 h-5 text-primary" />
-                    Suivi Logistique (Timeline)
+                    {t("admin.tracking.title", "Suivi Logistique (Timeline)")}
                 </h3>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button size="sm">
                             <Plus className="w-4 h-4 mr-2" />
-                            Ajouter une étape
+                            {t("admin.tracking.add_step", "Ajouter une étape")}
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Ajouter une étape de suivi</DialogTitle>
+                            <DialogTitle>{t("admin.tracking.add_tracking_step", "Ajouter une étape de suivi")}</DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                             <div className="space-y-2">
-                                <Label>Statut / Étape</Label>
+                                <Label>{t("admin.tracking.status_step_label", "Statut / Étape")}</Label>
                                 <Select
                                     value={formData.status}
                                     onValueChange={(val) => setFormData({ ...formData, status: val })}
                                     required
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Sélectionner l'étape" />
+                                        <SelectValue placeholder={t("admin.tracking.select_step_placeholder", "Sélectionner l'étape")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {statusOptions.map(opt => (
                                             <SelectItem key={opt.value} value={opt.value}>
-                                                {opt.label}
+                                                {t(opt.labelKey, opt.label)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -204,9 +206,9 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Lieu</Label>
+                                <Label>{t("admin.tracking.location_label", "Lieu")}</Label>
                                 <Input
-                                    placeholder="Ex: Entrepôt Shenzhen, Aéroport IST..."
+                                    placeholder={t("admin.tracking.location_placeholder", "Ex: Entrepôt Shenzhen, Aéroport IST...")}
                                     value={formData.location}
                                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                     required
@@ -214,7 +216,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Date de l'événement</Label>
+                                <Label>{t("admin.tracking.event_date_label", "Date de l'événement")}</Label>
                                 <Input
                                     type="datetime-local"
                                     value={formData.event_date}
@@ -224,9 +226,9 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Description / Détails (Optionnel)</Label>
+                                <Label>{t("admin.tracking.description_label", "Description / Détails (Optionnel)")}</Label>
                                 <Textarea
-                                    placeholder="Ex: Vol TK456 décollé, Retard douane..."
+                                    placeholder={t("admin.tracking.description_placeholder", "Ex: Vol TK456 décollé, Retard douane...")}
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
@@ -234,7 +236,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
 
                             <Button type="submit" className="w-full" disabled={submitting}>
                                 {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                Enregistrer
+                                {t("admin.tracking.save", "Enregistrer")}
                             </Button>
                         </form>
                     </DialogContent>
@@ -243,14 +245,14 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
 
             <div className="space-y-6 pl-2 relative border-l-2 border-border/50 ml-3">
                 {loading ? (
-                    <div className="py-8 text-center text-muted-foreground text-sm">Chargement...</div>
+                    <div className="py-8 text-center text-muted-foreground text-sm">{t("admin.tracking.loading", "Chargement...")}</div>
                 ) : events.length === 0 ? (
                     <div className="py-8 pl-6 text-muted-foreground text-sm italic">
-                        Aucun événement de suivi enregistré pour le moment.
+                        {t("admin.tracking.no_events", "Aucun événement de suivi enregistré pour le moment.")}
                     </div>
                 ) : (
                     events.map((event) => {
-                        const statusOpt = statusOptions.find(o => o.value === event.status) || { label: event.status, icon: CheckCircle2 }
+                        const statusOpt = statusOptions.find(o => o.value === event.status) || { label: event.status, labelKey: "", icon: CheckCircle2 }
                         const Icon = statusOpt.icon
 
                         return (
@@ -262,7 +264,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
                                             <Badge variant="outline" className="font-semibold bg-background">
-                                                {statusOpt.label}
+                                                {t(statusOpt.labelKey || "", statusOpt.label)}
                                             </Badge>
                                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   FileText,
   Search,
@@ -35,6 +36,7 @@ import { toast } from "sonner"
 import type { ImportRequest, RequestStatus, PartnerProfile, Profile } from "@/lib/types"
 
 function AdminRequestsContent() {
+  const { t } = useLanguage()
   const [requests, setRequests] = useState<(ImportRequest & { buyer: Profile, partner?: Profile })[]>([])
   const [partners, setPartners] = useState<(PartnerProfile & { user: Profile })[]>([])
   const [loading, setLoading] = useState(true)
@@ -126,12 +128,12 @@ function AdminRequestsContent() {
     switch (status) {
       case "DRAFT": return <Badge variant="outline">Brouillon</Badge>
       case "ANALYSIS": return <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 border-blue-500/20">Analyse</Badge>
-      case "VALIDATED": return <Badge variant="secondary" className="bg-green-500/10 text-green-500 border-green-500/20">Validée</Badge>
+      case "VALIDATED": return <Badge variant="secondary" className="bg-green-500/10 text-green-500 border-green-500/20">{t("admin.requests.validated", "Validée")}</Badge>
       case "REJECTED": return <Badge variant="destructive">Refusée</Badge>
       case "AWAITING_DEPOSIT": return <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-amber-500/20">Attente Acompte</Badge>
       case "EXECUTING": return <Badge variant="secondary" className="bg-purple-500/10 text-purple-500 border-purple-500/20">Exécution</Badge>
-      case "SHIPPED": return <Badge variant="secondary" className="bg-cyan-500/10 text-cyan-500 border-cyan-500/20">Expédiée</Badge>
-      case "DELIVERED": return <Badge variant="default" className="bg-green-500/10 text-green-500 border-green-500/20">Livrée</Badge>
+      case "SHIPPED": return <Badge variant="secondary" className="bg-cyan-500/10 text-cyan-500 border-cyan-500/20">{t("admin.requests.shipped", "Expédiée")}</Badge>
+      case "DELIVERED": return <Badge variant="default" className="bg-green-500/10 text-green-500 border-green-500/20">{t("admin.requests.delivered", "Livrée")}</Badge>
       case "CLOSED": return <Badge variant="outline">Clôturée</Badge>
       case "INCIDENT": return <Badge variant="destructive">Incident</Badge>
       default: return <Badge variant="outline">{status}</Badge>
@@ -171,7 +173,7 @@ function AdminRequestsContent() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Rechercher une demande..."
+              placeholder={t("admin.requests.search", "Rechercher une demande...")}
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -201,7 +203,7 @@ function AdminRequestsContent() {
                 <th className="px-6 py-4">Acheteur</th>
                 <th className="px-6 py-4">Catégorie / Pays</th>
                 <th className="px-6 py-4">Partenaire</th>
-                <th className="px-6 py-4">Statut</th>
+                <th className="px-6 py-4">{t("admin.requests.status", "Statut")}</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>

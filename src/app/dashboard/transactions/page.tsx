@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   CircleDollarSign, 
   Search, 
@@ -21,6 +22,7 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
 
 export default function TransactionsPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -56,8 +58,8 @@ export default function TransactionsPage() {
   return (
     <div>
       <DashboardHeader 
-        title="Transactions" 
-        subtitle="Historique de vos paiements et mouvements financiers"
+        title={t("dashboard.transactions.title", "Transactions")} 
+        subtitle={t("dashboard.transactions.subtitle", "Historique de vos paiements et mouvements financiers")}
       />
 
       <div className="p-6">
@@ -65,7 +67,7 @@ export default function TransactionsPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
-              placeholder="Rechercher par référence ou produit..." 
+              placeholder={t("dashboard.transactions.search", "Rechercher par référence ou produit...")} 
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -74,12 +76,12 @@ export default function TransactionsPage() {
           <Select defaultValue="all">
             <SelectTrigger className="w-[180px]">
               <Filter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filtrer" />
+              <SelectValue placeholder={t("dashboard.transactions.filter", "Filtrer")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les types</SelectItem>
-              <SelectItem value="payment">Paiements</SelectItem>
-              <SelectItem value="refund">Remboursements</SelectItem>
+              <SelectItem value="all">{t("dashboard.transactions.all_types", "Tous les types")}</SelectItem>
+              <SelectItem value="payment">{t("dashboard.transactions.payments", "Paiements")}</SelectItem>
+              <SelectItem value="refund">{t("dashboard.transactions.refunds", "Remboursements")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -106,7 +108,7 @@ export default function TransactionsPage() {
                       {transaction.status === 'succeeded' ? <ArrowUpRight className="w-6 h-6" /> : <Clock className="w-6 h-6" />}
                     </div>
                     <div>
-                      <h3 className="font-bold">{transaction.import_requests?.product_name || "Paiement Service"}</h3>
+                      <h3 className="font-bold">{transaction.import_requests?.product_name || t("dashboard.transactions.payment_service", "Paiement Service")}</h3>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span className="font-mono uppercase">{transaction.import_requests?.reference || "REF-ID-" + transaction.id.slice(0, 5)}</span>
                         <span>•</span>
@@ -128,7 +130,7 @@ export default function TransactionsPage() {
                       ) : (
                         <Clock className="w-3 h-3" />
                       )}
-                      {transaction.status === 'succeeded' ? 'Complété' : 'En attente'}
+                      {transaction.status === 'succeeded' ? t("dashboard.transactions.completed", "Complété") : t("dashboard.transactions.pending", "En attente")}
                     </div>
                   </div>
                 </div>
@@ -138,9 +140,9 @@ export default function TransactionsPage() {
             {filteredTransactions.length === 0 && (
               <div className="p-12 text-center border-2 border-dashed border-border rounded-2xl">
                 <CircleDollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                <h3 className="font-semibold text-muted-foreground">Aucune transaction trouvée</h3>
+                <h3 className="font-semibold text-muted-foreground">{t("dashboard.transactions.no_transactions", "Aucune transaction trouvée")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Vos futurs paiements apparaîtront ici.
+                  {t("dashboard.transactions.no_transactions_hint", "Vos futurs paiements apparaîtront ici.")}
                 </p>
               </div>
             )}

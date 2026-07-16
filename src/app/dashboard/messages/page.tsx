@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   MessageSquare, 
   Search, 
@@ -18,6 +19,7 @@ import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 export default function MessagesPage() {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -48,8 +50,8 @@ export default function MessagesPage() {
   return (
     <div>
       <DashboardHeader 
-        title="Messagerie Sécurisée" 
-        subtitle="Échangez en toute confidentialité avec vos partenaires certifiés"
+        title={t("dashboard.messages.title", "Messagerie Sécurisée")} 
+        subtitle={t("dashboard.messages.subtitle", "Échangez en toute confidentialité avec vos partenaires certifiés")}
       />
 
       <div className="p-6">
@@ -67,7 +69,7 @@ export default function MessagesPage() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
-              placeholder="Rechercher une conversation..." 
+              placeholder={t("dashboard.messages.search", "Rechercher une conversation...")} 
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

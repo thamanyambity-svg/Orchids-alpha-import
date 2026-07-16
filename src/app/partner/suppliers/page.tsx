@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { 
   Search, 
   Plus, 
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default function PartnerSuppliersPage() {
+  const { t } = useLanguage()
   const [suppliers, setSuppliers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -125,8 +127,8 @@ export default function PartnerSuppliersPage() {
   return (
     <div>
       <DashboardHeader 
-        title="Mes Fournisseurs" 
-        subtitle="Gérez votre base de données fournisseurs locaux"
+        title={t("partner.suppliers.title", "Mes Fournisseurs")} 
+        subtitle={t("partner.suppliers.subtitle", "Gérez votre base de données fournisseurs locaux")}
       >
         <Dialog>
           <DialogTrigger asChild>
@@ -201,7 +203,7 @@ export default function PartnerSuppliersPage() {
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
-            placeholder="Rechercher un fournisseur..." 
+            placeholder={t("partner.suppliers.search", "Rechercher un fournisseur...")} 
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -232,11 +234,11 @@ export default function PartnerSuppliersPage() {
                     {supplier.validated_by_admin ? (
                       <div className="flex items-center gap-1 text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
                         <CheckCircle2 className="w-3 h-3" />
-                        Validé Alpha
+                        {t("partner.suppliers.validated", "Validé Alpha")}
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full uppercase tracking-wider">
-                        En attente
+                        {t("partner.suppliers.pending", "En attente")}
                       </div>
                     )}
                     <DropdownMenu>
@@ -246,7 +248,7 @@ export default function PartnerSuppliersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Modifier</DropdownMenuItem>
+                        <DropdownMenuItem>{t("partner.suppliers.edit", "Modifier")}</DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">Désactiver</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -290,7 +292,7 @@ export default function PartnerSuppliersPage() {
             </p>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline">Ajouter mon premier fournisseur</Button>
+                <Button variant="outline">                  {t("partner.suppliers.add_first", "Ajouter mon premier fournisseur")}</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>

@@ -21,6 +21,7 @@ import {
 import { Upload, X, Loader2, FileText, Shield } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface KycUploadModalProps {
   open: boolean
@@ -41,6 +42,7 @@ export function KycUploadModal({
   onOpenChange, 
   onSuccess 
 }: KycUploadModalProps) {
+  const { t } = useLanguage()
   const [file, setFile] = useState<File | null>(null)
   const [type, setType] = useState("")
   const [uploading, setUploading] = useState(false)
@@ -54,7 +56,7 @@ export function KycUploadModal({
 
   const handleUpload = async () => {
     if (!file || !type) {
-      toast.error("Veuillez sélectionner un type et un fichier")
+      toast.error(t("kyc.select_file_type", "Veuillez sélectionner un type et un fichier"))
       return
     }
 
@@ -183,7 +185,7 @@ export function KycUploadModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={uploading}>
-            Annuler
+            {t("kyc.cancel", "Annuler")}
           </Button>
           <Button onClick={handleUpload} disabled={uploading}>
             {uploading ? (

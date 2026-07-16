@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 import { SummaryCard } from "@/components/dashboard/summary-card"
 import { StatusTabs } from "@/components/dashboard/status-tabs"
 import { PartnerShowcase } from "@/components/dashboard/partner-showcase"
@@ -17,6 +18,8 @@ export default function DashboardPage() {
   const [request, setRequest] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+
+  const { t } = useLanguage()
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -86,7 +89,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl font-bold tracking-tight"
           >
-            Bonjour, {displayName} !
+            {t("dashboard.home.greeting", "Bonjour")}, {displayName} !
           </motion.h1>
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -95,13 +98,13 @@ export default function DashboardPage() {
             className="flex items-center gap-3"
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-widest">
-              <span>Statut:</span>
+              <span>{t("dashboard.home.status", "Statut:")}</span>
               <span className="text-emerald-500 font-bold flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                En Ligne
+                {t("dashboard.home.online", "En Ligne")}
               </span>
             </div>
             {profile?.countries && (

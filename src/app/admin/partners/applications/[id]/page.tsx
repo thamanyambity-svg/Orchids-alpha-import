@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useEffect, use } from "react"
+import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ import Link from "next/link"
 export default function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
     const router = useRouter()
+    const { t } = useLanguage()
     const supabase = createClient()
     const [application, setApplication] = useState<any>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -104,15 +106,15 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                             <p>{application.company_name}</p>
                         </div>
                         <div>
-                            <span className="text-sm font-medium text-muted-foreground">Email Contact</span>
+                            <span className="text-sm font-medium text-muted-foreground">{t("admin.applications.contact_email", "Email Contact")}</span>
                             <p>{application.email}</p>
                         </div>
                         <div>
-                            <span className="text-sm font-medium text-muted-foreground">Téléphone</span>
+                            <span className="text-sm font-medium text-muted-foreground">{t("admin.applications.phone", "Téléphone")}</span>
                             <p>{application.phone}</p>
                         </div>
                         <div>
-                            <span className="text-sm font-medium text-muted-foreground">Adresse</span>
+                            <span className="text-sm font-medium text-muted-foreground">{t("admin.applications.address", "Adresse")}</span>
                             <p>{application.company_details?.address}</p>
                         </div>
                         <div className="flex gap-4">
@@ -135,7 +137,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                 {/* Documents */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Documents Soumis</CardTitle>
+                        <CardTitle>{t("admin.applications.documents", "Documents")}</CardTitle>
                         <CardDescription>Vérifiez l'authenticité des fichiers</CardDescription>
                     </CardHeader>
                     <CardContent>
