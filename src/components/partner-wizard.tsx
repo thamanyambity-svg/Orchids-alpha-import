@@ -12,18 +12,18 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
-// Initialize Supabase client
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 type Step = 1 | 2 | 3 | 4
 
 export function PartnerWizard() {
     const router = useRouter()
     const [step, setStep] = useState<Step>(1)
     const [isLoading, setIsLoading] = useState(false)
+    const supabase: any = typeof window !== 'undefined'
+        ? createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+        : null
     const [formData, setFormData] = useState({
         company_name: "",
         email: "",
