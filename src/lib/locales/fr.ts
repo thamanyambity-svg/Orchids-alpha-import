@@ -1,4 +1,5 @@
 const fr: Record<string, string> = {
+  'nav.about': 'Qui sommes-nous',
   'nav.services': 'Services',
   'nav.partners': 'Partenaires',
   'nav.how-it-works': 'Comment ça marche',

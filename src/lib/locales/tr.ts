@@ -1,4 +1,5 @@
 const tr: Record<string, string> = {
+  'nav.about': 'Hakkımızda',
   'nav.services': 'Hizmetler',
   'nav.partners': 'Ortaklar',
   'nav.how-it-works': 'Nasıl Çalışır',

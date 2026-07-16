@@ -1,4 +1,5 @@
 const ar: Record<string, string> = {
+  'nav.about': 'من نحن',
   'nav.services': 'الخدمات',
   'nav.partners': 'الشركاء',
   'nav.how-it-works': 'كيف يعمل',

@@ -7,6 +7,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { useLanguage } from "@/lib/i18n-context"
 
 const NAV_LINKS = [
+  { key: "nav.about", label: "Qui sommes-nous", href: "#qui-sommes-nous" },
   { key: "nav.services", label: "Services", href: "#services" },
   { key: "nav.partners", label: "Partenaires", href: "#partenaires" },
   { key: "nav.how-it-works", label: "Comment ça marche", href: "#comment-ca-marche" },

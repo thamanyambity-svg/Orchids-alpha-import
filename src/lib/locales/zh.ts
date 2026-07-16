@@ -1,4 +1,5 @@
 const zh: Record<string, string> = {
+  'nav.about': '关于我们',
   'nav.services': '服务',
   'nav.partners': '合作伙伴',
   'nav.how-it-works': '运作方式',
