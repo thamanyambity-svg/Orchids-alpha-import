@@ -1,12 +1,11 @@
 import { Resend } from 'resend'
 import { RequestStatus, OrderStatus } from './types'
-import { createClient } from '@supabase/supabase-js'
-
 const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
 
-let _supabase: ReturnType<typeof createClient> | null = null
-function getSupabase() {
+let _supabase: any = null
+function getSupabase(): any {
   if (!_supabase) {
+    const { createClient } = require('@supabase/supabase-js')
     _supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
