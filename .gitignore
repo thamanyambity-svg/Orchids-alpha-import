@@ -43,3 +43,4 @@ Orchid-Analysis 3/
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+.env*

@@ -1,6 +1,12 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from "react"
+import fr from "@/lib/locales/fr"
+import en from "@/lib/locales/en"
+import tr from "@/lib/locales/tr"
+import zh from "@/lib/locales/zh"
+import ja from "@/lib/locales/ja"
+import ar from "@/lib/locales/ar"
 
 export type Language = "fr" | "en" | "tr" | "zh" | "ja" | "ar"
 
@@ -39,10 +45,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
     }
 
-    // Placeholder translation function
-    // In a real app, this would look up keys in dictionaries
+    const dictionaries: Record<Language, Record<string, string>> = {
+        fr, en, tr, zh, ja, ar,
+    }
+
     const t = (key: string, defaultText?: string) => {
-        return defaultText || key
+        return dictionaries[language]?.[key] || defaultText || key
     }
 
     return (
