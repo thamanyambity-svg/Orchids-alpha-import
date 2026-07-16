@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY || '')
 const SENDER_EMAIL = 'A.Onoseke Investment <contact@aonosekehouseinvestmentdrc.site>'
 
 export async function POST(req: NextRequest) {
@@ -64,6 +63,7 @@ export async function POST(req: NextRequest) {
     `
 
     if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY)
       const { error } = await resend.emails.send({
         from: SENDER_EMAIL,
         to: email,
