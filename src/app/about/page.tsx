@@ -14,14 +14,14 @@ import {
   Lightbulb,
   Heart
 } from "lucide-react"
-import { PublicHeader } from "@/components/public-header"
+import Navbar from "@/components/Navbar"
 import { PublicFooter } from "@/components/public-footer"
 import { BackButton } from "@/components/back-button"
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen" style={{ background: "hsl(216 45% 6%)" }}>
-      <PublicHeader />
+      <Navbar />
 
       <main className="pt-20">
         {/* Hero */}

@@ -22,7 +22,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { BackButton } from "@/components/back-button"
-import { PublicHeader } from "@/components/public-header"
+import Navbar from "@/components/Navbar"
 import { PublicFooter } from "@/components/public-footer"
 
 const steps = [
@@ -122,7 +122,7 @@ const guarantees = [
 export default function HowItWorksPage() {
   return (
     <div className="min-h-screen" style={{ background: "hsl(216 45% 6%)" }}>
-      <PublicHeader />
+      <Navbar />
 
       <main className="pt-20 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-6 pt-8">
