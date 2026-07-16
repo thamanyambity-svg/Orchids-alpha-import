@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/i18n-context"
 
 interface BackButtonProps {
   className?: string
@@ -16,9 +17,11 @@ interface BackButtonProps {
 export function BackButton({ 
   className, 
   variant = "ghost", 
-  label = "Retour",
+  label: labelProp,
   href
 }: BackButtonProps) {
+  const { t } = useLanguage()
+  const label = labelProp ?? t("back_button.label", "Retour")
   const router = useRouter()
 
   if (href) {

@@ -1,10 +1,30 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useMemo } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function WorldMap() {
+  const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  const nodes = useMemo(() => [
+    { x: 0.82, y: 0.35, label: t("worldmap.city.shanghai", "Shanghai"), radius: 4 },
+    { x: 0.78, y: 0.30, label: t("worldmap.city.guangzhou", "Guangzhou"), radius: 4 },
+    { x: 0.78, y: 0.38, label: t("worldmap.city.shenzhen", "Shenzhen"), radius: 4 },
+    { x: 0.52, y: 0.38, label: t("worldmap.city.istanbul", "Istanbul"), radius: 3 },
+    { x: 0.55, y: 0.46, label: t("worldmap.city.dubai", "Dubai"), radius: 3 },
+    { x: 0.90, y: 0.33, label: t("worldmap.city.tokyo", "Tokyo"), radius: 3 },
+    { x: 0.85, y: 0.40, label: t("worldmap.city.bangkok", "Bangkok"), radius: 3 },
+    { x: 0.51, y: 0.58, label: t("worldmap.city.kinshasa", "Kinshasa"), radius: 5 },
+    { x: 0.49, y: 0.62, label: t("worldmap.city.lubumbashi", "Lubumbashi"), radius: 3 },
+    { x: 0.48, y: 0.56, label: t("worldmap.city.matadi", "Matadi"), radius: 3 },
+  ], [t])
+
+  const connections = useMemo(() => [
+    [0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7],
+    [0, 1], [1, 2], [3, 4],
+  ], [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -20,24 +40,6 @@ export default function WorldMap() {
     resize()
     window.addEventListener("resize", resize)
 
-    const nodes = [
-      { x: 0.82, y: 0.35, label: "Shanghai", radius: 4 },    // Shanghai
-      { x: 0.78, y: 0.30, label: "Guangzhou", radius: 4 },   // Guangzhou
-      { x: 0.78, y: 0.38, label: "Shenzhen", radius: 4 },    // Shenzhen
-      { x: 0.52, y: 0.38, label: "Istanbul", radius: 3 },    // Istanbul
-      { x: 0.55, y: 0.46, label: "Dubai", radius: 3 },       // Dubai
-      { x: 0.90, y: 0.33, label: "Tokyo", radius: 3 },       // Tokyo
-      { x: 0.85, y: 0.40, label: "Bangkok", radius: 3 },     // Bangkok
-      { x: 0.51, y: 0.58, label: "Kinshasa", radius: 5 },    // Kinshasa (hub)
-      { x: 0.49, y: 0.62, label: "Lubumbashi", radius: 3 },  // Lubumbashi
-      { x: 0.48, y: 0.56, label: "Matadi", radius: 3 },      // Matadi
-    ]
-
-    const connections = [
-      [0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7],
-      [0, 1], [1, 2], [3, 4],
-    ]
-
     let animationId: number
     let time = 0
 
@@ -50,9 +52,9 @@ export default function WorldMap() {
       // Draw connections with flow animation
       connections.forEach(([from, to]) => {
         const f = nodes[from]
-        const t = nodes[to]
+        const n = nodes[to]
         const fx = f.x * w, fy = f.y * h
-        const tx = t.x * w, ty = t.y * h
+        const tx = n.x * w, ty = n.y * h
 
         ctx.beginPath()
         ctx.moveTo(fx, fy)
@@ -115,14 +117,14 @@ export default function WorldMap() {
       window.removeEventListener("resize", resize)
       cancelAnimationFrame(animationId)
     }
-  }, [])
+  }, [nodes])
 
   return (
     <section className="py-24 px-6 relative overflow-hidden" style={{ background: "hsl(216 45% 5%)" }}>
       <div className="max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-12">
-          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">Couverture mondiale</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">NOTRE <span className="text-gradient-gold">RÉSEAU</span></h2>
+          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("worldmap.subtitle", "Couverture mondiale")}</p>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("worldmap.title_notre", "NOTRE")} <span className="text-gradient-gold">{t("worldmap.title_reseau", "RÉSEAU")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -133,11 +135,11 @@ export default function WorldMap() {
           <canvas ref={canvasRef} className="w-full h-full" />
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-gold" />
-            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">Hub central</span>
+            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">{t("worldmap.hub_central", "Hub central")}</span>
           </div>
           <div className="absolute top-4 left-24 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
-            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">Villes partenaires</span>
+            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">{t("worldmap.partner_cities", "Villes partenaires")}</span>
           </div>
         </div>
       </div>

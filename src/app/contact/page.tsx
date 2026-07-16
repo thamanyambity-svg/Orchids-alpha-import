@@ -4,6 +4,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { useLanguage } from "@/lib/i18n-context"
 import {
   Shield,
   Mail,
@@ -25,14 +26,10 @@ import { PublicHeader } from "@/components/public-header"
 import { PublicFooter } from "@/components/public-footer"
 import { toast } from "sonner"
 
-const contactTypes = [
-  { value: "partner", label: "Je veux devenir partenaire", icon: Building2 },
-  { value: "institutional", label: "Contact institutionnel", icon: Briefcase },
-]
-
 export default function ContactPage() {
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
   const [contactType, setContactType] = useState("")
   const [formData, setFormData] = useState({
@@ -43,7 +40,11 @@ export default function ContactPage() {
     message: "",
   })
 
-  // Handle Type Selection
+  const contactTypes = [
+    { value: "partner", label: t("contact.form.type.partner", "Je veux devenir partenaire"), icon: Building2 },
+    { value: "institutional", label: t("contact.form.type.institutional", "Contact institutionnel"), icon: Briefcase },
+  ]
+
   const handleTypeSelect = (type: string) => {
     if (type === "partner") {
       router.push("/partner-request")
@@ -58,7 +59,7 @@ export default function ContactPage() {
 
     try {
       if (contactType !== "institutional") {
-        toast.error("Veuillez sélectionner un type de contact.")
+        toast.error(t("contact.form.type.required", "Veuillez sélectionner un type de contact."))
         return
       }
 
@@ -76,13 +77,13 @@ export default function ContactPage() {
 
       if (error) throw error
 
-      toast.success("Message institutionnel envoyé ! Nous vous répondrons sous 24h.")
+      toast.success(t("contact.form.success", "Message institutionnel envoyé ! Nous vous répondrons sous 24h."))
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
       setContactType("")
 
     } catch (error: any) {
       console.error("Error sending message:", error)
-      toast.error("Erreur lors de l'envoi : " + error.message)
+      toast.error(t("contact.form.error", "Erreur lors de l'envoi") + ": " + error.message)
     } finally {
       setIsLoading(false)
     }
@@ -108,15 +109,15 @@ export default function ContactPage() {
               >
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-8">
                   <MessageSquare className="w-4 h-4" />
-                  Contact
+                  {t("contact.hero.label", "Contact")}
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-                  Parlons de votre <span className="text-gradient-gold">projet</span>
+                  {t("contact.page.title", "Parlons de votre")}{" "}
+                  <span className="text-gradient-gold">{t("contact.page.title.gold", "projet")}</span>
                 </h1>
                 <p className="text-lg text-muted-foreground mb-12">
-                  Que vous soyez futur partenaire ou institutionnel,
-                  notre équipe est à votre écoute pour répondre à toutes vos questions.
+                  {t("contact.page.subtitle", "Que vous soyez futur partenaire ou institutionnel, notre équipe est à votre écoute pour répondre à toutes vos questions.")}
                 </p>
 
                 <div className="space-y-6">
@@ -125,9 +126,9 @@ export default function ContactPage() {
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Siège Alpha</h3>
+                      <h3 className="font-semibold mb-1">{t("contact.address.title", "Siège Alpha")}</h3>
                       <p className="text-muted-foreground">
-                        Kinshasa, République Démocratique du Congo
+                        {t("contact.address.line1", "Kinshasa, République Démocratique du Congo")}
                       </p>
                     </div>
                   </div>
@@ -137,7 +138,7 @@ export default function ContactPage() {
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Email</h3>
+                      <h3 className="font-semibold mb-1">{t("contact.email", "Email")}</h3>
                       <a href="mailto:contact@aonosekehouseinvestmentdrc.site" className="text-primary hover:underline">
                         contact@aonosekehouseinvestmentdrc.site
                       </a>
@@ -149,7 +150,7 @@ export default function ContactPage() {
                       <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Téléphone / WhatsApp</h3>
+                      <h3 className="font-semibold mb-1">{t("contact.phone", "Téléphone / WhatsApp")}</h3>
                       <a href="tel:+243999894788" className="text-primary hover:underline">
                         +243 999 894 788 / +243 818 924 674
                       </a>
@@ -160,11 +161,10 @@ export default function ContactPage() {
                 <div className="mt-12 p-6 rounded-xl bg-card border border-border">
                   <div className="flex items-center gap-3 mb-3">
                     <Shield className="w-5 h-5 text-primary" />
-                    <span className="font-semibold">Temps de réponse</span>
+                    <span className="font-semibold">{t("contact.response.time", "Temps de réponse")}</span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Nous nous engageons à répondre à toutes les demandes sous 24 heures ouvrées.
-                    Les demandes partenaires sont traitées en priorité.
+                    {t("contact.response.time.desc", "Nous nous engageons à répondre à toutes les demandes sous 24 heures ouvrées. Les demandes partenaires sont traitées en priorité.")}
                   </p>
                 </div>
               </motion.div>
@@ -175,7 +175,7 @@ export default function ContactPage() {
                 transition={{ delay: 0.2 }}
               >
                 <div className="p-8 rounded-2xl bg-card border border-border">
-                  <h2 className="text-2xl font-bold mb-6">Envoyez-nous un message</h2>
+                  <h2 className="text-2xl font-bold mb-6">{t("contact.form.title", "Envoyez-nous un message")}</h2>
 
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     {contactTypes.map((type) => (
@@ -186,10 +186,10 @@ export default function ContactPage() {
                         className={`p-4 rounded-xl border transition-all text-center ${contactType === type.value
                           ? "border-primary bg-primary/10"
                           : "border-border hover:border-primary/50"
-                          }`}
+                        }`}
                       >
                         <type.icon className={`w-6 h-6 mx-auto mb-2 ${contactType === type.value ? "text-primary" : "text-muted-foreground"
-                          }`} />
+                        }`} />
                         <span className="text-xs">{type.label}</span>
                       </button>
                     ))}
@@ -204,11 +204,11 @@ export default function ContactPage() {
                     >
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="name">Nom complet *</Label>
+                          <Label htmlFor="name">{t("contact.form.name", "Nom complet")} *</Label>
                           <Input
                             id="name"
                             type="text"
-                            placeholder="Jean Dupont"
+                            placeholder={t("contact.form.name.placeholder", "Jean Dupont")}
                             className="h-12"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -216,11 +216,11 @@ export default function ContactPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="email">Email *</Label>
+                          <Label htmlFor="email">{t("contact.form.email", "Email")} *</Label>
                           <Input
                             id="email"
                             type="email"
-                            placeholder="votre@email.com"
+                            placeholder={t("contact.form.email.placeholder", "votre@email.com")}
                             className="h-12"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -231,41 +231,41 @@ export default function ContactPage() {
 
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Téléphone</Label>
+                          <Label htmlFor="phone">{t("contact.form.phone", "Téléphone")}</Label>
                           <Input
                             id="phone"
                             type="tel"
-                            placeholder="+243 000 000 000"
+                            placeholder={t("contact.form.phone.placeholder", "+243 000 000 000")}
                             className="h-12"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="subject">Sujet *</Label>
+                          <Label htmlFor="subject">{t("contact.form.subject", "Sujet")} *</Label>
                           <Select
                             value={formData.subject}
                             onValueChange={(value) => setFormData({ ...formData, subject: value })}
                             required
                           >
                             <SelectTrigger className="h-12">
-                              <SelectValue placeholder="Sélectionnez" />
+                              <SelectValue placeholder={t("contact.form.subject.placeholder", "Sélectionnez")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="info">Demande d&apos;information</SelectItem>
-                              <SelectItem value="partnership">Proposition Institutionnelle</SelectItem>
-                              <SelectItem value="press">Presse / Média</SelectItem>
-                              <SelectItem value="other">Autre</SelectItem>
+                              <SelectItem value="info">{t("contact.form.subject.info", "Demande d'information")}</SelectItem>
+                              <SelectItem value="partnership">{t("contact.form.subject.partnership", "Proposition Institutionnelle")}</SelectItem>
+                              <SelectItem value="press">{t("contact.form.subject.press", "Presse / Média")}</SelectItem>
+                              <SelectItem value="other">{t("contact.form.type.other", "Autre")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="message">Message *</Label>
+                        <Label htmlFor="message">{t("contact.form.message", "Message")} *</Label>
                         <Textarea
                           id="message"
-                          placeholder="Décrivez votre demande en détail..."
+                          placeholder={t("contact.form.message.placeholder", "Décrivez votre demande en détail...")}
                           className="min-h-32 resize-none"
                           value={formData.message}
                           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -275,11 +275,14 @@ export default function ContactPage() {
 
                       <Button type="submit" className="w-full h-12" disabled={isLoading}>
                         {isLoading ? (
-                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                            {t("contact.form.sending", "Envoi en cours...")}
+                          </>
                         ) : (
                           <>
                             <Send className="w-5 h-5 mr-2" />
-                            Envoyer le message
+                            {t("contact.form.submit", "Envoyer le message")}
                           </>
                         )}
                       </Button>
@@ -288,7 +291,7 @@ export default function ContactPage() {
 
                   {!contactType && (
                     <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
-                      <p>Veuillez sélectionner le type de demande ci-dessus pour continuer.</p>
+                      <p>{t("contact.form.type.prompt", "Veuillez sélectionner le type de demande ci-dessus pour continuer.")}</p>
                     </div>
                   )}
 

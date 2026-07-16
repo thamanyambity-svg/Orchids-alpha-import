@@ -1,42 +1,48 @@
 "use client"
 
 import { motion } from "framer-motion"
-
-const services = [
-  {
-    num: "01", title: "Gestion des Imports",
-    desc: "Solutions import clé en main. Coordination totale depuis le fournisseur jusqu'à votre entrepôt en DRC.",
-    detail: "Sourcing · Négociation · Transport · Réception",
-    img: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=900&q=75&fit=crop",
-  },
-  {
-    num: "02", title: "Logistique Export",
-    desc: "Pipelines d'export fiables reliant l'Afrique aux marchés mondiaux avec rapidité et précision.",
-    detail: "Conditionnement · Fret maritime · Tracking GPS",
-    img: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=900&q=75&fit=crop",
-  },
-  {
-    num: "03", title: "Dédouanement",
-    desc: "Agents portuaires dédiés pour des procédures accélérées. Conformité douanière garantie dans 47 pays.",
-    detail: "DRC · Belgique · Chine · UAE · USA",
-    img: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=900&q=75&fit=crop",
-  },
-  {
-    num: "04", title: "Analyse Supply Chain",
-    desc: "Tableaux de bord en temps réel et modélisation prédictive pour optimiser votre chaîne logistique.",
-    detail: "KPI Live · Prévision · Optimisation coûts",
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=75&fit=crop",
-  },
-]
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function Services() {
+  const { t } = useLanguage()
+
+  const services = [
+    {
+      num: "01",
+      title: t("services.imports", "Gestion des Imports"),
+      desc: t("services.imports.desc", "Solutions import clé en main. Coordination totale depuis le fournisseur jusqu'à votre entrepôt en DRC."),
+      detail: t("services.imports.detail", "Sourcing · Négociation · Transport · Réception"),
+      img: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=900&q=75&fit=crop",
+    },
+    {
+      num: "02",
+      title: t("services.export", "Logistique Export"),
+      desc: t("services.export.desc", "Pipelines d'export fiables reliant l'Afrique aux marchés mondiaux avec rapidité et précision."),
+      detail: t("services.export.detail", "Conditionnement · Fret maritime · Tracking GPS"),
+      img: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=900&q=75&fit=crop",
+    },
+    {
+      num: "03",
+      title: t("services.customs", "Dédouanement"),
+      desc: t("services.customs.desc", "Agents portuaires dédiés pour des procédures accélérées. Conformité douanière garantie dans 47 pays."),
+      detail: t("services.customs.detail", "DRC · Belgique · Chine · UAE · USA"),
+      img: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=900&q=75&fit=crop",
+    },
+    {
+      num: "04",
+      title: t("services.analytics", "Analyse Supply Chain"),
+      desc: t("services.analytics.desc", "Tableaux de bord en temps réel et modélisation prédictive pour optimiser votre chaîne logistique."),
+      detail: t("services.analytics.detail", "KPI Live · Prévision · Optimisation coûts"),
+      img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=75&fit=crop",
+    },
+  ]
   return (
     <section id="services" className="py-32 px-6 relative overflow-hidden" style={{ background: "hsl(216 45% 6%)" }}>
       <div className="absolute inset-0 diagonal-lines opacity-25 pointer-events-none" />
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-20">
-          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">Ce que nous faisons</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">NOS <span className="text-gradient-gold">SERVICES</span></h2>
+          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("services.subtitle", "Ce que nous faisons")}</p>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("services.heading.prefix", "NOS")} <span className="text-gradient-gold">{t("services.title", "Services")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -54,7 +60,7 @@ export default function Services() {
               <div className="relative z-10 p-10 h-full flex flex-col justify-between" style={{ minHeight: 320 }}>
                 <div className="flex justify-between items-start">
                   <span className="font-display text-7xl text-white/8 group-hover:text-gold/20 transition-colors duration-400 leading-none select-none">{svc.num}</span>
-                  <motion.span className="font-condensed text-xs text-gold/0 group-hover:text-gold/70 tracking-widest uppercase transition-all duration-300 mt-3" style={{ letterSpacing: "0.3em" }}>VOIR →</motion.span>
+                  <motion.span className="font-condensed text-xs text-gold/0 group-hover:text-gold/70 tracking-widest uppercase transition-all duration-300 mt-3" style={{ letterSpacing: "0.3em" }}>{t("services.view", "VOIR →")}</motion.span>
                 </div>
                 <div>
                   <h3 className="font-display text-3xl md:text-4xl text-white tracking-wider mb-4 group-hover:text-gradient-gold transition-all duration-400">{svc.title}</h3>

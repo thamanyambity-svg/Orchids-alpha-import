@@ -1,15 +1,18 @@
 "use client"
 
 import Link from "next/link"
-
-const footerLinks = {
-  Services: ["Gestion des Imports", "Logistique Export", "Dédouanement", "Analyse Supply Chain"],
-  Entreprise: ["À propos", "Partenaires", "Carrières", "Blog"],
-  Légal: ["Conditions générales", "Politique de confidentialité", "Mentions légales"],
-  Contact: ["Kinshasa, RDC", "Guangzhou, Chine", "contact@alphaimport.cd", "+243 999 894 788"],
-}
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function Footer() {
+  const { t } = useLanguage()
+
+  const footerLinks = {
+    [t("footer.services", "Services")]: [t("footer.services.imports", "Gestion des Imports"), t("footer.services.export", "Logistique Export"), t("footer.services.customs", "Dédouanement"), t("footer.services.analysis", "Analyse Supply Chain")],
+    [t("footer.company", "Entreprise")]: [t("footer.company.about", "À propos"), t("footer.company.partners", "Partenaires"), t("footer.company.careers", "Carrières"), t("footer.company.blog", "Blog")],
+    [t("footer.legal", "Légal")]: [t("footer.terms", "Conditions générales"), t("footer.privacy", "Politique de confidentialité"), t("footer.legal.notices", "Mentions légales")],
+    [t("footer.contact", "Contact")]: [t("footer.address", "Kinshasa, RDC"), t("footer.address.guangzhou", "Guangzhou, Chine"), t("footer.email", "contact@alphaimport.cd"), t("footer.phone", "+243 999 894 788")],
+  }
+
   return (
     <footer className="relative pt-24 pb-10 px-6" style={{ background: "hsl(216 45% 3%)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
       <div className="max-w-7xl mx-auto">
@@ -31,15 +34,15 @@ export default function Footer() {
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <span className="font-display text-2xl text-white drop-shadow-[0_0_16px_hsl(42_85%_55%/0.3)]">ALPHA IMPORT</span>
-            <span className="font-condensed text-[9px] text-white/15 tracking-[0.2em] uppercase max-w-48 leading-tight">Filiale du Groupe A.Onoseke Investment RDC</span>
+            <span className="font-condensed text-[9px] text-white/15 tracking-[0.2em] uppercase max-w-48 leading-tight">{t("footer.subsidiary", "Filiale du Groupe A.Onoseke Investment RDC")}</span>
           </div>
           <div className="flex items-center gap-6">
-            {["LinkedIn", "WhatsApp", "Email"].map((social) => (
+            {[t("footer.linkedin", "LinkedIn"), t("footer.whatsapp", "WhatsApp"), t("footer.email.link", "Email")].map((social) => (
               <Link key={social} href="/" className="font-condensed text-xs text-white/20 hover:text-gold tracking-widest uppercase transition-colors duration-200">{social}</Link>
             ))}
           </div>
           <p className="font-condensed text-xs text-white/10 tracking-widest uppercase">
-            © {new Date().getFullYear()} Alpha Import Exchange. Tous droits réservés.
+            &copy; {new Date().getFullYear()} Alpha Import Exchange. {t("footer.rights", "Tous droits réservés.")}
           </p>
         </div>
       </div>

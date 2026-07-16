@@ -1,27 +1,30 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Mail, Phone, MapPin } from "lucide-react"
+import { useLanguage } from "@/lib/i18n-context"
 
-const footerLinks = {
+export function PublicFooter() {
+  const { t } = useLanguage()
+
+  const footerLinks = {
   platform: [
-    { href: "/about", label: "Qui sommes-nous ?" },
-    { href: "/how-it-works", label: "Comment ça marche" },
-    { href: "/countries", label: "Pays partenaires" },
+    { href: "/about", label: t("nav.about", "Qui sommes-nous ?") },
+    { href: "/how-it-works", label: t("nav.how-it-works", "Comment ça marche") },
+    { href: "/countries", label: t("nav.countries", "Pays partenaires") },
   ],
   legal: [
-    { href: "/terms", label: "CGU" },
-    { href: "/privacy", label: "Politique de confidentialité" },
-    { href: "/legal", label: "Mentions légales" },
+    { href: "/terms", label: t("nav.terms", "CGU") },
+    { href: "/privacy", label: t("nav.privacy", "Politique de confidentialité") },
+    { href: "/legal", label: t("nav.legal", "Mentions légales") },
   ],
   access: [
-    { href: "/register", label: "Devenir acheteur" },
-    { href: "/partner-request", label: "Devenir partenaire" },
-    { href: "/admin", label: "Administration" },
-    { href: "/contact", label: "Nous contacter" },
+    { href: "/register", label: t("nav.register", "Devenir acheteur") },
+    { href: "/partner-request", label: t("nav.partner", "Devenir partenaire") },
+    { href: "/admin", label: t("nav.admin", "Administration") },
+    { href: "/contact", label: t("nav.contact", "Nous contacter") },
   ],
 }
 
-export function PublicFooter() {
   return (
     <footer className="border-t border-border bg-card/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -38,13 +41,13 @@ export function PublicFooter() {
               </div>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
-              Infrastructure de confiance pour le commerce international Afrique-Asie.
-              Sécurité, traçabilité et contrôle à chaque étape.
+              {t("publicfooter.description", "Infrastructure de confiance pour le commerce international Afrique-Asie.")}
+              {t("publicfooter.security", "Sécurité, traçabilité et contrôle à chaque étape.")}
             </p>
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-3">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>Kinshasa, République Démocratique du Congo</span>
+                <span>{t("publicfooter.address", "Kinshasa, République Démocratique du Congo")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-primary" />
@@ -63,7 +66,7 @@ export function PublicFooter() {
 
           <div>
             <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-              Plateforme
+              {t("publicfooter.section.platform", "Plateforme")}
             </h3>
             <ul className="space-y-3">
               {footerLinks.platform.map((link) => (
@@ -81,7 +84,7 @@ export function PublicFooter() {
 
           <div>
             <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-              Accès
+              {t("publicfooter.section.access", "Accès")}
             </h3>
             <ul className="space-y-3">
               {footerLinks.access.map((link) => (
@@ -99,7 +102,7 @@ export function PublicFooter() {
 
           <div>
             <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-              Légal
+              {t("publicfooter.section.legal", "Légal")}
             </h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
@@ -118,11 +121,11 @@ export function PublicFooter() {
 
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} A.Onoseke Investment / Alpha A Ambity. Tous droits réservés.
+            © {new Date().getFullYear()} A.Onoseke Investment / Alpha A Ambity. {t("publicfooter.rights", "Tous droits réservés.")}
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            Système opérationnel
+            {t("publicfooter.status", "Système opérationnel")}
           </div>
         </div>
       </div>

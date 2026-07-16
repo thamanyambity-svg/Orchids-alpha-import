@@ -2,20 +2,22 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-
-const steps = [
-  { num: "01", title: "Inscription & Vérification", desc: "Créez votre compte professionnel en 5 minutes. Vérification KYB accélérée par nos équipes dédiées. Accès immédiat au tableau de bord.", detail: ["Création de compte", "Vérification KYB", "Accès instantané"],
-    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80&fit=crop" },
-  { num: "02", title: "Définir Votre Besoin", desc: "Renseignez vos marchandises, origines et destinations. Notre IA calcule la route optimale en temps réel et génère un devis sous 2 heures.", detail: ["Type de marchandise", "Origine & Destination", "Volume & Délais"],
-    img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=900&q=80&fit=crop" },
-  { num: "03", title: "Approbation & Paiement", desc: "Recevez votre devis personnalisé. Paiement sécurisé 256-bit avec fonds en escrow. Votre argent est protégé jusqu'à la livraison confirmée.", detail: ["Devis en 2h", "Paiement sécurisé", "Fonds en escrow"],
-    img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=900&q=80&fit=crop" },
-  { num: "04", title: "Suivi Temps Réel", desc: "Dashboard live avec position GPS de votre cargaison, alertes douanières automatiques, et notifications push à chaque étape clé. Livraison garantie.", detail: ["GPS Live", "Alertes douanes", "Notifications push"],
-    img: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=900&q=80&fit=crop" },
-]
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function HowItWorks() {
+  const { t } = useLanguage()
   const [activeStep, setActiveStep] = useState(0)
+
+  const steps = [
+    { num: "01", title: t("how.step1", "Inscription & Vérification"), desc: t("how.step1.desc", "Créez votre compte professionnel en 5 minutes. Vérification KYB accélérée par nos équipes dédiées. Accès immédiat au tableau de bord."), detail: [t("how.step1.detail1", "Création de compte"), t("how.step1.detail2", "Vérification KYB"), t("how.step1.detail3", "Accès instantané")],
+      img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80&fit=crop" },
+    { num: "02", title: t("how.step2", "Définir Votre Besoin"), desc: t("how.step2.desc", "Renseignez vos marchandises, origines et destinations. Notre IA calcule la route optimale en temps réel et génère un devis sous 2 heures."), detail: [t("how.step2.detail1", "Type de marchandise"), t("how.step2.detail2", "Origine & Destination"), t("how.step2.detail3", "Volume & Délais")],
+      img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=900&q=80&fit=crop" },
+    { num: "03", title: t("how.step3", "Approbation & Paiement"), desc: t("how.step3.desc", "Recevez votre devis personnalisé. Paiement sécurisé 256-bit avec fonds en escrow. Votre argent est protégé jusqu'à la livraison confirmée."), detail: [t("how.step3.detail1", "Devis en 2h"), t("how.step3.detail2", "Paiement sécurisé"), t("how.step3.detail3", "Fonds en escrow")],
+      img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=900&q=80&fit=crop" },
+    { num: "04", title: t("how.step4", "Suivi Temps Réel"), desc: t("how.step4.desc", "Dashboard live avec position GPS de votre cargaison, alertes douanières automatiques, et notifications push à chaque étape clé. Livraison garantie."), detail: [t("how.step4.detail1", "GPS Live"), t("how.step4.detail2", "Alertes douanes"), t("how.step4.detail3", "Notifications push")],
+      img: "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=900&q=80&fit=crop" },
+  ]
 
   return (
     <section id="comment-ca-marche" className="relative min-h-screen overflow-hidden" style={{ background: "hsl(216 45% 5%)" }}>
@@ -37,8 +39,8 @@ export default function HowItWorks() {
 
       <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-16 py-24 min-h-screen flex flex-col">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
-          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">Processus simplifié</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">COMMENT <span className="text-gradient-gold">ÇA MARCHE</span></h2>
+          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("how.subtitle", "Processus simplifié")}</p>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("how.title.prefix", "COMMENT")} <span className="text-gradient-gold">{t("how.title", "ÇA MARCHE")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />

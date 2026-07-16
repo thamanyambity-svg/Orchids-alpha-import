@@ -3,40 +3,42 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-
-const slides = [
-  {
-    bg: null, isCss: true,
-    cssStyle: { background: "radial-gradient(ellipse at 30% 60%, #1a3a5c 0%, #0a1628 45%, #06101e 100%)" },
-    tag: "KINSHASA · DRC",
-    headline: "L'AFRIQUE",
-    sub: "CONNECTÉE AU MONDE",
-  },
-  {
-    bg: null, isCss: true,
-    cssStyle: { background: "radial-gradient(ellipse at 70% 40%, #1c2f1a 0%, #0d1f14 30%, #0a1628 70%, #06101e 100%)" },
-    tag: "SHANGHAI · DUBAI · TOKYO",
-    headline: "VITESSE",
-    sub: "SANS COMPROMIS",
-  },
-  {
-    bg: null, isCss: true,
-    cssStyle: { background: "radial-gradient(ellipse at 50% 30%, #2a1f08 0%, #1a1406 30%, #0a1628 70%, #06101e 100%)" },
-    tag: "47 PAYS PARTENAIRES",
-    headline: "SÉCURITÉ",
-    sub: "CERTIFIÉE ISO 9001",
-  },
-  {
-    bg: null, isCss: true,
-    cssStyle: { background: "radial-gradient(ellipse at 30% 60%, #1a0a2a 0%, #0a1628 45%, #06101e 100%)" },
-    tag: "BRUXELLES · NEW YORK · GUANGZHOU",
-    headline: "CONFIANCE",
-    sub: "VOTRE PARTENAIRE GLOBAL",
-  },
-]
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
+  const { t } = useLanguage()
+
+  const slides = [
+    {
+      bg: null, isCss: true,
+      cssStyle: { background: "radial-gradient(ellipse at 30% 60%, #1a3a5c 0%, #0a1628 45%, #06101e 100%)" },
+      tag: t("hero.tag.kinshasa", "KINSHASA · DRC"),
+      headline: t("hero.headline.africa", "L'AFRIQUE"),
+      sub: t("hero.sub.connected", "CONNECTÉE AU MONDE"),
+    },
+    {
+      bg: null, isCss: true,
+      cssStyle: { background: "radial-gradient(ellipse at 70% 40%, #1c2f1a 0%, #0d1f14 30%, #0a1628 70%, #06101e 100%)" },
+      tag: t("hero.tag.shanghai", "SHANGHAI · DUBAI · TOKYO"),
+      headline: t("hero.headline.speed", "VITESSE"),
+      sub: t("hero.sub.nocompromise", "SANS COMPROMIS"),
+    },
+    {
+      bg: null, isCss: true,
+      cssStyle: { background: "radial-gradient(ellipse at 50% 30%, #2a1f08 0%, #1a1406 30%, #0a1628 70%, #06101e 100%)" },
+      tag: t("hero.tag.countries", "47 PAYS PARTENAIRES"),
+      headline: t("hero.headline.security", "SÉCURITÉ"),
+      sub: t("hero.sub.iso", "CERTIFIÉE ISO 9001"),
+    },
+    {
+      bg: null, isCss: true,
+      cssStyle: { background: "radial-gradient(ellipse at 30% 60%, #1a0a2a 0%, #0a1628 45%, #06101e 100%)" },
+      tag: t("hero.tag.global", "BRUXELLES · NEW YORK · GUANGZHOU"),
+      headline: t("hero.headline.trust", "CONFIANCE"),
+      sub: t("hero.sub.global", "VOTRE PARTENAIRE GLOBAL"),
+    },
+  ]
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -114,10 +116,10 @@ export default function Hero() {
 
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.7 }} className="absolute bottom-0 left-0 right-0 z-20 flex justify-around items-center py-5 px-8 border-t border-white/10" style={{ background: "rgba(6,16,30,0.85)", backdropFilter: "blur(20px)" }}>
         {[
-          { val: "$2.4B+", label: "Marchandises déplacées" },
-          { val: "47", label: "Pays partenaires" },
-          { val: "1 200+", label: "Partenaires actifs" },
-          { val: "99.2%", label: "Taux de satisfaction" },
+          { val: "$2.4B+", label: t("hero.stat.goods", "Marchandises déplacées") },
+          { val: "47", label: t("hero.stat.countries", "Pays partenaires") },
+          { val: "1 200+", label: t("hero.stat.partners", "Partenaires actifs") },
+          { val: "99.2%", label: t("hero.stat.satisfaction", "Taux de satisfaction") },
         ].map((s, i) => (
           <div key={i} className="text-center">
             <div className="font-display text-2xl md:text-3xl text-gradient-gold">{s.val}</div>
@@ -127,7 +129,7 @@ export default function Hero() {
       </motion.div>
 
       <motion.div className="absolute bottom-24 right-10 z-20 flex-col items-center gap-2 hidden md:flex" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-        <span className="font-condensed text-[10px] text-white/30 uppercase tracking-[0.3em] rotate-90 mb-6">Scroll</span>
+          <span className="font-condensed text-[10px] text-white/30 uppercase tracking-[0.3em] rotate-90 mb-6">{t("hero.scroll", "Scroll")}</span>
         <div className="w-px h-16 bg-gradient-to-b from-gold/60 to-transparent" />
       </motion.div>
     </section>

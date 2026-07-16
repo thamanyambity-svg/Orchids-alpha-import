@@ -2,22 +2,24 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-
-const countries = [
-  { flag: "🇨🇩", code: "DRC", name: "Congo-Kinshasa", cities: ["Kinshasa", "Lubumbashi", "Matadi"], desc: "Hub central — siège opérationnel de la plateforme. Porte d'entrée vers l'Afrique centrale.", accent: "#4caf50",
-    img: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1600&q=80&fit=crop" },
-  { flag: "🇨🇳", code: "CHN", name: "Chine", cities: ["Shanghai", "Guangzhou", "Shenzhen"], desc: "Premier fournisseur mondial. Textiles, électronique, machinerie industrielle à prix compétitifs.", accent: "#e53935",
-    img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1600&q=80&fit=crop" },
-  { flag: "🇹🇷", code: "TUR", name: "Turquie", cities: ["Istanbul", "Ankara", "Izmir"], desc: "Carrefour Europe-Asie. Textile, construction, agroalimentaire et hub de transit stratégique.", accent: "#ff5722",
-    img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1600&q=80&fit=crop" },
-  { flag: "🇯🇵", code: "JPN", name: "Japon", cities: ["Tokyo", "Osaka", "Yokohama"], desc: "Technologie de pointe, automobile, électronique et équipements industriels haut de gamme.", accent: "#e91e63",
-    img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1600&q=80&fit=crop" },
-  { flag: "🇹🇭", code: "THA", name: "Thaïlande", cities: ["Bangkok", "Chiang Mai", "Phuket"], desc: "Agro-industrie, caoutchouc, électronique et plateforme régionale d'export vers l'Asie du Sud-Est.", accent: "#ffc107",
-    img: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1600&q=80&fit=crop" },
-]
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function PartnerCountries() {
+  const { t } = useLanguage()
   const [active, setActive] = useState(0)
+
+  const countries = [
+    { flag: "🇨🇩", code: "DRC", name: t("partners.country.drc.name", "Congo-Kinshasa"), cities: [t("partners.country.drc.city.kinshasa", "Kinshasa"), t("partners.country.drc.city.lubumbashi", "Lubumbashi"), t("partners.country.drc.city.matadi", "Matadi")], desc: t("partners.country.drc.desc", "Hub central — siège opérationnel de la plateforme. Porte d'entrée vers l'Afrique centrale."), accent: "#4caf50",
+      img: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1600&q=80&fit=crop" },
+    { flag: "🇨🇳", code: "CHN", name: t("partners.country.chn.name", "Chine"), cities: [t("partners.country.chn.city.shanghai", "Shanghai"), t("partners.country.chn.city.guangzhou", "Guangzhou"), t("partners.country.chn.city.shenzhen", "Shenzhen")], desc: t("partners.country.chn.desc", "Premier fournisseur mondial. Textiles, électronique, machinerie industrielle à prix compétitifs."), accent: "#e53935",
+      img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1600&q=80&fit=crop" },
+    { flag: "🇹🇷", code: "TUR", name: t("partners.country.tur.name", "Turquie"), cities: [t("partners.country.tur.city.istanbul", "Istanbul"), t("partners.country.tur.city.ankara", "Ankara"), t("partners.country.tur.city.izmir", "Izmir")], desc: t("partners.country.tur.desc", "Carrefour Europe-Asie. Textile, construction, agroalimentaire et hub de transit stratégique."), accent: "#ff5722",
+      img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1600&q=80&fit=crop" },
+    { flag: "🇯🇵", code: "JPN", name: t("partners.country.jpn.name", "Japon"), cities: [t("partners.country.jpn.city.tokyo", "Tokyo"), t("partners.country.jpn.city.osaka", "Osaka"), t("partners.country.jpn.city.yokohama", "Yokohama")], desc: t("partners.country.jpn.desc", "Technologie de pointe, automobile, électronique et équipements industriels haut de gamme."), accent: "#e91e63",
+      img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1600&q=80&fit=crop" },
+    { flag: "🇹🇭", code: "THA", name: t("partners.country.tha.name", "Thaïlande"), cities: [t("partners.country.tha.city.bangkok", "Bangkok"), t("partners.country.tha.city.chiang_mai", "Chiang Mai"), t("partners.country.tha.city.phuket", "Phuket")], desc: t("partners.country.tha.desc", "Agro-industrie, caoutchouc, électronique et plateforme régionale d'export vers l'Asie du Sud-Est."), accent: "#ffc107",
+      img: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1600&q=80&fit=crop" },
+  ]
 
   return (
     <section id="partenaires" className="relative min-h-screen overflow-hidden flex flex-col" style={{ background: "hsl(216 45% 5%)" }}>
@@ -38,8 +40,8 @@ export default function PartnerCountries() {
 
       <div className="relative z-20 flex flex-col min-h-screen py-24 px-6 md:px-16 max-w-7xl mx-auto w-full">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
-          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">Notre réseau mondial</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">PAYS <span className="text-gradient-gold">PARTENAIRES</span></h2>
+          <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("partners.subtitle", "Notre réseau mondial")}</p>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("partners.title_pays", "PAYS")} <span className="text-gradient-gold">{t("partners.title_partenaires", "PARTENAIRES")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -65,7 +67,7 @@ export default function PartnerCountries() {
                 </div>
                 <div className="flex items-center gap-3">
                   <motion.div className="h-[2px] w-24" style={{ background: countries[active].accent }} layoutId="accent-bar" transition={{ duration: 0.4 }} />
-                  <span className="font-condensed text-xs text-white/30 tracking-widest uppercase">Partenaire actif</span>
+                  <span className="font-condensed text-xs text-white/30 tracking-widest uppercase">{t("partners.active_partner", "Partenaire actif")}</span>
                 </div>
               </motion.div>
             </AnimatePresence>

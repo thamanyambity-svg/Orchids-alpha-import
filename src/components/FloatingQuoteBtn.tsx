@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useLanguage } from "@/lib/i18n-context"
 
 export default function FloatingQuoteBtn() {
+  const { t } = useLanguage()
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-50"
@@ -17,7 +19,7 @@ export default function FloatingQuoteBtn() {
           whileTap={{ scale: 0.95 }}
           className="font-condensed text-xs tracking-[0.2em] uppercase bg-gold text-[#06101e] font-bold px-6 py-3 glow-gold"
         >
-          Devis gratuit
+          {t("floating_quote.label", "Devis gratuit")}
         </motion.button>
       </Link>
     </motion.div>
