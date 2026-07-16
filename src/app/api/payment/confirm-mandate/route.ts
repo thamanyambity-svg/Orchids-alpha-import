@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { requireUser, handleApiError } from '@/lib/auth-guard'
 import { confirmDirectDebitMandate } from '@/lib/payments/auto-debit.service'
 
 export async function POST(req: NextRequest) {
   try {
-    // Authentifier l'utilisateur
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
+    const { user } = await requireUser()
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -36,11 +33,8 @@ export async function POST(req: NextRequest) {
         bic: result.bic
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Confirm mandate error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to confirm mandate' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }

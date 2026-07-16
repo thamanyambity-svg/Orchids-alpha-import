@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next"
-import { DM_Sans, JetBrains_Mono } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 import { Toaster } from "@/components/ui/sonner"
 
-const fontSans = DM_Sans({
+const fontSans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 })

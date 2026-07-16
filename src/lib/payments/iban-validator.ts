@@ -57,8 +57,8 @@ export function validateIBAN(iban: string): {
       .join('')
 
     // Vérification MOD 97 (BigInt obligatoire)
-    const remainder = BigInt(numeric) % 97n
-    const isValid = remainder === 1n
+    const remainder = BigInt(numeric) % BigInt(97)
+    const isValid = remainder === BigInt(1)
 
     if (!isValid) {
       return {

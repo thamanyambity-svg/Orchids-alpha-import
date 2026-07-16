@@ -30,6 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# smoke test results
+smoke_result*.json
+
+# analysis workspace
+Orchid-Analysis 3/
+
 # vercel
 .vercel
 

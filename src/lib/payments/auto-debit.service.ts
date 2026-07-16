@@ -115,10 +115,12 @@ export async function confirmDirectDebitMandate(
 
   const paymentMethodId = setupIntent.payment_method as string
   const mandateId = setupIntent.mandate as string
-  const sepaDetails = setupIntent.payment_method_details?.sepa_debit
+
+  const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId)
+  const sepaDetails = paymentMethod.sepa_debit
 
   if (!sepaDetails) {
-    throw new Error('SEPA debit details not found in SetupIntent')
+    throw new Error('SEPA debit details not found in PaymentMethod')
   }
 
   // Sauvegarder le payment method dans le profil
@@ -167,11 +169,10 @@ export async function processAutomaticDebit(
     .select(
       `
       id,
-      total_price,
+      total_amount,
       request_id,
-      import_requests!inner (
-        buyer_id,
-        profiles!inner (
+      request:import_requests(
+        buyer:profiles!buyer_id(
           id,
           stripe_customer_id,
           stripe_payment_method_id,
@@ -188,12 +189,20 @@ export async function processAutomaticDebit(
     throw new Error(`Order not found: ${orderError?.message}`)
   }
 
-  const profile = orderData.import_requests?.profiles
+  const requestRecord = Array.isArray(orderData.request)
+    ? orderData.request[0]
+    : orderData.request
+  let profile: any = requestRecord?.buyer
+
+  // Supabase nested relations can come back as arrays; normalize to single object
+  if (Array.isArray(profile)) profile = profile[0]
+
   if (!profile?.stripe_customer_id || !profile?.stripe_payment_method_id) {
     throw new Error('No SEPA mandate found for this buyer')
   }
-
-  const totalInCents = Math.round(orderData.total_price * 100)
+  // Support both `total_amount` and `total_price` column names (fallback)
+  const totalValue = typeof orderData.total_amount === 'number' ? orderData.total_amount : (orderData as any).total_price
+  const totalInCents = Math.round(totalValue * 100)
   const amountCents = Math.round(totalInCents * percentage)
 
   if (amountCents === 0) {
@@ -250,6 +259,14 @@ export async function processAutomaticDebit(
     status: paymentIntent.status,
     amount: amountCents / 100
   }
+}
+
+export async function retryFailedSEPAPayment(
+  orderId: string,
+  percentage: 0.6 | 0.4,
+  idempotencyKey?: string
+) {
+  return processAutomaticDebit(orderId, percentage, idempotencyKey)
 }
 
 /**

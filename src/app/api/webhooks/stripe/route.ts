@@ -186,7 +186,8 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
 
         // Vérifier que c'est un prélèvement SEPA automatique (off_session)
-        if (paymentIntent.off_session && paymentIntent.payment_method_types?.includes('sepa_debit')) {
+        const isOffSession = (paymentIntent as any).off_session === true
+        if (isOffSession && paymentIntent.payment_method_types?.includes('sepa_debit')) {
             const orderId = paymentIntent.metadata?.order_id
             const paymentType = paymentIntent.metadata?.type as 'DEPOSIT_60' | 'BALANCE_40' | undefined
             const userEmail = paymentIntent.metadata?.user_email
@@ -321,7 +322,8 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
 
         // Vérifier que c'est un prélèvement SEPA automatique
-        if (paymentIntent.off_session && paymentIntent.payment_method_types?.includes('sepa_debit')) {
+        const isOffSession = (paymentIntent as any).off_session === true
+        if (isOffSession && paymentIntent.payment_method_types?.includes('sepa_debit')) {
             const orderId = paymentIntent.metadata?.order_id
             const paymentType = paymentIntent.metadata?.type as 'DEPOSIT_60' | 'BALANCE_40' | undefined
             const userEmail = paymentIntent.metadata?.user_email

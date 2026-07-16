@@ -4,7 +4,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getSEPAPaymentStatus, retryFailedSEPAPayment } from '@/lib/payments/auto-debit.service'
+import { getSEPAPaymentStatus } from '@/lib/payments/auto-debit.service'
 
 export interface SEPATransactionSummary {
   id: string
@@ -92,23 +92,26 @@ export async function getSEPATransactionsSummary() {
       SUCCEEDED: 0,
       FAILED: 0,
       PENDING: 0
-    },
+    } as Record<'SUCCEEDED' | 'FAILED' | 'PENDING', number>,
     totalByType: {
       DEPOSIT_60: 0,
       BALANCE_40: 0
-    },
+    } as Record<'DEPOSIT_60' | 'BALANCE_40', number>,
     totalAmountByStatus: {
       SUCCEEDED: 0,
       FAILED: 0,
       PENDING: 0
-    },
+    } as Record<'SUCCEEDED' | 'FAILED' | 'PENDING', number>,
     count: data?.length ?? 0
   }
 
   data?.forEach((tx: any) => {
-    summary.totalByStatus[tx.status]++
-    summary.totalByType[tx.type]++
-    summary.totalAmountByStatus[tx.status] += tx.amount
+    const status = tx.status as 'SUCCEEDED' | 'FAILED' | 'PENDING'
+    const type = tx.type as 'DEPOSIT_60' | 'BALANCE_40'
+
+    ;(summary.totalByStatus as any)[status] = ((summary.totalByStatus as any)[status] || 0) + 1
+    ;(summary.totalByType as any)[type] = ((summary.totalByType as any)[type] || 0) + 1
+    ;(summary.totalAmountByStatus as any)[status] = ((summary.totalAmountByStatus as any)[status] || 0) + Number(tx.amount)
   })
 
   return {
@@ -192,7 +195,7 @@ export async function getSEPATransactionDetail(transactionId: string) {
       orders (
         id,
         status,
-        total_price,
+        total_amount,
         import_requests (
           id,
           reference,
@@ -272,7 +275,11 @@ export async function createSEPAAlertForAdmin(
     return { success: false }
   }
 
-  return { success: true, alertId: data?.[0]?.id }
+  // `data` peut être null ou un tableau contenant l'enregistrement inséré
+  const inserted = Array.isArray(data) ? data as any[] : []
+  const alertId = inserted.length > 0 ? inserted[0].id : undefined
+
+  return { success: true, alertId }
 }
 
 /**

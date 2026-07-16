@@ -22,8 +22,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, MoreHorizontal, User, ShieldCheck, ShieldAlert, Mail, Phone, MapPin } from "lucide-react"
-import Link from "next/link"
+import { Search, MoreHorizontal, User, ShieldCheck, ShieldAlert, Mail, Phone } from "lucide-react"
 import { toast } from "sonner"
 
 interface BuyerWithStats {
@@ -52,7 +51,6 @@ export default function AdminBuyersPage() {
     async function fetchBuyers() {
         setIsLoading(true)
         try {
-            // 1. Fetch profiles with role 'BUYER'
             const { data: profiles, error: profilesError } = await supabase
                 .from('profiles')
                 .select('*')
@@ -61,35 +59,49 @@ export default function AdminBuyersPage() {
 
             if (profilesError) throw profilesError
 
-            // 2. For each buyer, fetch stats (this could be optimized with a view or RPC)
-            // For now, we'll do promise.all which is acceptable for < 1000 users
-            const buyersWithStats = await Promise.all(
-                (profiles || []).map(async (profile) => {
-                    // Count Requests
-                    const { count: requestsCount } = await supabase
-                        .from('import_requests')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('buyer_id', profile.id)
+            const profileIds = profiles?.map(p => p.id) || []
 
-                    // Count Active Orders (non-closed)
-                    // We need to join via requests: orders -> requests -> buyer_id
-                    // Or if orders table has buyer_id (check schema? usually it links to request)
-                    // Let's assume we filter requests first then count orders.
-                    // Optimization: just count requests for now as "Activity"
+            const { data: allRequests } = await supabase
+                .from('import_requests')
+                .select('id, buyer_id')
+                .in('buyer_id', profileIds)
 
-                    return {
-                        id: profile.id,
-                        email: profile.email,
-                        full_name: profile.full_name || "Sans nom",
-                        phone: profile.phone,
-                        city: profile.city || profile.country_id, // Fallback
-                        status: profile.status,
-                        created_at: profile.created_at,
-                        total_requests: requestsCount || 0,
-                        active_orders: 0 // TODO: Implement order counting if critical
+            const requestsByBuyer: Record<string, number> = {}
+            const requestToBuyer: Record<string, string> = {}
+            const allRequestIds: string[] = []
+            for (const req of allRequests || []) {
+                requestsByBuyer[req.buyer_id] = (requestsByBuyer[req.buyer_id] || 0) + 1
+                requestToBuyer[req.id] = req.buyer_id
+                allRequestIds.push(req.id)
+            }
+
+            const activeOrdersByBuyer: Record<string, number> = {}
+            if (allRequestIds.length > 0) {
+                const { data: activeOrders } = await supabase
+                    .from('orders')
+                    .select('request_id')
+                    .in('request_id', allRequestIds)
+                    .not('status', 'eq', 'CLOSED')
+
+                for (const order of activeOrders || []) {
+                    const buyerId = requestToBuyer[order.request_id]
+                    if (buyerId) {
+                        activeOrdersByBuyer[buyerId] = (activeOrdersByBuyer[buyerId] || 0) + 1
                     }
-                })
-            )
+                }
+            }
+
+            const buyersWithStats = (profiles || []).map(profile => ({
+                id: profile.id,
+                email: profile.email,
+                full_name: profile.full_name || "Sans nom",
+                phone: profile.phone,
+                city: profile.city || profile.country_id,
+                status: profile.status,
+                created_at: profile.created_at,
+                total_requests: requestsByBuyer[profile.id] || 0,
+                active_orders: activeOrdersByBuyer[profile.id] || 0
+            }))
 
             setBuyers(buyersWithStats)
         } catch (error) {
@@ -201,8 +213,11 @@ export default function AdminBuyersPage() {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <div className="text-sm">
-                                                <span className="font-medium">{buyer.total_requests}</span> demandes
+                                            <div className="text-sm space-y-1">
+                                                <div><span className="font-medium">{buyer.total_requests}</span> demandes</div>
+                                                <div className="text-xs text-muted-foreground">
+                                                    <span className="font-medium text-amber-600">{buyer.active_orders}</span> commandes actives
+                                                </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>

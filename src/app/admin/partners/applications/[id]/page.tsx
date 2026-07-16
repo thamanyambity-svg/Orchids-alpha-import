@@ -49,8 +49,19 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
 
             toast.success(`Candidature ${status === 'APPROVED_KYC' ? 'approuvée' : 'rejetée'}`)
 
-            // TODO: Send Email Notification logic would go here (or triggered via DB function/webhook)
-            // For MVP, we assume the Admin manually handles the email or we trigger an API.
+            const notifRes = await fetch('/api/admin/notifications/partner-application', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    applicationId: id,
+                    status,
+                    email: application.email,
+                    companyName: application.company_name
+                })
+            })
+            if (!notifRes.ok) {
+                console.error('Failed to send partner notification')
+            }
 
             router.push('/admin/partners')
         } catch (error) {

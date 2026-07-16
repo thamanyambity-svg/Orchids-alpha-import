@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { requireUser, handleApiError } from '@/lib/auth-guard'
 import { setupDirectDebitMandate } from '@/lib/payments/auto-debit.service'
 import { validateIBAN, validateBIC } from '@/lib/payments/iban-validator'
 
 export async function POST(req: NextRequest) {
   try {
-    // Authentifier l'utilisateur
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user } } = await supabase.auth.getUser()
+    const { user, supabase } = await requireUser()
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -76,11 +73,8 @@ export async function POST(req: NextRequest) {
       customerId: result.customerId,
       message: 'SEPA mandate setup initiated. Please confirm in the payment form.'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Setup mandate error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to setup mandate' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }
