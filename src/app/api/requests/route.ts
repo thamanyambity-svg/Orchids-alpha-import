@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { sendToN8N } from '@/lib/webhooks'
 import { requireUser, handleApiError } from '@/lib/auth-guard'
-import { rateLimit } from '@/lib/rate-limit'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // Validation du corps. `buyer_id` est volontairement ABSENT : il est dérivé de la
 // session, jamais accepté depuis le client (anti-spoofing / IDOR).
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
     const { supabase, user } = await requireUser()
 
     // Anti-spam : max 10 créations / minute par utilisateur.
-    const rl = rateLimit(`requests:${user.id}`, 10, 60_000)
-    if (!rl.success) {
+    const rl = checkRateLimit(`requests:${user.id}`, { maxRequests: 10, windowMs: 60000 })
+    if (!rl.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 

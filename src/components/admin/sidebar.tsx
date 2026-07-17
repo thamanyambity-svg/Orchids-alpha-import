@@ -20,7 +20,14 @@ import {
   Mail,
   Ship,
   ClipboardList,
-  FileCheck
+  FileCheck,
+  FileText,
+  Bell,
+  ShoppingCart,
+  IdCard,
+  FolderOpen,
+  Landmark,
+  Webhook,
 } from "lucide-react"
 import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
@@ -32,17 +39,24 @@ type NavItem = { href: string; label: string; labelKey: string; icon: LucideIcon
 const navItems: NavItem[] = [
   { href: "/admin", label: "Tableau de Bord", labelKey: "admin.sidebar.dashboard", icon: LayoutDashboard },
   { href: "/admin/requests", label: "Demandes", labelKey: "admin.sidebar.requests", icon: ClipboardList },
+  { href: "/admin/orders", label: "Commandes", labelKey: "admin.sidebar.orders", icon: ShoppingCart },
   { href: "/admin/shipping", label: "Expéditions", labelKey: "admin.sidebar.shipping", icon: Ship },
   { href: "/admin/buyers", label: "Acheteurs", labelKey: "admin.sidebar.buyers", icon: Users },
+  { href: "/admin/buyers/kyc", label: "Vérification KYC", labelKey: "admin.sidebar.kyc", icon: IdCard },
   { href: "/admin/partners", label: "Partenaires", labelKey: "admin.sidebar.partners", icon: UserCheck },
   { href: "/admin/suppliers", label: "Fournisseurs", labelKey: "admin.sidebar.suppliers", icon: Box },
   { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
+  { href: "/admin/finances/invoices", label: "Factures", labelKey: "admin.sidebar.invoices", icon: FileText },
+  { href: "/admin/finances/sepa", label: "Prélèvements SEPA", labelKey: "admin.sidebar.sepa", icon: Landmark },
   { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
   { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
   { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },
   { href: "/admin/settings", label: "Paramètres", labelKey: "admin.sidebar.settings", icon: Settings },
   { href: "/admin/support", label: "Support", labelKey: "admin.sidebar.support", icon: LifeBuoy },
   { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
+  { href: "/admin/notifications", label: "Notifications", labelKey: "admin.sidebar.notifications", icon: Bell },
+  { href: "/admin/webhooks", label: "Webhooks", labelKey: "admin.sidebar.webhooks", icon: Webhook },
+  { href: "/admin/documents", label: "Documents", labelKey: "admin.sidebar.documents", icon: FolderOpen },
 ]
 
 export function AdminSidebar() {

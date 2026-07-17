@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
+import { processAutomaticDebit } from '@/lib/payments/auto-debit.service'
+import { logAdminAccess, getAdminAuditMetadata } from '@/lib/admin-audit'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 
 export async function POST(request: NextRequest) {
@@ -10,8 +13,26 @@ export async function POST(request: NextRequest) {
     // les politiques admin (FOR ALL) autorisent ces opérations.
     const { supabase, user } = await requireRole(['ADMIN'])
 
+    // Rate limit
+    const rateCheck = checkRateLimit(`admin:${user.id}`, { maxRequests: 120, windowMs: 60000 })
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Trop de requêtes' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { action, requestId, data: actionData } = body
+
+    // Log admin access
+    const meta = getAdminAuditMetadata(request)
+    logAdminAccess({
+      adminId: user.id,
+      action: `ADMIN_${action}`,
+      resource: 'import_requests',
+      resourceId: requestId,
+      details: { action, ...meta },
+      ip: meta.ip,
+      userAgent: meta.userAgent,
+    }).catch(console.error)
 
     if (!requestId || !action) {
       return NextResponse.json({ error: 'Missing requestId or action' }, { status: 400 })
@@ -101,9 +122,26 @@ export async function POST(request: NextRequest) {
           orderId: orderData.id,
           orderReference: orderRef,
           amount: totalAmount,
-          clientName: requestData.user_id, // In a real app, you'd fetch the user's name
+          clientName: requestData.user_id,
           timestamp: new Date().toISOString()
         })
+
+        // SEPA auto-debit: charge deposit 60% if buyer has mandate
+        try {
+          const { data: buyerProfile } = await supabase
+            .from('profiles')
+            .select('mandate_activated')
+            .eq('id', requestData.user_id || requestData.buyer_id)
+            .single()
+
+          if (buyerProfile?.mandate_activated && orderData.deposit_amount > 0) {
+            await processAutomaticDebit(orderData.id, 0.6)
+              .catch(e => console.error('SEPA auto-debit deposit failed:', e))
+          }
+        } catch (e) {
+          console.error('SEPA auto-debit check failed:', e)
+        }
+
         break
       }
 

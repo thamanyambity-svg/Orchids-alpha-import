@@ -34,6 +34,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         const saved = localStorage.getItem("app-language") as Language
         if (saved && languages.find(l => l.code === saved)) {
             setLanguage(saved)
+            document.documentElement.dir = saved === 'ar' ? 'rtl' : 'ltr'
+            document.documentElement.lang = saved
         }
     }, [])
 

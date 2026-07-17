@@ -5,6 +5,7 @@ import {
 } from './types'
 import { sendStatusNotification } from './notifications'
 import { logAudit } from './audit'
+import { processAutomaticDebit } from './payments/auto-debit.service'
 
 // --- Definitions ---
 
@@ -256,6 +257,38 @@ export async function executeTransition(
                     console.error("Failed to auto-generate order:", orderError)
                     throw orderError
                 }
+
+                // SEPA auto-debit: if buyer has a mandate, charge deposit immediately
+                try {
+                    const { data: orderRow } = await supabase
+                        .from('orders')
+                        .select('id, deposit_amount')
+                        .eq('request_id', id)
+                        .order('created_at', { ascending: false })
+                        .limit(1)
+                        .maybeSingle()
+
+                    if (orderRow && orderRow.deposit_amount > 0) {
+                        const { data: reqBuyer } = await supabase
+                            .from('import_requests')
+                            .select('buyer:profiles!buyer_id(mandate_activated)')
+                            .eq('id', id)
+                            .single()
+
+                        const reqBuyerData = reqBuyer as any
+                        const profile = reqBuyerData?.buyer
+                        const mandateActive = Array.isArray(profile)
+                            ? profile[0]?.mandate_activated
+                            : profile?.mandate_activated
+
+                        if (mandateActive) {
+                            await processAutomaticDebit(orderRow.id, 0.6)
+                                .catch(e => console.error('SEPA auto-debit deposit failed:', e))
+                        }
+                    }
+                } catch (e) {
+                    console.error('SEPA auto-debit check failed:', e)
+                }
             }
         }
 
@@ -320,6 +353,32 @@ export async function executeTransition(
             }
         } catch (error) {
             console.error('⚠️ Notification failed:', error)
+        }
+
+        // SEPA auto-debit: when order is delivered, charge balance 40%
+        if (target === 'DELIVERED') {
+            try {
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('id, total_amount, request:import_requests(buyer:profiles!buyer_id(mandate_activated))')
+                    .eq('id', id)
+                    .single()
+
+                if (order) {
+                    const req = (order as any).request
+                    const profile = req?.buyer
+                    const mandateActive = Array.isArray(profile)
+                        ? profile[0]?.mandate_activated
+                        : profile?.mandate_activated
+
+                    if (mandateActive) {
+                        await processAutomaticDebit(id, 0.4)
+                            .catch(e => console.error('SEPA auto-debit balance failed:', e))
+                    }
+                }
+            } catch (e) {
+                console.error('SEPA auto-debit balance check failed:', e)
+            }
         }
 
         return { success: true, newStatus: target }

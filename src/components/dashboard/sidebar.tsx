@@ -20,17 +20,25 @@ import {
   ChevronRight,
   User,
   BadgeCheck,
-  AlertTriangle
+  AlertTriangle,
+  FileText,
+  Bell,
+  ClipboardList,
+  FolderOpen,
 } from "lucide-react"
 
 const navItems = [
   { href: "/dashboard", labelKey: "dashboard.sidebar.dashboard", label: "Tableau de Bord", icon: LayoutDashboard },
   // { href: "/dashboard/buyers", label: "Acheteurs", icon: Users }, // Removed for client view
-  { href: "/dashboard/requests", labelKey: "dashboard.sidebar.orders", label: "Commandes", icon: ShoppingCart },
+  { href: "/dashboard/orders", labelKey: "dashboard.sidebar.orders", label: "Commandes", icon: ShoppingCart },
+  { href: "/dashboard/requests", labelKey: "dashboard.sidebar.requests", label: "Demandes", icon: ClipboardList },
   { href: "/dashboard/transactions", labelKey: "dashboard.sidebar.transactions", label: "Transactions", icon: CircleDollarSign },
+  { href: "/dashboard/invoices", labelKey: "dashboard.sidebar.invoices", label: "Factures", icon: FileText },
   { href: "/dashboard/messages", labelKey: "dashboard.sidebar.messaging", label: "Messagerie", icon: MessageSquare },
   { href: "/dashboard/support", labelKey: "dashboard.sidebar.support", label: "Support", icon: Headphones },
   { href: "/dashboard/incidents", labelKey: "dashboard.sidebar.incidents", label: "Incidents", icon: AlertTriangle },
+  { href: "/dashboard/notifications", labelKey: "dashboard.sidebar.notifications", label: "Notifications", icon: Bell },
+  { href: "/dashboard/documents", labelKey: "dashboard.sidebar.documents", label: "Documents", icon: FolderOpen },
 ]
 
 

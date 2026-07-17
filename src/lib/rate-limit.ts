@@ -1,50 +1,56 @@
-/**
- * Rate-limiter en mémoire (fenêtre glissante), SANS dépendance externe.
- *
- * ⚠️ Limite : l'état est par instance/processus. Sur un déploiement serverless
- * multi-instances (Vercel), il ne partage pas le compteur entre instances.
- * Pour la production, remplacer par un store partagé (ex. Upstash Redis /
- * @vercel/kv) en gardant la même signature `rateLimit()`.
- */
+import { NextResponse } from "next/server"
 
-type Bucket = { count: number; resetAt: number }
+const store = new Map<string, { count: number; resetAt: number }>()
 
-const store = new Map<string, Bucket>()
-
-export interface RateLimitResult {
-  success: boolean
-  remaining: number
-  resetAt: number
+export interface RateLimitConfig {
+  maxRequests: number
+  windowMs: number
 }
 
-/**
- * @param key       identifiant logique (ex: `requests:${userId}` ou `n8n:${ip}`)
- * @param limit     nombre max d'appels dans la fenêtre
- * @param windowMs  durée de la fenêtre en millisecondes
- */
-export function rateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
+export function checkRateLimit(
+  identifier: string,
+  config: RateLimitConfig = { maxRequests: 60, windowMs: 60000 }
+): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now()
-  const bucket = store.get(key)
+  const entry = store.get(identifier)
 
-  if (!bucket || now >= bucket.resetAt) {
-    const resetAt = now + windowMs
-    store.set(key, { count: 1, resetAt })
-    return { success: true, remaining: limit - 1, resetAt }
+  if (!entry || now > entry.resetAt) {
+    store.set(identifier, { count: 1, resetAt: now + config.windowMs })
+    return { allowed: true, remaining: config.maxRequests - 1, resetAt: now + config.windowMs }
   }
 
-  if (bucket.count >= limit) {
-    return { success: false, remaining: 0, resetAt: bucket.resetAt }
+  entry.count++
+  const remaining = Math.max(0, config.maxRequests - entry.count)
+
+  if (entry.count > config.maxRequests) {
+    return { allowed: false, remaining: 0, resetAt: entry.resetAt }
   }
 
-  bucket.count += 1
-  return { success: true, remaining: limit - bucket.count, resetAt: bucket.resetAt }
+  return { allowed: true, remaining, resetAt: entry.resetAt }
 }
 
-/** Extrait une IP cliente depuis les en-têtes de proxy usuels. */
-export function clientIp(headers: Headers): string {
-  return (
-    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    headers.get('x-real-ip') ||
-    'unknown'
-  )
+// Backward-compatible API: rateLimit(key, maxRequests, windowMs)
+export function rateLimit(key: string, maxRequests: number, windowMs: number) {
+  const result = checkRateLimit(key, { maxRequests, windowMs })
+  return result.allowed
+}
+
+export function rateLimitMiddleware(
+  identifier: string,
+  config?: RateLimitConfig
+): NextResponse | null {
+  const result = checkRateLimit(identifier, config)
+  if (!result.allowed) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez plus tard." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((result.resetAt - Date.now()) / 1000)),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    )
+  }
+  return null
 }

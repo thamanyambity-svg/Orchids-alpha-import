@@ -90,6 +90,41 @@
   --navy-mid: hsl(216 40% 11%);
 }
 
+:root:not(.dark) {
+  --background: 0 0% 98%;
+  --foreground: 216 45% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 216 45% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 216 45% 10%;
+  --primary: 42 85% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 15% 92%;
+  --secondary-foreground: 216 45% 12%;
+  --muted: 210 15% 93%;
+  --muted-foreground: 210 10% 45%;
+  --accent: 42 85% 90%;
+  --accent-foreground: 216 45% 12%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 210 15% 88%;
+  --input: 210 15% 85%;
+  --ring: 42 85% 45%;
+  --sidebar: 0 0% 97%;
+  --sidebar-foreground: 216 45% 12%;
+  --sidebar-primary: 42 85% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 15% 90%;
+  --sidebar-accent-foreground: 216 45% 12%;
+  --sidebar-border: 210 15% 85%;
+  --sidebar-ring: 42 85% 45%;
+  --gold: hsl(42 85% 45%);
+  --gold-light: hsl(44 85% 55%);
+  --gold-dark: hsl(38 75% 40%);
+  --navy: hsl(216 45% 10%);
+  --navy-mid: hsl(216 30% 15%);
+}
+
 html { scroll-behavior: smooth; }
 
 @keyframes svgPulse1 {

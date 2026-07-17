@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { sendToN8N } from '@/lib/webhooks'
 import { requireUser, handleApiError, ApiError } from '@/lib/auth-guard'
-import { rateLimit } from '@/lib/rate-limit'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // `uploadedBy` est volontairement ABSENT : dérivé de la session (anti-usurpation).
 const createDocumentSchema = z.object({
@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
     const { supabase, user } = await requireUser()
 
     // Anti-spam : max 30 enregistrements de documents / minute par utilisateur.
-    const rl = rateLimit(`documents:${user.id}`, 30, 60_000)
-    if (!rl.success) {
+    const rl = checkRateLimit(`documents:${user.id}`, { maxRequests: 30, windowMs: 60000 })
+    if (!rl.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 

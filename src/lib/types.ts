@@ -173,6 +173,43 @@ export interface Message {
   created_at: string
 }
 
+export type InvoiceType = 'PROFORMA' | 'COMMERCIAL' | 'FINAL'
+export type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED'
+export type NotificationType = 'info' | 'success' | 'warning' | 'error'
+export type NotificationChannel = 'status_change' | 'document_upload' | 'payment' | 'message' | 'incident' | 'kyc' | 'system'
+
+export interface AppNotification {
+  id: string
+  user_id: string
+  channel: NotificationChannel
+  type: NotificationType
+  title: string
+  message: string
+  link: string | null
+  is_read: boolean
+  created_at: string
+}
+
+export interface Invoice {
+  id: string
+  order_id: string
+  request_id: string
+  type: InvoiceType
+  number: string
+  total_amount: number
+  deposit_amount: number | null
+  balance_amount: number | null
+  alpha_commission: number
+  status: InvoiceStatus
+  issued_at: string
+  due_at: string | null
+  paid_at: string | null
+  notes: string | null
+  file_url: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface AuditLog {
   id: string
   actor_id: string

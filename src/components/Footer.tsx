@@ -21,11 +21,18 @@ export default function Footer() {
             <div key={category}>
               <h4 className="font-display text-lg text-white tracking-wider mb-5">{category}</h4>
               <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link}>
-                    <Link href="/" className="font-sans text-sm text-white/30 hover:text-gold transition-colors duration-200">{link}</Link>
-                  </li>
-                ))}
+                {links.map((link, idx) => {
+                  const href = category === "Légal" || category === "Legal"
+                    ? idx === 0 ? "/terms"
+                      : idx === 1 ? "/privacy"
+                      : "/legal"
+                    : "/"
+                  return (
+                    <li key={link}>
+                      <Link href={href} className="font-sans text-sm text-white/30 hover:text-gold transition-colors duration-200">{link}</Link>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           ))}
