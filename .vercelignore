@@ -5,7 +5,7 @@
 node_modules
 e2e
 scripts
-supabase
+/supabase
 coverage
 *.test.ts
 *.test.tsx
