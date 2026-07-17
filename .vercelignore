@@ -1,0 +1,16 @@
+.agents
+.git
+.github
+.next
+node_modules
+e2e
+scripts
+supabase
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+Dockerfile
+docker-compose.yml
+playwright.config.ts
