@@ -440,7 +440,7 @@ export default function RequestDetailsPage() {
                     <FileTextIcon className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                     <p className="text-sm text-muted-foreground">Aucun document n'a encore été ajouté.</p>
 </div>
-          }
+          )}
               </section>
 
               <TrackingTimeline requestId={id as string} />
