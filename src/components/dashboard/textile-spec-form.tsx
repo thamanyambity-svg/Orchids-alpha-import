@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/i18n-context"
 import {
   Shirt, Tag, Scale, Palette, Box, Grid, Layers,
-  CheckCircle2, AlertCircle, Plus, Minus, Trash2
+  CheckCircle2, AlertCircle, Plus, Minus, Trash2, Shield
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

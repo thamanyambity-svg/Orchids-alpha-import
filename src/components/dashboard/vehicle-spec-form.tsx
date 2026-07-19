@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/i18n-context"
 import {
   Car, Truck, Settings, Gauge, Fuel, Zap, Calendar, MapPin,
   FileText, Key, Shield, CheckCircle2, Loader2, Plus, Minus,
-  Trash2, Eye, Edit, Barcode, Wrench, Leaf, Thermometer
+  Trash2, Eye, Edit, Barcode, Wrench, Leaf, Thermometer, AlertCircle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

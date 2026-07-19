@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/i18n-context"
 import {
-  Package, Tag, Scale, Globe, Certificate, Shield, CheckCircle2,
-  Loader2, Barcode, Layers, Box, Palette, Download
+  Package, Tag, Scale, Globe, Shield, CheckCircle2,
+  Loader2, Barcode, Layers, Box, Palette, Download, Trash2, Plus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -203,7 +203,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Certifications & Normes */}
         <div className="space-y-3 p-4 bg-green-500/5 border-green-500/20 border rounded-xl">
           <Label className="font-semibold flex items-center gap-2">
-            <Certificate className="w-4 h-4 text-green-500" />
+            <BadgeCheck className="w-4 h-4 text-green-500" />
             {t("dashboard.requests.new.certifications", "Certifications & Normes requises")}
           </Label>
           <div className="flex flex-wrap gap-2">
