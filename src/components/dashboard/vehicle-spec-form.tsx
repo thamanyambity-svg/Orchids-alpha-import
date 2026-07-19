@@ -290,7 +290,7 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
           <div className="space-y-2">
             <Label>{t("dashboard.requests.new.equipment", "Équipements & Options")}</Label>
             <Textarea
-              placeholder="Toit ouvrant, GPS, Caméra recul, Sièges chauffants, Jantes 18\", Pack sécurité..."
+              placeholder={`Toit ouvrant, GPS, Caméra recul, Sièges chauffants, Jantes 18', Pack sécurité...`}
               value={formData.equipment.join(", ")}
               onChange={e => handleChange("equipment", e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
               disabled={readOnly}

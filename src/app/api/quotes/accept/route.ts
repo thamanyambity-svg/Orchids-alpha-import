@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Accept quote
-    const { data: updatedQuote, error: quoteError } = await supabase
+    const { data: updatedQuote, error: updateError } = await supabase
       .from('quotes')
       .update({
         status: 'ACCEPTED',
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (quoteError) throw quoteError
+    if (updateError) throw updateError
 
     // Create PO via trigger (already handles in DB)
     const { data: poData, error: poError } = await supabase
