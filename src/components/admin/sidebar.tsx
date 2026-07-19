@@ -1,0 +1,173 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { usePathname, useRouter } from "next/navigation"
+import Image from "next/image"
+import {
+  LayoutDashboard,
+  Users,
+  UserCheck,
+  Wallet,
+  Shield,
+  Settings,
+  LogOut,
+  Crown,
+  Box,
+  Activity,
+  LifeBuoy,
+  Mail,
+  Ship,
+  ClipboardList,
+  FileCheck,
+  FileText,
+  Bell,
+  ShoppingCart,
+  IdCard,
+  FolderOpen,
+  Landmark,
+  Webhook,
+} from "lucide-react"
+import { useLanguage } from "@/lib/i18n-context"
+import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
+import type { LucideIcon } from "lucide-react"
+
+type NavItem = { href: string; label: string; labelKey: string; icon: LucideIcon; badge?: number }
+
+const navItems: NavItem[] = [
+  { href: "/admin", label: "Tableau de Bord", labelKey: "admin.sidebar.dashboard", icon: LayoutDashboard },
+  { href: "/admin/requests", label: "Demandes", labelKey: "admin.sidebar.requests", icon: ClipboardList },
+  { href: "/admin/orders", label: "Commandes", labelKey: "admin.sidebar.orders", icon: ShoppingCart },
+  { href: "/admin/shipping", label: "Expéditions", labelKey: "admin.sidebar.shipping", icon: Ship },
+  { href: "/admin/buyers", label: "Acheteurs", labelKey: "admin.sidebar.buyers", icon: Users },
+  { href: "/admin/buyers/kyc", label: "Vérification KYC", labelKey: "admin.sidebar.kyc", icon: IdCard },
+  { href: "/admin/partners", label: "Partenaires", labelKey: "admin.sidebar.partners", icon: UserCheck },
+  { href: "/admin/suppliers", label: "Fournisseurs", labelKey: "admin.sidebar.suppliers", icon: Box },
+  { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
+  { href: "/admin/finances/invoices", label: "Factures", labelKey: "admin.sidebar.invoices", icon: FileText },
+  { href: "/admin/finances/sepa", label: "Prélèvements SEPA", labelKey: "admin.sidebar.sepa", icon: Landmark },
+  { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
+  { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
+  { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },
+  { href: "/admin/settings", label: "Paramètres", labelKey: "admin.sidebar.settings", icon: Settings },
+  { href: "/admin/support", label: "Support", labelKey: "admin.sidebar.support", icon: LifeBuoy },
+  { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
+  { href: "/admin/notifications", label: "Notifications", labelKey: "admin.sidebar.notifications", icon: Bell },
+  { href: "/admin/webhooks", label: "Webhooks", labelKey: "admin.sidebar.webhooks", icon: Webhook },
+  { href: "/admin/documents", label: "Documents", labelKey: "admin.sidebar.documents", icon: FolderOpen },
+]
+
+export function AdminSidebar() {
+  const { t } = useLanguage()
+  const pathname = usePathname()
+  const router = useRouter()
+  const [user, setUser] = useState<{ full_name: string | null; role: string | null } | null>(null)
+
+  useEffect(() => {
+    async function getUser() {
+      const supabase = createClient()
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (authUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, role')
+          .eq('id', authUser.id)
+          .single()
+
+        setUser({
+          full_name: profile?.full_name || t("admin.sidebar.administrator", "Administrateur"),
+          role: profile?.role === 'admin' ? t("admin.sidebar.admin_principal", "Admin Principal") : t("admin.sidebar.user", "Utilisateur")
+        })
+      }
+    }
+    getUser()
+  }, [])
+
+  async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/login")
+  }
+
+  return (
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0e14] border-r border-white/5 flex flex-col z-50">
+      <div className="p-6">
+        <Link href="/admin" className="flex items-center group">
+          <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
+            <Image
+              src="/logo-alpha-import.png?v=4"
+              alt="Alpha Import Exchange"
+              fill
+              className="object-contain"
+            />
+          </div>
+        </Link>
+      </div>
+
+      <nav className="flex-1 px-4 py-4 space-y-8 overflow-y-auto custom-scrollbar">
+        <ul className="space-y-1">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href ||
+              (item.href !== "/admin" && pathname.startsWith(item.href))
+
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 relative group",
+                    isActive
+                      ? "text-white bg-gradient-to-r from-white/10 to-transparent border border-white/10 shadow-lg"
+                      : "text-white/50 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <item.icon className={cn(
+                    "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                    isActive ? "text-[#ffd700]" : ""
+                  )} />
+                  <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
+
+                  {item.badge && (
+                    <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-white rounded-full">
+                      {item.badge}
+                    </span>
+                  )}
+
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebar-active"
+                      className="absolute left-0 w-1 h-6 bg-[#ffd700] rounded-r-full shadow-[0_0_10px_#ffd700]"
+                    />
+                  )}
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+
+      <div className="p-4 mt-auto">
+        <div className="p-4 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 mb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-full bg-[#ffd700]/10 flex items-center justify-center border border-[#ffd700]/20">
+              <Crown className="w-4 h-4 text-[#ffd700]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-white truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
+              <p className="text-[10px] text-white/40 uppercase tracking-tighter">{user?.role || "..."}</p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-colors border border-white/5"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            {t("admin.sidebar.logout", "Déconnexion")}
+          </button>
+        </div>
+      </div>
+    </aside>
+  )
+}
