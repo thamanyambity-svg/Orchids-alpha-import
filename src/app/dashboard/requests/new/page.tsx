@@ -32,6 +32,9 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { PartnerProfileCard } from "@/components/dashboard/partner-profile-card"
+import { TextileSpecForm } from "@/components/dashboard/textile-spec-form"
+import { VehicleSpecForm } from "@/components/dashboard/vehicle-spec-form"
+import { GeneralSpecForm } from "@/components/dashboard/general-spec-form"
 import dynamic from "next/dynamic"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
@@ -42,19 +45,6 @@ const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(m
 })
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ""
-
-const AUTO_BRANDS = [
-  { name: "Toyota", models: ["Hilux", "Land Cruiser", "Prado", "Corolla", "RAV4", "Fortuner", "Hiace"] },
-  { name: "Mercedes-Benz", models: ["G-Class", "GLE", "S-Class", "C-Class", "Sprinter", "Vito"] },
-  { name: "BMW", models: ["X5", "X6", "X7", "5 Series", "3 Series"] },
-  { name: "Hyundai", models: ["Tucson", "Santa Fe", "Palisade", "Elantra", "H1"] },
-  { name: "Nissan", models: ["Patrol", "Navara", "X-Trail", "Qashqai"] },
-  { name: "Mitsubishi", models: ["L200", "Pajero", "Outlander"] },
-  { name: "Ford", models: ["Ranger", "Everest", "F-150", "Explorer"] },
-  { name: "Lexus", models: ["LX 570", "LX 600", "GX 460", "RX 350"] },
-  { name: "Volkswagen", models: ["Amarok", "Tiguan", "Touareg", "Transporter"] },
-  { name: "Range Rover", models: ["Vogue", "Sport", "Velar", "Evoque"] },
-]
 
 const allCountries = [
   { code: "AFG", name: "Afghanistan", flag: "🇦🇫" },
@@ -90,7 +80,7 @@ const allCountries = [
   { code: "COG", name: "Congo-Brazzaville", flag: "🇨🇬" },
   { code: "COD", name: "Congo-Kinshasa", flag: "🇨🇩" },
   { code: "KOR", name: "Corée du Sud", flag: "🇰🇷" },
-  { code: "CIV", name: "Côte d’Ivoire", flag: "🇨🇮" },
+  { code: "CIV", name: "Côte d'Ivoire", flag: "🇨🇮" },
   { code: "HRV", name: "Croatie", flag: "🇭🇷" },
   { code: "CUB", name: "Cuba", flag: "🇨🇺" },
   { code: "DNK", name: "Danemark", flag: "🇩🇰" },
@@ -186,89 +176,59 @@ const allCountries = [
   { code: "ZWE", name: "Zimbabwe", flag: "🇿🇼" },
 ].sort((a, b) => a.name.localeCompare(b.name))
 
-const categories = [
-  { value: "Électronique", labelKey: "dashboard.requests.new.cat_electronics" },
-  { value: "Textile & Habillement", labelKey: "dashboard.requests.new.cat_textile" },
-  { value: "Automobile & Pièces", labelKey: "dashboard.requests.new.cat_automotive" },
-  { value: "Machines & Équipements", labelKey: "dashboard.requests.new.cat_machinery" },
-  { value: "Cosmétiques & Beauté", labelKey: "dashboard.requests.new.cat_cosmetics" },
-  { value: "Alimentation", labelKey: "dashboard.requests.new.cat_food" },
-  { value: "Matériaux de construction", labelKey: "dashboard.requests.new.cat_construction" },
-  { value: "Autre", labelKey: "dashboard.requests.new.cat_other" },
+const REQUEST_CATEGORIES = [
+  { value: "TEXTILE", labelKey: "dashboard.requests.new.cat_textile", icon: "🧵" },
+  { value: "VEHICULE", labelKey: "dashboard.requests.new.cat_automotive", icon: "🚗" },
+  { value: "ELECTRONIQUE", labelKey: "dashboard.requests.new.cat_electronics", icon: "📱" },
+  { value: "MACHINERIE", labelKey: "dashboard.requests.new.cat_machinery", icon: "⚙️" },
+  { value: "COSMETIQUE", labelKey: "dashboard.requests.new.cat_cosmetics", icon: "💄" },
+  { value: "ALIMENTAIRE", labelKey: "dashboard.requests.new.cat_food", icon: "🍎" },
+  { value: "CONSTRUCTION", labelKey: "dashboard.requests.new.cat_construction", icon: "🏗️" },
+  { value: "AUTRE", labelKey: "dashboard.requests.new.cat_other", icon: "📦" },
 ]
 
 const steps = [
-  { id: 1, title: "Pays & Partenaire", titleKey: "dashboard.requests.new.step_country", icon: Globe2 },
-  { id: 2, title: "Détails Produit", titleKey: "dashboard.requests.new.step_product", icon: Package },
-  { id: 3, title: "Récapitulatif", titleKey: "dashboard.requests.new.step_summary", icon: FileText },
+  { id: 1, titleKey: "dashboard.requests.new.step_country", icon: Globe2 },
+  { id: 2, titleKey: "dashboard.requests.new.step_product", icon: Package },
+  { id: 3, titleKey: "dashboard.requests.new.step_summary", icon: FileText },
 ]
 
 const mockPartners: Record<string, any> = {
   "CHN": {
-    id: "p1",
-    full_name: "Chen Wei",
-    company_name: "Alpha Logistics China (Shenzhen)",
-    bio: "Expert en sourcing et logistique industrielle en Chine depuis plus de 15 ans. Spécialisé dans les produits électroniques et les machines industrielles. Nous garantissons une vérification rigoureuse des fournisseurs.",
-    whatsapp_number: "+8613812345678",
-    email: "chen.wei@alphaix-partner.cn",
-    phone: "+8613812345678",
-    experience_years: 15,
-    total_orders_handled: 1250,
-    performance_score: 4.9,
-    country_name: "Chine"
+    id: "p1", full_name: "Chen Wei", company_name: "Alpha Logistics China (Shenzhen)",
+    bio: "Expert en sourcing et logistique industrielle en Chine depuis plus de 15 ans.",
+    whatsapp_number: "+8613812345678", email: "chen.wei@alphaix-partner.cn",
+    phone: "+8613812345678", experience_years: 15, total_orders_handled: 1250,
+    performance_score: 4.9, country_name: "Chine"
   },
   "ARE": {
-    id: "p2",
-    full_name: "Achignon Bilongo",
-    company_name: "MAARMALA - Head Officer",
+    id: "p2", full_name: "Achignon Bilongo", company_name: "MAARMALA - Head Officer",
     avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain",
-    bio: "Spécialiste du commerce international à Dubaï chez MAARMALA. CONNECTING BUSINESS AND PEOPLE GLOBALLY. Nous facilitons vos échanges via le hub logistique le plus dynamique au monde.",
-    whatsapp_number: "+971508253190",
-    email: "maarmalasarl@gmail.com",
-    phone: "+971508253190",
-    experience_years: 12,
-    total_orders_handled: 980,
-    performance_score: 4.9,
-    country_name: "Émirats Arabes Unis"
+    bio: "Spécialiste du commerce international à Dubaï chez MAARMALA.",
+    whatsapp_number: "+971508253190", email: "maarmalasarl@gmail.com",
+    phone: "+971508253190", experience_years: 12, total_orders_handled: 980,
+    performance_score: 4.9, country_name: "Émirats Arabes Unis"
   },
   "TUR": {
-    id: "p3",
-    full_name: "Mehmet Demir",
-    company_name: "Istanbul Export Solutions",
-    bio: "Expert en textile et matériaux de construction basés en Turquie. Connecté aux meilleurs fabricants d'Istanbul et d'Ankara. Votre partenaire de confiance pour le sourcing de qualité européenne.",
-    whatsapp_number: "+905321234567",
-    email: "mehmet@alphaix-partner.tr",
-    phone: "+905321234567",
-    experience_years: 12,
-    total_orders_handled: 620,
-    performance_score: 4.7,
-    country_name: "Turquie"
+    id: "p3", full_name: "Mehmet Demir", company_name: "Istanbul Export Solutions",
+    bio: "Expert en textile et matériaux de construction basés en Turquie.",
+    whatsapp_number: "+905321234567", email: "mehmet@alphaix-partner.tr",
+    phone: "+905321234567", experience_years: 12, total_orders_handled: 620,
+    performance_score: 4.7, country_name: "Turquie"
   },
   "THA": {
-    id: "p4",
-    full_name: "Somchai Patana",
-    company_name: "Bangkok Global Sourcing",
-    bio: "Spécialisé dans l'agroalimentaire et les produits manufacturés en Thaïlande. Nous assurons la liaison entre les producteurs locaux et le marché international avec une transparence totale.",
-    whatsapp_number: "+66812345678",
-    email: "somchai@alphaix-partner.th",
-    phone: "+66812345678",
-    experience_years: 8,
-    total_orders_handled: 450,
-    performance_score: 4.6,
-    country_name: "Thaïlande"
+    id: "p4", full_name: "Somchai Patana", company_name: "Bangkok Global Sourcing",
+    bio: "Spécialisé dans l'agroalimentaire et les produits manufacturés en Thaïlande.",
+    whatsapp_number: "+66812345678", email: "somchai@alphaix-partner.th",
+    phone: "+66812345678", experience_years: 8, total_orders_handled: 450,
+    performance_score: 4.6, country_name: "Thaïlande"
   },
   "JPN": {
-    id: "p5",
-    full_name: "Hiroshi Tanaka",
-    company_name: "Tokyo Precision Trading",
-    bio: "Expert en ingénierie de précision et électronique de pointe au Japon. Nous garantissons l'accès aux meilleures usines japonaises avec un contrôle qualité rigoureux.",
-    whatsapp_number: "+819012345678",
-    email: "hiroshi@alphaix-partner.jp",
-    phone: "+819012345678",
-    experience_years: 20,
-    total_orders_handled: 1100,
-    performance_score: 5.0,
-    country_name: "Japon"
+    id: "p5", full_name: "Hiroshi Tanaka", company_name: "Tokyo Precision Trading",
+    bio: "Expert en ingénierie de précision et électronique de pointe au Japon.",
+    whatsapp_number: "+819012345678", email: "hiroshi@alphaix-partner.jp",
+    phone: "+819012345678", experience_years: 20, total_orders_handled: 1100,
+    performance_score: 5.0, country_name: "Japon"
   }
 }
 
@@ -283,17 +243,17 @@ export default function NewRequestPage() {
   const [formData, setFormData] = useState({
     buyerCountry: "",
     country: "",
-    category: "",
+    category: "TEXTILE",
     deadline: "",
-    transportMode: "SEA", // Default
+    transportMode: "SEA",
   })
 
   const [items, setItems] = useState<any[]>([
-    { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }
+    { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", specs: {} }
   ])
 
   const addItem = () => {
-    setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", carBrand: "", carModel: "" }])
+    setItems([...items, { id: Math.random().toString(36).substr(2, 9), productName: "", description: "", quantity: "", unit: "units", budgetMin: "", budgetMax: "", specs: {} }])
   }
 
   const removeItem = (id: string) => {
@@ -305,39 +265,26 @@ export default function NewRequestPage() {
   const updateItem = (id: string, field: string, value: any) => {
     setItems(items.map(item => {
       if (item.id === id) {
-        const newItem = { ...item, [field]: value }
-        // AI logic: if carBrand changes, update productName
-        if (field === 'carBrand' || field === 'carModel') {
-          const brand = field === 'carBrand' ? value : item.carBrand
-          const model = field === 'carModel' ? value : item.carModel
-          newItem.productName = `${brand} ${model}`.trim()
+        if (field === "specs") {
+          return { ...item, specs: { ...item.specs, ...value } }
         }
-        return newItem
+        return { ...item, [field]: value }
       }
       return item
     }))
   }
 
-
   useEffect(() => {
     async function fetchCountries() {
       const supabase = createClient()
-      const { data } = await supabase
-        .from("countries")
-        .select("*")
-        .eq("is_active", true)
-
-      if (data) {
-        setCountries(data)
-      }
+      const { data } = await supabase.from("countries").select("*").eq("is_active", true)
+      if (data) setCountries(data)
     }
     fetchCountries()
   }, [])
 
   useEffect(() => {
     if (formData.country) {
-      // In a real app, we would fetch the partner from the DB
-      // For this test mode, we use the mock data
       const partner = mockPartners[formData.country]
       setSelectedPartner(partner || null)
     } else {
@@ -345,20 +292,54 @@ export default function NewRequestPage() {
     }
   }, [formData.country])
 
-  function handleNext() {
+  const handleNext = () => {
     if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
       toast.error(t("dashboard.requests.new.select_countries_error", "Veuillez sélectionner le pays d'origine et le pays d'achat"))
       return
     }
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1)
+    if (currentStep === 2) {
+      const invalidItems = items.some(item => 
+        !item.productName || !item.quantity || !item.budgetMin || !item.budgetMax
+      )
+      if (invalidItems) {
+        toast.error(t("dashboard.requests.new.incomplete_items", "Tous les champs produit sont requis"))
+        return
+      }
     }
+    if (currentStep < 3) setCurrentStep(currentStep + 1)
   }
 
-  function handleBack() {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+  const handleBack = () => { if (currentStep > 1) setCurrentStep(currentStep - 1) }
+
+  const getCategoryForm = (item: any) => {
+    const category = formData.category
+    const itemData = { ...item, specs: item.specs || {} }
+    
+    if (category === "TEXTILE") {
+      return (
+        <TextileSpecForm
+          initialData={itemData}
+          onChange={(data) => updateItem(item.id, "specs", data)}
+          lineNumber={items.findIndex(i => i.id === item.id) + 1}
+        />
+      )
     }
+    if (category === "VEHICULE") {
+      return (
+        <VehicleSpecForm
+          initialData={itemData}
+          onChange={(data) => updateItem(item.id, "specs", data)}
+          lineNumber={items.findIndex(i => i.id === item.id) + 1}
+        />
+      )
+    }
+    return (
+      <GeneralSpecForm
+        initialData={itemData}
+        onChange={(data) => updateItem(item.id, "specs", data)}
+        lineNumber={items.findIndex(i => i.id === item.id) + 1}
+      />
+    )
   }
 
   async function handleSubmit() {
@@ -370,7 +351,6 @@ export default function NewRequestPage() {
 
       const countryId = countries.find(c => c.code === formData.country)?.id
 
-      // Create a request for each item
       const promises = items.map(item => {
         return fetch("/api/requests", {
           method: "POST",
@@ -383,8 +363,7 @@ export default function NewRequestPage() {
             product_name: item.productName,
             specifications: {
               description: item.description,
-              brand: item.carBrand || null,
-              model: item.carModel || null
+              category_specific: item.specs || {}
             },
             quantity: parseInt(item.quantity),
             unit: item.unit,
@@ -401,13 +380,11 @@ export default function NewRequestPage() {
 
       if (failed) {
         const data = await failed.json()
-        throw new Error(data.error || t("dashboard.requests.new.create_error", "Erreur lors de la création d'une ou plusieurs fiches"))
+        throw new Error(data.error || t("dashboard.requests.new.create_error", "Erreur lors de la création"))
       }
 
       const created = await Promise.all(results.map(r => r.json()))
       toast.success(`${items.length} ${t("dashboard.requests.new.requests_created", "demande(s) créée(s) ! Prochaine étape : paiement 60%.")}`)
-
-      // Rediriger vers la demande créée pour accéder au paiement dès validation
       router.push(`/dashboard/requests/${created[0].id}`)
     } catch (error: any) {
       toast.error(error.message || t("dashboard.requests.new.error_occurred", "Une erreur est survenue"))
@@ -415,7 +392,6 @@ export default function NewRequestPage() {
       setIsLoading(false)
     }
   }
-
 
   return (
     <div>
@@ -425,7 +401,7 @@ export default function NewRequestPage() {
       />
 
       <div className="p-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard/requests" className="flex items-center gap-2">
@@ -442,7 +418,7 @@ export default function NewRequestPage() {
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${currentStep >= step.id
                     ? 'border-primary bg-primary/10'
                     : 'border-border'
-                    }`}>
+                  }`}>
                     {currentStep > step.id ? (
                       <CheckCircle2 className="w-5 h-5" />
                     ) : (
@@ -452,8 +428,7 @@ export default function NewRequestPage() {
                   <span className="hidden sm:block text-sm font-medium">{t(step.titleKey, step.title)}</span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-12 sm:w-24 h-0.5 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-border'
-                    }`} />
+                  <div className={`w-12 sm:w-24 h-0.5 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-border'}`} />
                 )}
               </div>
             ))}
@@ -471,7 +446,7 @@ export default function NewRequestPage() {
                   <div>
                     <h2 className="text-2xl font-bold mb-1">{t("dashboard.requests.new.select_country", "Sélection du pays d'achat")}</h2>
                     <p className="text-muted-foreground">
-                       {t("dashboard.requests.new.select_country_desc", "Choisissez le pays où vous souhaitez effectuer votre achat pour voir votre partenaire dédié.")}
+                      {t("dashboard.requests.new.select_country_desc", "Choisissez le pays où vous souhaitez effectuer votre achat pour voir votre partenaire dédié.")}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-primary bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
@@ -484,13 +459,8 @@ export default function NewRequestPage() {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <Label className="text-base font-semibold">{t("dashboard.requests.new.buyer_country", "Pays d'origine de l'acheteur *")}</Label>
-                      <Select
-                        value={formData.buyerCountry}
-                        onValueChange={(value) => setFormData({ ...formData, buyerCountry: value })}
-                      >
-                        <SelectTrigger className="h-14 text-lg">
-                          <SelectValue placeholder={t("dashboard.requests.new.buyer_country_placeholder", "Votre pays de résidence")} />
-                        </SelectTrigger>
+                      <Select value={formData.buyerCountry} onValueChange={(value) => setFormData({ ...formData, buyerCountry: value })}>
+                        <SelectTrigger className="h-14 text-lg"><SelectValue placeholder={t("dashboard.requests.new.buyer_country_placeholder", "Votre pays de résidence")} /></SelectTrigger>
                         <SelectContent>
                           {allCountries.map((country) => (
                             <SelectItem key={country.code} value={country.code}>
@@ -506,13 +476,8 @@ export default function NewRequestPage() {
 
                     <div className="space-y-3">
                       <Label className="text-base font-semibold">{t("dashboard.requests.new.purchase_country", "Pays d'achat *")}</Label>
-                      <Select
-                        value={formData.country}
-                        onValueChange={(value) => setFormData({ ...formData, country: value })}
-                      >
-                        <SelectTrigger className="h-14 text-lg">
-                          <SelectValue placeholder={t("dashboard.requests.new.purchase_country_placeholder", "Où achetez-vous ?")} />
-                        </SelectTrigger>
+                      <Select value={formData.country} onValueChange={(value) => setFormData({ ...formData, country: value })}>
+                        <SelectTrigger className="h-14 text-lg"><SelectValue placeholder={t("dashboard.requests.new.purchase_country_placeholder", "Où achetez-vous ?")} /></SelectTrigger>
                         <SelectContent>
                           {countries.length > 0 ? (
                             countries.map((country) => {
@@ -541,13 +506,20 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold italic opacity-70">{t("dashboard.requests.new.geographic_overview", "Aperçu géographique")}</Label>
-                      <WorldMap
-                        mapboxToken={MAPBOX_TOKEN}
-                        selectedCountry={formData.country}
-                        onCountrySelect={(code) => setFormData({ ...formData, country: code })}
-                        partners={mockPartners}
-                      />
+                      <Label className="text-base font-semibold italic opacity-70">{t("dashboard.requests.new.category", "Catégorie de produits *")}</Label>
+                      <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                        <SelectTrigger className="h-12"><SelectValue placeholder="Sélectionnez une catégorie" /></SelectTrigger>
+                        <SelectContent>
+                          {REQUEST_CATEGORIES.map((cat) => (
+                            <SelectItem key={cat.value} value={cat.value}>
+                              <span className="flex items-center gap-3 py-1">
+                                <span className="text-2xl">{cat.icon}</span>
+                                {t(cat.labelKey, cat.value)}
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="p-4 rounded-xl bg-muted/30 border border-border">
@@ -592,9 +564,7 @@ export default function NewRequestPage() {
                   <div>
                     <h2 className="text-2xl font-bold mb-1">{t("dashboard.requests.new.request_details", "Détails de votre demande")}</h2>
                     <p className="text-muted-foreground">
-                      {formData.category === "Automobile & Pièces"
-                        ? t("dashboard.requests.new.request_details_car_desc", "Précisez la marque, le modèle et les détails techniques pour une cotation précise.")
-                        : t("dashboard.requests.new.request_details_desc", "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation.")}
+                      {t("dashboard.requests.new.request_details_desc", "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation.")}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -606,19 +576,19 @@ export default function NewRequestPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2 md:col-span-2">
                       <Label className="font-semibold">{t("dashboard.requests.new.category", "Catégorie de la demande *")}</Label>
-                      <Select
-                        value={formData.category}
-                        onValueChange={(value) => setFormData({ ...formData, category: value })}
-                      >
-                        <SelectTrigger className="h-12 border-primary/20">
-                          <SelectValue placeholder={t("dashboard.requests.new.category_placeholder", "Sélectionnez une catégorie")} />
-                        </SelectTrigger>
+                      <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                        <SelectTrigger className="h-12 border-primary/20"><SelectValue placeholder={t("dashboard.requests.new.category_placeholder", "Sélectionnez une catégorie")} /></SelectTrigger>
                         <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category.value} value={category.value}>{t(category.labelKey, category.value)}</SelectItem>
+                          {REQUEST_CATEGORIES.map((cat) => (
+                            <SelectItem key={cat.value} value={cat.value}>
+                              <span className="flex items-center gap-3 py-1">
+                                <span className="text-2xl">{cat.icon}</span>
+                                {t(cat.labelKey, cat.value)}
+                              </span>
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -627,16 +597,13 @@ export default function NewRequestPage() {
                     <div className="space-y-4">
                       <Label className="font-semibold">{t("dashboard.requests.new.transport_mode", "Mode d'Expédition *")}</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Maritime */}
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
                           className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'SEA' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-lg bg-blue-100 text-blue-700">
-                                <Ship className="w-6 h-6" />
-                              </div>
+                              <div className="p-2 rounded-lg bg-blue-100 text-blue-700"><Ship className="w-6 h-6" /></div>
                               <div>
                                 <h3 className="font-bold text-sm">{t("dashboard.requests.new.maritime_standard", "Maritime (Standard)")}</h3>
                                 <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.maritime_desc", "Économique • 30-45 Jours")}</p>
@@ -648,17 +615,13 @@ export default function NewRequestPage() {
                             {t("dashboard.requests.new.maritime_ideal", "Idéal pour les grands volumes et les charges lourdes. Le choix optimisé pour réduire les coûts.")}
                           </p>
                         </div>
-
-                        {/* Aérien */}
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'AIR' })}
                           className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'AIR' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
-                                <Plane className="w-6 h-6" />
-                              </div>
+                              <div className="p-2 rounded-lg bg-sky-100 text-sky-700"><Plane className="w-6 h-6" /></div>
                               <div>
                                 <h3 className="font-bold text-sm">{t("dashboard.requests.new.air_express", "Aérien (Express)")}</h3>
                                 <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.air_desc", "Rapide • 5-7 Jours")}</p>
@@ -674,15 +637,10 @@ export default function NewRequestPage() {
                     </div>
                   </div>
 
-                  {formData.category === "Automobile & Pièces" && (
-                    <Alert className="bg-blue-500/5 border-blue-500/20">
-                      <AlertCircle className="h-4 w-4 text-blue-500" />
-                      <AlertTitle className="text-blue-700">{t("dashboard.requests.new.important_info", "Information Importante")}</AlertTitle>
-                      <AlertDescription className="text-blue-600/80">
-                        {t("dashboard.requests.new.auto_alert_desc", "Dans la catégorie Automobile, chaque véhicule ou lot de pièces spécifique doit faire l'objet d'une fiche de commande séparée pour un meilleur suivi douanier et logistique.")}
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                  <div className="space-y-2">
+                    <Label>{t("dashboard.requests.new.deadline", "Date limite souhaitée")}</Label>
+                    <Input type="date" value={formData.deadline} onChange={(e) => setFormData({ ...formData, deadline: e.target.value })} />
+                  </div>
                 </div>
 
                 <div className="space-y-6">
@@ -706,92 +664,17 @@ export default function NewRequestPage() {
                         <h3 className="font-semibold">{t("dashboard.requests.new.product", "Produit")} {index + 1}</h3>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {formData.category === "Automobile & Pièces" ? (
-                          <>
-                            <div className="space-y-2">
-                              <Label className="font-semibold flex items-center gap-2">
-                                {t("dashboard.requests.new.brand", "Marque")} <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
-                              </Label>
-                              <Select
-                                value={item.carBrand}
-                                onValueChange={(value) => updateItem(item.id, "carBrand", value)}
-                              >
-                                <SelectTrigger className="h-12">
-                                  <SelectValue placeholder={t("dashboard.requests.new.select_brand_placeholder", "Sélectionnez une marque")} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {AUTO_BRANDS.map((brand) => (
-                                    <SelectItem key={brand.name} value={brand.name}>{brand.name}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="font-semibold flex items-center gap-2">
-                                {t("dashboard.requests.new.model", "Modèle")} <Badge variant="outline" className="text-[10px] h-4">Alpha-AI</Badge>
-                              </Label>
-                              <Select
-                                value={item.carModel}
-                                onValueChange={(value) => updateItem(item.id, "carModel", value)}
-                                disabled={!item.carBrand}
-                              >
-                                <SelectTrigger className="h-12">
-                                  <SelectValue placeholder={item.carBrand ? t("dashboard.requests.new.select_model_placeholder", "Sélectionnez un modèle") : t("dashboard.requests.new.choose_brand_first", "Choisissez d'abord la marque")} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {item.carBrand && AUTO_BRANDS.find(b => b.name === item.carBrand)?.models.map((model) => (
-                                    <SelectItem key={model} value={model}>{model}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="space-y-2 md:col-span-2">
-                            <Label className="font-semibold">{t("dashboard.requests.new.product_name", "Nom du produit *")}</Label>
-                            <Input
-                              placeholder={t("dashboard.requests.new.product_name_placeholder", "Ex: iPhone 15 Pro Max 256GB")}
-                              className="h-12"
-                              value={item.productName}
-                              onChange={(e) => updateItem(item.id, "productName", e.target.value)}
-                            />
-                          </div>
-                        )}
-                      </div>
+                      {getCategoryForm(item)}
 
-                      <div className="space-y-2">
-                        <Label className="font-semibold">{t("dashboard.requests.new.detailed_description", "Description détaillée & Spécifications *")}</Label>
-                        <Textarea
-                          placeholder={formData.category === "Automobile & Pièces"
-                            ? t("dashboard.requests.new.description_placeholder_car", "Année, Kilométrage, Moteur, Couleur, État (Neuf/Occasion)...")
-                            : t("dashboard.requests.new.description_placeholder_generic", "Couleurs, dimensions, puissance, emballage requis...")}
-                          className="min-h-[100px] resize-none"
-                          value={item.description}
-                          onChange={(e) => updateItem(item.id, "description", e.target.value)}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-border">
                         <div className="space-y-2">
-                          <Label className="font-semibold">{t("dashboard.requests.new.quantity", "Quantité *")}</Label>
-                          <Input
-                            type="number"
-                            placeholder={t("dashboard.requests.new.quantity_placeholder", "Ex: 1")}
-                            className="h-12"
-                            value={item.quantity}
-                            onChange={(e) => updateItem(item.id, "quantity", e.target.value)}
-                          />
+                          <Label>{t("dashboard.requests.new.quantity", "Quantité *")}</Label>
+                          <Input type="number" placeholder={t("dashboard.requests.new.quantity_placeholder", "Ex: 1")} className="h-12" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value)} />
                         </div>
                         <div className="space-y-2">
-                          <Label className="font-semibold">{t("dashboard.requests.new.unit", "Unité *")}</Label>
-                          <Select
-                            value={item.unit}
-                            onValueChange={(value) => updateItem(item.id, "unit", value)}
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue />
-                            </SelectTrigger>
+                          <Label>{t("dashboard.requests.new.unit", "Unité *")}</Label>
+                          <Select value={item.unit} onValueChange={(value) => updateItem(item.id, "unit", value)}>
+                            <SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
                             <SelectContent>
                               <SelectItem value="units">{t("dashboard.requests.new.units", "Unités")}</SelectItem>
                               <SelectItem value="kg">KG</SelectItem>
@@ -801,23 +684,11 @@ export default function NewRequestPage() {
                           </Select>
                         </div>
                         <div className="space-y-2 col-span-2">
-                          <Label className="font-semibold">{t("dashboard.requests.new.estimated_budget", "Budget estimé ($)")}</Label>
+                          <Label>{t("dashboard.requests.new.estimated_budget", "Budget estimé ($)")}</Label>
                           <div className="flex items-center gap-2">
-                            <Input
-                              type="number"
-                              placeholder={t("dashboard.requests.new.budget_min", "Min")}
-                              className="h-12"
-                              value={item.budgetMin}
-                              onChange={(e) => updateItem(item.id, "budgetMin", e.target.value)}
-                            />
+                            <Input type="number" placeholder={t("dashboard.requests.new.budget_min", "Min")} className="h-12" value={item.budgetMin} onChange={(e) => updateItem(item.id, "budgetMin", e.target.value)} />
                             <span className="text-muted-foreground">-</span>
-                            <Input
-                              type="number"
-                              placeholder={t("dashboard.requests.new.budget_max", "Max")}
-                              className="h-12"
-                              value={item.budgetMax}
-                              onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)}
-                            />
+                            <Input type="number" placeholder={t("dashboard.requests.new.budget_max", "Max")} className="h-12" value={item.budgetMax} onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)} />
                           </div>
                         </div>
                       </div>
@@ -856,29 +727,11 @@ export default function NewRequestPage() {
                         <div className="col-span-2">
                           <p className="text-muted-foreground mb-2">{t("dashboard.requests.new.shipping_mode", "Mode d'expédition")}</p>
                           <div className="flex gap-3">
-                            <button
-                              type="button"
-                              onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
-                              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${
-                                formData.transportMode === 'SEA'
-                                  ? 'border-primary bg-primary/10 text-primary font-semibold'
-                                  : 'border-border hover:border-primary/50'
-                              }`}
-                            >
-                              <Ship className="w-4 h-4" />
-                              {t("dashboard.requests.new.maritime", "Maritime")}
+                            <button type="button" onClick={() => setFormData({ ...formData, transportMode: 'SEA' })} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${formData.transportMode === 'SEA' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-border hover:border-primary/50'}`}>
+                              <Ship className="w-4 h-4" /> {t("dashboard.requests.new.maritime", "Maritime")}
                             </button>
-                            <button
-                              type="button"
-                              onClick={() => setFormData({ ...formData, transportMode: 'AIR' })}
-                              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${
-                                formData.transportMode === 'AIR'
-                                  ? 'border-primary bg-primary/10 text-primary font-semibold'
-                                  : 'border-border hover:border-primary/50'
-                              }`}
-                            >
-                              <Plane className="w-4 h-4" />
-                              {t("dashboard.requests.new.by_air", "Par avion")}
+                            <button type="button" onClick={() => setFormData({ ...formData, transportMode: 'AIR' })} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all ${formData.transportMode === 'AIR' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-border hover:border-primary/50'}`}>
+                              <Plane className="w-4 h-4" /> {t("dashboard.requests.new.by_air", "Par avion")}
                             </button>
                           </div>
                         </div>
@@ -892,7 +745,7 @@ export default function NewRequestPage() {
                         </div>
                         <div>
                           <p className="text-muted-foreground">{t("dashboard.requests.new.category_review", "Catégorie")}</p>
-                          <p className="font-semibold">{formData.category}</p>
+                          <p className="font-semibold">{t(`dashboard.requests.new.cat_${formData.category.toLowerCase()}`, formData.category)}</p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">{t("dashboard.requests.new.sheets_count", "Nombre de fiches")}</p>
@@ -910,6 +763,7 @@ export default function NewRequestPage() {
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
                             <p className="text-xs font-semibold mt-2">{t("dashboard.requests.new.budget", "Budget")}: ${item.budgetMin} - ${item.budgetMax}</p>
+                            <p className="text-xs text-muted-foreground mt-1">Catégorie: {formData.category}</p>
                           </div>
                         ))}
                       </div>
@@ -950,51 +804,66 @@ export default function NewRequestPage() {
                         </p>
                       </div>
                       <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                        <p className="text-xs font-bold text-primary mb-1">{t("dashboard.requests.new.next_step_payment", "Prochaine étape : Paiement 60%")}</p>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          {t("dashboard.requests.new.payment_desc", "Dès validation de votre demande, vous paierez l'acompte (60%) via :")}
+                        <p className="text-sm text-muted-foreground">
+                          {t("dashboard.requests.new.next_steps", "Après soumission :")} 
+                          <ol className="list-decimal list-inside mt-2 space-y-1 text-xs">
+                            <li>{t("dashboard.requests.new.step1_admin", "Validation admin (24-48h)")}</li>
+                            <li>{t("dashboard.requests.new.step2_partner_quote", "Devis partenaire (proforma tout inclus)")}</li>
+                            <li>{t("dashboard.requests.new.step3_accept_quote", "Vous validez le devis → Bon de commande auto")}</li>
+                            <li>{t("dashboard.requests.new.step4_48h", "48h pour annuler sans frais")}</li>
+                            <li>{t("dashboard.requests.new.step5_deposit", "Paiement acompte 60% (carte/SEPA)")}</li>
+                          </ol>
                         </p>
-                        <div className="flex flex-wrap gap-2 text-[10px]">
-                          <Badge variant="secondary">{t("dashboard.requests.new.card", "Carte bancaire")}</Badge>
-                          <Badge variant="secondary">{t("dashboard.requests.new.mobile_money", "Mobile Money")}</Badge>
-                          <Badge variant="secondary">{t("dashboard.requests.new.transfer", "Virement")}</Badge>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <div className="flex justify-end gap-4 pt-4 border-t border-border">
+                  <Button variant="outline" onClick={handleBack} disabled={isLoading}>
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    {t("dashboard.requests.new.back", "Retour")}
+                  </Button>
+                  <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                    {t("dashboard.requests.new.submit", "Soumettre la demande")}
+                  </Button>
+                </div>
               </div>
             )}
 
-            <div className="flex items-center justify-between mt-12 pt-8 border-t border-border">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleBack}
-                disabled={currentStep === 1}
-                className="px-8"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {t("dashboard.requests.new.previous", "Précédent")}
-              </Button>
-
-              {currentStep < 3 ? (
-                <Button size="lg" onClick={handleNext} className="px-10">
-                  {t("dashboard.requests.new.next", "Suivant")}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              ) : (
-                <Button size="lg" onClick={handleSubmit} disabled={isLoading} className="px-10 bg-primary hover:bg-primary/90">
-                  {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  ) : (
-                    <CheckCircle2 className="w-4 h-4 mr-2" />
-                  )}
-                  {t("dashboard.requests.new.confirm_and_send", "Confirmer et Envoyer")}
-                </Button>
-              )}
-            </div>
           </motion.div>
+
+          <div className="flex items-center justify-between mb-8">
+            {currentStep === 1 ? (
+              <Button onClick={handleNext} disabled={isLoading} className="ml-auto gap-2">
+                {t("dashboard.requests.new.next", "Suivant")}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            ) : currentStep === 2 ? (
+              <div className="flex gap-3 ml-auto">
+                <Button variant="outline" onClick={handleBack} disabled={isLoading}>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  {t("dashboard.requests.new.back", "Retour")}
+                </Button>
+                <Button onClick={handleNext} disabled={isLoading} className="gap-2">
+                  {t("dashboard.requests.new.next", "Suivant")}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-end gap-4">
+                <Button variant="outline" onClick={handleBack} disabled={isLoading}>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  {t("dashboard.requests.new.back", "Retour")}
+                </Button>
+                <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                  {t("dashboard.requests.new.submit", "Soumettre la demande")}
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
