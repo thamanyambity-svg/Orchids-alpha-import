@@ -652,7 +652,7 @@ export default function RequestDetailsPage() {
                     </a>
                   </Button>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </TabsContent>

@@ -128,6 +128,7 @@ export function PurchaseOrderCard({ po, quote, request, onCancel, onViewQuote, r
   const StatusIcon = statusConfig.icon
 
   return (
+    <>
     <Card className={`border-2 ${statusConfig.color.replace('text-', 'border-')}`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-4">
@@ -149,6 +150,7 @@ export function PurchaseOrderCard({ po, quote, request, onCancel, onViewQuote, r
               {t("po.auto_confirmed", "Confirmé automatiquement après 48h")}
             </div>
           )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <Separator />
