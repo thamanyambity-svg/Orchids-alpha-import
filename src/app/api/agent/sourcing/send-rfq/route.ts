@@ -16,7 +16,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
 
 const ADMIN_CC_EMAILS = [
   'contact@aonosekehouseinvestmentdrc.site',
