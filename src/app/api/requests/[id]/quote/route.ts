@@ -24,7 +24,7 @@ const createQuoteSchema = z.object({
   estimated_arrival_date: z.string().nullable().optional(),
   payment_terms: z.string().default('60% deposit, 40% against documents'),
   validity_days: z.number().int().min(1).max(90).default(30),
-  specifications_json: z.record(z.unknown()).nullable().optional(),
+  specifications_json: z.record(z.string(), z.unknown()).nullable().optional(),
   notes: z.string().nullable().optional(),
   proforma_pdf_url: z.string().url().nullable().optional(),
 })
@@ -44,22 +44,22 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     // Verify request exists and user has permission (partner assigned or admin)
-    const { data: request, error: reqError } = await supabase
+    const { data: importRequest, error: reqError } = await supabase
       .from('import_requests')
       .select('id, status, assigned_partner_id, buyer_id, category')
       .eq('id', id)
       .single()
 
-    if (reqError || !request) {
+    if (reqError || !importRequest) {
       return NextResponse.json({ error: 'Request not found' }, { status: 404 })
     }
 
     // Check permission: partner assigned to this request, or admin, or buyer (view only)
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
     const isAdmin = profile?.role === 'ADMIN'
-    const isAssignedPartner = request.assigned_partner_id && 
-      (await supabase.from('partner_profiles').select('id').eq('id', request.assigned_partner_id).eq('user_id', user.id).single()).data
-    const isBuyer = request.buyer_id === user.id
+    const isAssignedPartner = importRequest.assigned_partner_id && 
+      (await supabase.from('partner_profiles').select('id').eq('id', importRequest.assigned_partner_id).eq('user_id', user.id).single()).data
+    const isBuyer = importRequest.buyer_id === user.id
 
     if (!isAdmin && !isAssignedPartner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       .from('quotes')
       .insert({
         request_id: id,
-        partner_id: request.assigned_partner_id,
+        partner_id: importRequest.assigned_partner_id,
         version,
         status: 'SUBMITTED',
         unit_price_usd: parsed.data.unit_price_usd,
@@ -142,14 +142,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       version,
       grandTotal,
       incoterm: parsed.data.incoterm,
-      buyerId: request.buyer_id,
+      buyerId: importRequest.buyer_id,
     }).catch(console.error)
 
     // Notify buyer
     const { data: buyer } = await supabase
       .from('profiles')
       .select('email, full_name')
-      .eq('id', request.buyer_id)
+      .eq('id', importRequest.buyer_id)
       .single()
 
     if (buyer) {

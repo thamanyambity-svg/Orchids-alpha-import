@@ -7,8 +7,9 @@ import { logAudit } from '@/lib/audit'
 // Accept CGV for a PO
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const { supabase, user } = await requireUser()
 
@@ -30,7 +31,7 @@ export async function POST(
     const { data: po, error: poError } = await supabase
       .from('purchase_orders')
       .select('id, status, cgv_accepted_at, request:import_requests(buyer_id)')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (poError || !po) {
@@ -61,7 +62,7 @@ export async function POST(
         cgv_accepted_user_agent: meta.ua,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -71,7 +72,7 @@ export async function POST(
       actorId: user.id,
       action: 'ACCEPT_CGV',
       targetType: 'purchase_orders',
-      targetId: params.id,
+      targetId: id,
       details: { cgv_version: parsed.data.cgv_version, ip: meta.ip }
     })
 

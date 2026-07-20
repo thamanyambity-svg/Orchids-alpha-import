@@ -24,7 +24,7 @@ const submitQuoteSchema = z.object({
   estimated_arrival_date: z.string().date().optional(),
   payment_terms: z.string().default('60% deposit, 40% against documents'),
   validity_days: z.number().int().min(1).max(90).default(30),
-  specifications_json: z.record(z.unknown()).default({}),
+  specifications_json: z.record(z.string(), z.unknown()).default({}),
   notes: z.string().optional(),
   proforma_pdf_url: z.string().url().optional(),
 })
@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify request exists and partner is assigned
-    const { data: request, error: reqError } = await supabase
+    const { data: importRequest, error: reqError } = await supabase
       .from('import_requests')
       .select('id, status, assigned_partner_id, category')
       .eq('id', parsed.data.request_id)
       .single()
 
-    if (reqError || !request) {
+    if (reqError || !importRequest) {
       return NextResponse.json({ error: 'Request not found' }, { status: 404 })
     }
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         .eq('user_id', user.id)
         .single()
 
-      if (!partner || request.assigned_partner_id !== partner.id) {
+      if (!partner || importRequest.assigned_partner_id !== partner.id) {
         return NextResponse.json({ error: 'Not assigned to this request' }, { status: 403 })
       }
     }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
       .from('quotes')
       .insert({
         request_id: parsed.data.request_id,
-        partner_id: partner?.id || request.assigned_partner_id,
+        partner_id: partner?.id || importRequest.assigned_partner_id,
         version,
         status: 'SUBMITTED',
         ...parsed.data,
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error
 
     // Update request status to ANALYSIS if was PENDING
-    if (request.status === 'PENDING') {
+    if (importRequest.status === 'PENDING') {
       await supabase
         .from('import_requests')
         .update({ status: 'ANALYSIS', updated_at: new Date().toISOString() })
