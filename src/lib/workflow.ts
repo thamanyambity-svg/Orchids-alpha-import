@@ -7,6 +7,43 @@ import { sendStatusNotification } from './notifications'
 import { logAudit } from './audit'
 import { processAutomaticDebit } from './payments/auto-debit.service'
 
+// ─── Agent de Sourcing IA — déclenchement automatique ───────────────────────
+
+export async function triggerSourcingAgent(
+    requestId: string,
+    partnerProfileId: string
+): Promise<void> {
+    try {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        const agentSecret = process.env.AGENT_SECRET
+
+        if (!agentSecret) {
+            console.warn('[SourcingAgent] AGENT_SECRET not set — skipping trigger')
+            return
+        }
+
+        // Appel non-bloquant (fire-and-forget) à l'agent
+        fetch(`${appUrl}/api/agent/sourcing`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-agent-secret': agentSecret,
+            },
+            body: JSON.stringify({
+                request_id: requestId,
+                partner_profile_id: partnerProfileId,
+            }),
+        }).then(res => {
+            if (!res.ok) console.error('[SourcingAgent] Trigger failed:', res.status)
+            else console.log('[SourcingAgent] Triggered successfully for request:', requestId)
+        }).catch(e => {
+            console.error('[SourcingAgent] Trigger error:', e)
+        })
+    } catch (e) {
+        console.error('[SourcingAgent] Failed to trigger sourcing agent:', e)
+    }
+}
+
 // --- Definitions ---
 
 interface Transition<T extends string> {
@@ -198,6 +235,7 @@ export async function executeTransition(
                 .from('import_requests')
                 .select(`
                     buyer_id,
+                    assigned_partner_id,
                     buyer:profiles!buyer_id(email, full_name)
                 `)
                 .eq('id', id)
@@ -212,6 +250,15 @@ export async function executeTransition(
                     undefined
                 )
             }
+
+            // ─── DÉCLENCHEMENT AGENT DE SOURCING ────────────────────────────
+            // Lorsque la demande passe en ANALYSIS, l'agent est déclenché automatiquement
+            if (target === 'ANALYSIS' && requestWithBuyer?.assigned_partner_id) {
+                triggerSourcingAgent(id, requestWithBuyer.assigned_partner_id)
+                console.log(`[Workflow] Sourcing agent triggered for request ${id}, partner ${requestWithBuyer.assigned_partner_id}`)
+            }
+            // ────────────────────────────────────────────────────────────────
+
         } catch (error) {
             console.error('⚠️ Notification failed:', error)
         }

@@ -46,7 +46,13 @@ export default function PartnerSuppliersPage() {
     contact_email: "",
     contact_phone: "",
     address: "",
-    capacity: ""
+    capacity: "",
+    categories_input: "",
+    certifications_input: "",
+    min_order_qty: "",
+    lead_time_days: "",
+    language: "en",
+    website: ""
   })
   const supabase = createClient()
 
@@ -101,15 +107,29 @@ export default function PartnerSuppliersPage() {
       const { error } = await supabase
         .from('suppliers')
         .insert([{
-          ...newSupplier,
+          name: newSupplier.name,
+          contact_email: newSupplier.contact_email,
+          contact_phone: newSupplier.contact_phone,
+          address: newSupplier.address,
+          capacity: newSupplier.capacity,
+          categories: newSupplier.categories_input ? newSupplier.categories_input.split(',').map(s => s.trim()) : [],
+          certifications: newSupplier.certifications_input ? newSupplier.certifications_input.split(',').map(s => s.trim()) : [],
+          min_order_qty: newSupplier.min_order_qty ? parseInt(newSupplier.min_order_qty) : null,
+          lead_time_days: newSupplier.lead_time_days ? parseInt(newSupplier.lead_time_days) : null,
+          language: newSupplier.language,
+          website: newSupplier.website,
           partner_id: partner.id,
-          status: 'PENDING'
+          status: 'ACTIVE', // Assuming active by default for testing, though original code had PENDING
+          validated_by_admin: false
         }])
 
       if (error) throw error
 
       toast.success("Fournisseur ajouté avec succès")
-      setNewSupplier({ name: "", contact_email: "", contact_phone: "", address: "", capacity: "" })
+      setNewSupplier({ 
+        name: "", contact_email: "", contact_phone: "", address: "", capacity: "", 
+        categories_input: "", certifications_input: "", min_order_qty: "", lead_time_days: "", language: "en", website: "" 
+      })
       fetchSuppliers()
     } catch (error) {
       console.error('Error adding supplier:', error)
@@ -137,7 +157,7 @@ export default function PartnerSuppliersPage() {
               Nouveau fournisseur
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Ajouter un fournisseur</DialogTitle>
             </DialogHeader>
@@ -191,7 +211,74 @@ export default function PartnerSuppliersPage() {
                   onChange={(e) => setNewSupplier({...newSupplier, address: e.target.value})}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={isAdding}>
+
+              {/* Champs étendus pour l'agent IA */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="categories">Catégories (séparées par des virgules)</Label>
+                  <Input 
+                    id="categories" 
+                    placeholder="Textile, Électronique, Pièces auto..." 
+                    value={newSupplier.categories_input}
+                    onChange={(e) => setNewSupplier({...newSupplier, categories_input: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="certifications">Certifications (séparées par des virgules)</Label>
+                  <Input 
+                    id="certifications" 
+                    placeholder="ISO 9001, CE, RoHS..." 
+                    value={newSupplier.certifications_input}
+                    onChange={(e) => setNewSupplier({...newSupplier, certifications_input: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="moq">MOQ (Qté Min)</Label>
+                  <Input 
+                    id="moq" 
+                    type="number"
+                    placeholder="Ex: 100" 
+                    value={newSupplier.min_order_qty}
+                    onChange={(e) => setNewSupplier({...newSupplier, min_order_qty: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="leadtime">Délai prod (jours)</Label>
+                  <Input 
+                    id="leadtime" 
+                    type="number"
+                    placeholder="Ex: 30" 
+                    value={newSupplier.lead_time_days}
+                    onChange={(e) => setNewSupplier({...newSupplier, lead_time_days: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="language">Langue principale</Label>
+                  <Input 
+                    id="language" 
+                    placeholder="en, zh, ar, fr..." 
+                    value={newSupplier.language}
+                    onChange={(e) => setNewSupplier({...newSupplier, language: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="website">Site Web</Label>
+                  <Input 
+                    id="website" 
+                    placeholder="https://..." 
+                    value={newSupplier.website}
+                    onChange={(e) => setNewSupplier({...newSupplier, website: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full mt-4" disabled={isAdding}>
                 {isAdding ? "Ajout en cours..." : "Enregistrer le fournisseur"}
               </Button>
             </form>

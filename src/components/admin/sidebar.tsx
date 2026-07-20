@@ -28,6 +28,7 @@ import {
   FolderOpen,
   Landmark,
   Webhook,
+  Bot
 } from "lucide-react"
 import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
@@ -45,6 +46,7 @@ const navItems: NavItem[] = [
   { href: "/admin/buyers/kyc", label: "Vérification KYC", labelKey: "admin.sidebar.kyc", icon: IdCard },
   { href: "/admin/partners", label: "Partenaires", labelKey: "admin.sidebar.partners", icon: UserCheck },
   { href: "/admin/suppliers", label: "Fournisseurs", labelKey: "admin.sidebar.suppliers", icon: Box },
+  { href: "/admin/sourcing", label: "Supervision IA", labelKey: "admin.sidebar.sourcing", icon: Bot },
   { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
   { href: "/admin/finances/invoices", label: "Factures", labelKey: "admin.sidebar.invoices", icon: FileText },
   { href: "/admin/finances/sepa", label: "Prélèvements SEPA", labelKey: "admin.sidebar.sepa", icon: Landmark },

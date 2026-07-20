@@ -13,7 +13,8 @@ import {
   LogOut,
   ChevronRight,
   MapPin,
-  Shield
+  Shield,
+  Bot
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
@@ -22,6 +23,7 @@ import { useLanguage } from "@/lib/i18n-context"
 const navItems = [
   { href: "/partner", labelKey: "partner.sidebar.dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { href: "/partner/requests", labelKey: "partner.sidebar.requests", label: "Dossiers assignés", icon: FileText },
+  { href: "/partner/sourcing", labelKey: "partner.sidebar.sourcing", label: "Sourcing IA", icon: Bot },
   { href: "/partner/suppliers", labelKey: "partner.sidebar.suppliers", label: "Fournisseurs", icon: Package },
   { href: "/partner/proofs", labelKey: "partner.sidebar.proofs", label: "Upload preuves", icon: Upload },
   { href: "/partner/messages", labelKey: "partner.sidebar.messaging", label: "Messagerie", icon: MessageSquare },
