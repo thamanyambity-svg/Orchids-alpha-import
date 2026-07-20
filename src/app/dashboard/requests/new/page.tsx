@@ -177,14 +177,14 @@ const allCountries = [
 ].sort((a, b) => a.name.localeCompare(b.name))
 
 const REQUEST_CATEGORIES = [
-  { value: "TEXTILE", labelKey: "dashboard.requests.new.cat_textile", icon: "🧵" },
-  { value: "VEHICULE", labelKey: "dashboard.requests.new.cat_automotive", icon: "🚗" },
-  { value: "ELECTRONIQUE", labelKey: "dashboard.requests.new.cat_electronics", icon: "📱" },
-  { value: "MACHINERIE", labelKey: "dashboard.requests.new.cat_machinery", icon: "⚙️" },
-  { value: "COSMETIQUE", labelKey: "dashboard.requests.new.cat_cosmetics", icon: "💄" },
-  { value: "ALIMENTAIRE", labelKey: "dashboard.requests.new.cat_food", icon: "🍎" },
-  { value: "CONSTRUCTION", labelKey: "dashboard.requests.new.cat_construction", icon: "🏗️" },
-  { value: "AUTRE", labelKey: "dashboard.requests.new.cat_other", icon: "📦" },
+  { value: "TEXTILE", labelKey: "dashboard.requests.new.cat_textile", label: "Textile & Habillement" },
+  { value: "VEHICULE", labelKey: "dashboard.requests.new.cat_automotive", label: "Véhicules & Transport" },
+  { value: "ELECTRONIQUE", labelKey: "dashboard.requests.new.cat_electronics", label: "Électronique & High-Tech" },
+  { value: "MACHINERIE", labelKey: "dashboard.requests.new.cat_machinery", label: "Machinerie & Équipements" },
+  { value: "COSMETIQUE", labelKey: "dashboard.requests.new.cat_cosmetics", label: "Cosmétiques & Beauté" },
+  { value: "ALIMENTAIRE", labelKey: "dashboard.requests.new.cat_food", label: "Agroalimentaire" },
+  { value: "CONSTRUCTION", labelKey: "dashboard.requests.new.cat_construction", label: "Matériaux de Construction" },
+  { value: "AUTRE", labelKey: "dashboard.requests.new.cat_other", label: "Autre / Divers" },
 ]
 
 const steps = [
@@ -465,7 +465,6 @@ export default function NewRequestPage() {
                           {allCountries.map((country) => (
                             <SelectItem key={country.code} value={country.code}>
                               <span className="flex items-center gap-3 py-1">
-                                <span className="text-2xl">{country.flag}</span>
                                 {country.name}
                               </span>
                             </SelectItem>
@@ -485,7 +484,6 @@ export default function NewRequestPage() {
                               return (
                                 <SelectItem key={country.code} value={country.code}>
                                   <span className="flex items-center gap-3 py-1">
-                                    <span className="text-2xl">{countryInfo?.flag || "🌐"}</span>
                                     {countryInfo?.name || country.name}
                                   </span>
                                 </SelectItem>
@@ -495,7 +493,6 @@ export default function NewRequestPage() {
                             allCountries.map((country) => (
                               <SelectItem key={country.code} value={country.code}>
                                 <span className="flex items-center gap-3 py-1">
-                                  <span className="text-2xl">{country.flag}</span>
                                   {country.name}
                                 </span>
                               </SelectItem>
@@ -508,14 +505,11 @@ export default function NewRequestPage() {
                     <div className="space-y-3">
                       <Label className="text-base font-semibold italic opacity-70">{t("dashboard.requests.new.category", "Catégorie de produits *")}</Label>
                       <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                        <SelectTrigger className="h-12"><SelectValue placeholder="Sélectionnez une catégorie" /></SelectTrigger>
+                        <SelectTrigger className="h-12"><SelectValue placeholder={t("dashboard.requests.new.category_placeholder", "Sélectionnez une catégorie")} /></SelectTrigger>
                         <SelectContent>
                           {REQUEST_CATEGORIES.map((cat) => (
                             <SelectItem key={cat.value} value={cat.value}>
-                              <span className="flex items-center gap-3 py-1">
-                                <span className="text-2xl">{cat.icon}</span>
-                                {t(cat.labelKey, cat.value)}
-                              </span>
+                              {t(cat.labelKey, cat.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -567,12 +561,7 @@ export default function NewRequestPage() {
                       {t("dashboard.requests.new.request_details_desc", "Décrivez précisément ce que vous recherchez pour obtenir la meilleure cotation.")}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="px-3 py-1 gap-1.5 bg-primary/10 text-primary border-primary/20">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      {t("dashboard.requests.new.ai_predictor", "IA Alpha Prédicteur Active")}
-                    </Badge>
-                  </div>
+
                 </div>
 
                 <div className="space-y-4">
@@ -584,54 +573,41 @@ export default function NewRequestPage() {
                         <SelectContent>
                           {REQUEST_CATEGORIES.map((cat) => (
                             <SelectItem key={cat.value} value={cat.value}>
-                              <span className="flex items-center gap-3 py-1">
-                                <span className="text-2xl">{cat.icon}</span>
-                                {t(cat.labelKey, cat.value)}
-                              </span>
+                              {t(cat.labelKey, cat.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <div className="space-y-4">
-                      <Label className="font-semibold">{t("dashboard.requests.new.transport_mode", "Mode d'Expédition *")}</Label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <Label className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">{t("dashboard.requests.new.transport_mode", "Mode d'expédition")} *</Label>
+                      <div className="grid grid-cols-2 gap-3">
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
-                          className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'SEA' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
+                          className={`cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'SEA' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-lg bg-blue-100 text-blue-700"><Ship className="w-6 h-6" /></div>
-                              <div>
-                                <h3 className="font-bold text-sm">{t("dashboard.requests.new.maritime_standard", "Maritime (Standard)")}</h3>
-                                <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.maritime_desc", "Économique • 30-45 Jours")}</p>
-                              </div>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2">
+                              <Ship className="w-4 h-4 text-primary" />
+                              <span className="font-semibold text-sm">{t("dashboard.requests.new.maritime_standard", "Maritime")}</span>
                             </div>
-                            {formData.transportMode === 'SEA' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                            {formData.transportMode === 'SEA' && <CheckCircle2 className="w-4 h-4 text-primary" />}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                            {t("dashboard.requests.new.maritime_ideal", "Idéal pour les grands volumes et les charges lourdes. Le choix optimisé pour réduire les coûts.")}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{t("dashboard.requests.new.maritime_desc", "Économique · 30–45 jours")}</p>
                         </div>
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'AIR' })}
-                          className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'AIR' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
+                          className={`cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary/50 ${formData.transportMode === 'AIR' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="p-2 rounded-lg bg-sky-100 text-sky-700"><Plane className="w-6 h-6" /></div>
-                              <div>
-                                <h3 className="font-bold text-sm">{t("dashboard.requests.new.air_express", "Aérien (Express)")}</h3>
-                                <p className="text-xs text-muted-foreground mt-1">{t("dashboard.requests.new.air_desc", "Rapide • 5-7 Jours")}</p>
-                              </div>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2">
+                              <Plane className="w-4 h-4 text-primary" />
+                              <span className="font-semibold text-sm">{t("dashboard.requests.new.air_express", "Aérien")}</span>
                             </div>
-                            {formData.transportMode === 'AIR' && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                            {formData.transportMode === 'AIR' && <CheckCircle2 className="w-4 h-4 text-primary" />}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                            {t("dashboard.requests.new.air_ideal", "Pour les envois urgents et produits de haute valeur. Livraison prioritaire garantie.")}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{t("dashboard.requests.new.air_desc", "Express · 5–7 jours")}</p>
                         </div>
                       </div>
                     </div>
