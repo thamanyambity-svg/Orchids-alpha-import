@@ -29,8 +29,9 @@ const createQuoteSchema = z.object({
   proforma_pdf_url: z.string().url().nullable().optional(),
 })
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const { supabase, user } = await requireUser()
 
     const rl = checkRateLimit(`quote:${user.id}`, { maxRequests: 20, windowMs: 60000 })
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: request, error: reqError } = await supabase
       .from('import_requests')
       .select('id, status, assigned_partner_id, buyer_id, category')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (reqError || !request) {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: latestQuote } = await supabase
       .from('quotes')
       .select('version')
-      .eq('request_id', params.id)
+      .eq('request_id', id)
       .order('version', { ascending: false })
       .limit(1)
       .single()
@@ -85,7 +86,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: quote, error } = await supabase
       .from('quotes')
       .insert({
-        request_id: params.id,
+        request_id: id,
         partner_id: request.assigned_partner_id,
         version,
         status: 'SUBMITTED',
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     await supabase
       .from('import_requests')
       .update({ status: 'ANALYSIS', updated_at: new Date().toISOString() })
-      .eq('id', params.id)
+      .eq('id', id)
 
     // Audit log
     await logAudit({
@@ -131,13 +132,13 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       action: 'CREATE_QUOTE',
       targetType: 'quotes',
       targetId: quote.id,
-      details: { requestId: params.id, version, grandTotal, incoterm: parsed.data.incoterm }
+      details: { requestId: id, version, grandTotal, incoterm: parsed.data.incoterm }
     })
 
     // Notify n8n
     await sendToN8N('quote_submitted', {
       quoteId: quote.id,
-      requestId: params.id,
+      requestId: id,
       version,
       grandTotal,
       incoterm: parsed.data.incoterm,
@@ -161,8 +162,9 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const { supabase, user } = await requireUser()
 
     const { data: quotes, error } = await supabase
@@ -171,7 +173,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         *,
         partner:partner_profiles(full_name, company_name, email, phone)
       `)
-      .eq('request_id', params.id)
+      .eq('request_id', id)
       .order('version', { ascending: false })
 
     if (error) throw error

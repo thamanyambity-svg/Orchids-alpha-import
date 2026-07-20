@@ -19,7 +19,7 @@ const cancelPoSchema = z.object({
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { supabase, user } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
@@ -30,6 +30,7 @@ export async function POST(
     const body = await request.json()
     const url = new URL(request.url)
     const action = url.searchParams.get('action') // 'sign' or 'cancel'
+    const { id } = await params;
 
     // Get PO with related data
     const { data: po, error: poError } = await supabase
@@ -39,7 +40,7 @@ export async function POST(
         request:import_requests(buyer_id, status),
         quote:quotes(grand_total_usd, currency, incoterm)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (poError || !po) {
@@ -93,7 +94,7 @@ export async function POST(
           cgv_accepted_user_agent: meta.userAgent,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', params.id)
+        .eq('id', id)
         .select()
         .single()
 
@@ -103,7 +104,7 @@ export async function POST(
         actorId: user.id,
         action: 'SIGN_PO',
         targetType: 'purchase_orders',
-        targetId: params.id,
+        targetId: id,
         details: { cgv_version: parsed.data.cgv_version, cgv_accepted_ip: meta.ip }
       })
 
@@ -150,7 +151,7 @@ export async function POST(
           cancelled_at: now.toISOString(),
           updated_at: now.toISOString(),
         })
-        .eq('id', params.id)
+        .eq('id', id)
 
       if (error) throw error
 
@@ -162,7 +163,7 @@ export async function POST(
 
       // Log cancellation
       await supabase.from('po_cancellation_requests').insert({
-        po_id: params.id,
+        po_id: id,
         requested_by: user.id,
         reason: parsed.data.reason,
         status: 'APPROVED',
@@ -174,7 +175,7 @@ export async function POST(
         actorId: user.id,
         action: 'CANCEL_PO',
         targetType: 'purchase_orders',
-        targetId: params.id,
+        targetId: id,
         details: { reason: parsed.data.reason, within_48h: now < expiresAt }
       })
 
@@ -183,7 +184,7 @@ export async function POST(
           adminId: user.id,
           action: 'ADMIN_CANCEL_PO',
           resource: 'purchase_orders',
-          resourceId: params.id,
+          resourceId: id,
           details: { reason: parsed.data.reason, ...meta },
           ip: meta.ip,
           userAgent: meta.userAgent,
@@ -201,9 +202,10 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { supabase, user } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
 
     const { data: po, error } = await supabase
@@ -215,7 +217,7 @@ export async function GET(
         buyer:profiles!purchase_orders_buyer_id_fkey(email, full_name, company_name),
         partner:partner_profiles(full_name, company_name, email)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error) throw error
@@ -240,7 +242,7 @@ export async function GET(
     const { data: cancellations } = await supabase
       .from('po_cancellation_requests')
       .select('*')
-      .eq('po_id', params.id)
+      .eq('po_id', id)
       .order('created_at', { ascending: false })
 
     return NextResponse.json({ ...po, cancellations: cancellations || [] })
