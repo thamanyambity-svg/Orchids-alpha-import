@@ -28,6 +28,11 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$
 BEGIN
+  CREATE TYPE application_status AS ENUM ('PENDING', 'APPROVED_KYC', 'DEPOSIT_PAID', 'ACTIVE', 'REJECTED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
   CREATE TYPE contract_status AS ENUM ('PENDING', 'ACTIVE', 'SUSPENDED', 'TERMINATED');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
@@ -338,7 +343,9 @@ CREATE TABLE IF NOT EXISTS public.partner_applications (
     specialization TEXT,
     website TEXT,
     documents JSONB DEFAULT '[]'::jsonb,
-    status TEXT DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
+    -- L'application écrit 'APPROVED_KYC' (src/app/admin/partners/applications/[id]/page.tsx).
+    -- Le CHECK à trois valeurs faisait échouer toute approbation sur une base neuve.
+    status application_status NOT NULL DEFAULT 'PENDING',
     admin_notes TEXT,
     reviewed_by UUID REFERENCES public.profiles(id),
     reviewed_at TIMESTAMPTZ,
