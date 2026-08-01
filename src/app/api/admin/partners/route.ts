@@ -68,14 +68,49 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    if (inviteError || !invited?.user) {
+    // Un compte peut déjà exister : créé avant cette fonctionnalité, ou parce que
+    // l'intéressé s'était inscrit comme acheteur. On le rattache au lieu d'échouer.
+    let userId: string
+    let accountWasCreated: boolean
+
+    if (invited?.user) {
+      userId = invited.user.id
+      accountWasCreated = true
+    } else if (inviteError && /already been registered|already exists/i.test(inviteError.message)) {
+      const { data: existing, error: lookupError } = await admin.auth.admin.listUsers()
+      const match = existing?.users?.find(
+        (u: { id: string; email?: string }) =>
+          u.email?.toLowerCase() === parsed.data.email.toLowerCase()
+      )
+
+      if (lookupError || !match) {
+        return NextResponse.json(
+          { error: 'Email already registered but the account could not be found' },
+          { status: 400 }
+        )
+      }
+
+      const { data: alreadyPartner } = await supabase
+        .from('partner_profiles')
+        .select('id')
+        .eq('user_id', match.id)
+        .maybeSingle()
+
+      if (alreadyPartner) {
+        return NextResponse.json(
+          { error: 'This account is already a partner' },
+          { status: 409 }
+        )
+      }
+
+      userId = match.id
+      accountWasCreated = false
+    } else {
       return NextResponse.json(
         { error: inviteError?.message || 'Invitation failed' },
         { status: 400 }
       )
     }
-
-    const userId = invited.user.id
 
     try {
       // handle_new_user crée le profil en BUYER : sans cette bascule le partenaire
@@ -130,13 +165,18 @@ export async function POST(request: NextRequest) {
         details: { email: parsed.data.email, country_id: parsed.data.country_id },
       })
 
-      return NextResponse.json({ id: partner.id, user_id: userId })
+      return NextResponse.json({ id: partner.id, user_id: userId, account_created: accountWasCreated })
     } catch (error) {
       // Compensation : sans elle, l'adresse reste prise par un compte sans profil
       // et le partenaire devient impossible à recréer.
-      const { error: cleanupError } = await admin.auth.admin.deleteUser(userId)
-      if (cleanupError) {
-        console.error(`Compte auth orphelin à supprimer manuellement : ${userId}`, cleanupError)
+      //
+      // On ne supprime que ce que l'on vient de créer : effacer un compte
+      // préexistant détruirait un utilisateur légitime et son historique.
+      if (accountWasCreated) {
+        const { error: cleanupError } = await admin.auth.admin.deleteUser(userId)
+        if (cleanupError) {
+          console.error(`Compte auth orphelin à supprimer manuellement : ${userId}`, cleanupError)
+        }
       }
       throw error
     }
