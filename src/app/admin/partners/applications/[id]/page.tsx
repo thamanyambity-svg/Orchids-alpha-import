@@ -11,6 +11,14 @@ import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { ArrowLeft, CheckCircle, XCircle, FileText, Download } from "lucide-react"
 import Link from "next/link"
+import { PartnerForm } from "@/components/admin/partner-form"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
@@ -19,9 +27,21 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
     const supabase = createClient()
     const [application, setApplication] = useState<any>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [countries, setCountries] = useState<{ id: string; name: string }[]>([])
+    const [isCreateOpen, setIsCreateOpen] = useState(false)
 
     useEffect(() => {
         fetchApplication()
+    }, [])
+
+    // Pays proposés dans le formulaire de création.
+    useEffect(() => {
+        supabase
+            .from("countries")
+            .select("id, name")
+            .eq("is_active", true)
+            .order("name")
+            .then(({ data }) => setCountries(data || []))
     }, [])
 
     async function fetchApplication() {
@@ -191,10 +211,40 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     <Button variant="destructive" onClick={() => updateStatus('REJECTED')}>
                         Refuser le dossier
                     </Button>
-                    <Button className="bg-green-600 hover:bg-green-700" onClick={() => updateStatus('APPROVED_KYC')}>
-                        <CheckCircle className="mr-2 w-4 h-4" />
-                        Valider KYC & Demander Caution
-                    </Button>
+                    {/*
+                      Approuver ne se contentait que de changer un statut : le candidat
+                      restait sans compte, sans profil et sans accès. L'approbation ouvre
+                      désormais la création réelle du partenaire.
+                    */}
+                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="bg-green-600 hover:bg-green-700">
+                                <CheckCircle className="mr-2 w-4 h-4" />
+                                Approuver et créer le compte
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>Créer le partenaire depuis cette candidature</DialogTitle>
+                            </DialogHeader>
+                            <PartnerForm
+                                countries={countries}
+                                initialValues={{
+                                    email: application.email ?? "",
+                                    company_name: application.company_name ?? "",
+                                    full_name: application.contact_name ?? "",
+                                    phone: application.phone ?? "",
+                                    address_line: application.company_details?.address ?? "",
+                                    application_id: application.id,
+                                }}
+                                onCreated={() => {
+                                    setIsCreateOpen(false)
+                                    toast.success("Partenaire créé, candidature clôturée")
+                                    router.push("/admin/partners")
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </div>
             )}
         </div>

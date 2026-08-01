@@ -27,6 +27,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, MoreHorizontal, UserCheck, Star, MapPin, Briefcase, FileCheck, Edit, ExternalLink, FileEdit } from "lucide-react"
 import Link from "next/link"
 import { EditPartnerDialog } from "@/components/admin/edit-partner-dialog"
+import { PartnerForm } from "@/components/admin/partner-form"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface PartnerWithDetails {
     id: string
@@ -51,11 +59,23 @@ export default function AdminPartnersPage() {
     const [searchQuery, setSearchQuery] = useState("")
     const [activeTab, setActiveTab] = useState("ALL")
     const [editingPartner, setEditingPartner] = useState<any>(null)
+    const [countries, setCountries] = useState<{ id: string; name: string }[]>([])
+    const [isCreateOpen, setIsCreateOpen] = useState(false)
 
     const supabase = createClient()
 
     useEffect(() => {
         fetchPartners()
+    }, [])
+
+    // Pays proposés dans le formulaire de création.
+    useEffect(() => {
+        supabase
+            .from("countries")
+            .select("id, name")
+            .eq("is_active", true)
+            .order("name")
+            .then(({ data }) => setCountries(data || []))
     }, [])
 
     async function fetchPartners() {
@@ -200,12 +220,32 @@ export default function AdminPartnersPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button asChild>
+                    <Button variant="outline" asChild>
                         <Link href="/partner-request" target="_blank" rel="noopener noreferrer">
-                            <UserCheck className="mr-2 h-4 w-4" />
-                            Inviter un Partenaire
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            Formulaire de candidature
                         </Link>
                     </Button>
+                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <UserCheck className="mr-2 h-4 w-4" />
+                                Créer un partenaire
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>Nouveau partenaire</DialogTitle>
+                            </DialogHeader>
+                            <PartnerForm
+                                countries={countries}
+                                onCreated={() => {
+                                    setIsCreateOpen(false)
+                                    fetchPartners()
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
 
