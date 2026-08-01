@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
       .from('quotes')
       .select(`
         *,
-        partner:partner_profiles(full_name, company_name, email, phone)
+        partner:partner_profiles(id, user_id, profile:profiles!user_id(full_name, company_name, email, phone))
       `)
       .order('version', { ascending: false })
 

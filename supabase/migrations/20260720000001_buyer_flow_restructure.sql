@@ -9,7 +9,9 @@
 -- 1. NOUVEAUX ENUMS
 
 -- Catégories de demande (remplace le champ category libre)
-CREATE TYPE request_category AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE request_category AS ENUM (
     'TEXTILE',
     'VEHICULE',
     'ELECTRONIQUE',
@@ -19,9 +21,13 @@ CREATE TYPE request_category AS ENUM (
     'CONSTRUCTION',
     'AUTRE'
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Incoterms 2020 officiels
-CREATE TYPE incoterm AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE incoterm AS ENUM (
     'EXW',  -- Ex Works
     'FCA',  -- Free Carrier
     'FAS',  -- Free Alongside Ship
@@ -34,9 +40,13 @@ CREATE TYPE incoterm AS ENUM (
     'DPU',  -- Delivered At Place Unloaded
     'DDP'   -- Delivered Duty Paid
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Statut Proforma/Devis
-CREATE TYPE quote_status AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE quote_status AS ENUM (
     'DRAFT',          -- Brouillon partenaire
     'SUBMITTED',      -- Envoyé à l'acheteur
     'ACCEPTED',       -- Accepté par acheteur
@@ -44,9 +54,13 @@ CREATE TYPE quote_status AS ENUM (
     'EXPIRED',        -- Expiré (délai dépassé)
     'REVISED'         -- Révisé (nouvelle version)
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Statut Bon de Commande
-CREATE TYPE po_status AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE po_status AS ENUM (
     'GENERATED',      -- Généré auto après acceptation quote
     'PENDING_SIGNATURE', -- En attente signature acheteur (CGV)
     'SIGNED',         -- Signé (CGV acceptées)
@@ -54,27 +68,37 @@ CREATE TYPE po_status AS ENUM (
     'CANCELLED',      -- Annulé dans les 48h
     'EXPIRED'         -- Non signé dans les délais
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Type de véhicule (pour catégorie VEHICULE)
-CREATE TYPE vehicle_type AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE vehicle_type AS ENUM (
     'NEUF',
     'OCCASION',
     'PIECES_DETACHEES'
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- État véhicule
-CREATE TYPE vehicle_condition AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE vehicle_condition AS ENUM (
     'NEUF',
     'TRES_BON',
     'BON',
     'MOYEN',
     'EPARGNE'
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- 2. NOUVELLES TABLES
 
 -- Devis / Proforma (soumis par partenaire/admin)
-CREATE TABLE public.quotes (
+CREATE TABLE IF NOT EXISTS public.quotes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
     partner_id UUID NOT NULL REFERENCES public.partner_profiles(id) ON DELETE CASCADE,
@@ -133,7 +157,7 @@ CREATE TABLE public.quotes (
 );
 
 -- Bon de Commande (généré auto après acceptation quote)
-CREATE TABLE public.purchase_orders (
+CREATE TABLE IF NOT EXISTS public.purchase_orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     quote_id UUID NOT NULL UNIQUE REFERENCES public.quotes(id) ON DELETE CASCADE,
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
@@ -183,7 +207,7 @@ CREATE TABLE public.purchase_orders (
 );
 
 -- Demandes d'annulation (traçabilité)
-CREATE TABLE public.po_cancellation_requests (
+CREATE TABLE IF NOT EXISTS public.po_cancellation_requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     po_id UUID NOT NULL REFERENCES public.purchase_orders(id) ON DELETE CASCADE,
     requested_by UUID NOT NULL REFERENCES public.profiles(id),
@@ -195,7 +219,7 @@ CREATE TABLE public.po_cancellation_requests (
 );
 
 -- Spécifications Textile (détail par ligne)
-CREATE TABLE public.textile_specifications (
+CREATE TABLE IF NOT EXISTS public.textile_specifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
     line_number INTEGER NOT NULL,
@@ -226,7 +250,7 @@ CREATE TABLE public.textile_specifications (
 );
 
 -- Spécifications Véhicule (détail par ligne)
-CREATE TABLE public.vehicle_specifications (
+CREATE TABLE IF NOT EXISTS public.vehicle_specifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
     line_number INTEGER NOT NULL,
@@ -273,7 +297,7 @@ CREATE TABLE public.vehicle_specifications (
 );
 
 -- Spécifications Générales (autres catégories)
-CREATE TABLE public.general_specifications (
+CREATE TABLE IF NOT EXISTS public.general_specifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
     line_number INTEGER NOT NULL,
@@ -339,18 +363,23 @@ CREATE INDEX IF NOT EXISTS idx_general_specs_request ON public.general_specifica
 
 -- 4. TRIGGERS updated_at
 
+DROP TRIGGER IF EXISTS update_quotes_updated_at ON public.quotes;
 CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON public.quotes
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS update_purchase_orders_updated_at ON public.purchase_orders;
 CREATE TRIGGER update_purchase_orders_updated_at BEFORE UPDATE ON public.purchase_orders
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS update_textile_specs_updated_at ON public.textile_specifications;
 CREATE TRIGGER update_textile_specs_updated_at BEFORE UPDATE ON public.textile_specifications
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS update_vehicle_specs_updated_at ON public.vehicle_specifications;
 CREATE TRIGGER update_vehicle_specs_updated_at BEFORE UPDATE ON public.vehicle_specifications
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS update_general_specs_updated_at ON public.general_specifications;
 CREATE TRIGGER update_general_specs_updated_at BEFORE UPDATE ON public.general_specifications
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
@@ -431,8 +460,9 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
+DROP TRIGGER IF EXISTS trigger_create_po_from_quote ON public.quotes;
 CREATE TRIGGER trigger_create_po_from_quote
     AFTER UPDATE ON public.quotes
     FOR EACH ROW EXECUTE FUNCTION public.create_po_from_accepted_quote();
@@ -480,7 +510,7 @@ BEGIN
       AND NOT EXISTS (SELECT 1 FROM public.orders o WHERE o.reference = po.po_number)
     ON CONFLICT (reference) DO NOTHING;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Demander annulation PO (dans les 48h)
 CREATE OR REPLACE FUNCTION public.request_po_cancellation(
@@ -536,7 +566,7 @@ BEGIN
     
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 6. RLS POLICIES
 
