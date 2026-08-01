@@ -27,10 +27,10 @@ export async function POST(
       return NextResponse.json({ error: 'CGV must be accepted' }, { status: 400 })
     }
 
-    // Get PO and verify buyer
+    // Get PO and verify buyer (buyer_id est porté directement par purchase_orders)
     const { data: po, error: poError } = await supabase
       .from('purchase_orders')
-      .select('id, status, cgv_accepted_at, request:import_requests(buyer_id)')
+      .select('id, status, cgv_accepted_at, buyer_id')
       .eq('id', id)
       .single()
 
@@ -38,7 +38,7 @@ export async function POST(
       return NextResponse.json({ error: 'PO not found' }, { status: 404 })
     }
 
-    if (po.request.buyer_id !== user.id) {
+    if (po.buyer_id !== user.id) {
       return NextResponse.json({ error: 'Only buyer can accept CGV' }, { status: 403 })
     }
 

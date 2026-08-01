@@ -188,9 +188,9 @@ const REQUEST_CATEGORIES = [
 ]
 
 const steps = [
-  { id: 1, titleKey: "dashboard.requests.new.step_country", icon: Globe2 },
-  { id: 2, titleKey: "dashboard.requests.new.step_product", icon: Package },
-  { id: 3, titleKey: "dashboard.requests.new.step_summary", icon: FileText },
+  { id: 1, titleKey: "dashboard.requests.new.step_country", title: "Origine", icon: Globe2 },
+  { id: 2, titleKey: "dashboard.requests.new.step_product", title: "Produits", icon: Package },
+  { id: 3, titleKey: "dashboard.requests.new.step_summary", title: "Récapitulatif", icon: FileText },
 ]
 
 const mockPartners: Record<string, any> = {

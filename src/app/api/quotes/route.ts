@@ -57,6 +57,8 @@ export async function POST(request: NextRequest) {
     const profile = await supabase.from('profiles').select('role').eq('id', user.id).single()
     const isAdmin = profile.data?.role === 'ADMIN'
 
+    let partnerId: string | null = null
+
     if (!isAdmin) {
       const { data: partner } = await supabase
         .from('partner_profiles')
@@ -67,6 +69,14 @@ export async function POST(request: NextRequest) {
       if (!partner || importRequest.assigned_partner_id !== partner.id) {
         return NextResponse.json({ error: 'Not assigned to this request' }, { status: 403 })
       }
+
+      partnerId = partner.id
+    }
+
+    // Un admin soumet au nom du partenaire assigné : sans assignation, pas de devis possible.
+    const quotePartnerId = partnerId || importRequest.assigned_partner_id
+    if (!quotePartnerId) {
+      return NextResponse.json({ error: 'No partner assigned to this request' }, { status: 400 })
     }
 
     // Determine next version
@@ -79,30 +89,27 @@ export async function POST(request: NextRequest) {
 
     const version = (existingQuotes?.[0]?.version || 0) + 1
 
-    // Calculate totals
-    const subtotal = parsed.data.unit_price_usd * parsed.data.quantity
-    const totalFees = parsed.data.freight_cost_usd + parsed.data.insurance_cost_usd +
-      parsed.data.customs_duty_estimate_usd + parsed.data.inspection_cost_usd +
-      parsed.data.handling_fees_usd + parsed.data.other_fees_usd
-    const grandTotal = subtotal + totalFees
+    // subtotal_usd / total_fees_usd / grand_total_usd sont des colonnes GENERATED ALWAYS :
+    // Postgres refuse toute valeur explicite, on laisse la base les calculer.
+    const validUntil = new Date()
+    validUntil.setDate(validUntil.getDate() + parsed.data.validity_days)
 
     const { data: quote, error } = await supabase
       .from('quotes')
       .insert({
-        request_id: parsed.data.request_id,
-        partner_id: partner?.id || importRequest.assigned_partner_id,
+        ...parsed.data,
+        partner_id: quotePartnerId,
         version,
         status: 'SUBMITTED',
-        ...parsed.data,
-        subtotal_usd: subtotal,
-        total_fees_usd: totalFees,
-        grand_total_usd: grandTotal,
+        valid_until: validUntil.toISOString().slice(0, 10),
         submitted_at: new Date().toISOString(),
       })
       .select()
       .single()
 
     if (error) throw error
+
+    const grandTotal = Number(quote.grand_total_usd)
 
     // Update request status to ANALYSIS if was PENDING
     if (importRequest.status === 'PENDING') {
