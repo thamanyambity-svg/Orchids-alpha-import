@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alpha Import — Importer en RDC, paiement séquencé 60/40 sous séquestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<script src="./world-map.js"></script>
+<style>
+:root{--gold:hsl(42 85% 55%);--navy:hsl(216 45% 6%);--navy2:hsl(216 40% 9%);--line:hsl(216 30% 18%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--navy);color:#fff;font-family:'Barlow Condensed',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:#fff}
+::selection{background:var(--gold);color:#000}
+@keyframes awFade{to{opacity:1}}
+@keyframes awPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes kb{0%{transform:scale(1.05) translate3d(0,0,0)}100%{transform:scale(1.22) translate3d(-1.5%,-1.5%,0)}}
+@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes rise{from{opacity:0;transform:translateY(1.1em) rotate(3deg)}to{opacity:1;transform:translateY(0) rotate(0)}}
+@keyframes barIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes menuIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes flow{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</helmet>
+
+<div style="position:relative;background:var(--navy);min-height:100vh">
+
+  <div ref="{{ progressRef }}" style="position:fixed;top:0;left:0;height:2px;width:0%;background:var(--gold);z-index:9999;box-shadow:0 0 12px var(--gold)"></div>
+  <div ref="{{ cursorRef }}" style="position:fixed;top:0;left:0;width:34px;height:34px;border:1px solid var(--gold);pointer-events:none;z-index:9998;opacity:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s"></div>
+
+  <nav ref="{{ navRef }}" style="position:fixed;top:0;left:0;right:0;z-index:900;background:hsl(216 45% 6% / 0);backdrop-filter:blur(0px);border-bottom:1px solid transparent;transition:background .4s,backdrop-filter .4s,border-color .4s">
+    <div style="max-width:1440px;margin:0 auto;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <button onClick="{{ navHome }}" style="display:flex;align-items:baseline;gap:10px;background:none;border:none;padding:0;cursor:pointer">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:.9;letter-spacing:.04em;color:#fff">ALPHA</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.42em;color:var(--gold);text-transform:uppercase">Import</span>
+      </button>
+
+      <div style="display:none;align-items:center;gap:2px" ref="{{ navLinksRef }}">
+        <button onClick="{{ navHome }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav1 }}</button>
+        <button onClick="{{ navServices }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav2 }}</button>
+        <button onClick="{{ navPlatform }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav3 }}</button>
+        <button onClick="{{ navProcess }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav4 }}</button>
+        <button onClick="{{ navNetwork }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav5 }}</button>
+        <button onClick="{{ navPartner }}" style="background:none;border:none;padding:10px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;transition:color .25s" style-hover="color:#fff">{{ t.nav6 }}</button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px">
+        <button ref="{{ burgerRef }}" onClick="{{ toggleMenu }}" aria-label="Menu" style="display:none;flex-direction:column;gap:5px;background:none;border:1px solid var(--line);padding:12px 13px;cursor:pointer">
+          <span style="display:block;width:18px;height:1.5px;background:var(--gold)"></span>
+          <span style="display:block;width:18px;height:1.5px;background:var(--gold)"></span>
+          <span style="display:block;width:18px;height:1.5px;background:var(--gold)"></span>
+        </button>
+        <button onClick="{{ toggleLang }}" style="background:none;border:1px solid var(--line);padding:8px 12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.24em;color:rgba(255,255,255,.75);white-space:nowrap;transition:border-color .25s,color .25s" style-hover="border-color:var(--gold);color:var(--gold)">{{ langLabel }}</button>
+        <a href="#" onClick="{{ navContact }}" style="background:var(--gold);border:none;padding:14px 24px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#0a1018;white-space:nowrap">{{ t.ctaPlatform }}</a>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="background:hsl(216 45% 6% / .97);backdrop-filter:blur(14px);border-top:1px solid var(--line);animation:menuIn .42s cubic-bezier(.16,1,.3,1) both">
+      <div style="display:flex;flex-direction:column;padding:8px 32px 26px;gap:1px;background:var(--line)">
+        <sc-for list="{{ mobileLinks }}" as="l" hint-placeholder-count="7"><button onClick="{{ l.go }}" style="text-align:left;background:hsl(216 45% 6%);border:none;padding:19px 18px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:{{ l.color }}">{{ l.label }}</button></sc-for>
+      </div>
+    </div>
+    </sc-if>
+  </nav>
+
+  <!-- ============================= ACCUEIL ============================= -->
+  <sc-if value="{{ pageHome }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Accueil">
+
+    <section style="position:relative;height:100vh;min-height:660px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;overflow:hidden">
+        <div style="position:absolute;inset:-6%;background-size:cover;background-position:center;animation:kb 14s linear infinite alternate;transition:opacity 1.3s cubic-bezier(.4,0,.2,1);background-image:{{ slotA.img }};opacity:{{ slotA.o }}"></div>
+        <div style="position:absolute;inset:-6%;background-size:cover;background-position:center;animation:kb 14s linear infinite alternate;transition:opacity 1.3s cubic-bezier(.4,0,.2,1);background-image:{{ slotB.img }};opacity:{{ slotB.o }}"></div>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,hsl(216 45% 6% / .74) 0%,hsl(216 45% 6% / .5) 45%,hsl(216 45% 6% / .96) 100%)"></div>
+      <div style="position:absolute;inset:0;opacity:.5;background:repeating-linear-gradient(115deg,transparent 0 26px,hsl(42 85% 55% / .05) 26px 27px)"></div>
+
+      <div style="position:relative;height:100%;max-width:1440px;margin:0 auto;padding:0 32px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8vh">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:34px">
+          <span style="flex:0 0 auto;display:block;width:56px;height:1px;background:var(--gold)"></span>
+          <span style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px"><sc-for list="{{ heroTagParts }}" as="p" hint-placeholder-count="3"><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);white-space:nowrap">{{ p.v }}</span></sc-for></span>
+        </div>
+
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12.5vw,206px);line-height:.84;letter-spacing:-.012em;color:#fff">
+          <span style="display:block;overflow:hidden;padding-bottom:.04em">
+            <sc-for list="{{ heroLetters }}" as="ch" hint-placeholder-count="8"><span style="display:inline-block;animation:rise .82s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ ch.d }}">{{ ch.c }}</span></sc-for>
+          </span>
+          <span style="display:block;color:var(--gold);font-size:.4em;letter-spacing:.02em;margin-top:.24em">{{ heroSub }}</span>
+        </h1>
+
+        <p style="max-width:640px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.64);text-wrap:pretty">{{ t.heroBody }}</p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">
+          <button onClick="{{ navContact }}" style="background:var(--gold);border:none;padding:20px 38px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#0a1018;white-space:nowrap;transition:transform .3s" style-hover="transform:translateY(-3px)">{{ t.ctaPlatform }}</button>
+          <button onClick="{{ navProcess }}" style="background:none;border:1px solid var(--line);padding:20px 38px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap;transition:border-color .3s,color .3s" style-hover="border-color:var(--gold);color:var(--gold)">{{ t.ctaDiscover }}</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:44px">
+          <sc-for list="{{ heroDots }}" as="d" hint-placeholder-count="4"><button onClick="{{ d.go }}" style="height:2px;border:none;padding:0;cursor:pointer;transition:width .5s,background .5s;width:{{ d.w }};background:{{ d.bg }}"></button></sc-for>
+          <span style="margin-left:14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.36em;color:rgba(255,255,255,.34)">{{ heroCounter }}</span>
+        </div>
+      </div>
+
+      <div style="position:absolute;right:32px;bottom:8vh;display:flex;flex-direction:column;align-items:center;gap:12px;animation:drift 3s ease-in-out infinite">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.4em;color:rgba(255,255,255,.32);writing-mode:vertical-rl">{{ t.scroll }}</span>
+        <span style="display:block;width:1px;height:56px;background:linear-gradient(180deg,var(--gold),transparent)"></span>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section style="position:relative;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--navy2);padding:56px 0 0;overflow:hidden">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px 46px;text-align:center">
+        <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,48px);line-height:1;color:#fff">{{ t.trustTitle }}</h2>
+        <p style="max-width:560px;margin:16px auto 0;font-size:17px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.52)">{{ t.trustSub }}</p>
+      </div>
+      <div style="border-top:1px solid var(--line);padding:20px 0;overflow:hidden">
+        <div style="display:flex;width:200%;animation:marq 36s linear infinite">
+          <sc-for list="{{ trustLoop }}" as="i" hint-placeholder-count="14"><span style="flex:0 0 auto;display:flex;align-items:center;gap:44px;padding-right:44px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:rgba(255,255,255,.44);white-space:nowrap">{{ i.label }}<span style="display:block;width:5px;height:5px;background:var(--gold)"></span></span></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- LE 60/40 — cœur de l'offre -->
+    <section style="position:relative;padding:130px 0;background:var(--navy);overflow:hidden">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="max-width:820px;margin-bottom:64px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+            <span style="display:block;width:56px;height:1px;background:var(--gold)"></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold)">{{ t.escrowEyebrow }}</span>
+          </div>
+          <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,7.4vw,116px);line-height:.88;color:#fff">{{ t.escrowTitle }}</h2>
+          <div style="width:120px;height:16px;background:var(--gold);margin-top:28px;transform-origin:left;animation:barIn .9s .2s cubic-bezier(.16,1,.3,1) both"></div>
+          <p style="margin:28px 0 0;font-size:19px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.58);text-wrap:pretty">{{ t.escrowBody }}</p>
+        </div>
+
+        <!-- barre 60/40 -->
+        <div data-reveal="" style="border:1px solid var(--line);background:var(--navy2);padding:38px 32px 34px;margin-bottom:1px">
+          <div style="display:flex;align-items:stretch;height:74px;position:relative;overflow:hidden">
+            <div style="flex:0 0 60%;background:var(--gold);display:flex;flex-direction:column;justify-content:center;padding:0 22px;position:relative;overflow:hidden">
+              <span style="position:absolute;top:0;bottom:0;left:0;width:28%;background:linear-gradient(90deg,transparent,hsl(42 90% 78% / .55),transparent);animation:flow 3.4s linear infinite"></span>
+              <span style="position:relative;font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:.9;color:#0a1018">60 %</span>
+              <span style="position:relative;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:hsl(216 45% 6% / .7)">{{ t.escrowDeposit }}</span>
+            </div>
+            <div style="flex:0 0 40%;background:hsl(216 45% 6%);border:1px solid var(--gold);border-left:none;display:flex;flex-direction:column;justify-content:center;padding:0 22px">
+              <span style="font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:.9;color:var(--gold)">40 %</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.5)">{{ t.escrowBalance }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ escrowPoints }}" as="p" hint-placeholder-count="3">
+            <div data-reveal="" style="background:var(--navy2);padding:36px 28px 40px;border-top:2px solid transparent;transition:border-color .4s" style-hover="border-color:var(--gold)">
+              <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:.8;color:hsl(42 85% 55% / .26);margin-bottom:18px">{{ p.num }}</span>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:27px;line-height:1.05;color:#fff">{{ p.title }}</h3>
+              <p style="margin:0;font-size:16px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ p.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section style="position:relative;padding:130px 0;background:var(--navy2);border-top:1px solid var(--line)">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="max-width:760px;margin-bottom:66px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+            <span style="display:block;width:56px;height:1px;background:var(--gold)"></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold)">{{ t.svcEyebrow }}</span>
+          </div>
+          <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,7vw,110px);line-height:.88;color:#fff">{{ t.svcTitle }}</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ services }}" as="s" hint-placeholder-count="6">
+            <article data-reveal="" style="position:relative;overflow:hidden;background:var(--navy2);min-height:440px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;transition:background .45s" style-hover="background:hsl(216 40% 12%)">
+              <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.26;transition:opacity .7s,transform 1.2s cubic-bezier(.16,1,.3,1);background-image:{{ s.img }}" style-hover="opacity:.48;transform:scale(1.08)"></div>
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,hsl(216 40% 9% / .32) 0%,hsl(216 40% 9% / .84) 55%,hsl(216 40% 9% / .97) 100%)"></div>
+              <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .5s" style-hover="transform:scaleX(1)"></div>
+              <div style="position:relative;padding:34px 30px 38px">
+                <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;color:hsl(42 85% 55% / .3);margin-bottom:12px">{{ s.num }}</span>
+                <h3 style="margin:0 0 14px;font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1.04;color:#fff">{{ s.title }}</h3>
+                <p style="margin:0;font-size:16px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.6);text-wrap:pretty">{{ s.body }}</p>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEAU / CARTE -->
+    <section style="position:relative;padding:130px 0;background:var(--navy);border-top:1px solid var(--line);overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.6;background:repeating-linear-gradient(115deg,transparent 0 30px,hsl(42 85% 55% / .035) 30px 31px)"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:34px;margin-bottom:56px">
+          <div style="max-width:660px">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+              <span style="display:block;width:56px;height:1px;background:var(--gold)"></span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold)">{{ t.netEyebrow }}</span>
+            </div>
+            <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6.6vw,104px);line-height:.88;color:#fff">{{ t.netTitle }}</h2>
+          </div>
+          <p style="max-width:390px;margin:0;font-size:18px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.55);text-wrap:pretty">{{ t.netBody }}</p>
+        </div>
+        <div data-reveal="" style="position:relative;border:1px solid var(--line);background:hsl(216 40% 9% / .6);height:clamp(380px,52vw,660px)">
+          <alpha-world-map style="display:block;width:100%;height:100%"></alpha-world-map>
+          <div style="position:absolute;left:20px;bottom:18px;display:flex;flex-wrap:wrap;gap:22px">
+            <span style="display:flex;align-items:center;gap:9px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.4)"><span style="display:block;width:7px;height:7px;background:var(--gold);border-radius:50%"></span>{{ t.legendHub }}</span>
+            <span style="display:flex;align-items:center;gap:9px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.4)"><span style="display:block;width:22px;height:1px;background:hsl(42 85% 55% / .6)"></span>{{ t.legendRoute }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHIFFRES -->
+    <section ref="{{ metricsRef }}" style="position:relative;padding:110px 0;background:var(--navy2);border-top:1px solid var(--line)">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="margin-bottom:48px">
+          <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:18px">{{ t.metEyebrow }}</span>
+          <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.4vw,84px);line-height:.9;color:#fff">{{ t.metTitle }}</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+            <div style="background:var(--navy2);padding:42px 24px;transition:background .4s" style-hover="background:hsl(216 40% 12%)">
+              <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5.2vw,72px);line-height:.9;color:var(--gold);font-variant-numeric:tabular-nums">{{ m.shown }}</span>
+              <span style="display:block;width:44px;height:3px;background:hsl(42 85% 55% / .4);margin:14px 0"></span>
+              <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5)">{{ m.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMENT ÇA MARCHE -->
+    <section style="position:relative;padding:130px 0;background:var(--navy);border-top:1px solid var(--line)">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="margin-bottom:62px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+            <span style="display:block;width:56px;height:1px;background:var(--gold)"></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold)">{{ t.howEyebrow }}</span>
+          </div>
+          <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6.6vw,104px);line-height:.88;color:#fff">{{ t.howTitle }}</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+            <div data-reveal="" style="position:relative;background:var(--navy);padding:38px 26px 44px;transition:background .4s" style-hover="background:var(--navy2)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:62px;line-height:.8;color:hsl(42 85% 55% / .24)">{{ s.num }}</span>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);border:1px solid hsl(42 85% 55% / .3);padding:5px 10px;white-space:nowrap">{{ s.tag }}</span>
+              </div>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:27px;line-height:1.05;color:#fff">{{ s.title }}</h3>
+              <p style="margin:0;font-size:16px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ s.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEMOIGNAGES -->
+    <section style="position:relative;padding:126px 0;background:var(--navy2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.5;background:repeating-linear-gradient(115deg,transparent 0 30px,hsl(42 85% 55% / .035) 30px 31px)"></div>
+      <div style="position:relative;max-width:1100px;margin:0 auto;padding:0 32px;text-align:center">
+        <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:104px;line-height:.6;color:hsl(42 85% 55% / .3)">“</span>
+        <blockquote style="margin:22px 0 0;font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,3.6vw,54px);line-height:1.12;color:#fff;text-wrap:balance">{{ quote.text }}</blockquote>
+        <div style="width:80px;height:3px;background:var(--gold);margin:34px auto 20px"></div>
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)">{{ quote.name }}</span>
+        <span style="display:block;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.42)">{{ quote.role }}</span>
+        <div style="display:flex;justify-content:center;gap:10px;margin-top:38px">
+          <sc-for list="{{ quoteDots }}" as="d" hint-placeholder-count="4"><button onClick="{{ d.go }}" style="height:2px;border:none;padding:0;cursor:pointer;transition:width .4s,background .4s;width:{{ d.w }};background:{{ d.bg }}"></button></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="position:relative;padding:146px 0;background:var(--navy);overflow:hidden">
+      <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.16;background-image:linear-gradient(90deg,hsl(216 45% 6% / .9),hsl(216 45% 6% / .3)),url('https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1800&q=70')"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px;text-align:center">
+        <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,8vw,136px);line-height:.86;color:#fff;text-wrap:balance">{{ t.ctaTitle }}</h2>
+        <p style="max-width:600px;margin:26px auto 0;font-size:19px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.58);text-wrap:pretty">{{ t.ctaBody }}</p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:42px">
+          <button onClick="{{ navContact }}" style="background:var(--gold);border:none;padding:22px 44px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#0a1018;white-space:nowrap;transition:transform .3s" style-hover="transform:translateY(-3px)">{{ t.ctaJoin }}</button>
+          <button onClick="{{ navPartner }}" style="background:none;border:1px solid var(--line);padding:22px 44px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap;transition:border-color .3s,color .3s" style-hover="border-color:var(--gold);color:var(--gold)">{{ t.nav6 }}</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= SERVICES ============================= -->
+  <sc-if value="{{ pageServices }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Services">
+    <section style="position:relative;padding:216px 0 100px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.22;background-image:url('https://images.unsplash.com/photo-1613690399151-65ea69478674?auto=format&fit=crop&w=1800&q=70')"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,hsl(216 45% 6% / .8),hsl(216 45% 6% / .98))"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.svcEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9.6vw,164px);line-height:.86;color:#fff">{{ t.svcPageTitle }}</h1>
+        <p style="max-width:660px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.svcPageBody }}</p>
+      </div>
+    </section>
+
+    <sc-for list="{{ services }}" as="s" hint-placeholder-count="6">
+      <section style="border-top:1px solid var(--line);background:{{ s.bg }}">
+        <div data-reveal="" style="max-width:1440px;margin:0 auto;padding:0 32px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
+            <div style="padding:92px 0;display:flex;flex-direction:column;justify-content:center;order:{{ s.order }}">
+              <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:74px;line-height:.8;color:hsl(42 85% 55% / .24);margin-bottom:20px">{{ s.num }}</span>
+              <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4.4vw,64px);line-height:.96;color:#fff">{{ s.title }}</h2>
+              <div style="width:100px;height:14px;background:var(--gold);margin:24px 0 26px"></div>
+              <p style="margin:0 0 26px;max-width:520px;font-size:18px;font-weight:300;line-height:1.65;color:rgba(255,255,255,.6);text-wrap:pretty">{{ s.body }}</p>
+              <sc-if value="{{ s.hasDetail }}" hint-placeholder-val="{{ false }}">
+                <span style="display:inline-block;align-self:flex-start;border:1px solid var(--line);padding:12px 18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)">{{ s.detail }}</span>
+              </sc-if>
+            </div>
+            <div style="position:relative;min-height:430px;overflow:hidden">
+              <div data-parallax="0.08" style="position:absolute;inset:-10%;background-size:cover;background-position:center;background-image:{{ s.img }}"></div>
+              <div style="position:absolute;inset:0;background:linear-gradient(90deg,hsl(216 45% 6% / .55),transparent 60%)"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </sc-for>
+
+    <!-- SIMULATEUR 60/40 -->
+    <section style="border-top:1px solid var(--line);background:var(--navy2);padding:116px 0">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div data-reveal="" style="margin-bottom:48px;max-width:720px">
+          <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:18px">{{ t.simEyebrow }}</span>
+          <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.6vw,92px);line-height:.9;color:#fff">{{ t.simTitle }}</h2>
+          <p style="margin:22px 0 0;font-size:18px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.56);text-wrap:pretty">{{ t.simBody }}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)">
+          <div style="background:var(--navy);padding:44px 34px;display:flex;flex-direction:column;gap:30px;justify-content:center">
+            <div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:16px">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.45)">{{ t.simAmount }}</span>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:.9;color:var(--gold);font-variant-numeric:tabular-nums">{{ simAmountLabel }}</span>
+              </div>
+              <input type="range" min="1000" max="250000" step="500" value="{{ simAmount }}" onChange="{{ setAmount }}" style="width:100%;accent-color:var(--gold);height:2px" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1px;background:var(--line)">
+              <sc-for list="{{ simRows }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;background:hsl(216 45% 6% / .6)">
+                  <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55)">{{ r.label }}</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:{{ r.color }};font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:hsl(216 45% 6%);padding:44px 34px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+            <div style="display:flex;align-items:stretch;height:96px;overflow:hidden">
+              <div style="flex:0 0 60%;background:var(--gold);display:flex;flex-direction:column;justify-content:center;padding:0 20px;position:relative;overflow:hidden">
+                <span style="position:absolute;top:0;bottom:0;left:0;width:28%;background:linear-gradient(90deg,transparent,hsl(42 90% 78% / .55),transparent);animation:flow 3.4s linear infinite"></span>
+                <span style="position:relative;font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:.9;color:#0a1018">60 %</span>
+                <span style="position:relative;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:hsl(216 45% 6% / .7)">{{ t.escrowDeposit }}</span>
+              </div>
+              <div style="flex:0 0 40%;background:hsl(216 45% 6%);border:1px solid var(--gold);border-left:none;display:flex;flex-direction:column;justify-content:center;padding:0 20px">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:.9;color:var(--gold)">40 %</span>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5)">{{ t.escrowBalance }}</span>
+              </div>
+            </div>
+            <p style="margin:0;font-size:15px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.44);text-wrap:pretty">{{ t.simNote }}</p>
+            <button onClick="{{ navContact }}" style="align-self:flex-start;background:var(--gold);border:none;padding:18px 34px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#0a1018;white-space:nowrap">{{ t.ctaPlatform }}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= PLATEFORME ============================= -->
+  <sc-if value="{{ pagePlatform }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Plateforme">
+    <section style="position:relative;padding:216px 0 100px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;opacity:.6;background:repeating-linear-gradient(115deg,transparent 0 30px,hsl(42 85% 55% / .04) 30px 31px)"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.pfEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9.6vw,164px);line-height:.86;color:#fff">{{ t.pfTitle }}</h1>
+        <p style="max-width:700px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.pfBody }}</p>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--navy2);padding:100px 0">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+            <div data-reveal="" style="background:var(--navy2);padding:44px 30px 50px;border-top:2px solid transparent;transition:border-color .4s,background .4s" style-hover="border-color:var(--gold);background:hsl(216 40% 12%)">
+              <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">{{ r.code }}</span>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1.02;color:#fff">{{ r.title }}</h3>
+              <p style="margin:0 0 26px;font-size:17px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.58);text-wrap:pretty">{{ r.body }}</p>
+              <div style="display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);padding-top:22px">
+                <sc-for list="{{ r.items }}" as="i" hint-placeholder-count="6"><span style="display:flex;align-items:center;gap:11px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.52)"><span style="flex:0 0 auto;display:block;width:4px;height:4px;background:var(--gold)"></span>{{ i.v }}</span></sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--navy);padding:100px 0">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <h2 data-reveal="" style="margin:0 0 20px;font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,4.6vw,72px);line-height:.94;color:#fff">{{ t.secTitle }}</h2>
+        <p data-reveal="" style="max-width:660px;margin:0 0 44px;font-size:18px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ t.secBody }}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ security }}" as="c" hint-placeholder-count="4">
+            <div data-reveal="" style="background:var(--navy);padding:36px 26px 40px;border-top:2px solid transparent;transition:border-color .4s,background .4s" style-hover="border-color:var(--gold);background:var(--navy2)">
+              <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">{{ c.tag }}</span>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1.05;color:#fff">{{ c.title }}</h3>
+              <p style="margin:0;font-size:15px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.54);text-wrap:pretty">{{ c.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= PROCESSUS ============================= -->
+  <sc-if value="{{ pageProcess }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Processus">
+    <section style="position:relative;padding:216px 0 100px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.2;background-image:url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1800&q=70')"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,hsl(216 45% 6% / .82),hsl(216 45% 6% / .98))"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.howEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9.6vw,164px);line-height:.86;color:#fff">{{ t.procPageTitle }}</h1>
+        <p style="max-width:680px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.procPageBody }}</p>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--navy2);padding:100px 0">
+      <div style="max-width:1100px;margin:0 auto;padding:0 32px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div data-reveal="" style="display:grid;grid-template-columns:110px 1fr;gap:32px;padding:42px 0;border-bottom:1px solid var(--line)">
+            <div>
+              <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:.8;color:hsl(42 85% 55% / .3)">{{ s.num }}</span>
+              <span style="display:block;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)">{{ s.tag }}</span>
+            </div>
+            <div>
+              <h3 style="margin:0 0 14px;font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,44px);line-height:1;color:#fff">{{ s.title }}</h3>
+              <p style="margin:0;font-size:18px;font-weight:300;line-height:1.65;color:rgba(255,255,255,.6);text-wrap:pretty">{{ s.long }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ETATS REELS DE LA COMMANDE -->
+    <section style="border-top:1px solid var(--line);background:var(--navy);padding:100px 0">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <h2 data-reveal="" style="margin:0 0 18px;font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,4.6vw,72px);line-height:.94;color:#fff">{{ t.statesTitle }}</h2>
+        <p data-reveal="" style="max-width:680px;margin:0 0 44px;font-size:18px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ t.statesBody }}</p>
+        <div style="border:1px solid var(--line);overflow-x:auto">
+          <div style="display:grid;grid-template-columns:56px 1.3fr 1.9fr .9fr;min-width:760px">
+            <span style="padding:16px 18px;background:var(--navy2);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line)">#</span>
+            <span style="padding:16px 18px;background:var(--navy2);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line)">{{ t.sH1 }}</span>
+            <span style="padding:16px 18px;background:var(--navy2);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line)">{{ t.sH2 }}</span>
+            <span style="padding:16px 18px;background:var(--navy2);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line)">{{ t.sH3 }}</span>
+            <sc-for list="{{ stateCells }}" as="c" hint-placeholder-count="36"><span style="padding:15px 18px;border-bottom:1px solid hsl(216 30% 18% / .5);font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.05em;color:{{ c.color }};background:{{ c.bg }}">{{ c.v }}</span></sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= RESEAU ============================= -->
+  <sc-if value="{{ pageNetwork }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Réseau">
+    <section style="position:relative;padding:216px 0 84px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;opacity:.6;background:repeating-linear-gradient(115deg,transparent 0 30px,hsl(42 85% 55% / .04) 30px 31px)"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.netEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9.6vw,164px);line-height:.86;color:#fff">{{ t.netPageTitle }}</h1>
+        <p style="max-width:680px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.netPageBody }}</p>
+      </div>
+    </section>
+
+    <section style="background:var(--navy);padding:0 0 40px">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div style="border:1px solid var(--line);background:hsl(216 40% 9% / .6);height:clamp(360px,50vw,620px)">
+          <alpha-world-map style="display:block;width:100%;height:100%"></alpha-world-map>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--navy);padding:76px 0 100px">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <h2 data-reveal="" style="margin:0 0 38px;font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4.2vw,60px);line-height:1;color:#fff">{{ t.hubsTitle }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line)">
+          <sc-for list="{{ hubs }}" as="h" hint-placeholder-count="4">
+            <div data-reveal="" style="background:var(--navy2);padding:38px 26px 44px;border-top:2px solid transparent;transition:border-color .4s" style-hover="border-color:var(--gold)">
+              <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:14px">{{ h.tag }}</span>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:29px;line-height:1.05;color:#fff">{{ h.cities }}</h3>
+              <p style="margin:0;font-size:16px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.55);text-wrap:pretty">{{ h.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--navy2);padding:96px 0 110px">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <h2 data-reveal="" style="margin:0 0 18px;font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4.2vw,60px);line-height:1;color:#fff">{{ t.originsTitle }}</h2>
+        <p data-reveal="" style="max-width:660px;margin:0 0 40px;font-size:18px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ t.originsBody }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line)">
+          <sc-for list="{{ origins }}" as="o" hint-placeholder-count="5"><span style="flex:1 1 180px;padding:30px 24px;background:var(--navy2);font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;color:#fff;transition:background .35s,color .35s" style-hover="background:var(--gold);color:#0a1018">{{ o.name }}</span></sc-for>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= PARTENAIRE ============================= -->
+  <sc-if value="{{ pagePartner }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Devenir partenaire">
+    <section style="position:relative;padding:216px 0 100px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.2;background-image:url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1800&q=70')"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,hsl(216 45% 6% / .82),hsl(216 45% 6% / .98))"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.partEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9.6vw,164px);line-height:.86;color:#fff">{{ t.partTitle }}</h1>
+        <p style="max-width:700px;margin:28px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.partBody }}</p>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--navy2);padding:100px 0">
+      <div style="max-width:1100px;margin:0 auto;padding:0 32px">
+        <sc-for list="{{ partnerSteps }}" as="s" hint-placeholder-count="4">
+          <div data-reveal="" style="display:grid;grid-template-columns:96px 1fr;gap:30px;padding:38px 0;border-bottom:1px solid var(--line)">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:.8;color:hsl(42 85% 55% / .3)">{{ s.num }}</span>
+            <div>
+              <h3 style="margin:0 0 12px;font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,3.2vw,40px);line-height:1.02;color:#fff">{{ s.title }}</h3>
+              <p style="margin:0;font-size:18px;font-weight:300;line-height:1.65;color:rgba(255,255,255,.6);text-wrap:pretty">{{ s.body }}</p>
+            </div>
+          </div>
+        </sc-for>
+        <div data-reveal="" style="margin-top:52px;border:1px solid var(--line);background:var(--navy);padding:44px 34px">
+          <h3 style="margin:0 0 14px;font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1.02;color:#fff">{{ t.partReqTitle }}</h3>
+          <p style="margin:0 0 28px;max-width:560px;font-size:17px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.56);text-wrap:pretty">{{ t.partReqBody }}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px">
+            <button onClick="{{ navContact }}" style="background:var(--gold);border:none;padding:19px 38px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#0a1018;white-space:nowrap">{{ t.partReqBtn }}</button>
+            <a href="https://wa.me/243818924674" target="_blank" rel="noopener" style="border:1px solid var(--line);padding:19px 38px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap;transition:border-color .3s,color .3s" style-hover="border-color:var(--gold);color:var(--gold)">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= CONTACT ============================= -->
+  <sc-if value="{{ pageContact }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Contact et accès plateforme">
+    <section style="position:relative;padding:200px 0 90px;overflow:hidden;background:var(--navy)">
+      <div style="position:absolute;inset:0;opacity:.6;background:repeating-linear-gradient(115deg,transparent 0 30px,hsl(42 85% 55% / .04) 30px 31px)"></div>
+      <div style="position:relative;max-width:1440px;margin:0 auto;padding:0 32px">
+        <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">{{ t.quoteEyebrow }}</span>
+        <h1 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,9vw,152px);line-height:.86;color:#fff">{{ t.quoteTitle }}</h1>
+        <p style="max-width:660px;margin:26px 0 0;font-size:20px;font-weight:300;line-height:1.55;color:rgba(255,255,255,.62);text-wrap:pretty">{{ t.quoteBody }}</p>
+      </div>
+    </section>
+
+    <section style="background:var(--navy);padding:0 0 60px">
+      <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)">
+          <div style="background:var(--navy2);padding:48px 34px;display:flex;flex-direction:column;justify-content:center;gap:22px">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)">{{ t.accessTitle }}</span>
+            <h2 style="margin:0;font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,3.8vw,52px);line-height:1;color:#fff">{{ t.accessHead }}</h2>
+            <p style="margin:0;font-size:17px;font-weight:300;line-height:1.62;color:rgba(255,255,255,.58);text-wrap:pretty">{{ t.accessBody }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+              <span style="background:var(--gold);padding:18px 32px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#0a1018;white-space:nowrap">{{ t.accessLogin }}</span>
+              <span style="border:1px solid var(--line);padding:18px 32px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap">{{ t.accessRegister }}</span>
+            </div>
+            <p style="margin:8px 0 0;font-size:14px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.38);text-wrap:pretty">{{ t.accessNote }}</p>
+          </div>
+          <div style="background:hsl(216 45% 6%);padding:48px 34px;display:flex;flex-direction:column;gap:30px;justify-content:center">
+            <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="5">
+              <div>
+                <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">{{ c.label }}</span>
+                <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:25px;line-height:1.16;color:#fff;word-break:break-word">{{ c.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ============================= FOOTER ============================= -->
+  <footer style="border-top:1px solid var(--line);background:hsl(216 48% 4%);padding:76px 0 32px">
+    <div style="max-width:1440px;margin:0 auto;padding:0 32px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:44px;padding-bottom:52px;border-bottom:1px solid var(--line)">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:.9;color:#fff">ALPHA</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.42em;color:var(--gold);text-transform:uppercase">Import</span>
+          </div>
+          <p style="margin:0 0 18px;max-width:300px;font-size:16px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.44);text-wrap:pretty">{{ t.footSubsidiary }}</p>
+          <p style="margin:0;max-width:300px;font-size:15px;font-weight:300;line-height:1.7;color:rgba(255,255,255,.36)">{{ t.footAddress }}</p>
+        </div>
+        <sc-for list="{{ footCols }}" as="col" hint-placeholder-count="3">
+          <div>
+            <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:18px">{{ col.title }}</span>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="4"><span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:300;letter-spacing:.04em;color:rgba(255,255,255,.46);cursor:pointer;transition:color .25s" style-hover="color:var(--gold)">{{ it.v }}</span></sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;padding-top:26px">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3)">{{ t.footRights }}</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3)">Kinshasa · RDC</span>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/243818924674" target="_blank" rel="noopener" style="position:fixed;right:26px;bottom:26px;z-index:800;background:var(--gold);padding:17px 26px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#0a1018;white-space:nowrap;box-shadow:0 14px 40px hsl(42 85% 55% / .28);animation:drift 4s ease-in-out infinite">{{ t.floatBtn }}</a>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;hsl(42 85% 55%)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;hsl(42 85% 55%)&quot;,&quot;hsl(24 90% 52%)&quot;,&quot;hsl(160 60% 45%)&quot;,&quot;hsl(200 90% 58%)&quot;],&quot;section&quot;:&quot;Identité&quot;},&quot;customCursor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animation&quot;},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;fr&quot;,&quot;en&quot;],&quot;default&quot;:&quot;fr&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenu&quot;}}">
+const IMG = (u) => `url('https://images.unsplash.com/${u}?auto=format&fit=crop&w=1400&q=70')`;
+
+/* Hero: les quatre paires titre/sous-titre du site réel (src/lib/locales/fr.ts) */
+const HERO = [
+  { word: "L'AFRIQUE", sub: "CONNECTÉE AU MONDE", tagFr: "KINSHASA · RDC", tagEn: "KINSHASA · DRC", img: "photo-1494412574643-ff11b0a5c1c3", grad: "radial-gradient(circle at 30% 40%,hsl(42 85% 55% / .14),transparent 60%)" },
+  { word: "VITESSE", sub: "SANS COMPROMIS", tagFr: "SHANGHAI · DUBAI · TOKYO", tagEn: "SHANGHAI · DUBAI · TOKYO", img: "photo-1578575437130-527eed3abbec", grad: "radial-gradient(circle at 70% 30%,hsl(42 85% 55% / .12),transparent 60%)" },
+  { word: "SÉCURITÉ", sub: "CERTIFIÉE ISO 9001", tagFr: "47 PAYS PARTENAIRES", tagEn: "47 PARTNER COUNTRIES", img: "photo-1613690399151-65ea69478674", grad: "radial-gradient(circle at 50% 70%,hsl(42 85% 55% / .13),transparent 60%)" },
+  { word: "CONFIANCE", sub: "VOTRE PARTENAIRE GLOBAL", tagFr: "BRUXELLES · NEW YORK · GUANGZHOU", tagEn: "BRUSSELS · NEW YORK · GUANGZHOU", img: "photo-1553413077-190dd305871c", grad: "radial-gradient(circle at 20% 60%,hsl(42 85% 55% / .12),transparent 60%)" },
+];
+
+/* Les six services du catalogue réel (services.* dans fr.ts) */
+const SERVICES = [
+  { num: "01", key: "sourcing", img: "photo-1494412574643-ff11b0a5c1c3", bg: "var(--navy)", order: 1, detail: "" },
+  { num: "02", key: "logistics", img: "photo-1578575437130-527eed3abbec", bg: "var(--navy2)", order: 2, detail: "Conditionnement · Fret maritime · Tracking GPS" },
+  { num: "03", key: "finance", img: "photo-1551288049-bebda4e38f71", bg: "var(--navy)", order: 1, detail: "" },
+  { num: "04", key: "quality", img: "photo-1504328345606-18bbc8c9d7d1", bg: "var(--navy2)", order: 2, detail: "" },
+  { num: "05", key: "trade", img: "photo-1620714223084-8fcacc6dfd8d", bg: "var(--navy)", order: 1, detail: "" },
+  { num: "06", key: "consulting", img: "photo-1553413077-190dd305871c", bg: "var(--navy2)", order: 2, detail: "DRC · Belgique · Chine · UAE · USA" },
+];
+
+/* États réels de la commande — ORDER_TRANSITIONS dans src/lib/workflow.ts */
+const ORDER_STATES = [
+  ["PENDING", "Devis émis, en attente d'acceptation", "Acheteur"],
+  ["AWAITING_DEPOSIT", "Acompte 60 % appelé", "Acheteur"],
+  ["FUNDED", "Acompte reçu et séquestré", "Système / Admin"],
+  ["SOURCING", "Feu vert donné au partenaire", "Admin"],
+  ["PURCHASED", "Achat confirmé avec preuve", "Partenaire"],
+  ["SHIPPED", "Expédié, tracking communiqué", "Partenaire"],
+  ["DELIVERED", "Réception conforme constatée", "Partenaire / Admin"],
+  ["AWAITING_BALANCE", "Solde 40 % appelé", "Système"],
+  ["CLOSED", "Solde libéré, dossier clos", "Admin"],
+];
+
+const ORIGINS = ["Chine", "Turquie", "Dubaï", "Japon", "Thaïlande"];
+
+const T = {
+  fr: {
+    nav1: "Accueil", nav2: "Services", nav3: "Plateforme", nav4: "Processus", nav5: "Réseau", nav6: "Partenaires",
+    ctaPlatform: "Accéder à la plateforme", ctaDiscover: "Découvrir", scroll: "Scroll",
+    heroBody: "Alpha Import prend en charge votre importation de bout en bout — sourcing, achat, contrôle qualité, transport, dédouanement — et sécurise le paiement en deux temps : 60 % à la commande sur compte séquestre, 40 % seulement à réception conforme.",
+
+    trustTitle: "Infrastructure d'Importation Certifiée",
+    trustSub: "Opérations sécurisées à travers 4 hubs mondiaux régis par les normes ICC.",
+
+    escrowEyebrow: "Sécurisation financière",
+    escrowTitle: "VOUS NE PAYEZ LE SOLDE QU'À RÉCEPTION",
+    escrowBody: "C'est le cœur du dispositif. À la validation du devis, 60 % sont versés sur un compte séquestre — ils financent l'achat sans transiter par le fournisseur. Les 40 % restants ne sont appelés qu'après constat de réception conforme. Entre les deux, les fonds sont bloqués, traçables et gelables en cas d'incident.",
+    escrowDeposit: "Acompte à la commande",
+    escrowBalance: "Solde à réception conforme",
+
+    svcEyebrow: "Ce que nous faisons", svcTitle: "NOS SERVICES",
+    svcPageTitle: "NOS SERVICES",
+    svcPageBody: "Six prestations qui se combinent. La plupart de nos clients commencent par le sourcing et finissent par nous confier l'ensemble du flux, financement compris.",
+
+    netEyebrow: "Notre réseau", netTitle: "47 PAYS, UN SEUL DOSSIER",
+    netBody: "Chine, Turquie, Dubaï, Japon, Thaïlande : dans chaque pays d'origine, un partenaire agréé achète pour vous et répond de la marchandise.",
+    netPageTitle: "LE RÉSEAU",
+    netPageBody: "Une présence opérationnelle directe sur 4 continents, et un partenaire agréé dans chaque pays d'origine que nous opérons.",
+    legendHub: "Hub Kinshasa", legendRoute: "Corridor actif",
+    hubsTitle: "QUATRE HUBS MONDIAUX",
+    originsTitle: "PAYS D'ORIGINE OPÉRÉS EN DIRECT",
+    originsBody: "Pour chacun, un partenaire agréé sur place : il sélectionne le fournisseur, négocie, inspecte et répond de la marchandise jusqu'à l'embarquement.",
+
+    metEyebrow: "Chiffres clés", metTitle: "ALPHA IMPORT EN CHIFFRES",
+
+    howEyebrow: "Comment ça marche", howTitle: "DE LA DEMANDE À LA LIVRAISON",
+    procPageTitle: "LE PROCESSUS",
+    procPageBody: "Quatre étapes côté client, neuf états côté plateforme. Vous savez à chaque instant où en est votre commande, qui la traite et où sont vos fonds.",
+    statesTitle: "LES ÉTATS DE VOTRE COMMANDE",
+    statesBody: "La plateforme n'autorise aucun raccourci : chaque passage d'un état au suivant est réservé à un rôle précis et inscrit au journal d'audit.",
+    sH1: "État", sH2: "Ce qui se passe", sH3: "Qui agit",
+
+    pfEyebrow: "La plateforme", pfTitle: "TROIS RÔLES, UN MÊME DOSSIER",
+    pfBody: "Alpha Import n'est pas qu'un prestataire : c'est une plateforme où l'acheteur, le partenaire d'origine et l'administrateur travaillent sur le même dossier, chacun avec ses droits.",
+    secTitle: "CE QUI PROTÈGE VOTRE ARGENT",
+    secBody: "Les garanties ne sont pas des promesses commerciales : elles sont inscrites dans le fonctionnement de la plateforme.",
+
+    partEyebrow: "Devenir partenaire", partTitle: "ACHETER POUR L'AFRIQUE",
+    partBody: "Vous êtes fournisseur, négociant ou agent d'achat en Chine, en Turquie, au Japon, en Thaïlande ou aux Émirats ? Devenez partenaire agréé : vous recevez des demandes qualifiées, vous cotez, et vous êtes payé sur fonds déjà séquestrés.",
+    partReqTitle: "CANDIDATER",
+    partReqBody: "Le dossier de candidature comprend vos documents légaux (RCCM ou équivalent, pièce d'identité du dirigeant, numéro fiscal) et vos références. Ils sont déposés dans un espace privé, consultable par la seule direction.",
+    partReqBtn: "Déposer une candidature",
+
+    quoteEyebrow: "Accès", quoteTitle: "DEMANDER UNE COTATION",
+    quoteBody: "Les demandes d'importation se déposent dans votre espace client : vous décrivez la marchandise, choisissez le pays d'origine, et recevez une cotation détaillée sous 24 heures.",
+    accessTitle: "Espace client", accessHead: "TOUT SE PASSE DANS VOTRE ESPACE",
+    accessBody: "Demandes, cotations, bons de commande, factures proforma et finales, documents, paiements, messages et incidents : un seul endroit, historisé.",
+    accessLogin: "Connexion", accessRegister: "Créer un compte",
+    accessNote: "La création de compte déclenche une vérification KYC. Les demandes d'importation sont accessibles une fois l'identité validée.",
+
+    ctaTitle: "PRÊT À PASSER À L'ÉCHELLE ?",
+    ctaBody: "Rejoignez les 1 200+ partenaires qui nous font confiance pour leurs importations.",
+    ctaJoin: "Rejoindre Alpha Import",
+
+    simEyebrow: "Simulateur", simTitle: "VOTRE PAIEMENT SÉQUENCÉ",
+    simBody: "Entrez le montant de votre commande pour voir la répartition exacte : ce que vous versez au départ, ce qui reste dû à réception, et la commission Alpha.",
+    simAmount: "Montant de la commande",
+    simNote: "Répartition appliquée par la plateforme : acompte 60 %, solde 40 %, commission Alpha 10 % du montant total. Le devis ferme, lui, est établi sous 24 heures à partir de votre cahier des charges.",
+
+    footSubsidiary: "Filiale du Groupe A.Onoseke Investment RDC",
+    footAddress: "Kinshasa, République Démocratique du Congo",
+    footRights: "© 2026 A.Onoseke Investment. Tous droits réservés.",
+    floatBtn: "WhatsApp",
+  },
+  en: {
+    nav1: "Home", nav2: "Services", nav3: "Platform", nav4: "Process", nav5: "Network", nav6: "Partners",
+    ctaPlatform: "Enter the platform", ctaDiscover: "Discover", scroll: "Scroll",
+    heroBody: "Alpha Import handles your import end to end — sourcing, purchasing, quality control, freight, customs — and secures payment in two stages: 60 % into escrow at order, the remaining 40 % only once delivery is confirmed conforming.",
+
+    trustTitle: "Certified Import Infrastructure",
+    trustSub: "Secured operations across 4 global hubs governed by ICC standards.",
+
+    escrowEyebrow: "Financial security",
+    escrowTitle: "YOU PAY THE BALANCE ONLY ON DELIVERY",
+    escrowBody: "This is the core of the arrangement. On quote approval, 60 % goes into an escrow account — it funds the purchase without passing through the supplier. The remaining 40 % is called only after conforming delivery is recorded. In between, the funds are blocked, traceable and freezable if an incident is raised.",
+    escrowDeposit: "Deposit at order",
+    escrowBalance: "Balance on conforming delivery",
+
+    svcEyebrow: "What we do", svcTitle: "OUR SERVICES",
+    svcPageTitle: "OUR SERVICES",
+    svcPageBody: "Six services that combine. Most clients start with sourcing and end up handing us the whole flow, financing included.",
+
+    netEyebrow: "Our network", netTitle: "47 COUNTRIES, ONE FILE",
+    netBody: "China, Türkiye, Dubai, Japan, Thailand: in every origin country, an approved partner buys on your behalf and answers for the goods.",
+    netPageTitle: "THE NETWORK",
+    netPageBody: "Direct operational presence across 4 continents, and an approved partner in every origin country we run.",
+    legendHub: "Kinshasa hub", legendRoute: "Active corridor",
+    hubsTitle: "FOUR GLOBAL HUBS",
+    originsTitle: "ORIGIN COUNTRIES RUN DIRECTLY",
+    originsBody: "For each one, an approved partner on the ground: they select the supplier, negotiate, inspect and answer for the goods up to loading.",
+
+    metEyebrow: "Key figures", metTitle: "ALPHA IMPORT IN NUMBERS",
+
+    howEyebrow: "How it works", howTitle: "FROM ENQUIRY TO DELIVERY",
+    procPageTitle: "THE PROCESS",
+    procPageBody: "Four steps for the client, nine states inside the platform. You always know where your order stands, who is handling it and where your funds are.",
+    statesTitle: "YOUR ORDER'S STATES",
+    statesBody: "The platform allows no shortcut: every move from one state to the next is reserved to a specific role and written to the audit log.",
+    sH1: "State", sH2: "What happens", sH3: "Who acts",
+
+    pfEyebrow: "The platform", pfTitle: "THREE ROLES, ONE FILE",
+    pfBody: "Alpha Import is more than a provider: it is a platform where the buyer, the origin partner and the administrator work on the same file, each with their own rights.",
+    secTitle: "WHAT PROTECTS YOUR MONEY",
+    secBody: "The guarantees are not sales promises: they are built into how the platform works.",
+
+    partEyebrow: "Become a partner", partTitle: "BUYING FOR AFRICA",
+    partBody: "Are you a supplier, trader or buying agent in China, Türkiye, Japan, Thailand or the UAE? Become an approved partner: you receive qualified enquiries, you quote, and you are paid from funds already held in escrow.",
+    partReqTitle: "APPLY",
+    partReqBody: "The application includes your legal documents (trade register or equivalent, director's ID, tax number) and your references. They are stored in a private space, readable by management alone.",
+    partReqBtn: "Submit an application",
+
+    quoteEyebrow: "Access", quoteTitle: "REQUEST A QUOTATION",
+    quoteBody: "Import enquiries are filed in your client area: describe the goods, pick the origin country, and receive a detailed quotation within 24 hours.",
+    accessTitle: "Client area", accessHead: "EVERYTHING HAPPENS IN YOUR AREA",
+    accessBody: "Enquiries, quotations, purchase orders, proforma and final invoices, documents, payments, messages and incidents: one place, fully logged.",
+    accessLogin: "Sign in", accessRegister: "Create an account",
+    accessNote: "Creating an account triggers KYC verification. Import enquiries open once your identity is validated.",
+
+    ctaTitle: "READY TO SCALE?",
+    ctaBody: "Join the 1,200+ partners who trust us with their imports.",
+    ctaJoin: "Join Alpha Import",
+
+    simEyebrow: "Simulator", simTitle: "YOUR SEQUENCED PAYMENT",
+    simBody: "Enter your order amount to see the exact split: what you pay up front, what remains due on delivery, and the Alpha commission.",
+    simAmount: "Order amount",
+    simNote: "Split applied by the platform: 60 % deposit, 40 % balance, Alpha commission 10 % of the total. The firm quote itself is issued within 24 hours from your specification.",
+
+    footSubsidiary: "Subsidiary of Groupe A.Onoseke Investment RDC",
+    footAddress: "Kinshasa, Democratic Republic of Congo",
+    footRights: "© 2026 A.Onoseke Investment. All rights reserved.",
+    floatBtn: "WhatsApp",
+  },
+};
+
+const SVC_COPY = {
+  fr: {
+    sourcing: ["SOURCING & ACHATS", "Sélection rigoureuse des fournisseurs en Chine, Turquie, Dubai, Japon et Thaïlande avec inspection qualité systématique."],
+    logistics: ["LOGISTIQUE & TRANSIT", "Fret maritime, aérien et multimodal. Dédouanement clé en main à Kinshasa via notre partenariat SGS."],
+    finance: ["SÉCURISATION FINANCIÈRE", "Paiement séquencé 60/40. Fonds séquestrés sur compte tiers. Libération du solde qu'à réception conforme."],
+    quality: ["CONTRÔLE QUALITÉ", "Certification SGS. Inspection avant expédition, suivi tracking, rapport photo et certificat de conformité d'origine."],
+    trade: ["FINANCEMENT TRADE", "Préfinancement, crédit documentaire, assurance-crédit et couverture contre le risque-pays."],
+    consulting: ["CONSEIL & ACCOMPAGNEMENT", "Étude de faisabilité, optimisation fiscale et douanière, montage de dossier import-export."],
+  },
+  en: {
+    sourcing: ["SOURCING & PURCHASING", "Rigorous supplier selection in China, Türkiye, Dubai, Japan and Thailand with systematic quality inspection."],
+    logistics: ["LOGISTICS & TRANSIT", "Ocean, air and multimodal freight. Turnkey customs clearance in Kinshasa through our SGS partnership."],
+    finance: ["FINANCIAL SECURITY", "Sequenced 60/40 payment. Funds held in a third-party escrow account. Balance released only on conforming delivery."],
+    quality: ["QUALITY CONTROL", "SGS certification. Pre-shipment inspection, tracking, photo report and certificate of origin conformity."],
+    trade: ["TRADE FINANCE", "Pre-financing, documentary credit, credit insurance and country-risk cover."],
+    consulting: ["ADVISORY & SUPPORT", "Feasibility studies, tax and customs optimisation, import-export file preparation."],
+  },
+};
+
+const STEPS_COPY = {
+  fr: [
+    ["01", "24 H", "DEMANDE", "Soumettez votre cahier des charges et recevez un devis détaillé sous 24h.",
+      "Vous décrivez la marchandise, la quantité, le pays d'origine et votre échéance dans votre espace client. La demande est qualifiée puis confiée à un partenaire agréé du pays concerné."],
+    ["02", "SÉQUESTRE", "VALIDATION", "Validez le devis et versez l'acompte 60% sur un compte séquestre sécurisé.",
+      "L'acceptation du devis génère automatiquement un bon de commande que vous signez en ligne. L'acompte de 60 % est appelé et placé sous séquestre : il finance l'achat sans être versé au fournisseur."],
+    ["03", "EXÉCUTION", "EXÉCUTION", "Nos équipes sourcing, achat, contrôle qualité et expédition. Suivi tracking en temps réel.",
+      "Le partenaire achète sur preuve, la marchandise est inspectée avant expédition, puis expédiée avec tracking. Chaque étape franchie déclenche une notification et une entrée au journal d'audit."],
+    ["04", "SOLDE 40 %", "LIVRAISON", "Dédouanement à Kinshasa. Paiement du solde 40% à la livraison conforme.",
+      "Dédouanement puis livraison. Le solde de 40 % n'est appelé qu'après constat de réception conforme ; en cas de non-conformité, les fonds séquestrés sont gelés le temps de l'instruction."],
+  ],
+  en: [
+    ["01", "24 H", "ENQUIRY", "Submit your specification and receive a detailed quotation within 24h.",
+      "You describe the goods, quantity, origin country and deadline in your client area. The enquiry is qualified and handed to an approved partner in that country."],
+    ["02", "ESCROW", "APPROVAL", "Approve the quotation and pay the 60% deposit into a secured escrow account.",
+      "Accepting the quotation automatically generates a purchase order you sign online. The 60 % deposit is called and placed in escrow: it funds the purchase without being paid to the supplier."],
+    ["03", "EXECUTION", "EXECUTION", "Our sourcing, purchasing, quality control and shipping teams. Real-time tracking.",
+      "The partner buys against proof, the goods are inspected before shipment, then shipped with tracking. Every completed step triggers a notification and an audit-log entry."],
+    ["04", "40 % BALANCE", "DELIVERY", "Customs clearance in Kinshasa. 40% balance paid on conforming delivery.",
+      "Clearance then delivery. The 40 % balance is called only after conforming receipt is recorded; on non-conformity, escrowed funds are frozen pending review."],
+  ],
+};
+
+const QUOTES_COPY = {
+  fr: [
+    ["Le système de paiement séquencé m'a convaincu. Je ne paie le solde qu'à l'arrivée de mes marchandises.", "Jean-Pierre Kabongo", "Importateur, Kinshasa"],
+    ["Alpha Import a considérablement simplifié nos opérations d'importation vers l'Afrique centrale. Un partenaire fiable.", "Fatima Al-Rashid", "CEO, Dubaï Trading Co."],
+    ["Nous collaborons avec Alpha Import depuis 3 ans. Leur professionnalisme et leur rigueur sont exemplaires.", "Li Wei", "Exportateur, Guangzhou"],
+    ["Grâce à Alpha Import, nous avons réduit nos délais de livraison de 40%. Une vraie valeur ajoutée.", "Patrick Mwamba", "PDG, Mwamba Logistics"],
+  ],
+  en: [
+    ["The sequenced payment system convinced me. I only pay the balance when my goods arrive.", "Jean-Pierre Kabongo", "Importer, Kinshasa"],
+    ["Alpha Import has considerably simplified our import operations into Central Africa. A reliable partner.", "Fatima Al-Rashid", "CEO, Dubai Trading Co."],
+    ["We have worked with Alpha Import for 3 years. Their professionalism and rigour are exemplary.", "Li Wei", "Exporter, Guangzhou"],
+    ["Thanks to Alpha Import we cut our delivery times by 40%. Real added value.", "Patrick Mwamba", "CEO, Mwamba Logistics"],
+  ],
+};
+
+class Component extends DCLogic {
+  state = { page: "home", hero: 0, quote: 0, lang: "fr", counts: [0, 0, 0, 0, 0, 0], amount: 25000, menu: false };
+
+  R = {
+    progressRef: React.createRef(),
+    cursorRef: React.createRef(),
+    navRef: React.createRef(),
+    navLinksRef: React.createRef(),
+    burgerRef: React.createRef(),
+    metricsRef: React.createRef(),
+  };
+
+  el(k) { return this.R[k] && this.R[k].current; }
+
+  componentDidMount() {
+    if (this.props.accent) document.documentElement.style.setProperty("--gold", this.props.accent);
+    this.light = window.matchMedia("(max-width: 820px)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    this.heroTimer = setInterval(() => this.setState((s) => ({ hero: (s.hero + 1) % HERO.length })), 5600);
+    this.quoteTimer = setInterval(() => this.setState((s) => ({ quote: (s.quote + 1) % 4 })), 7200);
+
+    const safe = (fn) => { try { fn(); } catch (err) { console.warn("[alpha]", err && err.message); } };
+    safe(() => this.bindNav());
+    safe(() => this.bindReveal());
+    safe(() => this.bindCounters());
+    if (!this.light && (this.props.customCursor ?? true)) safe(() => this.bindCursor());
+    if (!this.light) safe(() => this.bindParallax());
+    safe(() => this.bindNavLinks());
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.page !== this.state.page) {
+      window.scrollTo(0, 0);
+      setTimeout(() => { this.bindReveal(); this.bindParallax(); this.bindCounters(); }, 60);
+    }
+    if (this.props.accent) document.documentElement.style.setProperty("--gold", this.props.accent);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.heroTimer);
+    clearInterval(this.quoteTimer);
+    if (this.io) this.io.disconnect();
+    if (this.mio) this.mio.disconnect();
+    window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("mousemove", this.onMove);
+    if (this.onResize) window.removeEventListener("resize", this.onResize);
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  bindNav() {
+    this.onScroll = () => {
+      const y = window.scrollY;
+      const max = Math.max(1, document.body.scrollHeight - window.innerHeight);
+      const bar = this.el("progressRef");
+      if (bar) bar.style.width = Math.min(100, (y / max) * 100) + "%";
+      const nav = this.el("navRef");
+      if (nav) {
+        const on = y > 60;
+        nav.style.background = on ? "hsl(216 45% 6% / .9)" : "hsl(216 45% 6% / 0)";
+        nav.style.backdropFilter = on ? "blur(14px)" : "blur(0px)";
+        nav.style.borderBottomColor = on ? "var(--line)" : "transparent";
+      }
+      if (this.px) this.px.forEach(({ el, k }) => {
+        const r = el.getBoundingClientRect();
+        const d = (r.top + r.height / 2 - window.innerHeight / 2) * k * -1;
+        el.style.transform = "translate3d(0," + d.toFixed(1) + "px,0)";
+      });
+    };
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    this.onScroll();
+  }
+
+  bindNavLinks() {
+    const el = this.el("navLinksRef");
+    if (!el) return;
+    const b = this.el("burgerRef");
+    const apply = () => {
+      const wide = window.innerWidth > 1180;
+      el.style.display = wide ? "flex" : "none";
+      if (b) b.style.display = wide ? "none" : "flex";
+      if (wide && this.state.menu) this.setState({ menu: false });
+    };
+    apply();
+    this.onResize = apply;
+    window.addEventListener("resize", apply);
+  }
+
+  bindParallax() {
+    if (this.light) return;
+    this.px = Array.from(document.querySelectorAll("[data-parallax]")).map((el) => ({
+      el, k: parseFloat(el.getAttribute("data-parallax")) || 0.06,
+    }));
+  }
+
+  bindReveal() {
+    if (this.io) this.io.disconnect();
+    const nodes = Array.from(document.querySelectorAll("[data-reveal]"));
+    if (!nodes.length) return;
+    nodes.forEach((n) => {
+      if (n.dataset.revealed) return;
+      n.style.opacity = "0";
+      n.style.transform = "translateY(34px)";
+      n.style.transition = "opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)";
+    });
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const n = e.target;
+        n.dataset.revealed = "1";
+        n.style.opacity = "1";
+        n.style.transform = "translateY(0)";
+        this.io.unobserve(n);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.06 });
+    nodes.forEach((n) => { if (!n.dataset.revealed) this.io.observe(n); });
+  }
+
+  bindCounters() {
+    const host = this.el("metricsRef");
+    if (!host || this.countsDone) return;
+    if (this.mio) this.mio.disconnect();
+    const targets = [47, 1200, 4, 6, 10, 24];
+    this.mio = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      this.countsDone = true;
+      this.mio.disconnect();
+      const t0 = performance.now(), dur = 1700;
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        this.setState({ counts: targets.map((v) => Math.round(v * e)) });
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.25 });
+    this.mio.observe(host);
+  }
+
+  bindCursor() {
+    const c = this.el("cursorRef");
+    if (!c) return;
+    let x = 0, y = 0, cx = 0, cy = 0, shown = false;
+    this.onMove = (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!shown) { shown = true; c.style.opacity = "1"; }
+      const t = e.target;
+      const inter = t && t.closest && t.closest("button,a,input,textarea");
+      c.style.width = inter ? "58px" : "34px";
+      c.style.height = inter ? "58px" : "34px";
+    };
+    window.addEventListener("mousemove", this.onMove, { passive: true });
+    const loop = () => {
+      cx += (x - cx) * 0.18; cy += (y - cy) * 0.18;
+      c.style.transform = "translate(" + cx + "px," + cy + "px) translate(-50%,-50%)";
+      this.raf = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  go(page) { return () => this.setState({ page, menu: false }); }
+
+  renderVals() {
+    const s = this.state;
+    const lang = this.props.lang ?? s.lang;
+    const t = T[lang] || T.fr;
+    const fr = lang === "fr";
+    const h = HERO[s.hero];
+    const money = (n) => "$" + Math.round(n).toLocaleString(fr ? "fr-FR" : "en-US");
+
+    const heroLetters = h.word.split("").map((c, i) => ({
+      c: c === " " ? "\u00a0" : c, d: (0.05 + i * 0.045).toFixed(3) + "s",
+    }));
+
+    const evenIdx = s.hero % 2 === 0 ? s.hero : (s.hero - 1 + HERO.length) % HERO.length;
+    const oddIdx = s.hero % 2 === 1 ? s.hero : (s.hero + 1) % HERO.length;
+    const layerImg = (i) => HERO[i].grad + "," + IMG(HERO[i].img);
+
+    const pages = [
+      ["home", t.nav1], ["services", t.nav2], ["platform", t.nav3], ["process", t.nav4],
+      ["network", t.nav5], ["partner", t.nav6], ["contact", t.quoteEyebrow],
+    ];
+
+    const svcCopy = SVC_COPY[lang] || SVC_COPY.fr;
+    const services = SERVICES.map((v) => ({
+      num: v.num, img: IMG(v.img), bg: v.bg, order: v.order,
+      title: svcCopy[v.key][0], body: svcCopy[v.key][1],
+      detail: v.detail, hasDetail: !!v.detail,
+    }));
+
+    const steps = (STEPS_COPY[lang] || STEPS_COPY.fr).map((r) => ({
+      num: r[0], tag: r[1], title: r[2], body: r[3], long: r[4],
+    }));
+
+    const metricLabels = fr
+      ? ["Pays partenaires", "Partenaires actifs", "Hubs mondiaux", "Langues", "Commission Alpha", "Délai de cotation"]
+      : ["Partner countries", "Active partners", "Global hubs", "Languages", "Alpha commission", "Quotation time"];
+    const suffixes = ["", "+", "", "", " %", " H"];
+    const metrics = metricLabels.map((label, i) => ({
+      label, shown: (s.counts[i] || 0).toLocaleString(fr ? "fr-FR" : "en-US") + suffixes[i],
+    }));
+
+    const trust = fr
+      ? ["Séquestre 60/40", "Certification SGS", "ISO 9001", "Contrôle avant expédition", "Dédouanement Kinshasa", "Vérification KYC", "Journal d'audit", "Assurance cargo", "47 pays"]
+      : ["60/40 escrow", "SGS certification", "ISO 9001", "Pre-shipment inspection", "Kinshasa clearance", "KYC verification", "Audit log", "Cargo insurance", "47 countries"];
+
+    const escrowPoints = fr ? [
+      { num: "01", title: "FONDS BLOQUÉS", body: "L'acompte est placé sur un compte tiers. Ni Alpha ni le fournisseur n'en disposent librement : il sert exclusivement à financer votre achat." },
+      { num: "02", title: "LIBÉRATION CONDITIONNELLE", body: "Le solde n'est appelé qu'après constat de réception conforme. Tant que la marchandise n'est pas validée, l'argent ne bouge pas." },
+      { num: "03", title: "GEL EN CAS D'INCIDENT", body: "Perte, retard, non-conformité ou fraude : un incident déclaré gèle le dossier et les fonds jusqu'à décision, avec indemnisation possible." },
+    ] : [
+      { num: "01", title: "FUNDS BLOCKED", body: "The deposit sits in a third-party account. Neither Alpha nor the supplier can draw on it freely: it funds your purchase and nothing else." },
+      { num: "02", title: "CONDITIONAL RELEASE", body: "The balance is called only after conforming receipt is recorded. Until the goods are accepted, the money does not move." },
+      { num: "03", title: "FREEZE ON INCIDENT", body: "Loss, delay, non-conformity or fraud: a declared incident freezes the file and the funds until a decision, with compensation possible." },
+    ];
+
+    const roles = fr ? [
+      { code: "Acheteur", title: "VOTRE ESPACE CLIENT", body: "Vous déposez vos demandes et suivez tout le dossier sans relancer personne.", items: [{ v: "Demandes d'importation" }, { v: "Cotations & bons de commande" }, { v: "Factures proforma et finales" }, { v: "Documents centralisés" }, { v: "Paiements & mandats SEPA" }, { v: "Messagerie & incidents" }] },
+      { code: "Partenaire", title: "L'ACHETEUR SUR PLACE", body: "Dans le pays d'origine, un partenaire agréé travaille votre dossier et répond de la marchandise.", items: [{ v: "Demandes assignées" }, { v: "Fournisseurs référencés" }, { v: "Sessions de sourcing" }, { v: "Soumission de cotation" }, { v: "Preuve d'achat" }, { v: "Tracking d'expédition" }] },
+      { code: "Administration", title: "LE CONTRÔLE ALPHA", body: "Rien ne passe sans validation : c'est l'administration qui arbitre, valide et libère.", items: [{ v: "Vérification KYC" }, { v: "Validation des devis" }, { v: "Séquestre & libérations" }, { v: "Dossiers douaniers" }, { v: "Incidents & risques" }, { v: "Reporting & audit" }] },
+    ] : [
+      { code: "Buyer", title: "YOUR CLIENT AREA", body: "You file your enquiries and follow the whole file without chasing anyone.", items: [{ v: "Import enquiries" }, { v: "Quotations & purchase orders" }, { v: "Proforma and final invoices" }, { v: "Centralised documents" }, { v: "Payments & SEPA mandates" }, { v: "Messaging & incidents" }] },
+      { code: "Partner", title: "THE BUYER ON SITE", body: "In the origin country, an approved partner works your file and answers for the goods.", items: [{ v: "Assigned enquiries" }, { v: "Referenced suppliers" }, { v: "Sourcing sessions" }, { v: "Quotation submission" }, { v: "Proof of purchase" }, { v: "Shipment tracking" }] },
+      { code: "Administration", title: "ALPHA'S CONTROL", body: "Nothing moves without approval: administration arbitrates, validates and releases.", items: [{ v: "KYC verification" }, { v: "Quote validation" }, { v: "Escrow & releases" }, { v: "Customs files" }, { v: "Incidents & risk" }, { v: "Reporting & audit" }] },
+    ];
+
+    const security = fr ? [
+      { tag: "Identité", title: "VÉRIFICATION KYC", body: "Chaque compte est vérifié avant de pouvoir commander. Les partenaires fournissent registre de commerce, pièce d'identité du dirigeant et numéro fiscal." },
+      { tag: "Traçabilité", title: "JOURNAL D'AUDIT", body: "Chaque changement d'état, chaque validation et chaque libération de fonds est horodatée et attribuée à son auteur." },
+      { tag: "Documents", title: "ESPACE PRIVÉ", body: "Les pièces d'identité et documents de conformité sont stockés dans un espace privé, non listable, consultable par la seule direction." },
+      { tag: "Recours", title: "INCIDENTS", body: "Perte, retard, non-conformité, fraude : quatre motifs déclarables, avec gel du dossier et indemnisation possible après instruction." },
+    ] : [
+      { tag: "Identity", title: "KYC VERIFICATION", body: "Every account is verified before it can order. Partners provide trade register, director's ID and tax number." },
+      { tag: "Traceability", title: "AUDIT LOG", body: "Every state change, every approval and every release of funds is timestamped and attributed to its author." },
+      { tag: "Documents", title: "PRIVATE STORAGE", body: "Identity papers and compliance documents are held in a private, non-listable space, readable by management alone." },
+      { tag: "Recourse", title: "INCIDENTS", body: "Loss, delay, non-conformity, fraud: four declarable grounds, with the file frozen and compensation possible after review." },
+    ];
+
+    const hubs = fr ? [
+      { tag: "Siège", cities: "KINSHASA · RDC", body: "Direction, dédouanement et livraison finale. C'est ici que le dossier se clôt." },
+      { tag: "Asie", cities: "SHANGHAI · TOKYO", body: "Sourcing industriel, électronique et équipement. Consolidation au départ." },
+      { tag: "Golfe", cities: "DUBAÏ", body: "Redistribution et transit rapide vers l'Afrique centrale." },
+      { tag: "Europe & Amériques", cities: "BRUXELLES · NEW YORK", body: "Relations donneurs d'ordre, financement et assurance-crédit." },
+    ] : [
+      { tag: "Head office", cities: "KINSHASA · DRC", body: "Management, customs clearance and final delivery. This is where the file closes." },
+      { tag: "Asia", cities: "SHANGHAI · TOKYO", body: "Industrial, electronics and equipment sourcing. Consolidation at origin." },
+      { tag: "Gulf", cities: "DUBAI", body: "Redistribution and fast transit into Central Africa." },
+      { tag: "Europe & Americas", cities: "BRUSSELS · NEW YORK", body: "Client relations, financing and credit insurance." },
+    ];
+
+    const partnerSteps = fr ? [
+      { num: "01", title: "CANDIDATURE", body: "Vous déposez votre dossier : documents légaux, capacité, références et pays couvert." },
+      { num: "02", title: "AGRÉMENT", body: "La direction instruit le dossier et vérifie les pièces. À l'agrément, votre compte partenaire est créé et vous recevez un lien d'accès personnel." },
+      { num: "03", title: "AFFECTATION", body: "Les demandes de votre pays vous sont assignées. Vous référencez vos fournisseurs et soumettez vos cotations dans la plateforme." },
+      { num: "04", title: "EXÉCUTION & PAIEMENT", body: "Feu vert donné une fois l'acompte séquestré : vous achetez sur fonds déjà disponibles. Votre rémunération est calculée à la commande, commission Alpha déduite." },
+    ] : [
+      { num: "01", title: "APPLICATION", body: "You file your application: legal documents, capacity, references and the country you cover." },
+      { num: "02", title: "APPROVAL", body: "Management reviews the file and checks the papers. On approval, your partner account is created and you receive a personal access link." },
+      { num: "03", title: "ASSIGNMENT", body: "Enquiries from your country are assigned to you. You reference your suppliers and submit quotations inside the platform." },
+      { num: "04", title: "EXECUTION & PAYMENT", body: "Green light once the deposit is escrowed: you buy against funds already available. Your payout is set at order, net of Alpha's commission." },
+    ];
+
+    const stateHeadFr = { "Acheteur": "Acheteur", "Admin": "Admin" };
+    const stateCells = [];
+    ORDER_STATES.forEach((row, r) => {
+      const bg = r % 2 ? "hsl(216 40% 9% / .45)" : "transparent";
+      stateCells.push({ v: String(r + 1).padStart(2, "0"), color: "hsl(42 85% 55% / .7)", bg });
+      stateCells.push({ v: row[0], color: "#fff", bg });
+      stateCells.push({ v: row[1], color: "rgba(255,255,255,.6)", bg });
+      stateCells.push({ v: row[2], color: "rgba(255,255,255,.5)", bg });
+    });
+
+    const amt = s.amount;
+    const commission = amt * 0.10;
+    const simRows = [
+      { label: fr ? "Acompte 60 %" : "60 % deposit", value: money(amt * 0.6), color: "var(--gold)" },
+      { label: fr ? "Solde 40 %" : "40 % balance", value: money(amt * 0.4), color: "#fff" },
+      { label: fr ? "Commission Alpha 10 %" : "Alpha commission 10 %", value: money(commission), color: "rgba(255,255,255,.62)" },
+      { label: fr ? "Reversé au partenaire" : "Paid to the partner", value: money(amt - commission), color: "rgba(255,255,255,.62)" },
+    ];
+
+    const contacts = [
+      { label: fr ? "Adresse" : "Address", value: fr ? "Kinshasa, République Démocratique du Congo" : "Kinshasa, Democratic Republic of Congo" },
+      { label: fr ? "Téléphone" : "Phone", value: "+243 999 894 788" },
+      { label: "WhatsApp", value: "+243 818 924 674" },
+      { label: "E-mail", value: "contact@aonosekehouseinvestmentdrc.site" },
+      { label: fr ? "Langues de la plateforme" : "Platform languages", value: "Français · English · Türkçe · 中文 · 日本語 · العربية" },
+    ];
+
+    const footCols = [
+      { title: t.nav2, items: services.map((v) => ({ v: v.title })) },
+      { title: t.nav5, items: ORIGINS.map((v) => ({ v })) },
+      { title: fr ? "Société" : "Company", items: [{ v: t.nav3 }, { v: t.nav4 }, { v: t.nav6 }, { v: fr ? "Mentions légales" : "Legal notice" }, { v: fr ? "Politique de confidentialité" : "Privacy policy" }, { v: fr ? "Conditions générales" : "Terms & conditions" }] },
+    ];
+
+    const quoteRow = (QUOTES_COPY[lang] || QUOTES_COPY.fr)[s.quote];
+
+    return {
+      ...this.R,
+      t, lang,
+      langLabel: fr ? "FR / EN" : "EN / FR",
+      toggleLang: () => this.setState({ lang: fr ? "en" : "fr" }),
+      pageHome: s.page === "home", pageServices: s.page === "services",
+      pagePlatform: s.page === "platform", pageProcess: s.page === "process",
+      pageNetwork: s.page === "network", pagePartner: s.page === "partner",
+      pageContact: s.page === "contact",
+      navHome: this.go("home"), navServices: this.go("services"), navPlatform: this.go("platform"),
+      navProcess: this.go("process"), navNetwork: this.go("network"), navPartner: this.go("partner"),
+      navContact: this.go("contact"),
+      mobileLinks: pages.map(([p, label]) => ({
+        label, go: this.go(p),
+        color: s.page === p ? "var(--gold)" : "rgba(255,255,255,.68)",
+      })),
+      menuOpen: !!s.menu,
+      toggleMenu: () => this.setState((p) => ({ menu: !p.menu })),
+      heroLetters, heroSub: h.sub, heroTag: fr ? h.tagFr : h.tagEn,
+      heroTagParts: (fr ? h.tagFr : h.tagEn).split("·").map((v) => ({ v: v.trim() })),
+      slotA: { img: layerImg(evenIdx), o: s.hero % 2 === 0 ? 1 : 0 },
+      slotB: { img: layerImg(oddIdx), o: s.hero % 2 === 1 ? 1 : 0 },
+      heroDots: HERO.map((_, i) => ({
+        go: () => this.setState({ hero: i }),
+        w: i === s.hero ? "46px" : "16px",
+        bg: i === s.hero ? "var(--gold)" : "rgba(255,255,255,.22)",
+      })),
+      heroCounter: String(s.hero + 1).padStart(2, "0") + " / " + String(HERO.length).padStart(2, "0"),
+      trustLoop: trust.concat(trust).map((label, i) => ({ label, k: i })),
+      services, steps, metrics, escrowPoints, roles, security, hubs, partnerSteps,
+      origins: ORIGINS.map((name) => ({ name })),
+      stateCells,
+      quote: { text: quoteRow[0], name: quoteRow[1], role: quoteRow[2] },
+      quoteDots: [0, 1, 2, 3].map((i) => ({
+        go: () => this.setState({ quote: i }),
+        w: i === s.quote ? "38px" : "14px",
+        bg: i === s.quote ? "var(--gold)" : "rgba(255,255,255,.22)",
+      })),
+      simAmount: amt, simAmountLabel: money(amt), simRows,
+      setAmount: (e) => this.setState({ amount: +e.target.value }),
+      contacts, footCols,
+    };
+  }
+}
+</script>
+</body>
+</html>

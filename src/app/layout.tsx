@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { Inter, JetBrains_Mono, Bebas_Neue, Barlow_Condensed } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 import { Toaster } from "@/components/ui/sonner"
@@ -12,6 +12,25 @@ const fontSans = Inter({
 const fontMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+})
+
+// Polices d'affichage de la vitrine. Elles étaient déclarées via un @import
+// Google Fonts dans globals.css, que la CSP du projet bloque (`style-src 'self'`,
+// `font-src 'self' data:`) : les titres retombaient silencieusement sur un serif
+// générique. Servies par next/font, elles sont auto-hébergées — pas de requête
+// externe, pas de CSP à ouvrir, pas de saut de mise en page.
+const fontDisplay = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-display",
+  display: "swap",
+})
+
+const fontCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-condensed",
+  display: "swap",
 })
 
 export const viewport: Viewport = {
@@ -79,7 +98,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      // Les classes `.variable` de next/font doivent être posées sur un élément
+      // englobant, sinon les variables CSS ne sont jamais définies — c'était le
+      // cas jusqu'ici pour fontSans et fontMono, déclarées mais non appliquées.
+      className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} ${fontCondensed.variable}`}
+    >
       <body className="min-h-screen font-sans">
         <Providers>
           {children}

@@ -7,6 +7,7 @@ import tr from "@/lib/locales/tr"
 import zh from "@/lib/locales/zh"
 import ja from "@/lib/locales/ja"
 import ar from "@/lib/locales/ar"
+import { siteLocales } from "@/lib/locales/site"
 
 export type Language = "fr" | "en" | "tr" | "zh" | "ja" | "ar"
 
@@ -47,12 +48,22 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
     }
 
+    // Les textes du site vitrine vivent dans leur propre module : ils sont
+    // volumineux et purement éditoriaux, les garder à part rend la relecture
+    // possible sans traverser les clés applicatives.
     const dictionaries: Record<Language, Record<string, string>> = {
-        fr, en, tr, zh, ja, ar,
+        fr: { ...fr, ...siteLocales.fr },
+        en: { ...en, ...siteLocales.en },
+        tr: { ...tr, ...siteLocales.tr },
+        zh: { ...zh, ...siteLocales.zh },
+        ja: { ...ja, ...siteLocales.ja },
+        ar: { ...ar, ...siteLocales.ar },
     }
 
     const t = (key: string, defaultText?: string) => {
-        return dictionaries[language]?.[key] || defaultText || key
+        // Repli sur le français quand une langue n'a pas encore la clé : mieux
+        // vaut un texte lisible dans une autre langue qu'un identifiant brut.
+        return dictionaries[language]?.[key] || dictionaries.fr?.[key] || defaultText || key
     }
 
     return (
