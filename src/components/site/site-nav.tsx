@@ -5,9 +5,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLanguage, languages, type Language } from "@/lib/i18n-context"
 
-/** Les six entrées de navigation et leur route réelle. */
+/** Les entrées de navigation et leur route réelle. */
 export const SITE_LINKS = [
   { href: "/", key: "site.nav.home", fallback: "Accueil" },
+  { href: "/about", key: "site.nav.about", fallback: "Qui sommes-nous" },
   { href: "/services", key: "site.nav.services", fallback: "Services" },
   { href: "/plateforme", key: "site.nav.platform", fallback: "Plateforme" },
   { href: "/how-it-works", key: "site.nav.process", fallback: "Processus" },
@@ -16,7 +17,7 @@ export const SITE_LINKS = [
 ] as const
 
 const LINK_BASE =
-  "px-[13px] py-[10px] font-condensed text-[12px] font-semibold tracking-[.26em] uppercase whitespace-nowrap transition-colors duration-200"
+  "px-[11px] py-[10px] font-condensed text-[12px] font-semibold tracking-[.26em] uppercase whitespace-nowrap transition-colors duration-200"
 
 export function SiteNav() {
   const { t, language, setLanguage } = useLanguage()
@@ -64,7 +65,7 @@ export function SiteNav() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-[2px] xl:flex">
+        <div className="hidden items-center gap-[2px] min-[1280px]:flex">
           {SITE_LINKS.map((link) => {
             const active = pathname === link.href
             return (
@@ -84,7 +85,7 @@ export function SiteNav() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Menu"
             aria-expanded={menuOpen}
-            className="flex flex-col gap-[5px] border border-[var(--line)] px-[13px] py-3 xl:hidden"
+            className="flex flex-col gap-[5px] border border-[var(--line)] px-[13px] py-3 min-[1280px]:hidden"
           >
             <span className="block h-[1.5px] w-[18px] bg-gold" />
             <span className="block h-[1.5px] w-[18px] bg-gold" />
@@ -131,7 +132,7 @@ export function SiteNav() {
 
       {menuOpen && (
         <div
-          className="border-t border-[var(--line)] bg-[hsl(216_45%_6%/.97)] backdrop-blur-[14px] xl:hidden"
+          className="border-t border-[var(--line)] bg-[hsl(216_45%_6%/.97)] backdrop-blur-[14px] min-[1280px]:hidden"
           style={{ animation: "menuIn .42s cubic-bezier(.16,1,.3,1) both" }}
         >
           <div className="flex flex-col gap-px bg-[var(--line)] px-8 pb-[26px] pt-2">

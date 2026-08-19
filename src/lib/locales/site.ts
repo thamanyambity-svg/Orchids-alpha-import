@@ -15,6 +15,29 @@ type SiteDict = Record<string, string>
 
 const fr: SiteDict = {
   'site.nav.home': 'Accueil',
+  'site.nav.about': 'Qui sommes-nous',
+  'site.about.eyebrow': 'Qui sommes-nous',
+  'site.about.title': "UNE INFRASTRUCTURE, PAS UN INTERMÉDIAIRE",
+  'site.about.body':
+    "Alpha Import Exchange est une filiale du Groupe A.Onoseke Investment RDC. Nous ne revendons pas de la marchandise : nous opérons l'infrastructure qui permet à un importateur congolais d'acheter à l'étranger sans avancer ses fonds à un inconnu.",
+  'site.about.missionTitle': 'NOTRE RAISON D\'ÊTRE',
+  'site.about.missionBody':
+    "Importer depuis la RDC suppose de payer d'avance un fournisseur qu'on n'a jamais rencontré, dans un pays dont on ne parle pas la langue, sans recours en cas de litige. Nous avons construit la plateforme qui supprime ce saut dans le vide : un partenaire agréé sur place répond de la marchandise, et l'argent reste bloqué jusqu'à réception conforme.",
+  'site.about.v1.tag': 'Séquestre',
+  'site.about.v1.title': "L'ARGENT AVANT LA PAROLE",
+  'site.about.v1.body':
+    "Nos garanties ne sont pas contractuelles, elles sont techniques. Le solde ne peut pas être libéré avant que la réception conforme soit inscrite en base.",
+  'site.about.v2.tag': 'Présence',
+  'site.about.v2.title': 'UN HOMME SUR PLACE',
+  'site.about.v2.body':
+    "Dans chaque pays d'origine, un partenaire agréé sélectionne, négocie et inspecte. Il engage sa responsabilité jusqu'à l'embarquement.",
+  'site.about.v3.tag': 'Traçabilité',
+  'site.about.v3.title': 'TOUT EST ÉCRIT',
+  'site.about.v3.body':
+    "Chaque changement d'état, chaque validation, chaque mouvement de fonds est horodaté et attribué. Le journal d'audit fait foi.",
+  'site.about.groupTitle': 'LE GROUPE',
+  'site.about.groupBody':
+    "A.Onoseke Investment RDC opère depuis Kinshasa, avec des relais à Bruxelles, New York, Shanghai, Tokyo et Dubaï. Alpha Import Exchange en est la branche import-export.",
   'site.nav.services': 'Services',
   'site.nav.platform': 'Plateforme',
   'site.nav.process': 'Processus',
@@ -237,6 +260,29 @@ const fr: SiteDict = {
 
 const en: SiteDict = {
   'site.nav.home': 'Home',
+  'site.nav.about': 'About us',
+  'site.about.eyebrow': 'About us',
+  'site.about.title': 'INFRASTRUCTURE, NOT A MIDDLEMAN',
+  'site.about.body':
+    "Alpha Import Exchange is a subsidiary of Groupe A.Onoseke Investment RDC. We do not resell goods: we run the infrastructure that lets a Congolese importer buy abroad without advancing funds to a stranger.",
+  'site.about.missionTitle': 'WHY WE EXIST',
+  'site.about.missionBody':
+    "Importing from the DRC means paying a supplier you have never met, in a country whose language you do not speak, with no recourse in a dispute. We built the platform that removes that leap of faith: an approved partner on the ground answers for the goods, and the money stays blocked until conforming delivery.",
+  'site.about.v1.tag': 'Escrow',
+  'site.about.v1.title': 'MONEY BEFORE WORDS',
+  'site.about.v1.body':
+    'Our guarantees are technical, not contractual. The balance cannot be released before conforming receipt is written to the database.',
+  'site.about.v2.tag': 'Presence',
+  'site.about.v2.title': 'SOMEONE ON THE GROUND',
+  'site.about.v2.body':
+    'In every origin country, an approved partner selects, negotiates and inspects. They answer for the goods up to loading.',
+  'site.about.v3.tag': 'Traceability',
+  'site.about.v3.title': 'EVERYTHING IS RECORDED',
+  'site.about.v3.body':
+    'Every state change, every approval, every movement of funds is timestamped and attributed. The audit log is the record.',
+  'site.about.groupTitle': 'THE GROUP',
+  'site.about.groupBody':
+    'A.Onoseke Investment RDC operates from Kinshasa, with relays in Brussels, New York, Shanghai, Tokyo and Dubai. Alpha Import Exchange is its import-export arm.',
   'site.nav.services': 'Services',
   'site.nav.platform': 'Platform',
   'site.nav.process': 'Process',
@@ -462,6 +508,7 @@ const en: SiteDict = {
  */
 const tr: SiteDict = {
   'site.nav.home': 'Ana sayfa',
+  'site.nav.about': 'Hakkımızda',
   'site.nav.services': 'Hizmetler',
   'site.nav.platform': 'Platform',
   'site.nav.process': 'Süreç',
@@ -481,6 +528,7 @@ const tr: SiteDict = {
 
 const zh: SiteDict = {
   'site.nav.home': '首页',
+  'site.nav.about': '关于我们',
   'site.nav.services': '服务',
   'site.nav.platform': '平台',
   'site.nav.process': '流程',
@@ -500,6 +548,7 @@ const zh: SiteDict = {
 
 const ja: SiteDict = {
   'site.nav.home': 'ホーム',
+  'site.nav.about': '会社概要',
   'site.nav.services': 'サービス',
   'site.nav.platform': 'プラットフォーム',
   'site.nav.process': 'プロセス',
@@ -519,6 +568,7 @@ const ja: SiteDict = {
 
 const ar: SiteDict = {
   'site.nav.home': 'الرئيسية',
+  'site.nav.about': 'من نحن',
   'site.nav.services': 'الخدمات',
   'site.nav.platform': 'المنصة',
   'site.nav.process': 'المسار',

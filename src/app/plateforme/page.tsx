@@ -57,6 +57,7 @@ export default function PlatformPage() {
         eyebrow={t("site.pf.eyebrow", "La plateforme")}
         title={t("site.pf.title", "TROIS RÔLES, UN MÊME DOSSIER")}
         body={t("site.pf.body", "")}
+        image="photo-1551288049-bebda4e38f71"
       />
 
       <section className="border-t border-[var(--line)] bg-[var(--navy2)] py-[100px]">
