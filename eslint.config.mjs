@@ -20,6 +20,9 @@ const eslintConfig = [
       // sont du CommonJS et n'ont pas à passer par la configuration de l'app.
       ".agents/**",
       "update_locales.js",
+      // Bundle de transfert Claude Design : prototype HTML/JS conservé comme
+      // référence visuelle, jamais exécuté par l'application.
+      "refonte-dynamique-site-logistique/**",
     ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
