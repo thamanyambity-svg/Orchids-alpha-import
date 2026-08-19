@@ -2,17 +2,18 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, Shield } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { BackButton } from "@/components/back-button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { useLanguage } from "@/lib/i18n-context"
+import { SiteNav } from "@/components/site/site-nav"
+
+const FIELD =
+  "w-full border border-[var(--line)] bg-[hsl(216_45%_6%)] px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-white outline-none transition-colors placeholder:text-white/25 focus:border-gold"
+
+const LABEL =
+  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/50"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -116,175 +117,147 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 relative bg-card">
-        <div className="absolute inset-0 pattern-grid opacity-20" />
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+    <div className="site-shell relative min-h-screen bg-[var(--navy)]">
+      <SiteNav />
 
-        <div className="relative z-10 flex flex-col justify-center px-16">
-          <BackButton href="/" className="w-fit mb-8" />
-          <Link href="/" className="flex items-center mb-12 group">
-            <div className="w-40 h-40 sm:w-48 sm:h-48 relative flex items-center justify-center transition-transform group-hover:scale-105">
-              <Image
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                alt="Alpha Import Exchange RDC"
-                fill
-                className="object-contain"
-              />
+      <main className="relative grid min-h-screen [grid-template-columns:1fr] lg:[grid-template-columns:1fr_1fr]">
+        {/* Volet gauche : argumentaire, dans le style de la vitrine. */}
+        <section className="relative hidden overflow-hidden border-r border-[var(--line)] lg:block">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-[.22]"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1600&q=70')",
+              animation: "heroPan 18s linear infinite alternate",
+            }}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,hsl(216_45%_6%/.82),hsl(216_45%_6%/.97))]" />
+          <div className="absolute inset-0 opacity-60 [background:repeating-linear-gradient(115deg,transparent_0_30px,hsl(42_85%_55%/.04)_30px_31px)]" />
+
+          <div className="relative flex h-full flex-col justify-center px-16 pt-24">
+            <div className="mb-[22px] flex items-center gap-4">
+              <span className="block h-px w-14 bg-gold" />
+              <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.5em] text-gold">
+                {t("site.access.title", "Espace client")}
+              </span>
             </div>
-          </Link>
+            <h1 className="m-0 font-display text-[clamp(40px,4.6vw,76px)] leading-[.9] text-white">
+              {t("site.access.head", "TOUT SE PASSE DANS VOTRE ESPACE")}
+            </h1>
+            <p className="mt-7 max-w-[460px] text-[18px] font-light leading-[1.6] text-white/55 [text-wrap:pretty]">
+              {t("site.access.body", "")}
+            </p>
 
-          <h1 className="text-4xl font-bold mb-4">
-            {t("login.title", "Bienvenue sur votre ")}
-            <span className="text-gradient-gold">{t("login.secure_space", "espace sécurisé")}</span>
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-md">
-            {t("login.subtitle", "Accédez à votre tableau de bord pour gérer vos importations, suivre vos commandes et consulter vos documents.")}
-          </p>
-
-          <div className="mt-12 space-y-4">
-            {[
-              t("login.feature.tracking", "Suivi en temps réel de vos commandes"),
-              t("login.feature.documents", "Documents sécurisés et horodatés"),
-              t("login.feature.messaging", "Messagerie directe avec votre partenaire"),
-            ].map((feature, index) => (
-              <div key={index} className="flex items-center gap-3 text-sm text-muted-foreground">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                {feature}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
-          <div className="lg:hidden mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <BackButton href="/" />
+            <div className="mt-11 flex flex-col gap-[10px]">
+              {[
+                t("login.feature.tracking", "Suivi en temps réel de vos commandes"),
+                t("login.feature.documents", "Documents sécurisés et horodatés"),
+                t("login.feature.messaging", "Messagerie directe avec votre partenaire"),
+              ].map((feature) => (
+                <span
+                  key={feature}
+                  className="flex items-center gap-[11px] font-condensed text-[14px] font-medium uppercase tracking-[.14em] text-white/50"
+                >
+                  <span className="block h-1 w-1 shrink-0 bg-gold" />
+                  {feature}
+                </span>
+              ))}
             </div>
-            <Link href="/" className="flex items-center">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 relative flex items-center justify-center">
-                <Image
-                  src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/82c7d68c-6062-41a5-8b3b-7754c84ff796/Capture-d-ecran-2026-01-08-a-11.09.14-1767869085941.png?width=8000&height=8000&resize=contain"
-                  alt="Alpha A Ambity"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </Link>
           </div>
+        </section>
 
-          <h2 className="text-2xl font-bold mb-2">{t("login.connection", "Connexion")}</h2>
-          <p className="text-muted-foreground mb-8">
-            {t("login.enter_credentials", "Entrez vos identifiants pour accéder à votre espace")}
-          </p>
+        {/* Volet droit : le formulaire. Sa logique est inchangée. */}
+        <section className="relative flex items-center justify-center px-8 py-32">
+          <div className="w-full max-w-[440px]">
+            <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
+              {t("site.access.title", "Espace client")}
+            </span>
+            <h2 className="m-0 font-display text-[clamp(34px,4vw,52px)] leading-[.95] text-white">
+              {t("site.access.login", "Connexion")}
+            </h2>
+            <div className="my-7 h-[14px] w-[100px] bg-gold" />
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email">{t("login.email", "Email")}</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <div>
+                <label htmlFor="email" className={LABEL}>
+                  {t("login.email", "Adresse e-mail")}
+                </label>
+                <input
                   id="email"
                   type="email"
-                  placeholder={t("login.email_placeholder", "votre@email.com")}
-                  className="pl-10 h-12"
+                  autoComplete="email"
+                  required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
+                  placeholder="vous@exemple.com"
+                  className={FIELD}
                 />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">{t("login.password", "Mot de passe")}</Label>
-                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                  {t("login.forgot", "Mot de passe oublié ?")}
-                </Link>
+              <div>
+                <label htmlFor="password" className={LABEL}>
+                  {t("login.password", "Mot de passe")}
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    placeholder="••••••••"
+                    className={`${FIELD} pr-12`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-gold"
+                  >
+                    {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+                  </button>
+                </div>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 h-12"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
 
-            <Button type="submit" className="w-full h-12" disabled={isLoading}>
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  {t("login.submit", "Se connecter")}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
-          </form>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="mt-2 flex items-center justify-center gap-3 bg-gold px-[38px] py-[18px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              >
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                {t("site.access.login", "Connexion")}
+              </button>
+            </form>
 
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            {t("login.no_account", "Pas encore de compte ?")}{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              {t("login.register", "Créer un compte Acheteur")}
-            </Link>
-          </p>
-
-
-          <div className="mt-6 pt-6 border-t border-border flex justify-center gap-4">
             <button
-              type="button"
               onClick={handleAdminClick}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+              className="mt-4 w-full border border-[var(--line)] px-[38px] py-[16px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/70 transition-colors duration-300 hover:border-gold hover:text-gold"
             >
-              <Shield className="w-3 h-3" />
-              {t("login.admin_access", "Accès Administration")}
+              {t("login.admin.access", "Accès Administration")}
             </button>
 
-            {/* Dev Helper - TO BE REMOVED IN PROD */}
-            <button
-              type="button"
-              onClick={async () => {
-                const supabase = createClient()
-                setIsLoading(true)
-                const { error } = await supabase.auth.signInWithPassword({
-                  email: 'smoke-688@test.com', // The user created by smoke test
-                  password: 'Password123!'
-                })
-                if (error) toast.error(error.message)
-                else {
-                  toast.success(t("login.dev_mode", "Mode Dev Admin Activé"))
-                  // Force redirect to admin
-                  window.location.href = "/admin"
-                }
-                setIsLoading(false)
-              }}
-              className="text-xs text-red-400 hover:text-red-300 transition-colors inline-flex items-center gap-1 border border-red-500/20 px-2 py-1 rounded"
-            >
-              <Shield className="w-3 h-3" />
-              {t("login.dev_button", "DEV: Auto Business Admin")}
-            </button>
+            <div className="mt-8 flex flex-col gap-3 border-t border-[var(--line)] pt-7">
+              <Link
+                href="/register"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
+              >
+                {t("site.access.register", "Créer un compte")}
+              </Link>
+              <Link
+                href="/"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/40 transition-colors hover:text-gold"
+              >
+                {t("site.nav.home", "Accueil")}
+              </Link>
+            </div>
+
+            <p className="mt-7 text-[14px] font-light leading-[1.6] text-white/35 [text-wrap:pretty]">
+              {t("site.access.note", "")}
+            </p>
           </div>
-        </motion.div>
-      </div>
+        </section>
+      </main>
     </div>
   )
 }
