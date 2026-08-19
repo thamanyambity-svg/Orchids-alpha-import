@@ -1,35 +1,28 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useLanguage } from "@/lib/i18n-context"
-import {
-  Shield,
-  Mail,
-  Phone,
-  MapPin,
-  MessageSquare,
-  Send,
-  Loader2,
-  Building2,
-  Briefcase
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BackButton } from "@/components/back-button"
-import { PublicHeader } from "@/components/public-header"
-import { PublicFooter } from "@/components/public-footer"
 import { toast } from "sonner"
+import { SiteShell } from "@/components/site/site-shell"
+import { useReveal } from "@/components/site/use-reveal"
+import { PageHero } from "@/components/site/sections"
+
+const FIELD =
+  "w-full border border-[var(--line)] bg-[hsl(216_45%_6%)] px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-white outline-none transition-colors placeholder:text-white/25 focus:border-gold"
+
+const LABEL =
+  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/50"
 
 export default function ContactPage() {
   const router = useRouter()
   const supabase = createClient()
   const { t } = useLanguage()
+  useReveal()
+
   const [isLoading, setIsLoading] = useState(false)
   const [contactType, setContactType] = useState("")
   const [formData, setFormData] = useState({
@@ -41,8 +34,8 @@ export default function ContactPage() {
   })
 
   const contactTypes = [
-    { value: "partner", label: t("contact.form.type.partner", "Je veux devenir partenaire"), icon: Building2 },
-    { value: "institutional", label: t("contact.form.type.institutional", "Contact institutionnel"), icon: Briefcase },
+    { value: "partner", label: t("contact.form.type.partner", "Je veux devenir partenaire") },
+    { value: "institutional", label: t("contact.form.type.institutional", "Contact institutionnel") },
   ]
 
   const handleTypeSelect = (type: string) => {
@@ -89,220 +82,153 @@ export default function ContactPage() {
     }
   }
 
+  const contacts = [
+    { label: t("site.contact.address", "Adresse"), value: t("site.foot.address", "Kinshasa, République Démocratique du Congo") },
+    { label: t("site.contact.phone", "Téléphone"), value: "+243 999 894 788" },
+    { label: "WhatsApp", value: "+243 818 924 674" },
+    { label: "E-mail", value: "contact@aonosekehouseinvestmentdrc.site" },
+    { label: t("site.contact.languages", "Langues de la plateforme"), value: "Français · English · Türkçe · 中文 · 日本語 · العربية" },
+  ]
+
   return (
-    <div className="min-h-screen">
-      <PublicHeader />
+    <SiteShell>
+      <PageHero
+        eyebrow={t("site.quote.eyebrow", "Accès")}
+        title={t("site.quote.title", "DEMANDER UNE COTATION")}
+        body={t("site.quote.body", "")}
+        image="photo-1504328345606-18bbc8c9d7d1"
+      />
 
-      <main className="pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-          <BackButton />
-        </div>
-        <section className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 pattern-grid opacity-20" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+      {/* Espace client : les demandes d'importation se déposent connecté. */}
+      <section className="bg-[var(--navy)] pb-[60px]">
+        <div className="mx-auto max-w-[1440px] px-8">
+          <div
+            data-reveal
+            className="grid gap-px border border-[var(--line)] bg-[var(--line)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+          >
+            <div className="flex flex-col justify-center gap-[22px] bg-[var(--navy2)] px-[34px] py-12">
+              <span className="font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
+                {t("site.access.title", "Espace client")}
+              </span>
+              <h2 className="m-0 font-display text-[clamp(32px,3.8vw,52px)] leading-none text-white">
+                {t("site.access.head", "TOUT SE PASSE DANS VOTRE ESPACE")}
+              </h2>
+              <p className="m-0 text-[17px] font-light leading-[1.62] text-white/58 [text-wrap:pretty]">
+                {t("site.access.body", "")}
+              </p>
+              <div className="mt-[6px] flex flex-wrap gap-3">
+                <Link
+                  href="/login"
+                  className="bg-gold px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                >
+                  {t("site.access.login", "Connexion")}
+                </Link>
+                <Link
+                  href="/register"
+                  className="border border-[var(--line)] px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+                >
+                  {t("site.access.register", "Créer un compte")}
+                </Link>
+              </div>
+              <p className="m-0 mt-2 text-[14px] font-light leading-[1.6] text-white/38 [text-wrap:pretty]">
+                {t("site.access.note", "")}
+              </p>
+            </div>
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-16">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-8">
-                  <MessageSquare className="w-4 h-4" />
-                  {t("contact.hero.label", "Contact")}
+            <div className="flex flex-col justify-center gap-[30px] bg-[hsl(216_45%_6%)] px-[34px] py-12">
+              {contacts.map((c) => (
+                <div key={c.label}>
+                  <span className="mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-gold">
+                    {c.label}
+                  </span>
+                  <span className="block break-words font-display text-[25px] leading-[1.16] text-white">
+                    {c.value}
+                  </span>
                 </div>
-
-                <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-                  {t("contact.page.title", "Parlons de votre")}{" "}
-                  <span className="text-gradient-gold">{t("contact.page.title.gold", "projet")}</span>
-                </h1>
-                <p className="text-lg text-muted-foreground mb-12">
-                  {t("contact.page.subtitle", "Que vous soyez futur partenaire ou institutionnel, notre équipe est à votre écoute pour répondre à toutes vos questions.")}
-                </p>
-
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <MapPin className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">{t("contact.address.title", "Siège Alpha")}</h3>
-                      <p className="text-muted-foreground">
-                        {t("contact.address.line1", "Kinshasa, République Démocratique du Congo")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Mail className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">{t("contact.email", "Email")}</h3>
-                      <a href="mailto:contact@aonosekehouseinvestmentdrc.site" className="text-primary hover:underline">
-                        contact@aonosekehouseinvestmentdrc.site
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Phone className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">{t("contact.phone", "Téléphone / WhatsApp")}</h3>
-                      <a href="tel:+243999894788" className="text-primary hover:underline">
-                        +243 999 894 788 / +243 818 924 674
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-12 p-6 rounded-xl bg-card border border-border">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Shield className="w-5 h-5 text-primary" />
-                    <span className="font-semibold">{t("contact.response.time", "Temps de réponse")}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {t("contact.response.time.desc", "Nous nous engageons à répondre à toutes les demandes sous 24 heures ouvrées. Les demandes partenaires sont traitées en priorité.")}
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="p-8 rounded-2xl bg-card border border-border">
-                  <h2 className="text-2xl font-bold mb-6">{t("contact.form.title", "Envoyez-nous un message")}</h2>
-
-                  <div className="grid grid-cols-2 gap-3 mb-6">
-                    {contactTypes.map((type) => (
-                      <button
-                        key={type.value}
-                        type="button"
-                        onClick={() => handleTypeSelect(type.value)}
-                        className={`p-4 rounded-xl border transition-all text-center ${contactType === type.value
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50"
-                        }`}
-                      >
-                        <type.icon className={`w-6 h-6 mx-auto mb-2 ${contactType === type.value ? "text-primary" : "text-muted-foreground"
-                        }`} />
-                        <span className="text-xs">{type.label}</span>
-                      </button>
-                    ))}
-                  </div>
-
-                  {contactType === "institutional" && (
-                    <motion.form
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      onSubmit={handleSubmit}
-                      className="space-y-5"
-                    >
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="name">{t("contact.form.name", "Nom complet")} *</Label>
-                          <Input
-                            id="name"
-                            type="text"
-                            placeholder={t("contact.form.name.placeholder", "Jean Dupont")}
-                            className="h-12"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="email">{t("contact.form.email", "Email")} *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder={t("contact.form.email.placeholder", "votre@email.com")}
-                            className="h-12"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="phone">{t("contact.form.phone", "Téléphone")}</Label>
-                          <Input
-                            id="phone"
-                            type="tel"
-                            placeholder={t("contact.form.phone.placeholder", "+243 000 000 000")}
-                            className="h-12"
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="subject">{t("contact.form.subject", "Sujet")} *</Label>
-                          <Select
-                            value={formData.subject}
-                            onValueChange={(value) => setFormData({ ...formData, subject: value })}
-                            required
-                          >
-                            <SelectTrigger className="h-12">
-                              <SelectValue placeholder={t("contact.form.subject.placeholder", "Sélectionnez")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="info">{t("contact.form.subject.info", "Demande d'information")}</SelectItem>
-                              <SelectItem value="partnership">{t("contact.form.subject.partnership", "Proposition Institutionnelle")}</SelectItem>
-                              <SelectItem value="press">{t("contact.form.subject.press", "Presse / Média")}</SelectItem>
-                              <SelectItem value="other">{t("contact.form.type.other", "Autre")}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="message">{t("contact.form.message", "Message")} *</Label>
-                        <Textarea
-                          id="message"
-                          placeholder={t("contact.form.message.placeholder", "Décrivez votre demande en détail...")}
-                          className="min-h-32 resize-none"
-                          value={formData.message}
-                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                          required
-                        />
-                      </div>
-
-                      <Button type="submit" className="w-full h-12" disabled={isLoading}>
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                            {t("contact.form.sending", "Envoi en cours...")}
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-5 h-5 mr-2" />
-                            {t("contact.form.submit", "Envoyer le message")}
-                          </>
-                        )}
-                      </Button>
-                    </motion.form>
-                  )}
-
-                  {!contactType && (
-                    <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
-                      <p>{t("contact.form.type.prompt", "Veuillez sélectionner le type de demande ci-dessus pour continuer.")}</p>
-                    </div>
-                  )}
-
-                </div>
-              </motion.div>
+              ))}
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <PublicFooter />
-    </div>
+      {/*
+        Formulaire institutionnel. La logique est reprise telle quelle : le choix
+        « partenaire » redirige vers la candidature, l'autre écrit dans
+        contact_messages.
+      */}
+      <section className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--navy2)] py-[100px]">
+        <div className="absolute inset-0 opacity-50 [background:repeating-linear-gradient(115deg,transparent_0_30px,hsl(42_85%_55%/.035)_30px_31px)]" />
+        <div className="relative mx-auto max-w-[900px] px-8">
+          <div data-reveal className="mb-10">
+            <div className="mb-[22px] flex items-center gap-4">
+              <span className="block h-px w-14 bg-gold" />
+              <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.5em] text-gold">
+                {t("contact.form.eyebrow", "Nous écrire")}
+              </span>
+            </div>
+            <h2 className="m-0 font-display text-[clamp(34px,4.4vw,68px)] leading-[.92] text-white">
+              {t("contact.form.title", "UNE QUESTION ?")}
+            </h2>
+          </div>
+
+          <div data-reveal className="mb-8 flex flex-wrap gap-px bg-[var(--line)]">
+            {contactTypes.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                onClick={() => handleTypeSelect(type.value)}
+                className={`flex-1 basis-[240px] px-6 py-5 text-left font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
+                  contactType === type.value
+                    ? "bg-gold text-[#0a1018]"
+                    : "bg-[var(--navy)] text-white/60 hover:text-gold"
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSubmit} data-reveal className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label htmlFor="name" className={LABEL}>{t("contact.form.name", "Nom complet")}</label>
+              <input id="name" required value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className={FIELD} placeholder="Jean Kabongo" />
+            </div>
+            <div>
+              <label htmlFor="email" className={LABEL}>{t("contact.form.email", "E-mail")}</label>
+              <input id="email" type="email" required value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className={FIELD} placeholder="vous@exemple.com" />
+            </div>
+            <div>
+              <label htmlFor="phone" className={LABEL}>{t("contact.form.phone", "Téléphone")}</label>
+              <input id="phone" value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className={FIELD} placeholder="+243 …" />
+            </div>
+            <div>
+              <label htmlFor="subject" className={LABEL}>{t("contact.form.subject", "Objet")}</label>
+              <input id="subject" required value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                className={FIELD} placeholder={t("contact.form.subject", "Objet")} />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="message" className={LABEL}>{t("contact.form.message", "Message")}</label>
+              <textarea id="message" required rows={6} value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className={`${FIELD} resize-y`} />
+            </div>
+            <div className="md:col-span-2">
+              <button type="submit" disabled={isLoading}
+                className="flex items-center justify-center gap-3 bg-gold px-11 py-[19px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0">
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                {t("contact.form.send", "Envoyer")}
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </SiteShell>
   )
 }
