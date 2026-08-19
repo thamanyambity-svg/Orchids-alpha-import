@@ -171,7 +171,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .from('quotes')
       .select(`
         *,
-        partner:partner_profiles(full_name, company_name, email, phone)
+        partner:partner_profiles(id, user_id, profile:profiles!user_id(full_name, company_name, email, phone))
       `)
       .eq('request_id', id)
       .order('version', { ascending: false })

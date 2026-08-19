@@ -54,17 +54,18 @@ export function PartnerWizard() {
         const filePath = `partner-applications/${fileName}`
 
         try {
-            const { data, error } = await supabase.storage
-                .from('project-uploads')
+            // Bucket privé : ces fichiers sont des pièces d'identité et des documents
+            // fiscaux. Ils étaient déposés dans `project-uploads`, public et listable,
+            // donc lisibles par URL et énumérables par n'importe qui.
+            const { error } = await supabase.storage
+                .from('compliance-documents')
                 .upload(filePath, file)
 
             if (error) throw error
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('project-uploads')
-                .getPublicUrl(filePath)
-
-            setDocuments(prev => [...prev, { name: docType, url: publicUrl }])
+            // Pas de getPublicUrl sur un bucket privé : on conserve le chemin de
+            // l'objet, l'administrateur obtiendra une URL signée à la lecture.
+            setDocuments(prev => [...prev, { name: docType, url: filePath }])
             toast.success(t("partner_wizard.upload_success", "Téléchargement réussi"))
         } catch (error) {
             console.error(error)

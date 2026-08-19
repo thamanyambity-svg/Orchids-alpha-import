@@ -11,39 +11,113 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- 2. ENUMS
-CREATE TYPE user_role AS ENUM ('BUYER', 'PARTNER', 'ADMIN');
-CREATE TYPE user_status AS ENUM ('PENDING', 'VERIFIED', 'SUSPENDED');
-CREATE TYPE kyc_status AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'VERIFIED', 'REJECTED');
-CREATE TYPE contract_status AS ENUM ('PENDING', 'ACTIVE', 'SUSPENDED', 'TERMINATED');
-CREATE TYPE supplier_status AS ENUM ('ACTIVE', 'RESTRICTED', 'SUSPENDED');
-CREATE TYPE request_status AS ENUM (
+DO $$
+BEGIN
+  CREATE TYPE user_role AS ENUM ('BUYER', 'PARTNER', 'ADMIN');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE user_status AS ENUM ('PENDING', 'VERIFIED', 'SUSPENDED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE kyc_status AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'VERIFIED', 'REJECTED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE application_status AS ENUM ('PENDING', 'APPROVED_KYC', 'DEPOSIT_PAID', 'ACTIVE', 'REJECTED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE contract_status AS ENUM ('PENDING', 'ACTIVE', 'SUSPENDED', 'TERMINATED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE supplier_status AS ENUM ('ACTIVE', 'RESTRICTED', 'SUSPENDED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE request_status AS ENUM (
     'PENDING', 'DRAFT', 'ANALYSIS', 'VALIDATED', 'REJECTED',
+    'QUOTE_ACCEPTED',
     'AWAITING_DEPOSIT', 'AWAITING_BALANCE', 'EXECUTING',
     'SHIPPED', 'DELIVERED', 'INCIDENT', 'CLOSED'
 );
-CREATE TYPE order_status AS ENUM (
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE order_status AS ENUM (
     'PENDING', 'AWAITING_DEPOSIT', 'FUNDED', 'SOURCING', 'EXECUTING',
     'PURCHASED', 'AWAITING_BALANCE', 'SHIPPED', 'DELIVERED',
     'CLOSED', 'INCIDENT', 'FROZEN', 'CANCELLED'
 );
-CREATE TYPE payment_type AS ENUM ('DEPOSIT_60', 'BALANCE_40');
-CREATE TYPE payment_status AS ENUM ('PENDING', 'BLOCKED', 'RELEASED', 'REFUNDED');
-CREATE TYPE incident_type AS ENUM ('LOSS', 'DELAY', 'NON_CONFORMITY', 'FRAUD');
-CREATE TYPE incident_status AS ENUM ('OPEN', 'UNDER_REVIEW', 'FROZEN', 'RESOLVED', 'CANCELLED');
-CREATE TYPE ledger_entry_type AS ENUM ('DEPOSIT', 'RELEASE', 'COMMISSION', 'REFUND', 'FREEZE');
-CREATE TYPE ledger_entry_status AS ENUM ('BLOCKED', 'AUTHORIZED', 'EXECUTED');
-CREATE TYPE invoice_type AS ENUM ('PROFORMA', 'COMMERCIAL', 'FINAL');
-CREATE TYPE invoice_status AS ENUM ('DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED');
-CREATE TYPE notification_type AS ENUM ('info', 'success', 'warning', 'error');
-CREATE TYPE notification_channel AS ENUM (
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE payment_type AS ENUM ('DEPOSIT_60', 'BALANCE_40');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE payment_status AS ENUM ('PENDING', 'BLOCKED', 'RELEASED', 'REFUNDED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE incident_type AS ENUM ('LOSS', 'DELAY', 'NON_CONFORMITY', 'FRAUD');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE incident_status AS ENUM ('OPEN', 'UNDER_REVIEW', 'FROZEN', 'RESOLVED', 'CANCELLED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE ledger_entry_type AS ENUM ('DEPOSIT', 'RELEASE', 'COMMISSION', 'REFUND', 'FREEZE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE ledger_entry_status AS ENUM ('BLOCKED', 'AUTHORIZED', 'EXECUTED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE invoice_type AS ENUM ('PROFORMA', 'COMMERCIAL', 'FINAL');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE invoice_status AS ENUM ('DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE notification_type AS ENUM ('info', 'success', 'warning', 'error');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$
+BEGIN
+  CREATE TYPE notification_channel AS ENUM (
     'status_change', 'document_upload', 'payment',
     'message', 'incident', 'kyc', 'system'
 );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- 3. CORE TABLES
 
 -- Countries (référentiel)
-CREATE TABLE public.countries (
+CREATE TABLE IF NOT EXISTS public.countries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code CHAR(2) NOT NULL UNIQUE,
     name TEXT NOT NULL,
@@ -54,7 +128,7 @@ CREATE TABLE public.countries (
 );
 
 -- Profiles (utilisateurs auth)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     role user_role NOT NULL DEFAULT 'BUYER',
     status user_status NOT NULL DEFAULT 'PENDING',
@@ -78,7 +152,7 @@ CREATE TABLE public.profiles (
 );
 
 -- Buyer Profiles
-CREATE TABLE public.buyer_profiles (
+CREATE TABLE IF NOT EXISTS public.buyer_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL UNIQUE REFERENCES public.profiles(id) ON DELETE CASCADE,
     activity_type TEXT,
@@ -91,7 +165,7 @@ CREATE TABLE public.buyer_profiles (
 );
 
 -- Partner Profiles
-CREATE TABLE public.partner_profiles (
+CREATE TABLE IF NOT EXISTS public.partner_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL UNIQUE REFERENCES public.profiles(id) ON DELETE CASCADE,
     country_id UUID NOT NULL REFERENCES public.countries(id),
@@ -106,7 +180,7 @@ CREATE TABLE public.partner_profiles (
 );
 
 -- Suppliers (gérés par partenaires)
-CREATE TABLE public.suppliers (
+CREATE TABLE IF NOT EXISTS public.suppliers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     partner_id UUID NOT NULL REFERENCES public.partner_profiles(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
@@ -124,7 +198,7 @@ CREATE TABLE public.suppliers (
 );
 
 -- Import Requests
-CREATE TABLE public.import_requests (
+CREATE TABLE IF NOT EXISTS public.import_requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     reference TEXT NOT NULL UNIQUE,
     buyer_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -144,7 +218,7 @@ CREATE TABLE public.import_requests (
 );
 
 -- Orders
-CREATE TABLE public.orders (
+CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     reference TEXT NOT NULL UNIQUE,
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
@@ -166,7 +240,7 @@ CREATE TABLE public.orders (
 );
 
 -- Payments
-CREATE TABLE public.payments (
+CREATE TABLE IF NOT EXISTS public.payments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     type payment_type NOT NULL,
@@ -182,7 +256,7 @@ CREATE TABLE public.payments (
 );
 
 -- Request Documents
-CREATE TABLE public.request_documents (
+CREATE TABLE IF NOT EXISTS public.request_documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
     document_type TEXT,
@@ -196,7 +270,7 @@ CREATE TABLE public.request_documents (
 );
 
 -- Incidents
-CREATE TABLE public.incidents (
+CREATE TABLE IF NOT EXISTS public.incidents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     type incident_type NOT NULL,
@@ -212,7 +286,7 @@ CREATE TABLE public.incidents (
 );
 
 -- Messages
-CREATE TABLE public.messages (
+CREATE TABLE IF NOT EXISTS public.messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     request_id UUID REFERENCES public.import_requests(id) ON DELETE SET NULL,
     sender_id UUID NOT NULL REFERENCES public.profiles(id),
@@ -223,7 +297,7 @@ CREATE TABLE public.messages (
 );
 
 -- Notifications
-CREATE TABLE public.notifications (
+CREATE TABLE IF NOT EXISTS public.notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     channel notification_channel NOT NULL,
@@ -236,7 +310,7 @@ CREATE TABLE public.notifications (
 );
 
 -- Invoices
-CREATE TABLE public.invoices (
+CREATE TABLE IF NOT EXISTS public.invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     request_id UUID NOT NULL REFERENCES public.import_requests(id) ON DELETE CASCADE,
@@ -257,7 +331,7 @@ CREATE TABLE public.invoices (
 );
 
 -- Partner Applications
-CREATE TABLE public.partner_applications (
+CREATE TABLE IF NOT EXISTS public.partner_applications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL,
     company_name TEXT NOT NULL,
@@ -269,7 +343,9 @@ CREATE TABLE public.partner_applications (
     specialization TEXT,
     website TEXT,
     documents JSONB DEFAULT '[]'::jsonb,
-    status TEXT DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
+    -- L'application écrit 'APPROVED_KYC' (src/app/admin/partners/applications/[id]/page.tsx).
+    -- Le CHECK à trois valeurs faisait échouer toute approbation sur une base neuve.
+    status application_status NOT NULL DEFAULT 'PENDING',
     admin_notes TEXT,
     reviewed_by UUID REFERENCES public.profiles(id),
     reviewed_at TIMESTAMPTZ,
@@ -278,7 +354,7 @@ CREATE TABLE public.partner_applications (
 );
 
 -- Contact Messages
-CREATE TABLE public.contact_messages (
+CREATE TABLE IF NOT EXISTS public.contact_messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     email TEXT NOT NULL,
@@ -291,7 +367,7 @@ CREATE TABLE public.contact_messages (
 );
 
 -- Transactions (financier)
-CREATE TABLE public.transactions (
+CREATE TABLE IF NOT EXISTS public.transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID REFERENCES public.orders(id) ON DELETE SET NULL,
     payment_id UUID REFERENCES public.payments(id) ON DELETE SET NULL,
@@ -306,7 +382,7 @@ CREATE TABLE public.transactions (
 );
 
 -- Audit Logs
-CREATE TABLE public.audit_logs (
+CREATE TABLE IF NOT EXISTS public.audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     actor_id UUID REFERENCES public.profiles(id),
     action TEXT NOT NULL,
@@ -319,7 +395,7 @@ CREATE TABLE public.audit_logs (
 );
 
 -- Financial Ledger
-CREATE TABLE public.financial_ledger (
+CREATE TABLE IF NOT EXISTS public.financial_ledger (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     actor TEXT NOT NULL,
@@ -333,7 +409,7 @@ CREATE TABLE public.financial_ledger (
 );
 
 -- Tracking Events
-CREATE TABLE public.tracking_events (
+CREATE TABLE IF NOT EXISTS public.tracking_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     status TEXT NOT NULL,
@@ -345,14 +421,14 @@ CREATE TABLE public.tracking_events (
 );
 
 -- Processed Stripe Events (idempotence webhook)
-CREATE TABLE public.processed_stripe_events (
+CREATE TABLE IF NOT EXISTS public.processed_stripe_events (
     event_id TEXT PRIMARY KEY,
     type TEXT,
     processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Inbound Emails
-CREATE TABLE public.inbound_emails (
+CREATE TABLE IF NOT EXISTS public.inbound_emails (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     resend_email_id TEXT UNIQUE NOT NULL,
     from_email TEXT NOT NULL,
@@ -377,7 +453,7 @@ CREATE TABLE public.inbound_emails (
 );
 
 -- SEPA Payment Transactions
-CREATE TABLE public.sepa_payment_transactions (
+CREATE TABLE IF NOT EXISTS public.sepa_payment_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE,
     stripe_payment_intent_id TEXT UNIQUE NOT NULL,
@@ -395,7 +471,7 @@ CREATE INDEX IF NOT EXISTS idx_sepa_payment_stripe_id ON public.sepa_payment_tra
 CREATE INDEX IF NOT EXISTS idx_sepa_payment_status ON public.sepa_payment_transactions(status);
 
 -- SEPA Payment Retries
-CREATE TABLE public.sepa_payment_retries (
+CREATE TABLE IF NOT EXISTS public.sepa_payment_retries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     transaction_id UUID REFERENCES public.sepa_payment_transactions(id) ON DELETE CASCADE,
     retry_count INTEGER DEFAULT 0,
@@ -407,7 +483,7 @@ CREATE TABLE public.sepa_payment_retries (
 CREATE INDEX IF NOT EXISTS idx_sepa_retries_transaction_id ON public.sepa_payment_retries(transaction_id);
 
 -- Newsletter Subscribers
-CREATE TABLE public.newsletter_subscribers (
+CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL UNIQUE,
     locale TEXT DEFAULT 'fr',
@@ -452,6 +528,7 @@ RETURNS TEXT
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
+SET search_path = public
 AS $$
     SELECT role::text FROM public.profiles WHERE id = auth.uid()
 $$;
@@ -461,6 +538,7 @@ CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
 BEGIN
     NEW.updated_at = NOW();
@@ -469,42 +547,52 @@ END;
 $$;
 
 -- Apply updated_at trigger to relevant tables
+DROP TRIGGER IF EXISTS set_profiles_updated_at ON public.profiles;
 CREATE TRIGGER set_profiles_updated_at
     BEFORE UPDATE ON public.profiles
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_buyer_profiles_updated_at ON public.buyer_profiles;
 CREATE TRIGGER set_buyer_profiles_updated_at
     BEFORE UPDATE ON public.buyer_profiles
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_partner_profiles_updated_at ON public.partner_profiles;
 CREATE TRIGGER set_partner_profiles_updated_at
     BEFORE UPDATE ON public.partner_profiles
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_suppliers_updated_at ON public.suppliers;
 CREATE TRIGGER set_suppliers_updated_at
     BEFORE UPDATE ON public.suppliers
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_import_requests_updated_at ON public.import_requests;
 CREATE TRIGGER set_import_requests_updated_at
     BEFORE UPDATE ON public.import_requests
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_orders_updated_at ON public.orders;
 CREATE TRIGGER set_orders_updated_at
     BEFORE UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_incidents_updated_at ON public.incidents;
 CREATE TRIGGER set_incidents_updated_at
     BEFORE UPDATE ON public.incidents
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_invoices_updated_at ON public.invoices;
 CREATE TRIGGER set_invoices_updated_at
     BEFORE UPDATE ON public.invoices
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_partner_applications_updated_at ON public.partner_applications;
 CREATE TRIGGER set_partner_applications_updated_at
     BEFORE UPDATE ON public.partner_applications
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_inbound_emails_updated_at ON public.inbound_emails;
 CREATE TRIGGER set_inbound_emails_updated_at
     BEFORE UPDATE ON public.inbound_emails
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
@@ -550,7 +638,7 @@ BEGIN
     SET status = v_new_status, updated_at = NOW()
     WHERE id = p_order_id AND status = v_current_status;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE OR REPLACE FUNCTION public.handle_sepa_payment_failure(
     p_order_id UUID,
@@ -564,7 +652,7 @@ BEGIN
     VALUES (p_order_id, p_stripe_intent, p_amount, p_type, 'FAILED', 
             jsonb_build_object('error', p_error_message, 'failed_at', NOW()));
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 8. SEED DATA: Countries (5 pays principaux)
 INSERT INTO public.countries (code, name, region, flag_emoji) VALUES
@@ -596,7 +684,7 @@ BEGIN
   VALUES (NEW.id, NEW.raw_user_meta_data->>'activity_type');
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created

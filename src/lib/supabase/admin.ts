@@ -27,3 +27,25 @@ export function createAdminClient(): SupabaseClient {
     auth: { persistSession: false, autoRefreshToken: false },
   })
 }
+
+let cached: SupabaseClient | null = null
+
+/**
+ * Client service role partagé, construit au premier usage.
+ *
+ * Plusieurs routes le fabriquaient au chargement du module. `next build`
+ * important chaque route pour collecter les données de page, une variable
+ * d'environnement manquante faisait alors échouer la compilation entière —
+ * y compris pour les routes qui ne touchent pas à Supabase. Ce proxy diffère la
+ * construction jusqu'au premier accès : le build passe sans secrets, et
+ * l'absence de configuration se signale à l'exécution, là où elle compte.
+ *
+ * Mêmes réserves d'usage que `createAdminClient` : opérations système
+ * uniquement, jamais dans un composant client.
+ */
+export const supabaseAdmin: SupabaseClient = new Proxy({} as SupabaseClient, {
+  get(_target, prop, receiver) {
+    if (!cached) cached = createAdminClient()
+    return Reflect.get(cached, prop, receiver)
+  },
+})

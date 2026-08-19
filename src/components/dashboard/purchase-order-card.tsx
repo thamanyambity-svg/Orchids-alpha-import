@@ -13,25 +13,24 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 interface PurchaseOrderCardProps {
   po: any
-  quote: any
+  quote?: any
   request: any
-  onCancel?: () => void
+  onSigned?: () => void
+  onCancel?: (reason: string) => void
   onViewQuote?: () => void
   readOnly?: boolean
 }
 
-export function PurchaseOrderCard({ po, quote, request, onCancel, onViewQuote, readOnly = false }: PurchaseOrderCardProps) {
+export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onViewQuote, readOnly = false }: PurchaseOrderCardProps) {
   const { t } = useLanguage()
   const [isSigning, setIsSigning] = useState(false)
   const [showCGV, setShowCGV] = useState(false)
   const [cgvAccepted, setCgvAccepted] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>("")
-  const supabase = createClient()
 
   // Check if CGV already accepted
   useEffect(() => {
@@ -96,22 +95,19 @@ export function PurchaseOrderCard({ po, quote, request, onCancel, onViewQuote, r
     }
     setIsSigning(true)
     try {
-      const { error } = await supabase
-        .from('purchase_orders')
-        .update({
-          status: 'SIGNED',
-          cgv_accepted_at: new Date().toISOString(),
-          cgv_accepted_ip: 'auto', // Will be filled by server
-          cgv_accepted_user_agent: navigator.userAgent,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', po.id)
-      
-      if (error) throw error
-      
+      // Passe par l'API : IP réelle, journal d'audit et contrôle d'état côté serveur.
+      const res = await fetch(`/api/purchase-orders/${po.id}?action=sign`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cgv_accepted: true, cgv_version: '1.0' }),
+      })
+
+      const payload = await res.json()
+      if (!res.ok) throw new Error(payload?.error || 'Signature refusée')
+
       toast.success(t("po.signed_success", "Bon de commande signé ! Délai rétractation 48h démarré."))
       setCgvAccepted(true)
-      // Refresh po data would happen via parent
+      onSigned?.()
     } catch (error: any) {
       toast.error(error.message)
     } finally {
@@ -121,7 +117,9 @@ export function PurchaseOrderCard({ po, quote, request, onCancel, onViewQuote, r
 
   const handleCancel = async () => {
     if (!confirm(t("po.confirm_cancel", "Confirmer l'annulation dans les 48h ? Cette action est irréversible."))) return
-    if (onCancel) onCancel()
+    const reason = prompt(t("po.cancel_reason", "Motif de l'annulation :"))?.trim()
+    if (!reason) return
+    if (onCancel) onCancel(reason)
   }
 
   const statusConfig = getStatusConfig()

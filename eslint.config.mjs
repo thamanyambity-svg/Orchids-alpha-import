@@ -11,7 +11,16 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: [".next/", "next-env.d.ts", "**/*.cjs", "Orchid-Analysis 3/**"],
+    ignores: [
+      ".next/",
+      "next-env.d.ts",
+      "**/*.cjs",
+      "Orchid-Analysis 3/**",
+      // Outillage Node livré avec le dépôt, pas du code applicatif : ces scripts
+      // sont du CommonJS et n'ont pas à passer par la configuration de l'app.
+      ".agents/**",
+      "update_locales.js",
+    ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
@@ -20,6 +29,14 @@ const eslintConfig = [
       // Contenu en français : les apostrophes typographiques dans le JSX sont
       // cosmétiques et rendues correctement -> warning, ne bloque pas le build.
       "react/no-unescaped-entities": "warn",
+    },
+  },
+  {
+    // La configuration des tests charge ses doubles par require() : c'est le
+    // mécanisme attendu par vitest, pas une entorse au style des modules.
+    files: ["vitest.setup.ts", "**/*.test.ts", "**/*.test.tsx"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 ];

@@ -215,7 +215,7 @@ export async function GET(
         request:import_requests(buyer_id, reference, category),
         quote:quotes(*),
         buyer:profiles!purchase_orders_buyer_id_fkey(email, full_name, company_name),
-        partner:partner_profiles(full_name, company_name, email)
+        partner:partner_profiles(id, user_id, profile:profiles!user_id(full_name, company_name, email))
       `)
       .eq('id', id)
       .single()

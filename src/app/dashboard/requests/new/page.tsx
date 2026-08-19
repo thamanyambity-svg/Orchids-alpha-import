@@ -38,6 +38,7 @@ import { GeneralSpecForm } from "@/components/dashboard/general-spec-form"
 import dynamic from "next/dynamic"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
+import { waMeLink } from "@/lib/phone"
 
 const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(mod => mod.WorldMap), {
   ssr: false,
@@ -188,48 +189,32 @@ const REQUEST_CATEGORIES = [
 ]
 
 const steps = [
-  { id: 1, titleKey: "dashboard.requests.new.step_country", icon: Globe2 },
-  { id: 2, titleKey: "dashboard.requests.new.step_product", icon: Package },
-  { id: 3, titleKey: "dashboard.requests.new.step_summary", icon: FileText },
+  { id: 1, titleKey: "dashboard.requests.new.step_country", title: "Origine", icon: Globe2 },
+  { id: 2, titleKey: "dashboard.requests.new.step_product", title: "Produits", icon: Package },
+  { id: 3, titleKey: "dashboard.requests.new.step_summary", title: "Récapitulatif", icon: FileText },
 ]
 
-const mockPartners: Record<string, any> = {
-  "CHN": {
-    id: "p1", full_name: "Chen Wei", company_name: "Alpha Logistics China (Shenzhen)",
-    bio: "Expert en sourcing et logistique industrielle en Chine depuis plus de 15 ans.",
-    whatsapp_number: "+8613812345678", email: "chen.wei@alphaix-partner.cn",
-    phone: "+8613812345678", experience_years: 15, total_orders_handled: 1250,
-    performance_score: 4.9, country_name: "Chine"
-  },
-  "ARE": {
-    id: "p2", full_name: "Achignon Bilongo", company_name: "MAARMALA - Head Officer",
-    avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain",
-    bio: "Spécialiste du commerce international à Dubaï chez MAARMALA.",
-    whatsapp_number: "+971508253190", email: "maarmalasarl@gmail.com",
-    phone: "+971508253190", experience_years: 12, total_orders_handled: 980,
-    performance_score: 4.9, country_name: "Émirats Arabes Unis"
-  },
-  "TUR": {
-    id: "p3", full_name: "Mehmet Demir", company_name: "Istanbul Export Solutions",
-    bio: "Expert en textile et matériaux de construction basés en Turquie.",
-    whatsapp_number: "+905321234567", email: "mehmet@alphaix-partner.tr",
-    phone: "+905321234567", experience_years: 12, total_orders_handled: 620,
-    performance_score: 4.7, country_name: "Turquie"
-  },
-  "THA": {
-    id: "p4", full_name: "Somchai Patana", company_name: "Bangkok Global Sourcing",
-    bio: "Spécialisé dans l'agroalimentaire et les produits manufacturés en Thaïlande.",
-    whatsapp_number: "+66812345678", email: "somchai@alphaix-partner.th",
-    phone: "+66812345678", experience_years: 8, total_orders_handled: 450,
-    performance_score: 4.6, country_name: "Thaïlande"
-  },
-  "JPN": {
-    id: "p5", full_name: "Hiroshi Tanaka", company_name: "Tokyo Precision Trading",
-    bio: "Expert en ingénierie de précision et électronique de pointe au Japon.",
-    whatsapp_number: "+819012345678", email: "hiroshi@alphaix-partner.jp",
-    phone: "+819012345678", experience_years: 20, total_orders_handled: 1100,
-    performance_score: 5.0, country_name: "Japon"
-  }
+/**
+ * La liste déroulante du formulaire est en ISO-3 (`CHN`), la table `countries` en
+ * ISO-2 (`CN`). Comparer les deux directement renvoyait toujours `undefined`, et
+ * `import_requests.country_id` étant NOT NULL, la création de demande échouait
+ * pour tous les pays — sauf les Émirats, à cause d'une ligne parasite `ARE` en
+ * trois lettres. On résout par code exact, puis par nom normalisé.
+ */
+function resolveCountryId(
+  dbCountries: { id: string; code: string; name: string }[],
+  selectedCode: string
+): string | undefined {
+  const byCode = dbCountries.find((c) => c.code === selectedCode)
+  if (byCode) return byCode.id
+
+  const normalize = (value: string) =>
+    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim()
+
+  const selectedName = allCountries.find((c) => c.code === selectedCode)?.name
+  if (!selectedName) return undefined
+
+  return dbCountries.find((c) => normalize(c.name) === normalize(selectedName))?.id
 }
 
 export default function NewRequestPage() {
@@ -283,14 +268,42 @@ export default function NewRequestPage() {
     fetchCountries()
   }, [])
 
+  // Le partenaire affiché est celui réellement assigné au pays d'origine. Cette
+  // fiche montrait jusqu'ici cinq profils inventés, numéros WhatsApp compris.
   useEffect(() => {
-    if (formData.country) {
-      const partner = mockPartners[formData.country]
-      setSelectedPartner(partner || null)
-    } else {
+    const countryId = formData.country ? resolveCountryId(countries, formData.country) : undefined
+
+    if (!countryId) {
       setSelectedPartner(null)
+      return
     }
-  }, [formData.country])
+
+    createClient()
+      .from("partner_profiles")
+      .select(
+        "id, whatsapp_number, performance_score, total_orders_handled, profile:profiles!user_id(full_name, company_name, email, phone)"
+      )
+      .eq("country_id", countryId)
+      .eq("contract_status", "ACTIVE")
+      .limit(1)
+      .then(({ data }) => {
+        const row: any = data?.[0]
+        setSelectedPartner(
+          row
+            ? {
+                id: row.id,
+                whatsapp_number: row.whatsapp_number,
+                performance_score: row.performance_score,
+                total_orders_handled: row.total_orders_handled,
+                full_name: row.profile?.full_name ?? "",
+                company_name: row.profile?.company_name ?? "",
+                email: row.profile?.email ?? "",
+                phone: row.profile?.phone ?? "",
+              }
+            : null
+        )
+      })
+  }, [formData.country, countries])
 
   const handleNext = () => {
     if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
@@ -349,7 +362,15 @@ export default function NewRequestPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error(t("dashboard.requests.new.not_authenticated", "Non authentifié"))
 
-      const countryId = countries.find(c => c.code === formData.country)?.id
+      const countryId = resolveCountryId(countries, formData.country)
+      if (!countryId) {
+        throw new Error(
+          t(
+            "dashboard.requests.new.unknown_country",
+            "Ce pays d'origine n'est pas encore couvert par Alpha Import."
+          )
+        )
+      }
 
       const promises = items.map(item => {
         return fetch("/api/requests", {
@@ -769,6 +790,24 @@ export default function NewRequestPage() {
                             <span className="font-bold">{selectedPartner.total_orders_handled}+</span>
                           </div>
                         </div>
+                        {waMeLink(
+                          selectedPartner.whatsapp_number ?? "",
+                          t("dashboard.requests.new.whatsapp_intro", "Bonjour, je prépare une demande d'import via Alpha Import.")
+                        ) && (
+                          <a
+                            href={
+                              waMeLink(
+                                selectedPartner.whatsapp_number,
+                                t("dashboard.requests.new.whatsapp_intro", "Bonjour, je prépare une demande d'import via Alpha Import.")
+                              ) ?? undefined
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 inline-block text-xs font-semibold text-primary underline"
+                          >
+                            {t("dashboard.requests.new.contact_whatsapp", "Contacter sur WhatsApp")}
+                          </a>
+                        )}
                       </div>
                     )}
 

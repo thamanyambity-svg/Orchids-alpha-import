@@ -12,6 +12,7 @@ RETURNS text
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
+SET search_path = public
 AS $$
   SELECT role::text FROM public.profiles WHERE id = auth.uid()
 $$;

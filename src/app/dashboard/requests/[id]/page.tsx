@@ -211,21 +211,6 @@ export default function RequestDetailsPage() {
     router.refresh()
   }
 
-  const handlePOAccept = async (poId: string) => {
-    const supabase = createClient()
-    const { error } = await supabase.from("purchase_orders")
-      .update({
-        status: "SIGNED",
-        cgv_accepted_at: new Date().toISOString(),
-        cgv_accepted_ip: "auto",
-        cgv_accepted_user_agent: navigator.userAgent,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", poId)
-    if (error) throw error
-    router.refresh()
-  }
-
   const handlePOCancel = async (poId: string, reason: string) => {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -614,8 +599,9 @@ export default function RequestDetailsPage() {
                 <PurchaseOrderCard
                   key={po.id}
                   po={po}
+                  quote={quotes.find((q) => q.id === po.quote_id)}
                   request={request}
-                  onAccept={() => handlePOAccept(po.id)}
+                  onSigned={() => router.refresh()}
                   onCancel={(reason) => handlePOCancel(po.id, reason)}
                   onViewQuote={() => setActiveTab("quotes")}
                 />
