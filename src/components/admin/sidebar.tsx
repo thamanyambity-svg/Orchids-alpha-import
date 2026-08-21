@@ -28,6 +28,7 @@ import {
   FolderOpen,
   Landmark,
   ReceiptText,
+  ScrollText,
   Webhook,
   Bot
 } from "lucide-react"
@@ -55,6 +56,7 @@ const navItems: NavItem[] = [
   { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
   { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
   { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },
+  { href: "/admin/audit-logs", label: "Accès aux documents", labelKey: "admin.sidebar.audit_logs", icon: ScrollText },
   { href: "/admin/settings", label: "Paramètres", labelKey: "admin.sidebar.settings", icon: Settings },
   { href: "/admin/support", label: "Support", labelKey: "admin.sidebar.support", icon: LifeBuoy },
   { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
