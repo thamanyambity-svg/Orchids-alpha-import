@@ -27,6 +27,7 @@ import {
   IdCard,
   FolderOpen,
   Landmark,
+  ReceiptText,
   Webhook,
   Bot
 } from "lucide-react"
@@ -50,6 +51,7 @@ const navItems: NavItem[] = [
   { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
   { href: "/admin/finances/invoices", label: "Factures", labelKey: "admin.sidebar.invoices", icon: FileText },
   { href: "/admin/finances/sepa", label: "Prélèvements SEPA", labelKey: "admin.sidebar.sepa", icon: Landmark },
+  { href: "/admin/payment-proofs", label: "Justificatifs de paiement", labelKey: "admin.sidebar.payment_proofs", icon: ReceiptText },
   { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
   { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
   { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },

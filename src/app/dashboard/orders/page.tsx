@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
+import { PaymentProofDialog } from "@/components/dashboard/payment-proof-dialog"
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -67,11 +68,27 @@ const statusColor: Record<string, string> = {
   INCIDENT: "bg-destructive/10 text-destructive",
 }
 
+type Proof = {
+  id: string
+  order_id: string
+  status: "PENDING_REVIEW" | "ACCEPTED" | "REJECTED" | "SUPERSEDED"
+  rejected_reason: string | null
+}
+
+const proofBadge: Record<Proof["status"], { label: string; className: string }> = {
+  PENDING_REVIEW: { label: "Justificatif en vérification", className: "bg-amber-500/10 text-amber-500" },
+  ACCEPTED: { label: "Justificatif validé", className: "bg-success/10 text-success" },
+  REJECTED: { label: "Justificatif refusé", className: "bg-destructive/10 text-destructive" },
+  SUPERSEDED: { label: "Justificatif remplacé", className: "bg-muted text-muted-foreground" },
+}
+
 export default function DashboardOrdersPage() {
   const { t } = useLanguage()
   const [orders, setOrders] = useState<any[]>([])
+  const [proofs, setProofs] = useState<Proof[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     async function fetchOrders() {
@@ -79,23 +96,39 @@ export default function DashboardOrdersPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
 
-      const { data } = await supabase
+      // `orders` ne porte pas de buyer_id : le propriétaire se lit sur la demande
+      // d'origine. Filtrer sur orders.buyer_id renvoyait une erreur PostgREST, et
+      // la page restait vide quoi qu'il arrive.
+      const { data, error } = await supabase
         .from("orders")
-        .select(`*, import_requests!inner(reference, product_name)`)
-        .eq("buyer_id", user.id)
+        .select(`*, import_requests!inner(reference, product_name, buyer_id)`)
+        .eq("import_requests.buyer_id", user.id)
         .order("created_at", { ascending: false })
 
+      if (error) console.error("[dashboard/orders]", error)
       if (data) setOrders(data)
+
+      const proofRes = await fetch("/api/payment-proofs")
+      if (proofRes.ok) {
+        const { proofs } = await proofRes.json()
+        setProofs(proofs ?? [])
+      }
+
       setLoading(false)
     }
     fetchOrders()
-  }, [])
+  }, [reloadKey])
 
   const filtered = orders.filter(o =>
     o.reference?.toLowerCase().includes(search.toLowerCase()) ||
     o.import_requests?.reference?.toLowerCase().includes(search.toLowerCase()) ||
     o.import_requests?.product_name?.toLowerCase().includes(search.toLowerCase())
   )
+
+  // L'API renvoie les dépôts du plus récent au plus ancien : le premier qui n'est
+  // pas remplacé est celui qui fait foi pour la commande.
+  const currentProof = (orderId: string) =>
+    proofs.find(p => p.order_id === orderId && p.status !== "SUPERSEDED")
 
   const pendingDeposit = orders.filter(o => o.status === "AWAITING_DEPOSIT").length
 
@@ -139,15 +172,18 @@ export default function DashboardOrdersPage() {
         ) : (
           <div className="space-y-4">
             {filtered.map((order, i) => (
-              <Link key={order.id} href={`/dashboard/requests/${order.request_id}`}>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="bg-card border border-border p-4 rounded-xl hover:bg-accent/50 transition-colors group cursor-pointer"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="bg-card border border-border p-4 rounded-xl transition-colors group"
+              >
+                  <div className="flex items-center justify-between gap-4">
+                    <Link
+                      href={`/dashboard/requests/${order.request_id}`}
+                      className="flex min-w-0 flex-1 items-center gap-4"
+                    >
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${statusColor[order.status] || "bg-muted"}`}>
                         {statusIcon[order.status] || <Package className="w-5 h-5" />}
                       </div>
@@ -167,8 +203,8 @@ export default function DashboardOrdersPage() {
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3">
+                    </Link>
+                    <div className="flex shrink-0 items-center gap-3">
                       <div className="text-right">
                         <p className="text-lg font-bold">${order.total_amount?.toLocaleString()}</p>
                         {order.deposit_paid && !order.balance_paid && (
@@ -177,11 +213,36 @@ export default function DashboardOrdersPage() {
                           </p>
                         )}
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                      <PaymentProofDialog
+                        orderId={order.id}
+                        orderReference={order.reference}
+                        supersedesProofId={
+                          currentProof(order.id)?.status === "REJECTED"
+                            ? currentProof(order.id)?.id
+                            : undefined
+                        }
+                        onUploaded={() => setReloadKey(k => k + 1)}
+                      />
+                      <Link href={`/dashboard/requests/${order.request_id}`} aria-label={t("dashboard.orders.open", "Ouvrir la commande")}>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </div>
                   </div>
+
+                  {(() => {
+                    const proof = currentProof(order.id)
+                    if (!proof) return null
+                    const badge = proofBadge[proof.status]
+                    return (
+                      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                        <Badge className={badge.className}>{badge.label}</Badge>
+                        {proof.status === "REJECTED" && proof.rejected_reason && (
+                          <span className="text-xs text-muted-foreground">{proof.rejected_reason}</span>
+                        )}
+                      </div>
+                    )
+                  })()}
                 </motion.div>
-              </Link>
             ))}
           </div>
         )}
