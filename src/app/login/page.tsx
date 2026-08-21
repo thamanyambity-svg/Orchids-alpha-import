@@ -239,6 +239,12 @@ export default function LoginPage() {
 
             <div className="mt-8 flex flex-col gap-3 border-t border-[var(--line)] pt-7">
               <Link
+                href="/forgot-password"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
+              >
+                {t("login.forgot_password", "Mot de passe oublié ?")}
+              </Link>
+              <Link
                 href="/register"
                 className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
               >
