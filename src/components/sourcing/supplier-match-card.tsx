@@ -83,7 +83,7 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
                   {match.rfq_message_local}
                 </div>
               )}
-              <div className={`p-4 rounded-md border text-sm font-mono whitespace-pre-wrap ${match.rfq_message_local && match.rfq_message_local !== match.rfq_message_en ? 'bg-white border-border text-muted-foreground' : 'bg-muted/50 border-border text-foreground'}`}>
+              <div className={`p-4 rounded-md border text-sm font-mono whitespace-pre-wrap ${match.rfq_message_local && match.rfq_message_local !== match.rfq_message_en ? 'bg-card border-border text-muted-foreground' : 'bg-muted/50 border-border text-foreground'}`}>
                  <div className="text-xs font-bold text-muted-foreground mb-2 uppercase">Version Anglaise</div>
                 {match.rfq_message_en}
               </div>
@@ -115,7 +115,7 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
             <XCircle className="w-4 h-4 mr-2" /> Rejeter
           </Button>
           <Button 
-            className="bg-success hover:bg-success text-white"
+            className="bg-success hover:bg-success text-success-foreground"
             onClick={() => onStatusChange(match.id, 'APPROVED', notes)}
           >
             <CheckCircle2 className="w-4 h-4 mr-2" /> Approuver pour RFQ

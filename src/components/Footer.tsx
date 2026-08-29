@@ -19,7 +19,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-display text-lg text-white tracking-wider mb-5">{category}</h4>
+              <h4 className="font-display text-lg text-foreground tracking-wider mb-5">{category}</h4>
               <ul className="space-y-3">
                 {links.map((link, idx) => {
                   const href = category === "Légal" || category === "Legal"
@@ -29,7 +29,7 @@ export default function Footer() {
                     : "/"
                   return (
                     <li key={link}>
-                      <Link href={href} className="font-sans text-sm text-white/30 hover:text-gold transition-colors duration-200">{link}</Link>
+                      <Link href={href} className="font-sans text-sm text-foreground/30 hover:text-gold transition-colors duration-200">{link}</Link>
                     </li>
                   )
                 })}
@@ -38,17 +38,17 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="font-display text-2xl text-white drop-shadow-[0_0_16px_hsl(42_85%_55%/0.3)]">ALPHA IMPORT</span>
-            <span className="font-condensed text-[9px] text-white/15 tracking-[0.2em] uppercase max-w-48 leading-tight">{t("footer.subsidiary", "Filiale du Groupe A.Onoseke Investment RDC")}</span>
+            <span className="font-display text-2xl text-foreground drop-shadow-[0_0_16px_hsl(42_85%_55%/0.3)]">ALPHA IMPORT</span>
+            <span className="font-condensed text-[9px] text-foreground/15 tracking-[0.2em] uppercase max-w-48 leading-tight">{t("footer.subsidiary", "Filiale du Groupe A.Onoseke Investment RDC")}</span>
           </div>
           <div className="flex items-center gap-6">
             {[t("footer.linkedin", "LinkedIn"), t("footer.whatsapp", "WhatsApp"), t("footer.email.link", "Email")].map((social) => (
-              <Link key={social} href="/" className="font-condensed text-xs text-white/20 hover:text-gold tracking-widest uppercase transition-colors duration-200">{social}</Link>
+              <Link key={social} href="/" className="font-condensed text-xs text-foreground/20 hover:text-gold tracking-widest uppercase transition-colors duration-200">{social}</Link>
             ))}
           </div>
-          <p className="font-condensed text-xs text-white/10 tracking-widest uppercase">
+          <p className="font-condensed text-xs text-foreground/10 tracking-widest uppercase">
             &copy; {new Date().getFullYear()} Alpha Import Exchange. {t("footer.rights", "Tous droits réservés.")}
           </p>
         </div>

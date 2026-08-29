@@ -21,7 +21,7 @@ export default function Testimonials() {
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
           <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("testimonials.subtitle", "Ils nous font confiance")}</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("testimonials.title", "TÉMOIGNAGES")}</h2>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-foreground leading-none">{t("testimonials.title", "TÉMOIGNAGES")}</h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -37,14 +37,14 @@ export default function Testimonials() {
                     <span key={i} className="text-gold text-2xl mr-1">★</span>
                   ))}
                 </div>
-                <blockquote className="font-sans text-xl md:text-2xl text-white/80 leading-relaxed mb-8 italic">&ldquo;{testimonials[active].quote}&rdquo;</blockquote>
+                <blockquote className="font-sans text-xl md:text-2xl text-foreground/80 leading-relaxed mb-8 italic">&ldquo;{testimonials[active].quote}&rdquo;</blockquote>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center">
                     <span className="font-display text-xl text-gold">{testimonials[active].name.charAt(0)}</span>
                   </div>
                   <div>
-                    <p className="font-display text-lg text-white tracking-wider">{testimonials[active].name}</p>
-                    <p className="font-condensed text-xs text-white/40 tracking-widest uppercase">{testimonials[active].role}</p>
+                    <p className="font-display text-lg text-foreground tracking-wider">{testimonials[active].name}</p>
+                    <p className="font-condensed text-xs text-foreground/40 tracking-widest uppercase">{testimonials[active].role}</p>
                     <p className="font-condensed text-xs text-gold/60 tracking-widest uppercase mt-0.5">{testimonials[active].location}</p>
                   </div>
                 </div>
@@ -55,8 +55,8 @@ export default function Testimonials() {
           <div className="lg:col-span-2 flex flex-row lg:flex-col gap-3 overflow-x-auto">
             {testimonials.map((item, i) => (
               <motion.button key={i} onClick={() => setActive(i)} whileHover={{ x: 4 }} className="flex-shrink-0 text-left p-5 border transition-all duration-200 w-64 lg:w-auto" style={{ background: i === active ? "hsl(42 85% 55% / 0.08)" : "rgba(6,16,30,0.6)", borderColor: i === active ? "hsl(42 85% 55% / 0.4)" : "rgba(255,255,255,0.06)" }}>
-                <p className="font-display text-white text-sm tracking-wider truncate">{item.name}</p>
-                <p className="font-condensed text-xs text-white/30 tracking-widest uppercase truncate mt-0.5">{item.location}</p>
+                <p className="font-display text-foreground text-sm tracking-wider truncate">{item.name}</p>
+                <p className="font-condensed text-xs text-foreground/30 tracking-widest uppercase truncate mt-0.5">{item.location}</p>
               </motion.button>
             ))}
           </div>

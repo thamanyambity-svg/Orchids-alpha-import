@@ -43,7 +43,7 @@ export default function Navbar() {
         <motion.a href="/" className="flex items-center gap-3 flex-shrink-0" style={{ scale: logoSize, transformOrigin: "left center" }} whileHover={{ opacity: 0.9 }} transition={{ duration: 0.15 }}>
           <div className="flex flex-col">
             <span className="font-display text-3xl text-white drop-shadow-[0_0_16px_hsl(42_85%_55%/0.5)]">ALPHA IMPORT</span>
-            <span className="font-condensed text-[8px] text-white/30 tracking-[0.18em] uppercase leading-none mt-0.5">
+            <span className="font-condensed text-[8px] text-foreground/30 tracking-[0.18em] uppercase leading-none mt-0.5">
               Filiale du Groupe A.Onoseke Investment RDC
             </span>
           </div>
@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <Link key={link.key} href={link.href}>
-              <motion.span className="relative font-condensed text-xs tracking-[0.35em] uppercase text-white/55 hover:text-white transition-colors duration-200 group cursor-pointer" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
+              <motion.span className="relative font-condensed text-xs tracking-[0.35em] uppercase text-foreground/55 hover:text-white transition-colors duration-200 group cursor-pointer" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
                 {t(link.key, link.label)}
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-250 origin-left" />
               </motion.span>
@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className="flex flex-col gap-1 flex-1">
           {NAV_LINKS.map((link, i) => (
             <Link key={link.key} href={link.href} onClick={() => setMenuOpen(false)}>
-              <motion.span className="block font-display text-4xl text-white/70 hover:text-white hover:text-gradient-gold py-4 border-b border-white/6 transition-colors duration-200 cursor-pointer" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
+              <motion.span className="block font-display text-4xl text-foreground/70 hover:text-white hover:text-gradient-gold py-4 border-b border-foreground/6 transition-colors duration-200 cursor-pointer" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
                 {t(link.key, link.label)}
               </motion.span>
             </Link>

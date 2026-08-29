@@ -35,7 +35,7 @@ export function SectionTitle({
       : size === "md"
         ? "text-[clamp(38px,5.4vw,84px)]"
         : "text-[clamp(32px,4.2vw,60px)]"
-  return <h2 className={`m-0 font-display ${clamp} leading-[.88] text-white`}>{children}</h2>
+  return <h2 className={`m-0 font-display ${clamp} leading-[.88] text-foreground`}>{children}</h2>
 }
 
 /** Titre de page interne : même gabarit sur les six pages secondaires. */
@@ -67,8 +67,8 @@ export function PageHero({
         <span className="mb-5 block font-condensed text-[12px] font-semibold uppercase tracking-[.5em] text-gold">
           {eyebrow}
         </span>
-        <h1 className="m-0 font-display text-[clamp(50px,9.6vw,164px)] leading-[.86] text-white">{title}</h1>
-        <p className="mt-7 max-w-[700px] text-[20px] font-light leading-[1.55] text-white/60 [text-wrap:pretty]">
+        <h1 className="m-0 font-display text-[clamp(50px,9.6vw,164px)] leading-[.86] text-foreground">{title}</h1>
+        <p className="mt-7 max-w-[700px] text-[20px] font-light leading-[1.55] text-foreground/60 [text-wrap:pretty]">
           {body}
         </p>
       </div>
@@ -122,7 +122,7 @@ export function Hero() {
           </span>
         </div>
 
-        <h1 className="m-0 font-display text-[clamp(56px,12.5vw,206px)] leading-[.84] tracking-[-.012em] text-white">
+        <h1 className="m-0 font-display text-[clamp(56px,12.5vw,206px)] leading-[.84] tracking-[-.012em] text-foreground">
           <span key={slide.word} className="block overflow-hidden pb-[.04em]">
             {slide.word.split("").map((ch, i) => (
               <span
@@ -137,7 +137,7 @@ export function Hero() {
           <span className="mt-[.24em] block text-[.4em] tracking-[.02em] text-gold">{slide.sub}</span>
         </h1>
 
-        <p className="mt-7 max-w-[640px] text-[20px] font-light leading-[1.55] text-white/65 [text-wrap:pretty]">
+        <p className="mt-7 max-w-[640px] text-[20px] font-light leading-[1.55] text-foreground/65 [text-wrap:pretty]">
           {t("site.hero.body", "")}
         </p>
 
@@ -150,7 +150,7 @@ export function Hero() {
           </Link>
           <Link
             href="/how-it-works"
-            className="border border-[var(--line)] px-[38px] py-5 font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+            className="border border-[var(--line)] px-[38px] py-5 font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-foreground/80 transition-colors duration-300 hover:border-gold hover:text-gold"
           >
             {t("site.cta.discover", "Découvrir")}
           </Link>
@@ -169,7 +169,7 @@ export function Hero() {
               }}
             />
           ))}
-          <span className="ml-[14px] font-condensed text-[11px] tracking-[.36em] text-white/35">
+          <span className="ml-[14px] font-condensed text-[11px] tracking-[.36em] text-foreground/35">
             {String(index + 1).padStart(2, "0")} / {String(HERO.length).padStart(2, "0")}
           </span>
         </div>
@@ -179,7 +179,7 @@ export function Hero() {
         className="absolute bottom-[8vh] right-8 hidden flex-col items-center gap-3 md:flex"
         style={{ animation: "drift 3s ease-in-out infinite" }}
       >
-        <span className="font-condensed text-[10px] tracking-[.4em] text-white/30 [writing-mode:vertical-rl]">
+        <span className="font-condensed text-[10px] tracking-[.4em] text-foreground/30 [writing-mode:vertical-rl]">
           {t("site.scroll", "Scroll")}
         </span>
         <span className="block h-14 w-px bg-[linear-gradient(180deg,var(--gold),transparent)]" />
@@ -200,10 +200,10 @@ export function TrustMarquee() {
   return (
     <section className="relative overflow-hidden border-y border-[var(--line)] bg-[var(--navy2)] pt-14">
       <div className="mx-auto max-w-[1440px] px-8 pb-[46px] text-center">
-        <h2 className="m-0 font-display text-[clamp(28px,3.4vw,48px)] leading-none text-white">
+        <h2 className="m-0 font-display text-[clamp(28px,3.4vw,48px)] leading-none text-foreground">
           {t("site.trust.title", "")}
         </h2>
-        <p className="mx-auto mt-4 max-w-[560px] text-[17px] font-light leading-[1.6] text-white/50">
+        <p className="mx-auto mt-4 max-w-[560px] text-[17px] font-light leading-[1.6] text-foreground/50">
           {t("site.trust.sub", "")}
         </p>
       </div>
@@ -212,7 +212,7 @@ export function TrustMarquee() {
           {[...items, ...items].map((label, i) => (
             <span
               key={`${label}-${i}`}
-              className="flex shrink-0 items-center gap-11 pr-11 font-condensed text-[14px] font-semibold uppercase tracking-[.34em] text-white/45 whitespace-nowrap"
+              className="flex shrink-0 items-center gap-11 pr-11 font-condensed text-[14px] font-semibold uppercase tracking-[.34em] text-foreground/45 whitespace-nowrap"
             >
               {label}
               <span className="block h-[5px] w-[5px] bg-gold" />
@@ -241,14 +241,14 @@ export function SplitBar({ height = 74, compact = false }: { height?: number; co
         />
         <span className={`relative font-display ${figure} leading-[.9] text-primary-foreground`}>60 %</span>
         <span
-          className={`relative font-condensed ${caption} font-bold uppercase tracking-[.24em] text-[hsl(216_45%_6%/.7)]`}
+          className={`relative font-condensed ${caption} font-bold uppercase tracking-[.24em] text-primary-foreground/70`}
         >
           {t("site.escrow.deposit", "Acompte à la commande")}
         </span>
       </div>
-      <div className="flex shrink-0 grow-0 basis-[40%] flex-col justify-center border border-l-0 border-gold bg-[hsl(216_45%_6%)] px-[22px]">
+      <div className="flex shrink-0 grow-0 basis-[40%] flex-col justify-center border border-l-0 border-gold bg-background px-[22px]">
         <span className={`font-display ${figure} leading-[.9] text-gold`}>40 %</span>
-        <span className={`font-condensed ${caption} font-bold uppercase tracking-[.24em] text-white/50`}>
+        <span className={`font-condensed ${caption} font-bold uppercase tracking-[.24em] text-foreground/50`}>
           {t("site.escrow.balance", "Solde à réception conforme")}
         </span>
       </div>
@@ -269,14 +269,14 @@ export function EscrowSection() {
       <div className="mx-auto max-w-[1440px] px-8">
         <div data-reveal className="mb-16 max-w-[820px]">
           <Eyebrow>{t("site.escrow.eyebrow", "")}</Eyebrow>
-          <h2 className="m-0 font-display text-[clamp(46px,7.4vw,116px)] leading-[.88] text-white">
+          <h2 className="m-0 font-display text-[clamp(46px,7.4vw,116px)] leading-[.88] text-foreground">
             {t("site.escrow.title", "")}
           </h2>
           <div
             className="mt-7 h-4 w-[120px] origin-left bg-gold"
             style={{ animation: "barIn .9s .2s cubic-bezier(.16,1,.3,1) both" }}
           />
-          <p className="mt-7 text-[19px] font-light leading-[1.62] text-white/60 [text-wrap:pretty]">
+          <p className="mt-7 text-[19px] font-light leading-[1.62] text-foreground/60 [text-wrap:pretty]">
             {t("site.escrow.body", "")}
           </p>
         </div>
@@ -292,11 +292,11 @@ export function EscrowSection() {
               data-reveal
               className="border-t-2 border-transparent bg-[var(--navy2)] px-7 pb-10 pt-9 transition-colors duration-[400ms] hover:border-gold"
             >
-              <span className="mb-[18px] block font-display text-[48px] leading-[.8] text-[hsl(42_85%_55%/.26)]">
+              <span className="mb-[18px] block font-display text-[48px] leading-[.8] text-primary/25">
                 {p.num}
               </span>
-              <h3 className="mb-3 mt-0 font-display text-[27px] leading-[1.05] text-white">{p.title}</h3>
-              <p className="m-0 text-[16px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">{p.body}</p>
+              <h3 className="mb-3 mt-0 font-display text-[27px] leading-[1.05] text-foreground">{p.title}</h3>
+              <p className="m-0 text-[16px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">{p.body}</p>
             </div>
           ))}
         </div>
@@ -332,7 +332,7 @@ export function ServicesGrid() {
               key={s.num}
               href="/services"
               data-reveal
-              className="group relative flex min-h-[440px] flex-col justify-end overflow-hidden bg-[var(--navy2)] transition-colors duration-[450ms] hover:bg-[hsl(216_40%_12%)]"
+              className="group relative flex min-h-[440px] flex-col justify-end overflow-hidden bg-[var(--navy2)] transition-colors duration-[450ms] hover:bg-secondary"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-[.26] transition-[opacity,transform] duration-700 group-hover:scale-[1.08] group-hover:opacity-[.48]"
@@ -341,13 +341,13 @@ export function ServicesGrid() {
               <div className="absolute inset-0 bg-[linear-gradient(180deg,hsl(216_40%_9%/.32)_0%,hsl(216_40%_9%/.84)_55%,hsl(216_40%_9%/.97)_100%)]" />
               <div className="absolute left-0 right-0 top-0 h-[3px] origin-left scale-x-0 bg-gold transition-transform duration-500 group-hover:scale-x-100" />
               <div className="relative px-[30px] pb-[38px] pt-[34px]">
-                <span className="mb-3 block font-display text-[48px] leading-none text-[hsl(42_85%_55%/.3)]">
+                <span className="mb-3 block font-display text-[48px] leading-none text-primary/30">
                   {s.num}
                 </span>
-                <h3 className="mb-[14px] mt-0 font-display text-[30px] leading-[1.04] text-white">
+                <h3 className="mb-[14px] mt-0 font-display text-[30px] leading-[1.04] text-foreground">
                   {t(`site.svc.${s.key}.title`, "")}
                 </h3>
-                <p className="m-0 text-[16px] font-light leading-[1.62] text-white/60 [text-wrap:pretty]">
+                <p className="m-0 text-[16px] font-light leading-[1.62] text-foreground/60 [text-wrap:pretty]">
                   {t(`site.svc.${s.key}.body`, "")}
                 </p>
               </div>
@@ -373,23 +373,23 @@ export function NetworkSection() {
             <Eyebrow>{t("site.net.eyebrow", "")}</Eyebrow>
             <SectionTitle>{t("site.net.title", "")}</SectionTitle>
           </div>
-          <p className="m-0 max-w-[390px] text-[18px] font-light leading-[1.6] text-white/55 [text-wrap:pretty]">
+          <p className="m-0 max-w-[390px] text-[18px] font-light leading-[1.6] text-foreground/55 [text-wrap:pretty]">
             {t("site.net.body", "")}
           </p>
         </div>
         <div
           data-reveal
-          className="relative border border-[var(--line)] bg-[hsl(216_40%_9%/.6)]"
+          className="relative border border-[var(--line)] bg-card/60"
           style={{ height: "clamp(380px, 52vw, 660px)" }}
         >
           <NetworkMap />
           <div className="absolute bottom-[18px] left-5 flex flex-wrap gap-[22px]">
-            <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-white/40">
+            <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-foreground/40">
               <span className="block h-[7px] w-[7px] rounded-full bg-gold" />
               {t("site.net.legendHub", "Hub Kinshasa")}
             </span>
-            <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-white/40">
-              <span className="block h-px w-[22px] bg-[hsl(42_85%_55%/.6)]" />
+            <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-foreground/40">
+              <span className="block h-px w-[22px] bg-primary/60" />
               {t("site.net.legendRoute", "Corridor actif")}
             </span>
           </div>
@@ -430,14 +430,14 @@ export function MetricsSection() {
           {METRIC_KEYS.map((key, i) => (
             <div
               key={key}
-              className="bg-[var(--navy2)] px-6 py-[42px] transition-colors duration-[400ms] hover:bg-[hsl(216_40%_12%)]"
+              className="bg-[var(--navy2)] px-6 py-[42px] transition-colors duration-[400ms] hover:bg-secondary"
             >
               <span className="block font-display text-[clamp(44px,5.2vw,72px)] leading-[.9] text-gold [font-variant-numeric:tabular-nums]">
                 {(values[i] ?? 0).toLocaleString(language === "en" ? "en-US" : "fr-FR")}
                 {METRIC_SUFFIX[i]}
               </span>
-              <span className="my-[14px] block h-[3px] w-11 bg-[hsl(42_85%_55%/.4)]" />
-              <span className="block font-condensed text-[12px] font-semibold uppercase tracking-[.3em] text-white/50">
+              <span className="my-[14px] block h-[3px] w-11 bg-primary/40" />
+              <span className="block font-condensed text-[12px] font-semibold uppercase tracking-[.3em] text-foreground/50">
                 {t(key, "")}
               </span>
             </div>
@@ -470,17 +470,17 @@ export function StepsSection() {
               className="relative bg-[var(--navy)] px-[26px] pb-11 pt-[38px] transition-colors duration-[400ms] hover:bg-[var(--navy2)]"
             >
               <div className="mb-6 flex items-center justify-between">
-                <span className="font-display text-[62px] leading-[.8] text-[hsl(42_85%_55%/.24)]">
+                <span className="font-display text-[62px] leading-[.8] text-primary/25">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="border border-[hsl(42_85%_55%/.3)] px-[10px] py-[5px] font-condensed text-[11px] font-semibold uppercase tracking-[.26em] text-gold whitespace-nowrap">
+                <span className="border border-primary/30 px-[10px] py-[5px] font-condensed text-[11px] font-semibold uppercase tracking-[.26em] text-gold whitespace-nowrap">
                   {t(`${key}.tag`, "")}
                 </span>
               </div>
-              <h3 className="mb-3 mt-0 font-display text-[27px] leading-[1.05] text-white">
+              <h3 className="mb-3 mt-0 font-display text-[27px] leading-[1.05] text-foreground">
                 {t(`${key}.title`, "")}
               </h3>
-              <p className="m-0 text-[16px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">
+              <p className="m-0 text-[16px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">
                 {t(`${key}.body`, "")}
               </p>
             </div>
@@ -524,15 +524,15 @@ export function Testimonials() {
     <section className="relative overflow-hidden border-y border-[var(--line)] bg-[var(--navy2)] py-[126px]">
       <div className="absolute inset-0 opacity-50 [background:repeating-linear-gradient(115deg,transparent_0_30px,hsl(42_85%_55%/.035)_30px_31px)]" />
       <div className="relative mx-auto max-w-[1100px] px-8 text-center">
-        <span className="block font-display text-[104px] leading-[.6] text-[hsl(42_85%_55%/.3)]">“</span>
-        <blockquote className="mt-[22px] font-display text-[clamp(26px,3.6vw,54px)] leading-[1.12] text-white [text-wrap:balance]">
+        <span className="block font-display text-[104px] leading-[.6] text-primary/30">“</span>
+        <blockquote className="mt-[22px] font-display text-[clamp(26px,3.6vw,54px)] leading-[1.12] text-foreground [text-wrap:balance]">
           {text}
         </blockquote>
         <div className="mx-auto mb-5 mt-[34px] h-[3px] w-20 bg-gold" />
         <span className="block font-condensed text-[14px] font-semibold uppercase tracking-[.3em] text-gold">
           {name}
         </span>
-        <span className="mt-2 block font-condensed text-[13px] uppercase tracking-[.22em] text-white/40">
+        <span className="mt-2 block font-condensed text-[13px] uppercase tracking-[.22em] text-foreground/40">
           {role}
         </span>
         <div className="mt-[38px] flex justify-center gap-[10px]">
@@ -568,10 +568,10 @@ export function CTASection() {
         }}
       />
       <div className="relative mx-auto max-w-[1440px] px-8 text-center">
-        <h2 className="m-0 font-display text-[clamp(46px,8vw,136px)] leading-[.86] text-white [text-wrap:balance]">
+        <h2 className="m-0 font-display text-[clamp(46px,8vw,136px)] leading-[.86] text-foreground [text-wrap:balance]">
           {t("site.ctaSection.title", "")}
         </h2>
-        <p className="mx-auto mt-[26px] max-w-[600px] text-[19px] font-light leading-[1.6] text-white/60 [text-wrap:pretty]">
+        <p className="mx-auto mt-[26px] max-w-[600px] text-[19px] font-light leading-[1.6] text-foreground/60 [text-wrap:pretty]">
           {t("site.ctaSection.body", "")}
         </p>
         <div className="mt-[42px] flex flex-wrap justify-center gap-[14px]">
@@ -583,7 +583,7 @@ export function CTASection() {
           </Link>
           <Link
             href="/partner-request"
-            className="border border-[var(--line)] px-11 py-[22px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+            className="border border-[var(--line)] px-11 py-[22px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-foreground/80 transition-colors duration-300 hover:border-gold hover:text-gold"
           >
             {t("site.nav.partners", "Partenaires")}
           </Link>

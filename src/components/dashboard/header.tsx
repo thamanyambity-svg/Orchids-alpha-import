@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { BackButton } from "@/components/back-button"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useLanguage } from "@/lib/i18n-context"
 import {
   Popover,
@@ -105,9 +106,9 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
   const firstName = profile?.full_name?.split(' ')[0] || 'Partenaire Alpha'
 
   return (
-    <header className="h-20 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40">
+    <header className="h-20 border-b border-foreground/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-40">
       <div className="flex items-center gap-4">
-        {showBackButton && <BackButton className="h-9 border-white/10" variant="outline" label="" />}
+        {showBackButton && <BackButton className="h-9 border-foreground/10" variant="outline" label="" />}
         <div className="hidden md:block">
           <h1 className="text-lg font-bold tracking-tight uppercase">{title}</h1>
           {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
@@ -121,27 +122,28 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t("dashboard.header.search", "Rechercher une transaction...")}
-            className="w-80 pl-9 h-10 bg-white/5 border-white/10 rounded-xl focus:bg-white/10 transition-all"
+            className="w-80 pl-9 h-10 bg-foreground/5 border-foreground/10 rounded-xl focus:bg-foreground/10 transition-all"
           />
         </div>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <LanguageSwitcher />
         </div>
 
         <div className="flex items-center gap-2">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 relative">
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-foreground/5 relative">
                 <Bell className="w-5 h-5 text-muted-foreground" />
                 {unreadCount > 0 && (
                   <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full border-2 border-background animate-pulse" />
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0 bg-card border-white/10" align="end">
-              <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                <h4 className="font-semibold text-white">{t("dashboard.header.notifications", "Notifications")}</h4>
+            <PopoverContent className="w-80 p-0 bg-card border-foreground/10" align="end">
+              <div className="p-4 border-b border-foreground/5 flex justify-between items-center">
+                <h4 className="font-semibold text-foreground">{t("dashboard.header.notifications", "Notifications")}</h4>
                 {unreadCount > 0 && <span className="text-xs text-muted-foreground">{unreadCount} non lues</span>}
               </div>
               <div className="max-h-[300px] overflow-y-auto">
@@ -153,10 +155,10 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
                   notifications.map(n => (
                     <div
                       key={n.id}
-                      className={`p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${!n.is_read ? 'bg-info/5' : ''}`}
+                      className={`p-4 border-b border-foreground/5 hover:bg-foreground/5 cursor-pointer transition-colors ${!n.is_read ? 'bg-info/5' : ''}`}
                       onClick={() => markAsRead(n.id)}
                     >
-                      <h5 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'font-medium text-muted-foreground'}`}>{n.title}</h5>
+                      <h5 className={`text-sm ${!n.is_read ? 'font-bold text-foreground' : 'font-medium text-muted-foreground'}`}>{n.title}</h5>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.message}</p>
                       <span className="text-[10px] text-muted-foreground mt-2 block">{new Date(n.created_at).toLocaleTimeString()}</span>
                     </div>
@@ -166,19 +168,19 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
             </PopoverContent>
           </Popover>
 
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5">
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-foreground/5">
             <Grid className="w-5 h-5 text-muted-foreground" />
           </Button>
         </div>
 
-        <div className="h-8 w-[1px] bg-white/10" />
+        <div className="h-8 w-[1px] bg-foreground/10" />
 
-        <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-xl hover:bg-white/5 transition-colors group">
+        <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-xl hover:bg-foreground/5 transition-colors group">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold tracking-tight text-white">Bonjour, {firstName} !</p>
+            <p className="text-xs font-bold tracking-tight text-foreground">Bonjour, {firstName} !</p>
           </div>
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-colors">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-foreground/10 group-hover:border-primary/50 transition-colors">
               <img
                 src={profile?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
                 alt={t("dashboard.header.profile", "Profile")}

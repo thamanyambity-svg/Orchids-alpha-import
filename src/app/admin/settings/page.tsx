@@ -182,11 +182,11 @@ export default function AdminSettingsPage() {
                   <User className="w-8 h-8 text-primary" />
                 )}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera className="w-6 h-6 text-white" />
+                  <Camera className="w-6 h-6 text-foreground" />
                 </div>
               </div>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background z-10">
-                <CheckCircle2 className="w-3 h-3 text-white" />
+                <CheckCircle2 className="w-3 h-3 text-foreground" />
               </div>
             </div>
             <div className="flex-1">
@@ -260,7 +260,7 @@ export default function AdminSettingsPage() {
                         <User className="w-10 h-10 text-primary" />
                       )}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Upload className="w-8 h-8 text-white" />
+                        <Upload className="w-8 h-8 text-foreground" />
                       </div>
                     </div>
                     <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">

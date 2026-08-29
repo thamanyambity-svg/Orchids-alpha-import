@@ -160,9 +160,9 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
         if (inner) {
           if (code === selectedCountry) {
             inner.classList.remove('bg-primary/30')
-            inner.classList.add('bg-primary', 'border-white', 'shadow-primary/50')
+            inner.classList.add('bg-primary', 'border-foreground', 'shadow-primary/50')
           } else {
-            inner.classList.remove('bg-primary', 'border-white', 'shadow-primary/50')
+            inner.classList.remove('bg-primary', 'border-foreground', 'shadow-primary/50')
             inner.classList.add('bg-primary/30', 'border-primary')
           }
         }

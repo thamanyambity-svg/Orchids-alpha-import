@@ -15,18 +15,18 @@ export function QuoteWizard() {
   ]
 
   return (
-    <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-background/90 p-6 text-white">
+    <div className="mx-auto max-w-3xl rounded-2xl border border-foreground/10 bg-background/90 p-6 text-foreground">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase text-white/60">{t("quotewizard.title", "Demande de devis")}</p>
+          <p className="text-xs uppercase text-foreground/60">{t("quotewizard.title", "Demande de devis")}</p>
           <h3 className="text-lg font-semibold">{steps[step].title}</h3>
-          <p className="text-sm text-white/60">{steps[step].hint}</p>
+          <p className="text-sm text-foreground/60">{steps[step].hint}</p>
         </div>
-        <div className="text-sm text-white/50">{t("quotewizard.step", "Étape")} {step + 1}/{steps.length}</div>
+        <div className="text-sm text-foreground/50">{t("quotewizard.step", "Étape")} {step + 1}/{steps.length}</div>
       </div>
 
       <div className="mb-4">
-        <input placeholder="Titre de la demande (ex: 1000 pièces)" className="w-full rounded-md border border-white/10 bg-background px-4 py-3 text-white placeholder:text-white/40" />
+        <input placeholder="Titre de la demande (ex: 1000 pièces)" className="w-full rounded-md border border-foreground/10 bg-background px-4 py-3 text-foreground placeholder:text-foreground/40" />
       </div>
 
       <div className="flex items-center justify-between gap-4">

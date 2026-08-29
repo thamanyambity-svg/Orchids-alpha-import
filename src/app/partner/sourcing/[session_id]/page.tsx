@@ -175,7 +175,7 @@ export default function SourcingSessionPage() {
           </div>
 
           {!isDone && (
-            <div className="bg-white p-6 rounded-lg border shadow-sm">
+            <div className="bg-card p-6 rounded-lg border shadow-sm">
               <h3 className="font-semibold mb-4">Progression</h3>
               <div className="space-y-4">
                 <div className="flex justify-between text-sm">

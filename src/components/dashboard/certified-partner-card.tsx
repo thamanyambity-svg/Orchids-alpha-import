@@ -100,7 +100,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
               </h3>
             </div>
           </div>
-          <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-white/5">
+          <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-foreground/5">
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
             <span className="text-[9px] font-mono text-primary uppercase">{t("certified_partner.online", "En ligne")}</span>
           </div>
@@ -114,11 +114,11 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <ExternalLink className="w-4 h-4 text-white" />
+              <ExternalLink className="w-4 h-4 text-foreground" />
             </div>
           </div>
           <div>
-            <h4 className="text-lg font-bold text-white tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
+            <h4 className="text-lg font-bold text-foreground tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-muted-foreground uppercase">{displayPartner.city} {displayPartner.countries?.name}</span>
               {displayPartner.countries?.code === 'ARE' && (
@@ -150,7 +150,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
               className="flex flex-col items-center gap-2"
               onClick={() => scrollToSection(item.target)}
             >
-              <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center border border-white/5 hover:border-primary/30 transition-colors cursor-pointer group">
+              <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center border border-foreground/5 hover:border-primary/30 transition-colors cursor-pointer group">
                 <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <span className="text-[9px] text-muted-foreground uppercase font-medium">{item.label}</span>
@@ -161,7 +161,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
         <div className="grid grid-cols-2 gap-3 mb-4">
           <Button
             onClick={handleWhatsApp}
-            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-white transition-all font-bold tracking-widest uppercase text-[10px]"
+            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
           >
             <Phone className="w-3 h-3 mr-2" />
             WhatsApp

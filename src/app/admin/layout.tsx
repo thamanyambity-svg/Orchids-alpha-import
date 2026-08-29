@@ -9,7 +9,7 @@ export default function AdminLayout({
 }) {
   return (
     <RoleGuard allowedRoles={['ADMIN']}>
-      <div className="min-h-screen bg-background text-white overflow-hidden flex">
+      <div className="min-h-screen bg-background text-foreground overflow-hidden flex">
         <AdminSidebar />
         <main className="flex-1 ml-64 h-screen overflow-y-auto custom-scrollbar relative flex flex-col">
           <AdminHeader />

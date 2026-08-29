@@ -74,10 +74,10 @@ export default function AdminAuditLogsPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
           {t("admin.audit.title", "Accès aux documents")}
         </h1>
-        <p className="text-white/40 text-sm">
+        <p className="text-foreground/40 text-sm">
           {t(
             "admin.audit.subtitle",
             "Qui a ouvert quelle pièce sensible, et quand. Ce journal ne peut être ni modifié ni effacé, y compris par un administrateur."
@@ -93,7 +93,7 @@ export default function AdminAuditLogsPage() {
             setPage(1)
           }}
         >
-          <SelectTrigger className="w-[240px] bg-white/5 border-white/10 text-white">
+          <SelectTrigger className="w-[240px] bg-foreground/5 border-foreground/10 text-foreground">
             <Filter className="w-4 h-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
@@ -111,7 +111,7 @@ export default function AdminAuditLogsPage() {
             setPage(1)
           }}
         >
-          <SelectTrigger className="w-[220px] bg-white/5 border-white/10 text-white">
+          <SelectTrigger className="w-[220px] bg-foreground/5 border-foreground/10 text-foreground">
             <Eye className="w-4 h-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
@@ -129,10 +129,10 @@ export default function AdminAuditLogsPage() {
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : logs.length === 0 ? (
-        <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-          <ScrollText className="w-12 h-12 text-white/20 mx-auto mb-4" />
-          <h3 className="font-semibold text-white/50">{t("admin.audit.empty", "Aucun accès enregistré")}</h3>
-          <p className="text-sm text-white/30">
+        <div className="p-12 text-center border-2 border-dashed border-foreground/10 rounded-2xl">
+          <ScrollText className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="font-semibold text-foreground/50">{t("admin.audit.empty", "Aucun accès enregistré")}</h3>
+          <p className="text-sm text-foreground/30">
             {t("admin.audit.empty_hint", "Une entrée est écrite dès qu'une pièce sensible est ouverte.")}
           </p>
         </div>
@@ -145,14 +145,14 @@ export default function AdminAuditLogsPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.02 }}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-3"
               >
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge className={actionBadge[log.action].className}>{actionBadge[log.action].label}</Badge>
-                  <span className="text-sm text-white/70">{documentTypeLabel[log.document_type]}</span>
-                  <span className="font-mono text-xs text-white/35">{log.document_id.slice(0, 8)}</span>
+                  <span className="text-sm text-foreground/70">{documentTypeLabel[log.document_type]}</span>
+                  <span className="font-mono text-xs text-foreground/35">{log.document_id.slice(0, 8)}</span>
                 </div>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-white/40">
+                <div className="flex flex-wrap items-center gap-4 text-xs text-foreground/40">
                   <span>{log.actor_full_name || log.actor_email || "—"}</span>
                   {log.ip_address && <span className="font-mono">{log.ip_address}</span>}
                   <span>
@@ -167,26 +167,26 @@ export default function AdminAuditLogsPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between">
-            <span className="text-xs text-white/35">
+            <span className="text-xs text-foreground/35">
               {t("admin.audit.count", "{total} entrée(s)").replace("{total}", String(total))}
             </span>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="border-white/10 text-white/70"
+                className="border-foreground/10 text-foreground/70"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="text-xs text-white/50">
+              <span className="text-xs text-foreground/50">
                 {page} / {lastPage}
               </span>
               <Button
                 variant="outline"
                 size="sm"
-                className="border-white/10 text-white/70"
+                className="border-foreground/10 text-foreground/70"
                 disabled={page >= lastPage}
                 onClick={() => setPage((p) => p + 1)}
               >

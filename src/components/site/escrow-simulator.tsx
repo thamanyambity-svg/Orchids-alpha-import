@@ -35,7 +35,7 @@ export function EscrowSimulator() {
         <div data-reveal className="mb-12 max-w-[720px]">
           <Eyebrow rule={false}>{t("site.sim.eyebrow", "Simulateur")}</Eyebrow>
           <SectionTitle size="md">{t("site.sim.title", "")}</SectionTitle>
-          <p className="mt-[22px] text-[18px] font-light leading-[1.6] text-white/55 [text-wrap:pretty]">
+          <p className="mt-[22px] text-[18px] font-light leading-[1.6] text-foreground/55 [text-wrap:pretty]">
             {t("site.sim.body", "")}
           </p>
         </div>
@@ -46,7 +46,7 @@ export function EscrowSimulator() {
               <div className="mb-4 flex items-baseline justify-between gap-[14px]">
                 <label
                   htmlFor="sim-amount"
-                  className="font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/45"
+                  className="font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-foreground/45"
                 >
                   {t("site.sim.amount", "Montant de la commande")}
                 </label>
@@ -70,9 +70,9 @@ export function EscrowSimulator() {
               {rows.map((row) => (
                 <div
                   key={row.label}
-                  className="flex items-baseline justify-between gap-4 bg-[hsl(216_45%_6%/.6)] px-[18px] py-4"
+                  className="flex items-baseline justify-between gap-4 bg-background/60 px-[18px] py-4"
                 >
-                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.18em] text-white/55">
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.18em] text-foreground/55">
                     {row.label}
                   </span>
                   <span
@@ -86,9 +86,9 @@ export function EscrowSimulator() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center gap-[26px] bg-[hsl(216_45%_6%)] px-[34px] py-11">
+          <div className="flex flex-col justify-center gap-[26px] bg-background px-[34px] py-11">
             <SplitBar height={96} compact />
-            <p className="m-0 text-[15px] font-light leading-[1.62] text-white/45 [text-wrap:pretty]">
+            <p className="m-0 text-[15px] font-light leading-[1.62] text-foreground/45 [text-wrap:pretty]">
               {t("site.sim.note", "")}
             </p>
             <Link

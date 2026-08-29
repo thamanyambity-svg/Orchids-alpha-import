@@ -9,10 +9,10 @@ import { useLanguage } from "@/lib/i18n-context"
 import { SiteNav } from "@/components/site/site-nav"
 
 const FIELD =
-  "w-full border border-[var(--line)] bg-[hsl(216_45%_6%)] px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-white outline-none transition-colors placeholder:text-white/25 focus:border-gold"
+  "w-full border border-[var(--line)] bg-background px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-foreground outline-none transition-colors placeholder:text-foreground/25 focus:border-gold"
 
 const LABEL =
-  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/50"
+  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-foreground/50"
 
 export default function ForgotPasswordPage() {
   const { t } = useLanguage()
@@ -80,10 +80,10 @@ export default function ForgotPasswordPage() {
                 {t("site.access.title", "Espace client")}
               </span>
             </div>
-            <h1 className="m-0 font-display text-[clamp(40px,4.6vw,76px)] leading-[.9] text-white">
+            <h1 className="m-0 font-display text-[clamp(40px,4.6vw,76px)] leading-[.9] text-foreground">
               {t("forgot.head", "REPRENEZ LA MAIN SUR VOTRE COMPTE")}
             </h1>
-            <p className="mt-7 max-w-[460px] text-[18px] font-light leading-[1.6] text-white/55 [text-wrap:pretty]">
+            <p className="mt-7 max-w-[460px] text-[18px] font-light leading-[1.6] text-foreground/55 [text-wrap:pretty]">
               {t(
                 "forgot.body",
                 "Nous envoyons un lien à usage unique sur l'adresse de votre compte. Il expire rapidement et ne peut servir qu'une fois."
@@ -98,12 +98,12 @@ export default function ForgotPasswordPage() {
             <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
               {t("site.access.title", "Espace client")}
             </span>
-            <h2 className="m-0 font-display text-[clamp(34px,4vw,52px)] leading-[.95] text-white">
+            <h2 className="m-0 font-display text-[clamp(34px,4vw,52px)] leading-[.95] text-foreground">
               {t("forgot.title", "Mot de passe oublié")}
             </h2>
             <div className="my-7 h-[14px] w-[100px] bg-gold" />
 
-            <p className="mb-8 text-[15px] font-light leading-[1.6] text-white/45 [text-wrap:pretty]">
+            <p className="mb-8 text-[15px] font-light leading-[1.6] text-foreground/45 [text-wrap:pretty]">
               {sent
                 ? t(
                     "forgot.check_inbox",
@@ -143,7 +143,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={() => setSent(false)}
-                className="w-full border border-[var(--line)] px-[38px] py-[16px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/70 transition-colors duration-300 hover:border-gold hover:text-gold"
+                className="w-full border border-[var(--line)] px-[38px] py-[16px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-foreground/70 transition-colors duration-300 hover:border-gold hover:text-gold"
               >
                 {t("forgot.retry", "Utiliser une autre adresse")}
               </button>
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
             <div className="mt-8 flex flex-col gap-3 border-t border-[var(--line)] pt-7">
               <Link
                 href="/login"
-                className="flex items-center gap-2 font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
+                className="flex items-center gap-2 font-condensed text-[14px] uppercase tracking-[.18em] text-foreground/50 transition-colors hover:text-gold"
               >
                 <ArrowLeft className="h-[14px] w-[14px]" />
                 {t("forgot.back_to_login", "Retour à la connexion")}

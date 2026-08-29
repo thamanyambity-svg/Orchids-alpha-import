@@ -80,7 +80,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
 
   return (
     <div className="glass rounded-3xl overflow-hidden flex flex-col h-full min-h-[500px]">
-      <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <div className="p-6 border-b border-foreground/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
             <MessageSquare className="w-5 h-5 text-primary" />
@@ -140,7 +140,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Écrire un message..." 
-            className="bg-background/50 border-white/5 pr-24 h-12 rounded-xl"
+            className="bg-background/50 border-foreground/5 pr-24 h-12 rounded-xl"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">

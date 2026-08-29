@@ -255,7 +255,7 @@ export default function AdminPartnersPage() {
                     <TabsTrigger value="APPLICATIONS" className="relative">
                         Candidatures
                         {applications.length > 0 && (
-                            <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] text-white">
+                            <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] text-foreground">
                                 {applications.length}
                             </span>
                         )}

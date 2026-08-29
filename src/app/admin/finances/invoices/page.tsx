@@ -58,22 +58,22 @@ export default function AdminInvoicesPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{t("admin.invoices.title", "Factures")}</h1>
-        <p className="text-white/40 text-sm">{t("admin.invoices.subtitle", "Gérez l'ensemble des factures proforma, commerciales et finales")}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("admin.invoices.title", "Factures")}</h1>
+        <p className="text-foreground/40 text-sm">{t("admin.invoices.subtitle", "Gérez l'ensemble des factures proforma, commerciales et finales")}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
           <Input
             placeholder={t("admin.invoices.search", "Rechercher...")}
-            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+            className="pl-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
+          <SelectTrigger className="w-[180px] bg-foreground/5 border-foreground/10 text-foreground">
             <Filter className="w-4 h-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
@@ -93,10 +93,10 @@ export default function AdminInvoicesPage() {
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-          <FileText className="w-12 h-12 text-white/20 mx-auto mb-4" />
-          <h3 className="font-semibold text-white/50">{t("admin.invoices.empty", "Aucune facture")}</h3>
-          <p className="text-sm text-white/30">{t("admin.invoices.empty_hint", "Générez des factures depuis les commandes validées.")}</p>
+        <div className="p-12 text-center border-2 border-dashed border-foreground/10 rounded-2xl">
+          <FileText className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="font-semibold text-foreground/50">{t("admin.invoices.empty", "Aucune facture")}</h3>
+          <p className="text-sm text-foreground/30">{t("admin.invoices.empty_hint", "Générez des factures depuis les commandes validées.")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -106,7 +106,7 @@ export default function AdminInvoicesPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03 }}
-              className="bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/[0.07] transition-colors"
+              className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl hover:bg-foreground/[0.07] transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -115,15 +115,15 @@ export default function AdminInvoicesPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-white">{inv.number}</span>
+                      <span className="font-semibold text-foreground">{inv.number}</span>
                       <Badge className={statusBadge(INVOICE_STATUS, inv.status)}>
                         {inv.status === "DRAFT" ? "Brouillon" : inv.status === "SENT" ? "Envoyée" : inv.status === "PAID" ? "Payée" : inv.status === "OVERDUE" ? "En retard" : "Annulée"}
                       </Badge>
-                      <Badge variant="outline" className="border-white/20 text-white/60">
+                      <Badge variant="outline" className="border-foreground/20 text-foreground/60">
                         {typeLabel[inv.type] || inv.type}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-white/40">
+                    <div className="flex items-center gap-3 text-xs text-foreground/40">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {new Date(inv.issued_at).toLocaleDateString("fr-FR")}
@@ -136,10 +136,10 @@ export default function AdminInvoicesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold text-white">${inv.total_amount?.toLocaleString()}</span>
+                  <span className="text-lg font-bold text-foreground">${inv.total_amount?.toLocaleString()}</span>
                   {inv.file_url && (
                     <a href={inv.file_url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="border-white/10 text-white/70 hover:text-white">
+                      <Button variant="outline" size="sm" className="border-foreground/10 text-foreground/70 hover:text-foreground">
                         <Download className="w-4 h-4 mr-1" />
                         PDF
                       </Button>

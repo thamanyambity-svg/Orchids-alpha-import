@@ -62,37 +62,37 @@ export default function AdminOrdersPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{t("admin.orders.title", "Commandes")}</h1>
-        <p className="text-white/40 text-sm">{t("admin.orders.subtitle", "Gérez l'ensemble des commandes d'importation")}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("admin.orders.title", "Commandes")}</h1>
+        <p className="text-foreground/40 text-sm">{t("admin.orders.subtitle", "Gérez l'ensemble des commandes d'importation")}</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{t("admin.orders.total", "Total commandes")}</p>
-          <p className="text-2xl font-bold text-white">{orders.length}</p>
+        <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
+          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.total", "Total commandes")}</p>
+          <p className="text-2xl font-bold text-foreground">{orders.length}</p>
         </div>
-        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{t("admin.orders.active", "En cours")}</p>
+        <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
+          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.active", "En cours")}</p>
           <p className="text-2xl font-bold text-primary">{activeOrders}</p>
         </div>
-        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
-          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{t("admin.orders.revenue", "Volume total")}</p>
+        <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
+          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.revenue", "Volume total")}</p>
           <p className="text-2xl font-bold text-success">${totalRevenue.toLocaleString()}</p>
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
           <Input
             placeholder={t("admin.orders.search", "Rechercher...")}
-            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+            className="pl-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
+          <SelectTrigger className="w-[180px] bg-foreground/5 border-foreground/10 text-foreground">
             <Filter className="w-4 h-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
@@ -110,9 +110,9 @@ export default function AdminOrdersPage() {
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-          <Package className="w-12 h-12 text-white/20 mx-auto mb-4" />
-          <h3 className="font-semibold text-white/50">{t("admin.orders.empty", "Aucune commande")}</h3>
+        <div className="p-12 text-center border-2 border-dashed border-foreground/10 rounded-2xl">
+          <Package className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="font-semibold text-foreground/50">{t("admin.orders.empty", "Aucune commande")}</h3>
         </div>
       ) : (
         <div className="space-y-3">
@@ -122,7 +122,7 @@ export default function AdminOrdersPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/[0.07] transition-colors group cursor-pointer"
+                className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl hover:bg-foreground/[0.07] transition-colors group cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -131,12 +131,12 @@ export default function AdminOrdersPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-white">{order.import_requests?.product_name || "Importation"}</span>
+                        <span className="font-semibold text-foreground">{order.import_requests?.product_name || "Importation"}</span>
                         <Badge className={statusBadge(REQUEST_STATUS, order.status)}>
                           {statusLabel(REQUEST_STATUS, order.status)}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-white/40">
+                      <div className="flex items-center gap-3 text-xs text-foreground/40">
                         <span className="font-mono">{order.reference || order.import_requests?.reference}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -147,8 +147,8 @@ export default function AdminOrdersPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-white">${order.total_amount?.toLocaleString()}</span>
-                    <ChevronRight className="w-5 h-5 text-white/20 group-hover:translate-x-1 transition-transform" />
+                    <span className="text-lg font-bold text-foreground">${order.total_amount?.toLocaleString()}</span>
+                    <ChevronRight className="w-5 h-5 text-foreground/20 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </motion.div>

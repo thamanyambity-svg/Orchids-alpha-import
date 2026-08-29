@@ -178,6 +178,44 @@
 
 html { scroll-behavior: smooth; }
 
+/* ---------------------------------------------------------------------------
+   Surface marine permanente.
+
+   Le site vitrine et les pages d'authentification sont peints en marine dans
+   les deux themes : leurs sections utilisent --navy et --navy2, et les heros
+   posent un voile sombre par-dessus la photographie. La surface sous le texte
+   ne change donc jamais, et le texte doit y rester clair meme lorsque
+   l'utilisateur bascule l'application en theme clair.
+
+   Plutot que de figer du blanc dans chaque titre, on epingle ici les jetons de
+   premier plan sur leurs valeurs sombres pour tout le sous-arbre. Les
+   composants continuent d'ecrire text-foreground, border-border, etc.
+   --------------------------------------------------------------------------- */
+.site-shell {
+  --foreground: 210 15% 95%;
+  --muted-foreground: 210 12% 68%;
+  --card: 216 40% 9%;
+  --card-foreground: 210 15% 95%;
+  --popover: 216 40% 9%;
+  --popover-foreground: 210 15% 95%;
+  --background: 216 45% 6%;
+  --border: 216 30% 18%;
+  --input: 216 30% 13%;
+  --secondary: 216 35% 14%;
+  --secondary-foreground: 210 15% 90%;
+  --muted: 216 30% 11%;
+  --primary: 42 85% 55%;
+  --primary-foreground: 216 45% 6%;
+  --brand: 42 85% 60%;
+  --brand-subtle: 42 55% 12%;
+  --brand-border: 42 55% 28%;
+  --gold: hsl(42 85% 55%);
+  --gold-light: hsl(44 90% 65%);
+  --gold-dark: hsl(38 75% 42%);
+  --line: hsl(216 30% 18%);
+  color: hsl(var(--foreground));
+}
+
 @keyframes svgPulse1 {
   0%, 100% { r: 22; opacity: 0.2; }
   50% { r: 32; opacity: 0.05; }

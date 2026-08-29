@@ -41,7 +41,7 @@ export default function PartnerCountries() {
       <div className="relative z-20 flex flex-col min-h-screen py-24 px-6 md:px-16 max-w-7xl mx-auto w-full">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
           <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("partners.subtitle", "Notre réseau mondial")}</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("partners.title_pays", "PAYS")} <span className="text-gradient-gold">{t("partners.title_partenaires", "PARTENAIRES")}</span></h2>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-foreground leading-none">{t("partners.title_pays", "PAYS")} <span className="text-gradient-gold">{t("partners.title_partenaires", "PARTENAIRES")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -56,10 +56,10 @@ export default function PartnerCountries() {
                   <span className="text-6xl">{countries[active].flag}</span>
                   <div>
                     <p className="font-condensed text-xs tracking-[0.4em] uppercase mb-1" style={{ color: countries[active].accent }}>{countries[active].code}</p>
-                    <h3 className="font-display text-5xl md:text-6xl text-white leading-none tracking-wider">{countries[active].name}</h3>
+                    <h3 className="font-display text-5xl md:text-6xl text-foreground leading-none tracking-wider">{countries[active].name}</h3>
                   </div>
                 </div>
-                <p className="font-sans text-base text-white/60 leading-relaxed mb-8 max-w-md">{countries[active].desc}</p>
+                <p className="font-sans text-base text-foreground/60 leading-relaxed mb-8 max-w-md">{countries[active].desc}</p>
                 <div className="flex flex-wrap gap-2 mb-10">
                   {countries[active].cities.map((city) => (
                     <span key={city} className="font-condensed text-xs tracking-widest uppercase px-4 py-2 border" style={{ borderColor: `${countries[active].accent}40`, color: `${countries[active].accent}cc`, background: `${countries[active].accent}10` }}>{city}</span>
@@ -67,7 +67,7 @@ export default function PartnerCountries() {
                 </div>
                 <div className="flex items-center gap-3">
                   <motion.div className="h-[2px] w-24" style={{ background: countries[active].accent }} layoutId="accent-bar" transition={{ duration: 0.4 }} />
-                  <span className="font-condensed text-xs text-white/30 tracking-widest uppercase">{t("partners.active_partner", "Partenaire actif")}</span>
+                  <span className="font-condensed text-xs text-foreground/30 tracking-widest uppercase">{t("partners.active_partner", "Partenaire actif")}</span>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -84,8 +84,8 @@ export default function PartnerCountries() {
               }}
             >
               <div className="text-2xl mb-1">{c.flag}</div>
-              <p className="font-display text-lg text-white tracking-wider">{c.name}</p>
-              <p className="font-condensed text-xs text-white/30 tracking-widest uppercase mt-1">{c.code}</p>
+              <p className="font-display text-lg text-foreground tracking-wider">{c.name}</p>
+              <p className="font-condensed text-xs text-foreground/30 tracking-widest uppercase mt-1">{c.code}</p>
               {i === active && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: c.accent }} />
               )}

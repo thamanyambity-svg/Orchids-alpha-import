@@ -100,7 +100,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-foreground/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/admin" className="flex items-center group">
           <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -127,8 +127,8 @@ export function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 relative group",
                     isActive
-                      ? "text-white bg-gradient-to-r from-white/10 to-transparent border border-white/10 shadow-lg"
-                      : "text-white/50 hover:text-white hover:bg-white/5"
+                      ? "text-foreground bg-gradient-to-r from-foreground/10 to-transparent border border-foreground/10 shadow-lg"
+                      : "text-foreground/50 hover:text-foreground hover:bg-foreground/5"
                   )}
                 >
                   <item.icon className={cn(
@@ -138,7 +138,7 @@ export function AdminSidebar() {
                   <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
 
                   {item.badge && (
-                    <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-white rounded-full">
+                    <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-foreground rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -157,19 +157,19 @@ export function AdminSidebar() {
       </nav>
 
       <div className="p-4 mt-auto">
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 mb-4">
+        <div className="p-4 rounded-2xl bg-gradient-to-br from-foreground/5 to-transparent border border-foreground/5 mb-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <Crown className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
-              <p className="text-[10px] text-white/40 uppercase tracking-tighter">{user?.role || "..."}</p>
+              <p className="text-xs font-semibold text-foreground truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
+              <p className="text-[10px] text-foreground/40 uppercase tracking-tighter">{user?.role || "..."}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-colors border border-white/5"
+            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-foreground/5 hover:bg-foreground/10 text-foreground/60 hover:text-foreground text-xs transition-colors border border-foreground/5"
           >
             <LogOut className="w-3.5 h-3.5" />
             {t("admin.sidebar.logout", "Déconnexion")}

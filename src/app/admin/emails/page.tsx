@@ -118,7 +118,7 @@ export default function AdminEmailsPage() {
         </div>
       </div>
 
-      <Card className="border-white/10 bg-white/5">
+      <Card className="border-foreground/10 bg-foreground/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Bot className="w-5 h-5 text-primary" />
@@ -126,8 +126,8 @@ export default function AdminEmailsPage() {
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             Chaque email reçu est analysé automatiquement : catégorie, priorité, résumé et proposition de réponse.
-            Configurez le webhook Resend <code className="text-xs bg-white/10 px-1 rounded">email.received</code> vers{" "}
-            <code className="text-xs bg-white/10 px-1 rounded">/api/webhooks/resend/inbound</code>
+            Configurez le webhook Resend <code className="text-xs bg-foreground/10 px-1 rounded">email.received</code> vers{" "}
+            <code className="text-xs bg-foreground/10 px-1 rounded">/api/webhooks/resend/inbound</code>
           </p>
         </CardHeader>
       </Card>

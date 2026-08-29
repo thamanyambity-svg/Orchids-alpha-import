@@ -59,7 +59,7 @@ export function SiteNav() {
     >
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-8 py-[18px]">
         <Link href="/" className="flex items-baseline gap-[10px]">
-          <span className="font-display text-[30px] leading-[.9] tracking-[.04em] text-white">ALPHA</span>
+          <span className="font-display text-[30px] leading-[.9] tracking-[.04em] text-foreground">ALPHA</span>
           <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
             Import
           </span>
@@ -72,7 +72,7 @@ export function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${LINK_BASE} ${active ? "text-gold" : "text-white/60 hover:text-white"}`}
+                className={`${LINK_BASE} ${active ? "text-gold" : "text-foreground/60 hover:text-foreground"}`}
               >
                 {t(link.key, link.fallback)}
               </Link>
@@ -96,12 +96,12 @@ export function SiteNav() {
             <button
               onClick={() => setLangOpen((v) => !v)}
               aria-expanded={langOpen}
-              className="border border-[var(--line)] px-3 py-2 font-condensed text-[11px] font-bold uppercase tracking-[.24em] text-white/75 transition-colors hover:border-gold hover:text-gold"
+              className="border border-[var(--line)] px-3 py-2 font-condensed text-[11px] font-bold uppercase tracking-[.24em] text-foreground/75 transition-colors hover:border-gold hover:text-gold"
             >
               {current?.code.toUpperCase() ?? "FR"}
             </button>
             {langOpen && (
-              <div className="absolute right-0 top-full mt-2 min-w-[190px] border border-[var(--line)] bg-[hsl(216_45%_6%/.97)] backdrop-blur-[14px]">
+              <div className="absolute right-0 top-full mt-2 min-w-[190px] border border-[var(--line)] bg-background/[.97] backdrop-blur-[14px]">
                 {languages.map((l) => (
                   <button
                     key={l.code}
@@ -109,8 +109,8 @@ export function SiteNav() {
                       setLanguage(l.code as Language)
                       setLangOpen(false)
                     }}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left font-condensed text-[13px] tracking-[.14em] transition-colors hover:bg-white/5 ${
-                      l.code === language ? "text-gold" : "text-white/70"
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left font-condensed text-[13px] tracking-[.14em] transition-colors hover:bg-foreground/5 ${
+                      l.code === language ? "text-gold" : "text-foreground/70"
                     }`}
                   >
                     <span aria-hidden>{l.flag}</span>
@@ -132,7 +132,7 @@ export function SiteNav() {
 
       {menuOpen && (
         <div
-          className="border-t border-[var(--line)] bg-[hsl(216_45%_6%/.97)] backdrop-blur-[14px] min-[1280px]:hidden"
+          className="border-t border-[var(--line)] bg-background/[.97] backdrop-blur-[14px] min-[1280px]:hidden"
           style={{ animation: "menuIn .42s cubic-bezier(.16,1,.3,1) both" }}
         >
           <div className="flex flex-col gap-px bg-[var(--line)] px-8 pb-[26px] pt-2">
@@ -140,8 +140,8 @@ export function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`bg-[hsl(216_45%_6%)] px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] ${
-                  pathname === link.href ? "text-gold" : "text-white/70"
+                className={`bg-background px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] ${
+                  pathname === link.href ? "text-gold" : "text-foreground/70"
                 }`}
               >
                 {t(link.key, link.fallback)}
@@ -149,7 +149,7 @@ export function SiteNav() {
             ))}
             <Link
               href="/contact"
-              className="bg-[hsl(216_45%_6%)] px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] text-gold"
+              className="bg-background px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] text-gold"
             >
               {t("site.quote.eyebrow", "Accès")}
             </Link>

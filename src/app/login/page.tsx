@@ -10,10 +10,10 @@ import { useLanguage } from "@/lib/i18n-context"
 import { SiteNav } from "@/components/site/site-nav"
 
 const FIELD =
-  "w-full border border-[var(--line)] bg-[hsl(216_45%_6%)] px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-white outline-none transition-colors placeholder:text-white/25 focus:border-gold"
+  "w-full border border-[var(--line)] bg-background px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-foreground outline-none transition-colors placeholder:text-foreground/25 focus:border-gold"
 
 const LABEL =
-  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/50"
+  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-foreground/50"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -141,10 +141,10 @@ export default function LoginPage() {
                 {t("site.access.title", "Espace client")}
               </span>
             </div>
-            <h1 className="m-0 font-display text-[clamp(40px,4.6vw,76px)] leading-[.9] text-white">
+            <h1 className="m-0 font-display text-[clamp(40px,4.6vw,76px)] leading-[.9] text-foreground">
               {t("site.access.head", "TOUT SE PASSE DANS VOTRE ESPACE")}
             </h1>
-            <p className="mt-7 max-w-[460px] text-[18px] font-light leading-[1.6] text-white/55 [text-wrap:pretty]">
+            <p className="mt-7 max-w-[460px] text-[18px] font-light leading-[1.6] text-foreground/55 [text-wrap:pretty]">
               {t("site.access.body", "")}
             </p>
 
@@ -156,7 +156,7 @@ export default function LoginPage() {
               ].map((feature) => (
                 <span
                   key={feature}
-                  className="flex items-center gap-[11px] font-condensed text-[14px] font-medium uppercase tracking-[.14em] text-white/50"
+                  className="flex items-center gap-[11px] font-condensed text-[14px] font-medium uppercase tracking-[.14em] text-foreground/50"
                 >
                   <span className="block h-1 w-1 shrink-0 bg-gold" />
                   {feature}
@@ -172,7 +172,7 @@ export default function LoginPage() {
             <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
               {t("site.access.title", "Espace client")}
             </span>
-            <h2 className="m-0 font-display text-[clamp(34px,4vw,52px)] leading-[.95] text-white">
+            <h2 className="m-0 font-display text-[clamp(34px,4vw,52px)] leading-[.95] text-foreground">
               {t("site.access.login", "Connexion")}
             </h2>
             <div className="my-7 h-[14px] w-[100px] bg-gold" />
@@ -213,7 +213,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-gold"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 transition-colors hover:text-gold"
                   >
                     {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
                   </button>
@@ -232,7 +232,7 @@ export default function LoginPage() {
 
             <button
               onClick={handleAdminClick}
-              className="mt-4 w-full border border-[var(--line)] px-[38px] py-[16px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/70 transition-colors duration-300 hover:border-gold hover:text-gold"
+              className="mt-4 w-full border border-[var(--line)] px-[38px] py-[16px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-foreground/70 transition-colors duration-300 hover:border-gold hover:text-gold"
             >
               {t("login.admin.access", "Accès Administration")}
             </button>
@@ -240,25 +240,25 @@ export default function LoginPage() {
             <div className="mt-8 flex flex-col gap-3 border-t border-[var(--line)] pt-7">
               <Link
                 href="/forgot-password"
-                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-foreground/50 transition-colors hover:text-gold"
               >
                 {t("login.forgot_password", "Mot de passe oublié ?")}
               </Link>
               <Link
                 href="/register"
-                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/50 transition-colors hover:text-gold"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-foreground/50 transition-colors hover:text-gold"
               >
                 {t("site.access.register", "Créer un compte")}
               </Link>
               <Link
                 href="/"
-                className="font-condensed text-[14px] uppercase tracking-[.18em] text-white/40 transition-colors hover:text-gold"
+                className="font-condensed text-[14px] uppercase tracking-[.18em] text-foreground/40 transition-colors hover:text-gold"
               >
                 {t("site.nav.home", "Accueil")}
               </Link>
             </div>
 
-            <p className="mt-7 text-[14px] font-light leading-[1.6] text-white/35 [text-wrap:pretty]">
+            <p className="mt-7 text-[14px] font-light leading-[1.6] text-foreground/35 [text-wrap:pretty]">
               {t("site.access.note", "")}
             </p>
           </div>

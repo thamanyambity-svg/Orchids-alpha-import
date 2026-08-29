@@ -28,17 +28,17 @@ export default function NetworkPage() {
         <div className="mx-auto max-w-[1440px] px-8">
           <div
             data-reveal
-            className="relative border border-[var(--line)] bg-[hsl(216_40%_9%/.6)]"
+            className="relative border border-[var(--line)] bg-card/60"
             style={{ height: "clamp(360px, 50vw, 620px)" }}
           >
             <NetworkMap />
             <div className="absolute bottom-[18px] left-5 flex flex-wrap gap-[22px]">
-              <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-white/40">
+              <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-foreground/40">
                 <span className="block h-[7px] w-[7px] rounded-full bg-gold" />
                 {t("site.net.legendHub", "Hub Kinshasa")}
               </span>
-              <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-white/40">
-                <span className="block h-px w-[22px] bg-[hsl(42_85%_55%/.6)]" />
+              <span className="flex items-center gap-[9px] font-condensed text-[11px] uppercase tracking-[.3em] text-foreground/40">
+                <span className="block h-px w-[22px] bg-primary/60" />
                 {t("site.net.legendRoute", "Corridor actif")}
               </span>
             </div>
@@ -61,10 +61,10 @@ export default function NetworkPage() {
                 <span className="mb-[14px] block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-gold">
                   {t(`site.net.${key}.tag`, "")}
                 </span>
-                <h3 className="mb-3 mt-0 font-display text-[29px] leading-[1.05] text-white">
+                <h3 className="mb-3 mt-0 font-display text-[29px] leading-[1.05] text-foreground">
                   {t(`site.net.${key}.cities`, "")}
                 </h3>
-                <p className="m-0 text-[16px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">
+                <p className="m-0 text-[16px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">
                   {t(`site.net.${key}.body`, "")}
                 </p>
               </div>
@@ -81,7 +81,7 @@ export default function NetworkPage() {
           </div>
           <p
             data-reveal
-            className="mb-10 max-w-[660px] text-[18px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]"
+            className="mb-10 max-w-[660px] text-[18px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]"
           >
             {t("site.net.originsBody", "")}
           </p>
@@ -89,7 +89,7 @@ export default function NetworkPage() {
             {ORIGINS.map((origin) => (
               <span
                 key={origin}
-                className="flex-1 basis-[180px] bg-[var(--navy2)] px-6 py-[30px] font-display text-[30px] leading-none text-white transition-colors duration-[350ms] hover:bg-gold hover:text-primary-foreground"
+                className="flex-1 basis-[180px] bg-[var(--navy2)] px-6 py-[30px] font-display text-[30px] leading-none text-foreground transition-colors duration-[350ms] hover:bg-gold hover:text-primary-foreground"
               >
                 {origin}
               </span>

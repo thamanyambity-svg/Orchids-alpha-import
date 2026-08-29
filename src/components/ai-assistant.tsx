@@ -227,9 +227,9 @@ export function AiAssistant() {
                         className="fixed bottom-24 right-6 w-[90vw] md:w-96 h-[600px] z-[60] bg-background/95 backdrop-blur-xl border border-gold/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden font-sans"
                     >
                         {/* Header */}
-                        <div className="p-4 border-b border-white/10 bg-gold/5 flex justify-between items-center shrink-0">
+                        <div className="p-4 border-b border-foreground/10 bg-gold/5 flex justify-between items-center shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center border border-gold/30 overflow-hidden relative">
+                                <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center border border-gold/30 overflow-hidden relative">
                                     <img
                                         src="/logo-alpha-import.png?v=4"
                                         alt="Alpha Import Exchange"
@@ -237,18 +237,18 @@ export function AiAssistant() {
                                     />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white text-sm">{t("ai.header_title", "Alpha Assistant")}</h3>
+                                    <h3 className="font-bold text-foreground text-sm">{t("ai.header_title", "Alpha Assistant")}</h3>
                                     <div className="flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                                        <span className="text-[10px] text-white/60">{t("ai.header_status", "En ligne • Sécurisé")}</span>
+                                        <span className="text-[10px] text-foreground/60">{t("ai.header_status", "En ligne • Sécurisé")}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-white/50 hover:text-white" onClick={() => setIsMinimized(true)}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/50 hover:text-foreground" onClick={() => setIsMinimized(true)}>
                                     <Minimize2 className="w-4 h-4" />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-white/50 hover:text-white" onClick={() => setIsOpen(false)}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/50 hover:text-foreground" onClick={() => setIsOpen(false)}>
                                     <X className="w-4 h-4" />
                                 </Button>
                             </div>
@@ -267,8 +267,8 @@ export function AiAssistant() {
                                         {/* Message Bubble */}
                                         <div
                                             className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${msg.role === 'user'
-                                                ? 'bg-gold text-black rounded-tr-none font-medium'
-                                                : 'bg-white/5 text-foreground rounded-tl-none border border-white/10'
+                                                ? 'bg-gold text-primary-foreground rounded-tr-none font-medium'
+                                                : 'bg-foreground/5 text-foreground rounded-tl-none border border-foreground/10'
                                                 }`}
                                         >
                                             <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -288,7 +288,7 @@ export function AiAssistant() {
                                                         <ShieldCheck className="w-3 h-3" /> {msg.card.title}
                                                     </h4>
                                                     <p className="text-muted-foreground text-xs mb-4">{msg.card.description}</p>
-                                                    <Button className="w-full bg-gold hover:bg-gold/90 text-black font-bold h-9 text-xs">
+                                                    <Button className="w-full bg-gold hover:bg-gold/90 text-primary-foreground font-bold h-9 text-xs">
                                                         {msg.card.cta} <ArrowRight className="w-3 h-3 ml-2" />
                                                     </Button>
                                                 </div>
@@ -305,8 +305,8 @@ export function AiAssistant() {
                                                         size="sm"
                                                         onClick={opt.action}
                                                         className={`h-auto py-2 px-3 text-xs whitespace-normal text-left h-fit ${opt.variant === 'gold'
-                                                            ? 'bg-gold text-black hover:bg-gold/90 border-transparent'
-                                                            : 'bg-transparent border-white/20 text-white hover:bg-white/10'
+                                                            ? 'bg-gold text-primary-foreground hover:bg-gold/90 border-transparent'
+                                                            : 'bg-transparent border-foreground/20 text-foreground hover:bg-foreground/10'
                                                             }`}
                                                     >
                                                         {opt.label}
@@ -316,7 +316,7 @@ export function AiAssistant() {
                                         )}
 
                                         {/* Timestamp */}
-                                        <span className="text-[9px] text-white/20 px-1">
+                                        <span className="text-[9px] text-foreground/20 px-1">
                                             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </motion.div>
@@ -324,7 +324,7 @@ export function AiAssistant() {
 
                                 {isTyping && (
                                     <div className="flex justify-start">
-                                        <div className="bg-white/5 rounded-2xl rounded-tl-none p-3 border border-white/10 flex gap-1 items-center h-10 w-16 justify-center">
+                                        <div className="bg-foreground/5 rounded-2xl rounded-tl-none p-3 border border-foreground/10 flex gap-1 items-center h-10 w-16 justify-center">
                                             <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                                             <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                                             <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce"></span>
@@ -336,18 +336,18 @@ export function AiAssistant() {
                         </ScrollArea>
 
                         {/* Input Area */}
-                        <div className="p-4 border-t border-white/10 bg-black/60 backdrop-blur-md shrink-0">
+                        <div className="p-4 border-t border-foreground/10 bg-black/60 backdrop-blur-md shrink-0">
                             <div className="flex gap-2">
                                 <Input
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleManualSend()}
                                     placeholder={t("ai.placeholder", "Posez une question...")}
-                                    className="bg-white/5 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold/50"
+                                    className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-muted-foreground focus:border-gold/50"
                                 />
                                 <Button
                                     onClick={handleManualSend}
-                                    className="bg-gold hover:bg-gold/90 text-black px-3 shrink-0"
+                                    className="bg-gold hover:bg-gold/90 text-primary-foreground px-3 shrink-0"
                                 >
                                     <Send className="w-4 h-4" />
                                 </Button>
@@ -369,14 +369,14 @@ export function AiAssistant() {
                         setIsOpen(!isOpen)
                     }
                 }}
-                className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-full shadow-[0_0_40px_rgba(229,184,101,0.2)] z-[50] flex items-center justify-center text-black border border-white/20 group"
+                className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-full shadow-[0_0_40px_rgba(229,184,101,0.2)] z-[50] flex items-center justify-center text-primary-foreground border border-foreground/20 group"
             >
-                <span className="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-20 group-hover:opacity-40" />
+                <span className="absolute inset-0 rounded-full bg-foreground/20 animate-ping opacity-20 group-hover:opacity-40" />
                 {isOpen && !isMinimized ? <X className="w-7 h-7 relative z-10" /> : <MessageSquare className="w-7 h-7 relative z-10" />}
                 {!isOpen && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-destructive text-[10px] text-white items-center justify-center font-bold">1</span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-destructive text-[10px] text-foreground items-center justify-center font-bold">1</span>
                     </span>
                 )}
             </motion.button>

@@ -327,7 +327,7 @@ export default function AdminSuppliersPage() {
                                                     </Button>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-success hover:bg-success text-white"
+                                                        className="bg-success hover:bg-success text-success-foreground"
                                                         onClick={() => handleValidation(supplier.id, true)}
                                                     >
                                                         <CheckCircle2 className="w-4 h-4 mr-2" />

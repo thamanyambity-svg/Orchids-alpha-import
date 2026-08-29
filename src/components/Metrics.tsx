@@ -20,15 +20,15 @@ export default function Metrics() {
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16 text-center">
           <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("metrics.subtitle", "Chiffres clés")}</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[6vw] text-white leading-none">{t("metrics.title.prefix", "ALPHA IMPORT")} <span className="text-gradient-gold">{t("metrics.title.suffix", "EN CHIFFRES")}</span></h2>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[6vw] text-foreground leading-none">{t("metrics.title.prefix", "ALPHA IMPORT")} <span className="text-gradient-gold">{t("metrics.title.suffix", "EN CHIFFRES")}</span></h2>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {stats.map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.5 }} className="text-center group">
               <div className="font-display text-4xl md:text-5xl text-gradient-gold mb-2 group-hover:scale-110 transition-transform duration-300">{stat.val}</div>
-              <div className="font-condensed text-xs text-white/40 uppercase tracking-widest">{stat.label}</div>
-              {i < stats.length - 1 && <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-12 bg-white/5" />}
+              <div className="font-condensed text-xs text-foreground/40 uppercase tracking-widest">{stat.label}</div>
+              {i < stats.length - 1 && <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-12 bg-foreground/5" />}
             </motion.div>
           ))}
         </div>
