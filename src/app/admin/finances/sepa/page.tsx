@@ -181,7 +181,7 @@ export default function AdminSepaPage() {
 
           <div className="p-5 rounded-xl bg-card border border-border">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500">
+              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
@@ -347,7 +347,7 @@ export default function AdminSepaPage() {
                           ) : tx.status === "FAILED" ? (
                             <Badge variant="destructive">Échec</Badge>
                           ) : (
-                            <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                            <Badge variant="secondary" className="bg-warning/10 text-warning border-warning/20">
                               <Clock className="w-3 h-3 mr-1" /> En attente
                             </Badge>
                           )}

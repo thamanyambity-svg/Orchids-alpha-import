@@ -35,7 +35,7 @@ type Proof = {
 const MIN_REASON_LENGTH = 10
 
 const statusBadge: Record<Proof["status"], string> = {
-  PENDING_REVIEW: "bg-[#ffd700]/10 text-[#ffd700]",
+  PENDING_REVIEW: "bg-primary/10 text-primary",
   ACCEPTED: "bg-success/10 text-success",
   REJECTED: "bg-destructive/10 text-destructive",
   SUPERSEDED: "bg-muted text-muted-foreground",
@@ -151,7 +151,7 @@ export default function AdminPaymentProofsPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : (
         <div className="space-y-10">
@@ -182,8 +182,8 @@ export default function AdminPaymentProofsPage() {
                   >
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-[#ffd700]/10 flex items-center justify-center">
-                          <ReceiptText className="w-5 h-5 text-[#ffd700]" />
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <ReceiptText className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2 mb-1">

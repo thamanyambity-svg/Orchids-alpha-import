@@ -51,13 +51,13 @@ export default function PartnerSourcingIndexPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'RUNNING':
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 animate-pulse">En cours d'analyse</Badge>
+        return <Badge variant="outline" className="bg-info-subtle text-info animate-pulse">En cours d'analyse</Badge>
       case 'PENDING_REVIEW':
-        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-200">À valider</Badge>
+        return <Badge className="bg-warning-subtle text-warning hover:bg-warning-subtle">À valider</Badge>
       case 'VALIDATED':
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200">Validé (Admin info)</Badge>
+        return <Badge className="bg-info-subtle text-info hover:bg-info-subtle">Validé (Admin info)</Badge>
       case 'SENT':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
+        return <Badge className="bg-success-subtle text-success hover:bg-success-subtle"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
       case 'FAILED':
         return <Badge variant="destructive">Échec IA</Badge>
       default:
@@ -79,13 +79,13 @@ export default function PartnerSourcingIndexPage() {
       </div>
 
       {loading ? (
-        <div className="text-center p-12 text-gray-500">Chargement des sessions...</div>
+        <div className="text-center p-12 text-muted-foreground">Chargement des sessions...</div>
       ) : sessions.length === 0 ? (
-        <Card className="bg-gray-50/50 border-dashed">
+        <Card className="bg-muted/50 border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-            <Bot className="w-12 h-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune session de sourcing</h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <Bot className="w-12 h-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-1">Aucune session de sourcing</h3>
+            <p className="text-sm text-muted-foreground max-w-sm">
               L'agent IA se déclenchera automatiquement lorsqu'une nouvelle demande passera en phase d'analyse.
             </p>
           </CardContent>
@@ -95,10 +95,10 @@ export default function PartnerSourcingIndexPage() {
           {sessions.map((session) => (
             <Card 
               key={session.id} 
-              className={`hover:shadow-md transition-shadow cursor-pointer ${session.status === 'PENDING_REVIEW' ? 'border-amber-200 ring-1 ring-amber-100' : ''}`}
+              className={`hover:shadow-md transition-shadow cursor-pointer ${session.status === 'PENDING_REVIEW' ? 'border-warning-border ring-1 ring-warning-border' : ''}`}
               onClick={() => router.push(`/partner/sourcing/${session.id}`)}
             >
-              <CardHeader className="pb-3 border-b border-gray-100 bg-gray-50/30">
+              <CardHeader className="pb-3 border-b border-border bg-muted/30">
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-base font-semibold">
@@ -112,12 +112,12 @@ export default function PartnerSourcingIndexPage() {
                 </div>
               </CardHeader>
               <CardContent className="pt-4">
-                <div className="flex justify-between items-center text-sm text-gray-600 mb-4">
+                <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
                     {format(new Date(session.created_at), 'd MMM yyyy, HH:mm', { locale: fr })}
                   </div>
-                  <div className="font-medium text-gray-900">
+                  <div className="font-medium text-foreground">
                     {session.matches_count} / {session.suppliers_evaluated} matches
                   </div>
                 </div>

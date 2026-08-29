@@ -161,7 +161,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         href={`https://wa.me/${WHATSAPP}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-[26px] right-[26px] z-[800] bg-gold px-[26px] py-[17px] font-condensed text-[12px] font-bold uppercase tracking-[.26em] text-[#0a1018] whitespace-nowrap"
+        className="fixed bottom-[26px] right-[26px] z-[800] bg-gold px-[26px] py-[17px] font-condensed text-[12px] font-bold uppercase tracking-[.26em] text-primary-foreground whitespace-nowrap"
         style={{
           boxShadow: "0 14px 40px hsl(42 85% 55% / .28)",
           animation: "drift 4s ease-in-out infinite",

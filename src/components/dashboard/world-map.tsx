@@ -112,7 +112,7 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
               </div>
             </div>
             <div class="flex items-center justify-between text-[10px] mb-2">
-              <span class="text-amber-500 font-bold">★ ${hasPartner.performance_score}/5.0</span>
+              <span class="text-warning font-bold">★ ${hasPartner.performance_score}/5.0</span>
               <span class="text-muted-foreground">${hasPartner.total_orders_handled}+ commandes</span>
             </div>
             <div class="text-[9px] py-1 px-2 bg-primary/5 border border-primary/10 rounded text-primary font-medium text-center">

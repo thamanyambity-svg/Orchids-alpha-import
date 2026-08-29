@@ -224,7 +224,7 @@ export function AiAssistant() {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed bottom-24 right-6 w-[90vw] md:w-96 h-[600px] z-[60] bg-[#09090b]/95 backdrop-blur-xl border border-gold/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden font-sans"
+                        className="fixed bottom-24 right-6 w-[90vw] md:w-96 h-[600px] z-[60] bg-background/95 backdrop-blur-xl border border-gold/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden font-sans"
                     >
                         {/* Header */}
                         <div className="p-4 border-b border-white/10 bg-gold/5 flex justify-between items-center shrink-0">
@@ -239,7 +239,7 @@ export function AiAssistant() {
                                 <div>
                                     <h3 className="font-bold text-white text-sm">{t("ai.header_title", "Alpha Assistant")}</h3>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
                                         <span className="text-[10px] text-white/60">{t("ai.header_status", "En ligne • Sécurisé")}</span>
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ export function AiAssistant() {
                                         <div
                                             className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${msg.role === 'user'
                                                 ? 'bg-gold text-black rounded-tr-none font-medium'
-                                                : 'bg-white/5 text-gray-100 rounded-tl-none border border-white/10'
+                                                : 'bg-white/5 text-foreground rounded-tl-none border border-white/10'
                                                 }`}
                                         >
                                             <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -279,7 +279,7 @@ export function AiAssistant() {
                                             <motion.div
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
-                                                className="max-w-[85%] w-full bg-gradient-to-br from-gray-900 to-black border border-gold/30 rounded-xl p-4 mt-1 overflow-hidden relative group cursor-pointer"
+                                                className="max-w-[85%] w-full bg-gradient-to-br from-card to-background border border-primary/30 rounded-xl p-4 mt-1 overflow-hidden relative group cursor-pointer"
                                                 onClick={() => window.location.href = msg.card!.link}
                                             >
                                                 <div className="absolute top-0 right-0 w-20 h-20 bg-gold/10 rounded-full blur-2xl -mr-10 -mt-10" />
@@ -287,7 +287,7 @@ export function AiAssistant() {
                                                     <h4 className="text-gold font-bold text-xs uppercase tracking-wider mb-1 flex items-center gap-2">
                                                         <ShieldCheck className="w-3 h-3" /> {msg.card.title}
                                                     </h4>
-                                                    <p className="text-gray-400 text-xs mb-4">{msg.card.description}</p>
+                                                    <p className="text-muted-foreground text-xs mb-4">{msg.card.description}</p>
                                                     <Button className="w-full bg-gold hover:bg-gold/90 text-black font-bold h-9 text-xs">
                                                         {msg.card.cta} <ArrowRight className="w-3 h-3 ml-2" />
                                                     </Button>
@@ -325,9 +325,9 @@ export function AiAssistant() {
                                 {isTyping && (
                                     <div className="flex justify-start">
                                         <div className="bg-white/5 rounded-2xl rounded-tl-none p-3 border border-white/10 flex gap-1 items-center h-10 w-16 justify-center">
-                                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                                            <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                            <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                            <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce"></span>
                                         </div>
                                     </div>
                                 )}
@@ -343,7 +343,7 @@ export function AiAssistant() {
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleManualSend()}
                                     placeholder={t("ai.placeholder", "Posez une question...")}
-                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-muted-foreground focus:border-gold/50"
                                 />
                                 <Button
                                     onClick={handleManualSend}
@@ -369,14 +369,14 @@ export function AiAssistant() {
                         setIsOpen(!isOpen)
                     }
                 }}
-                className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#E5B865] to-[#B8860B] rounded-full shadow-[0_0_40px_rgba(229,184,101,0.2)] z-[50] flex items-center justify-center text-black border border-white/20 group"
+                className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-full shadow-[0_0_40px_rgba(229,184,101,0.2)] z-[50] flex items-center justify-center text-black border border-white/20 group"
             >
                 <span className="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-20 group-hover:opacity-40" />
                 {isOpen && !isMinimized ? <X className="w-7 h-7 relative z-10" /> : <MessageSquare className="w-7 h-7 relative z-10" />}
                 {!isOpen && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white items-center justify-center font-bold">1</span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-destructive text-[10px] text-white items-center justify-center font-bold">1</span>
                     </span>
                 )}
             </motion.button>

@@ -44,7 +44,7 @@ import dynamic from "next/dynamic"
 
 const WorldMap = dynamic(() => import("@/components/dashboard/world-map").then(mod => mod.WorldMap), {
   ssr: false,
-  loading: () => <div className="w-full h-[400px] rounded-3xl bg-[#0a0e14] animate-pulse border border-white/5" />
+  loading: () => <div className="w-full h-[400px] rounded-3xl bg-card animate-pulse border border-white/5" />
 })
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ""
@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 text-[#ffd700] animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     )
   }
@@ -139,13 +139,13 @@ export default function AdminDashboardPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative group overflow-hidden"
               >
-                <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5 hover:border-[#ffd700]/30 transition-all duration-500 cursor-pointer h-full">
+                <div className="p-6 rounded-2xl bg-card border border-white/5 hover:border-primary/30 transition-all duration-500 cursor-pointer h-full">
                   <div className="flex items-center justify-between mb-4">
                     <div className={cn("p-2 rounded-lg bg-white/5 transition-colors group-hover:bg-white/10", stat.color)}>
                       <Icon className="w-5 h-5" />
                     </div>
                     {stat.trend && (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
                         <TrendingUp className="w-3 h-3" />
                         {stat.trend}
                       </div>
@@ -165,8 +165,8 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* World Map Section */}
-      <div className="relative rounded-3xl overflow-hidden bg-[#0a0e14] border border-white/5 shadow-2xl shadow-black/50">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e14]/50 to-transparent pointer-events-none z-10" />
+      <div className="relative rounded-3xl overflow-hidden bg-card border border-white/5 shadow-2xl shadow-black/50">
+        <div className="absolute inset-0 bg-gradient-to-b from-card/50 to-transparent pointer-events-none z-10" />
         <WorldMap
           mapboxToken={MAPBOX_TOKEN}
           onCountrySelect={(code) => router.push(`/admin/requests?country=${code}`)}
@@ -177,7 +177,7 @@ export default function AdminDashboardPage() {
       {/* Tables Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Partners Table */}
-        <div className="lg:col-span-2 p-6 rounded-2xl bg-[#0a0e14] border border-white/5">
+        <div className="lg:col-span-2 p-6 rounded-2xl bg-card border border-white/5">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-sm font-bold tracking-[0.2em] text-white/80 uppercase">Partenaires Actifs</h3>
             <Link href="/admin/partners">
@@ -210,7 +210,7 @@ export default function AdminDashboardPage() {
                     <td className="py-4">
                       <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-[#ffd700] to-orange-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-primary to-warning rounded-full"
                           style={{ width: `${p.performance}%` }}
                         />
                       </div>
@@ -219,7 +219,7 @@ export default function AdminDashboardPage() {
                     <td className="py-4 text-right">
                       <span className={cn(
                         "text-[10px] font-bold border px-2 py-0.5 rounded uppercase tracking-tighter",
-                        p.status === 'Actif' ? "text-emerald-400 border-emerald-400/20 bg-emerald-400/5" : "text-white/40 border-white/10 bg-white/5"
+                        p.status === 'Actif' ? "text-success border-success/20 bg-success/5" : "text-white/40 border-white/10 bg-white/5"
                       )}>
                         {p.status}
                       </span>
@@ -236,7 +236,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Recent Requests List */}
-        <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5">
+        <div className="p-6 rounded-2xl bg-card border border-white/5">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-sm font-bold tracking-[0.2em] text-white/80 uppercase">Demandes récentes</h3>
             <Link href="/admin/requests">
@@ -250,7 +250,7 @@ export default function AdminDashboardPage() {
               <Link key={i} href={`/admin/requests/${req.realId}`} className="block">
                 <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all">
                   <div className="flex flex-col items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mb-1 shadow-[0_0_8px_#60a5fa]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-info mb-1 shadow-[0_0_8px_#60a5fa]" />
                     <div className="w-px h-8 bg-white/5" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export default function AdminDashboardPage() {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Audit Log */}
-        <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5">
+        <div className="p-6 rounded-2xl bg-card border border-white/5">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold tracking-[0.2em] text-white/80 uppercase">Journal d&apos;Audit</h3>
@@ -298,7 +298,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] text-[#ffd700] font-bold">{log.time}</span>
+                  <span className="text-[10px] text-primary font-bold">{log.time}</span>
                   <div className="px-2 py-0.5 rounded bg-white/5 text-[10px] font-bold text-white/40 uppercase">{log.status}</div>
                 </div>
               </div>
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Critical Alerts */}
-        <div className="p-6 rounded-2xl bg-[#0a0e14] border border-white/5">
+        <div className="p-6 rounded-2xl bg-card border border-white/5">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-sm font-bold tracking-[0.2em] text-white/80 uppercase">Alertes Critiques</h3>
             <div className="flex gap-2">
@@ -342,12 +342,12 @@ export default function AdminDashboardPage() {
       {/* Floating Toolbar/Dock */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
         <div className="px-6 py-3 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl flex items-center gap-6">
-          <Button variant="ghost" size="icon" className="text-white/40 hover:text-[#ffd700] transition-colors">
+          <Button variant="ghost" size="icon" className="text-white/40 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </Button>
           <div className="w-px h-6 bg-white/10" />
           <Link href="/admin">
-            <Button variant="ghost" size="icon" className="text-[#ffd700] bg-[#ffd700]/10 border border-[#ffd700]/20 scale-110 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+            <Button variant="ghost" size="icon" className="text-primary bg-primary/10 border border-primary/20 scale-110 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
               <LayoutGrid className="w-5 h-5" />
             </Button>
           </Link>
@@ -363,7 +363,7 @@ export default function AdminDashboardPage() {
             </Button>
           </Link>
           <Link href="/admin/incidents">
-            <Button variant="ghost" size="icon" className="text-white/40 hover:text-emerald-400 transition-colors">
+            <Button variant="ghost" size="icon" className="text-white/40 hover:text-success transition-colors">
               <ShieldCheck className="w-5 h-5" />
             </Button>
           </Link>

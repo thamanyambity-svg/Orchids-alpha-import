@@ -184,7 +184,7 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
 
         {/* État & historique (si occasion) */}
         {formData.vehicle_type !== "NEUF" && (
-          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 grid md:grid-cols-3 gap-4">
+          <div className="rounded-lg border border-warning/20 bg-warning/5 p-4 grid md:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.condition", "État général")} *</Label>
               <Select value={formData.condition} onValueChange={v => update("condition", v)} disabled={readOnly}>

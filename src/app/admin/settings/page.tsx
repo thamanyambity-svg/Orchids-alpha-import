@@ -192,7 +192,7 @@ export default function AdminSettingsPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold">{profile?.full_name || 'Admin'}</h2>
-                <Badge variant="default" className="bg-green-500/20 text-green-600 border-green-200 text-[10px]">Administrateur</Badge>
+                <Badge variant="default" className="bg-success/20 text-success border-success-border text-[10px]">Administrateur</Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'AlphaIX Admin'}</p>
               <div className="flex flex-wrap gap-4 text-xs">

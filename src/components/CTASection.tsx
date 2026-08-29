@@ -15,7 +15,7 @@ export default function CTASection() {
           <h2 className="font-display text-[12vw] md:text-[7vw] lg:text-[6vw] text-white leading-none mb-8">{t("cta.title.prefix", "REJOIGNEZ")} <span className="text-gradient-gold">{t("cta.title", "L'EXCELLENCE")}</span></h2>
           <p className="font-sans text-base text-white/40 max-w-lg mx-auto mb-10">{t("cta.desc", "Plus de 1 200 entreprises partenaires nous font déjà confiance pour leurs importations. Rejoignez le réseau Alpha Import dès aujourd'hui.")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-[#06101e] hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
+            <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-primary-foreground hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
               {t("cta.button", "Créer un compte")}
             </Link>
             <Link href="/contact" className="font-condensed text-sm px-12 py-4 border border-white/25 text-white/80 hover:border-gold hover:text-gold transition-all duration-200 tracking-[0.3em] uppercase">

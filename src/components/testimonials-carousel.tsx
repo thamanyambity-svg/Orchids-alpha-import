@@ -12,7 +12,7 @@ export function TestimonialsCarousel() {
   const [index, setIndex] = useState(0)
 
   return (
-    <div className="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-[#020308]/90 p-6 text-white">
+    <div className="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-background/90 p-6 text-white">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Témoignages</h3>
         <div className="flex items-center gap-2">

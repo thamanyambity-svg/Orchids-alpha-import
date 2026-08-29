@@ -89,7 +89,7 @@ export default function NetworkPage() {
             {ORIGINS.map((origin) => (
               <span
                 key={origin}
-                className="flex-1 basis-[180px] bg-[var(--navy2)] px-6 py-[30px] font-display text-[30px] leading-none text-white transition-colors duration-[350ms] hover:bg-gold hover:text-[#0a1018]"
+                className="flex-1 basis-[180px] bg-[var(--navy2)] px-6 py-[30px] font-display text-[30px] leading-none text-white transition-colors duration-[350ms] hover:bg-gold hover:text-primary-foreground"
               >
                 {origin}
               </span>

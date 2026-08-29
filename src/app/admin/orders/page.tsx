@@ -43,12 +43,12 @@ const statusLabels: Record<string, string> = {
 
 const statusColor: Record<string, string> = {
   PENDING: "bg-white/10 text-white/60",
-  AWAITING_DEPOSIT: "bg-amber-500/10 text-amber-500",
+  AWAITING_DEPOSIT: "bg-warning/10 text-warning",
   FUNDED: "bg-success/10 text-success",
   SOURCING: "bg-primary/10 text-primary",
   EXECUTING: "bg-chart-3/10 text-chart-3",
   PURCHASED: "bg-chart-2/10 text-chart-2",
-  AWAITING_BALANCE: "bg-amber-500/10 text-amber-500",
+  AWAITING_BALANCE: "bg-warning/10 text-warning",
   SHIPPED: "bg-chart-4/10 text-chart-4",
   DELIVERED: "bg-success/10 text-success",
   CLOSED: "bg-white/10 text-white/60",
@@ -100,7 +100,7 @@ export default function AdminOrdersPage() {
         </div>
         <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
           <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{t("admin.orders.active", "En cours")}</p>
-          <p className="text-2xl font-bold text-[#ffd700]">{activeOrders}</p>
+          <p className="text-2xl font-bold text-primary">{activeOrders}</p>
         </div>
         <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
           <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{t("admin.orders.revenue", "Volume total")}</p>
@@ -134,7 +134,7 @@ export default function AdminOrdersPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
@@ -153,8 +153,8 @@ export default function AdminOrdersPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#ffd700]/10 flex items-center justify-center">
-                      <Package className="w-5 h-5 text-[#ffd700]" />
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Package className="w-5 h-5 text-primary" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">

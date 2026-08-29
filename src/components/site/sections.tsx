@@ -144,7 +144,7 @@ export function Hero() {
         <div className="mt-[38px] flex flex-wrap gap-[14px]">
           <Link
             href="/contact"
-            className="bg-gold px-[38px] py-5 font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[3px]"
+            className="bg-gold px-[38px] py-5 font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-primary-foreground transition-transform duration-300 hover:-translate-y-[3px]"
           >
             {t("site.cta.platform", "Accéder à la plateforme")}
           </Link>
@@ -239,7 +239,7 @@ export function SplitBar({ height = 74, compact = false }: { height?: number; co
           className="absolute bottom-0 left-0 top-0 w-[28%] bg-[linear-gradient(90deg,transparent,hsl(42_90%_78%/.55),transparent)]"
           style={{ animation: "flow 3.4s linear infinite" }}
         />
-        <span className={`relative font-display ${figure} leading-[.9] text-[#0a1018]`}>60 %</span>
+        <span className={`relative font-display ${figure} leading-[.9] text-primary-foreground`}>60 %</span>
         <span
           className={`relative font-condensed ${caption} font-bold uppercase tracking-[.24em] text-[hsl(216_45%_6%/.7)]`}
         >
@@ -577,7 +577,7 @@ export function CTASection() {
         <div className="mt-[42px] flex flex-wrap justify-center gap-[14px]">
           <Link
             href="/register"
-            className="bg-gold px-11 py-[22px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[3px]"
+            className="bg-gold px-11 py-[22px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-primary-foreground transition-transform duration-300 hover:-translate-y-[3px]"
           >
             {t("site.ctaSection.join", "Rejoindre Alpha Import")}
           </Link>

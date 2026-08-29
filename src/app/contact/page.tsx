@@ -119,7 +119,7 @@ export default function ContactPage() {
               <div className="mt-[6px] flex flex-wrap gap-3">
                 <Link
                   href="/login"
-                  className="bg-gold px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                  className="bg-gold px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
                 >
                   {t("site.access.login", "Connexion")}
                 </Link>
@@ -179,7 +179,7 @@ export default function ContactPage() {
                 onClick={() => handleTypeSelect(type.value)}
                 className={`flex-1 basis-[240px] px-6 py-5 text-left font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
                   contactType === type.value
-                    ? "bg-gold text-[#0a1018]"
+                    ? "bg-gold text-primary-foreground"
                     : "bg-[var(--navy)] text-white/60 hover:text-gold"
                 }`}
               >
@@ -221,7 +221,7 @@ export default function ContactPage() {
             </div>
             <div className="md:col-span-2">
               <button type="submit" disabled={isLoading}
-                className="flex items-center justify-center gap-3 bg-gold px-11 py-[19px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0">
+                className="flex items-center justify-center gap-3 bg-gold px-11 py-[19px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-primary-foreground transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0">
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {t("contact.form.send", "Envoyer")}
               </button>

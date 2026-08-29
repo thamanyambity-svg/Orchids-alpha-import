@@ -100,7 +100,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0e14] border-r border-white/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/admin" className="flex items-center group">
           <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -133,7 +133,7 @@ export function AdminSidebar() {
                 >
                   <item.icon className={cn(
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
-                    isActive ? "text-[#ffd700]" : ""
+                    isActive ? "text-primary" : ""
                   )} />
                   <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
 
@@ -146,7 +146,7 @@ export function AdminSidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute left-0 w-1 h-6 bg-[#ffd700] rounded-r-full shadow-[0_0_10px_#ffd700]"
+                      className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-[0_0_10px_#ffd700]"
                     />
                   )}
                 </Link>
@@ -159,8 +159,8 @@ export function AdminSidebar() {
       <div className="p-4 mt-auto">
         <div className="p-4 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 mb-4">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-[#ffd700]/10 flex items-center justify-center border border-[#ffd700]/20">
-              <Crown className="w-4 h-4 text-[#ffd700]" />
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+              <Crown className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-white truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>

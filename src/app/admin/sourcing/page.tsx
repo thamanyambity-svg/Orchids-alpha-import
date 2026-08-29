@@ -36,13 +36,13 @@ export default function AdminSourcingMonitorPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'RUNNING':
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 animate-pulse">En cours d'analyse</Badge>
+        return <Badge variant="outline" className="bg-info-subtle text-info animate-pulse">En cours d'analyse</Badge>
       case 'PENDING_REVIEW':
-        return <Badge className="bg-amber-100 text-amber-800">En attente Partner</Badge>
+        return <Badge className="bg-warning-subtle text-warning">En attente Partner</Badge>
       case 'VALIDATED':
-        return <Badge className="bg-purple-100 text-purple-800">Validé</Badge>
+        return <Badge className="bg-info-subtle text-info">Validé</Badge>
       case 'SENT':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
+        return <Badge className="bg-success-subtle text-success"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
       case 'FAILED':
         return <Badge variant="destructive">Échec IA</Badge>
       default:
@@ -64,13 +64,13 @@ export default function AdminSourcingMonitorPage() {
       </div>
 
       {loading ? (
-        <div className="text-center p-12 text-gray-500">Chargement des sessions...</div>
+        <div className="text-center p-12 text-muted-foreground">Chargement des sessions...</div>
       ) : sessions.length === 0 ? (
-        <Card className="bg-gray-50/50 border-dashed">
+        <Card className="bg-muted/50 border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-            <Bot className="w-12 h-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune session de sourcing</h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <Bot className="w-12 h-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-1">Aucune session de sourcing</h3>
+            <p className="text-sm text-muted-foreground max-w-sm">
               Aucune activité de l'agent de sourcing n'a été enregistrée pour le moment.
             </p>
           </CardContent>
@@ -79,7 +79,7 @@ export default function AdminSourcingMonitorPage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {sessions.map((session) => (
             <Card key={session.id} className="hover:shadow-sm transition-shadow">
-              <CardHeader className="pb-3 border-b border-gray-100 bg-gray-50/30">
+              <CardHeader className="pb-3 border-b border-border bg-muted/30">
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-base font-semibold">
@@ -95,26 +95,26 @@ export default function AdminSourcingMonitorPage() {
               <CardContent className="pt-4">
                 <div className="space-y-3">
                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500">Partenaire:</span>
-                      <span className="font-medium text-gray-900">
+                      <span className="text-muted-foreground">Partenaire:</span>
+                      <span className="font-medium text-foreground">
                         {session.partner?.profiles?.full_name} ({session.partner?.profiles?.country?.name})
                       </span>
                    </div>
                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500">Création:</span>
-                      <span className="text-gray-900 flex items-center gap-1">
+                      <span className="text-muted-foreground">Création:</span>
+                      <span className="text-foreground flex items-center gap-1">
                          <Clock className="w-3 h-3" />
                          {format(new Date(session.created_at), 'd MMM yyyy, HH:mm')}
                       </span>
                    </div>
                    <div className="flex justify-between items-center text-sm border-t pt-3 mt-3">
-                      <span className="text-gray-500">Performance IA:</span>
-                      <span className="font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                      <span className="text-muted-foreground">Performance IA:</span>
+                      <span className="font-medium text-info bg-info-subtle px-2 py-1 rounded">
                         {session.matches_count} / {session.suppliers_evaluated} matches
                       </span>
                    </div>
                    {session.status === 'FAILED' && (
-                     <div className="text-xs text-red-600 bg-red-50 p-2 rounded mt-2 border border-red-100 flex gap-2">
+                     <div className="text-xs text-destructive bg-destructive-subtle p-2 rounded mt-2 border border-destructive-border flex gap-2">
                        <AlertCircle className="w-4 h-4 flex-shrink-0" /> {session.error_message}
                      </div>
                    )}

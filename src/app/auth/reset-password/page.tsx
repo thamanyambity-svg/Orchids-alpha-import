@@ -204,7 +204,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="mt-2 flex items-center justify-center gap-3 bg-gold px-[38px] py-[18px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                className="mt-2 flex items-center justify-center gap-3 bg-gold px-[38px] py-[18px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-primary-foreground transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
               >
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {t("reset.submit", "Enregistrer")}

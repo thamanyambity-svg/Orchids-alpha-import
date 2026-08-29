@@ -36,7 +36,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const PRIORITY_COLORS: Record<string, string> = {
   HAUTE: "bg-destructive/20 text-destructive border-destructive/30",
-  MOYENNE: "bg-amber-500/20 text-amber-500 border-amber-500/30",
+  MOYENNE: "bg-warning/20 text-warning border-warning/30",
   BASSE: "bg-muted text-muted-foreground",
 }
 

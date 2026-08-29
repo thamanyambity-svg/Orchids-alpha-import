@@ -33,7 +33,7 @@ const documentTypeLabel: Record<AccessLog["document_type"], string> = {
 const actionBadge: Record<AccessLog["action"], { label: string; className: string }> = {
   VIEW: { label: "Consultation", className: "bg-primary/10 text-primary" },
   DOWNLOAD: { label: "Téléchargement", className: "bg-chart-3/10 text-chart-3" },
-  SIGNED_URL_GENERATED: { label: "Lien signé généré", className: "bg-[#ffd700]/10 text-[#ffd700]" },
+  SIGNED_URL_GENERATED: { label: "Lien signé généré", className: "bg-primary/10 text-primary" },
 }
 
 export default function AdminAuditLogsPage() {
@@ -126,7 +126,7 @@ export default function AdminAuditLogsPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : logs.length === 0 ? (
         <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">

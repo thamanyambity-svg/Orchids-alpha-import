@@ -118,8 +118,8 @@ export default function AdminWebhooksPage() {
           </div>
           <div className="p-5 rounded-xl bg-card border border-border">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <ExternalLink className="w-5 h-5 text-blue-500" />
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+                <ExternalLink className="w-5 h-5 text-info" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Stripe</p>
@@ -129,8 +129,8 @@ export default function AdminWebhooksPage() {
           </div>
           <div className="p-5 rounded-xl bg-card border border-border">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <Activity className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">n8n</p>
@@ -189,8 +189,8 @@ export default function AdminWebhooksPage() {
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         event.source === "stripe"
-                          ? "bg-blue-500/10 text-blue-500"
-                          : "bg-emerald-500/10 text-emerald-500"
+                          ? "bg-info/10 text-info"
+                          : "bg-success/10 text-success"
                       }`}>
                         {event.source === "stripe" ? (
                           <ExternalLink className="w-4 h-4" />

@@ -22,7 +22,7 @@ import type { AppNotification } from "@/lib/types"
 const iconMap: Record<string, React.ReactNode> = {
   success: <CheckCircle2 className="w-5 h-5 text-success" />,
   info: <Info className="w-5 h-5 text-primary" />,
-  warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
+  warning: <AlertTriangle className="w-5 h-5 text-warning" />,
   error: <AlertCircle className="w-5 h-5 text-destructive" />,
 }
 

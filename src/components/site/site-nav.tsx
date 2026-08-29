@@ -123,7 +123,7 @@ export function SiteNav() {
 
           <Link
             href="/dashboard"
-            className="bg-gold px-6 py-[14px] font-condensed text-[12px] font-bold uppercase tracking-[.24em] text-[#0a1018] whitespace-nowrap"
+            className="bg-gold px-6 py-[14px] font-condensed text-[12px] font-bold uppercase tracking-[.24em] text-primary-foreground whitespace-nowrap"
           >
             {t("site.cta.platform", "Accéder à la plateforme")}
           </Link>

@@ -35,15 +35,15 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
   const isRejected = match.status === 'REJECTED'
 
   return (
-    <Card className={`mb-4 overflow-hidden transition-all duration-200 ${isApproved ? 'border-green-500 shadow-sm' : isRejected ? 'opacity-50 border-gray-200' : 'border-gray-200'}`}>
-      <CardHeader className="bg-gray-50/50 pb-3 border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
+    <Card className={`mb-4 overflow-hidden transition-all duration-200 ${isApproved ? 'border-success shadow-sm' : isRejected ? 'opacity-50 border-border' : 'border-border'}`}>
+      <CardHeader className="bg-muted/50 pb-3 border-b border-border flex flex-row items-center justify-between space-y-0">
         <div>
-          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
             {match.supplier.name}
-            {isApproved && <CheckCircle2 className="w-5 h-5 text-green-500" />}
-            {isRejected && <XCircle className="w-5 h-5 text-red-500" />}
+            {isApproved && <CheckCircle2 className="w-5 h-5 text-success" />}
+            {isRejected && <XCircle className="w-5 h-5 text-destructive" />}
           </CardTitle>
-          <div className="flex gap-4 mt-2 text-sm text-gray-500">
+          <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
             {match.supplier.contact_email && (
               <span className="flex items-center gap-1"><Mail className="w-4 h-4" /> {match.supplier.contact_email}</span>
             )}
@@ -51,10 +51,10 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
           </div>
         </div>
         <div className="text-right flex flex-col items-end gap-2">
-          <Badge variant={match.score >= 8 ? 'default' : 'secondary'} className={match.score >= 8 ? 'bg-blue-600' : ''}>
+          <Badge variant={match.score >= 8 ? 'default' : 'secondary'} className={match.score >= 8 ? 'bg-info' : ''}>
             Score: {match.score}
           </Badge>
-          <Badge variant="outline" className="text-gray-500">
+          <Badge variant="outline" className="text-muted-foreground">
             {match.supplier.language === 'en' ? 'English' : match.supplier.language?.toUpperCase() || 'Local'}
           </Badge>
         </div>
@@ -62,10 +62,10 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
       
       <CardContent className="pt-4">
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500" /> Raisonnement IA
+          <h4 className="text-sm font-semibold text-foreground mb-1 flex items-center gap-1">
+            <Star className="w-4 h-4 text-warning" /> Raisonnement IA
           </h4>
-          <p className="text-sm text-gray-600 bg-amber-50/50 p-3 rounded-md border border-amber-100/50">
+          <p className="text-sm text-muted-foreground bg-warning-subtle/50 p-3 rounded-md border border-warning-border/50">
             {match.ai_reason}
           </p>
         </div>
@@ -78,13 +78,13 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
           {showRfq && (
             <div className="mt-3 space-y-3">
               {match.rfq_message_local && match.rfq_message_local !== match.rfq_message_en && (
-                <div className="p-4 bg-gray-50 rounded-md border border-gray-200 text-sm font-mono whitespace-pre-wrap text-gray-800">
-                  <div className="text-xs font-bold text-gray-500 mb-2 uppercase">Version Locale (Sera envoyée)</div>
+                <div className="p-4 bg-muted/50 rounded-md border border-border text-sm font-mono whitespace-pre-wrap text-foreground">
+                  <div className="text-xs font-bold text-muted-foreground mb-2 uppercase">Version Locale (Sera envoyée)</div>
                   {match.rfq_message_local}
                 </div>
               )}
-              <div className={`p-4 rounded-md border text-sm font-mono whitespace-pre-wrap ${match.rfq_message_local && match.rfq_message_local !== match.rfq_message_en ? 'bg-white border-gray-100 text-gray-500' : 'bg-gray-50 border-gray-200 text-gray-800'}`}>
-                 <div className="text-xs font-bold text-gray-500 mb-2 uppercase">Version Anglaise</div>
+              <div className={`p-4 rounded-md border text-sm font-mono whitespace-pre-wrap ${match.rfq_message_local && match.rfq_message_local !== match.rfq_message_en ? 'bg-white border-border text-muted-foreground' : 'bg-muted/50 border-border text-foreground'}`}>
+                 <div className="text-xs font-bold text-muted-foreground mb-2 uppercase">Version Anglaise</div>
                 {match.rfq_message_en}
               </div>
             </div>
@@ -92,8 +92,8 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
         </div>
 
         {match.status === 'PENDING' && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-             <h4 className="text-sm font-medium text-gray-700 mb-2">Notes pour vous-même (Optionnel)</h4>
+          <div className="mt-4 pt-4 border-t border-border">
+             <h4 className="text-sm font-medium text-foreground mb-2">Notes pour vous-même (Optionnel)</h4>
              <Textarea 
                 placeholder="Ex: Demander aussi la certification ISO..."
                 value={notes}
@@ -106,16 +106,16 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
       </CardContent>
       
       {match.status === 'PENDING' && (
-        <CardFooter className="bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3 pt-4">
+        <CardFooter className="bg-muted/50 border-t border-border flex justify-end gap-3 pt-4">
           <Button 
             variant="outline" 
-            className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="border-destructive-border text-destructive hover:bg-destructive-subtle hover:text-destructive"
             onClick={() => onStatusChange(match.id, 'REJECTED', notes)}
           >
             <XCircle className="w-4 h-4 mr-2" /> Rejeter
           </Button>
           <Button 
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-success hover:bg-success text-white"
             onClick={() => onStatusChange(match.id, 'APPROVED', notes)}
           >
             <CheckCircle2 className="w-4 h-4 mr-2" /> Approuver pour RFQ
@@ -124,8 +124,8 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
       )}
       
       {match.status === 'SENT' && (
-        <CardFooter className="bg-green-50 border-t border-green-100 flex justify-between items-center pt-4">
-           <span className="text-sm text-green-700 font-medium flex items-center gap-2">
+        <CardFooter className="bg-success-subtle border-t border-success-border flex justify-between items-center pt-4">
+           <span className="text-sm text-success font-medium flex items-center gap-2">
              <CheckCircle2 className="w-4 h-4" /> RFQ Envoyé au fournisseur
            </span>
         </CardFooter>

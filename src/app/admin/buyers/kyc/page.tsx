@@ -166,7 +166,7 @@ export default function BuyerKycPage() {
         <div className="lg:col-span-2">
           {loading ? (
             <div className="flex justify-center p-12">
-              <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : filtered.length === 0 ? (
             <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
@@ -185,14 +185,14 @@ export default function BuyerKycPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
                     className={`bg-white/5 border p-4 rounded-xl transition-colors cursor-pointer hover:bg-white/[0.07] ${
-                      selectedBuyer?.id === buyer.id ? "border-[#ffd700]/50" : "border-white/10"
+                      selectedBuyer?.id === buyer.id ? "border-primary/50" : "border-white/10"
                     }`}
                     onClick={() => viewDocs(buyer)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[#ffd700]/10 flex items-center justify-center">
-                          <User className="w-5 h-5 text-[#ffd700]" />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2 mb-1">
@@ -230,8 +230,8 @@ export default function BuyerKycPage() {
           {selectedBuyer ? (
             <div>
               <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/10">
-                <div className="w-12 h-12 rounded-full bg-[#ffd700]/10 flex items-center justify-center">
-                  <User className="w-6 h-6 text-[#ffd700]" />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-6 h-6 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-white">{selectedBuyer.full_name || "N/A"}</h3>

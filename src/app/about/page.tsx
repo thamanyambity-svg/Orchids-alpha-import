@@ -78,7 +78,7 @@ export default function AboutPage() {
             <div className="mt-9 flex flex-wrap gap-[14px]">
               <Link
                 href="/plateforme"
-                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
               >
                 {t("site.nav.platform", "Plateforme")}
               </Link>

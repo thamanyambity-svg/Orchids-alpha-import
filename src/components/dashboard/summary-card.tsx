@@ -36,7 +36,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
         </div>
         <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground uppercase">
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${request.status === 'CLOSED' ? 'bg-green-500' : 'bg-primary'}`} />
+            <div className={`w-2 h-2 rounded-full ${request.status === 'CLOSED' ? 'bg-success' : 'bg-primary'}`} />
             <span>{statusLabel}</span>
           </div>
             <span>ALPHA IMPORT EXCHANGE SÉCURISÉ</span>

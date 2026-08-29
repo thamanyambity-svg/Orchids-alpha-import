@@ -69,8 +69,8 @@ const statusColors: Record<string, string> = {
   ANALYSIS: "bg-primary/10 text-primary",
   VALIDATED: "bg-chart-2/10 text-chart-2",
   REJECTED: "bg-destructive/10 text-destructive",
-  AWAITING_DEPOSIT: "bg-amber/10 text-amber-600",
-  AWAITING_BALANCE: "bg-amber/10 text-amber-600",
+  AWAITING_DEPOSIT: "bg-amber/10 text-warning",
+  AWAITING_BALANCE: "bg-amber/10 text-warning",
   EXECUTING: "bg-chart-3/10 text-chart-3",
   SHIPPED: "bg-chart-4/10 text-chart-4",
   DELIVERED: "bg-success/10 text-success",
@@ -99,7 +99,7 @@ const quoteStatusColors: Record<string, string> = {
   ACCEPTED: "bg-success/10 text-success",
   REJECTED: "bg-destructive/10 text-destructive",
   EXPIRED: "bg-muted text-muted-foreground",
-  REVISED: "bg-amber/10 text-amber-600"
+  REVISED: "bg-amber/10 text-warning"
 }
 
 const poStatusLabels: Record<string, string> = {
@@ -113,7 +113,7 @@ const poStatusLabels: Record<string, string> = {
 
 const poStatusColors: Record<string, string> = {
   GENERATED: "bg-muted text-muted-foreground",
-  PENDING_SIGNATURE: "bg-amber/10 text-amber-600",
+  PENDING_SIGNATURE: "bg-amber/10 text-warning",
   SIGNED: "bg-primary/10 text-primary",
   CONFIRMED: "bg-success/10 text-success",
   CANCELLED: "bg-destructive/10 text-destructive",

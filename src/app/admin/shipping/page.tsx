@@ -85,45 +85,45 @@ export default function AdminShippingPage() {
 
             {/* Summary Cards */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card className="bg-blue-50/50 border-blue-100">
+                <Card className="bg-info-subtle/50 border-info-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-blue-800">Fret Maritime</CardTitle>
-                        <Anchor className="h-4 w-4 text-blue-600" />
+                        <CardTitle className="text-sm font-medium text-info">Fret Maritime</CardTitle>
+                        <Anchor className="h-4 w-4 text-info" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-blue-900">
+                        <div className="text-2xl font-bold text-info">
                             {shipments.filter(s => s.request?.transport_mode !== 'AIR').length}
                         </div>
-                        <p className="text-xs text-blue-600">Conteneurs en transit</p>
+                        <p className="text-xs text-info">Conteneurs en transit</p>
                     </CardContent>
                 </Card>
 
-                <Card className="bg-sky-50/50 border-sky-100">
+                <Card className="bg-info-subtle/50 border-info-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-sky-800">Fret Aérien</CardTitle>
-                        <Plane className="h-4 w-4 text-sky-600" />
+                        <CardTitle className="text-sm font-medium text-info">Fret Aérien</CardTitle>
+                        <Plane className="h-4 w-4 text-info" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-sky-900">
+                        <div className="text-2xl font-bold text-info">
                             {shipments.filter(s => s.request?.transport_mode === 'AIR').length}
                         </div>
-                        <p className="text-xs text-sky-600">Expéditions urgentes</p>
+                        <p className="text-xs text-info">Expéditions urgentes</p>
                     </CardContent>
                 </Card>
 
-                <Card className="bg-emerald-50/50 border-emerald-100">
+                <Card className="bg-success-subtle/50 border-success-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-emerald-800">Coûts Logistiques</CardTitle>
-                        <DollarSign className="h-4 w-4 text-emerald-600" />
+                        <CardTitle className="text-sm font-medium text-success">Coûts Logistiques</CardTitle>
+                        <DollarSign className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-emerald-900">
+                        <div className="text-2xl font-bold text-success">
                             ${shipments.reduce((acc, s) => {
                                 const costs = calculateDetailedCosts(s.total_amount, s.request?.transport_mode, s.request?.country?.code)
                                 return acc + costs.total
                             }, 0).toLocaleString()}
                         </div>
-                        <p className="text-xs text-emerald-600">Estimations Fret + Douanes</p>
+                        <p className="text-xs text-success">Estimations Fret + Douanes</p>
                     </CardContent>
                 </Card>
             </div>
@@ -188,7 +188,7 @@ export default function AdminShippingPage() {
                                                     </Badge>
                                                     <Badge
                                                         variant={transportMode === 'AIR' ? 'secondary' : 'default'}
-                                                        className={`uppercase text-[10px] w-fit flex items-center gap-1 ${transportMode === 'AIR' ? 'bg-sky-100 text-sky-800 hover:bg-sky-200' : 'bg-blue-100 text-blue-800 hover:bg-blue-200 border-0'}`}
+                                                        className={`uppercase text-[10px] w-fit flex items-center gap-1 ${transportMode === 'AIR' ? 'bg-info-subtle text-info hover:bg-info-subtle' : 'bg-info-subtle text-info hover:bg-info-subtle border-0'}`}
                                                     >
                                                         {transportMode === 'AIR' ? <Plane className="w-3 h-3" /> : <Anchor className="w-3 h-3" />}
                                                         {transportMode === 'AIR' ? 'AÉRIEN (Express)' : 'MARITIME'}
@@ -221,7 +221,7 @@ export default function AdminShippingPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <div className="font-bold text-emerald-600">
+                                                <div className="font-bold text-success">
                                                     ${(costs.total + shipment.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                 </div>
                                                 <span className="text-[10px] text-muted-foreground">Coût Global</span>

@@ -23,10 +23,10 @@ import { fr } from "date-fns/locale"
 const statusColors: Record<string, string> = {
   PENDING: "bg-secondary text-secondary-foreground",
   VALIDATED: "bg-primary/10 text-primary",
-  EXECUTING: "bg-blue-500/10 text-blue-500",
-  SHIPPED: "bg-purple-500/10 text-purple-500",
-  DELIVERED: "bg-green-500/10 text-green-500",
-    CLOSED: "bg-green-600/10 text-green-600",
+  EXECUTING: "bg-info/10 text-info",
+  SHIPPED: "bg-info/10 text-info",
+  DELIVERED: "bg-success/10 text-success",
+    CLOSED: "bg-success/10 text-success",
     CANCELLED: "bg-destructive/10 text-destructive",
   }
   

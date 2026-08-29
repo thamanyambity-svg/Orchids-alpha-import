@@ -99,7 +99,7 @@ export default function Hero() {
         </div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.6 }} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-[#06101e] hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
+          <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-primary-foreground hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
             Accéder à la plateforme
           </Link>
           <Link href="/how-it-works" className="font-condensed text-sm px-12 py-4 border border-white/25 text-white/80 hover:border-gold hover:text-gold transition-all duration-200 tracking-[0.3em] uppercase">

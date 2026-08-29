@@ -203,7 +203,7 @@ export default function AdminBuyersPage() {
                                         </TableCell>
                                         <TableCell>
                                             {buyer.status === 'VERIFIED' ? (
-                                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
+                                                <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
                                                     <ShieldCheck className="w-3 h-3 mr-1" /> Vérifié
                                                 </Badge>
                                             ) : buyer.status === 'SUSPENDED' ? (
@@ -218,7 +218,7 @@ export default function AdminBuyersPage() {
                                             <div className="text-sm space-y-1">
                                                 <div><span className="font-medium">{buyer.total_requests}</span> demandes</div>
                                                 <div className="text-xs text-muted-foreground">
-                                                    <span className="font-medium text-amber-600">{buyer.active_orders}</span> commandes actives
+                                                    <span className="font-medium text-warning">{buyer.active_orders}</span> commandes actives
                                                 </div>
                                             </div>
                                         </TableCell>
@@ -240,7 +240,7 @@ export default function AdminBuyersPage() {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem>Voir détails (Bientôt)</DropdownMenuItem>
-                                                    <DropdownMenuItem className="text-red-600">Suspendre (Bientôt)</DropdownMenuItem>
+                                                    <DropdownMenuItem className="text-destructive">Suspendre (Bientôt)</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

@@ -99,7 +99,7 @@ export default function AdminDocumentsPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
@@ -118,8 +118,8 @@ export default function AdminDocumentsPage() {
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-[#ffd700]/10 flex items-center justify-center flex-shrink-0">
-                    <FileText className="w-5 h-5 text-[#ffd700]" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">

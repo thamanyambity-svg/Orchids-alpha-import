@@ -21,7 +21,7 @@ import { createClient } from "@/lib/supabase/client"
 const iconMap: Record<string, React.ReactNode> = {
   success: <CheckCircle2 className="w-5 h-5 text-success" />,
   info: <Info className="w-5 h-5 text-primary" />,
-  warning: <AlertTriangle className="w-5 h-5 text-amber-500" />,
+  warning: <AlertTriangle className="w-5 h-5 text-warning" />,
   error: <AlertCircle className="w-5 h-5 text-destructive" />,
 }
 
@@ -87,7 +87,7 @@ export default function AdminNotificationsPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : notifications.length === 0 ? (
         <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
@@ -105,7 +105,7 @@ export default function AdminNotificationsPage() {
               className={`p-4 rounded-xl border transition-colors ${
                 n.is_read
                   ? "bg-white/5 border-white/10"
-                  : "bg-[#ffd700]/5 border-[#ffd700]/20"
+                  : "bg-primary/5 border-primary/20"
               }`}
             >
               <div className="flex items-start gap-4">
@@ -126,14 +126,14 @@ export default function AdminNotificationsPage() {
                     </span>
                     <span className="text-[10px] text-white/30">— {n.user_id?.slice(0, 8)}...</span>
                     {n.link && (
-                      <a href={n.link} className="text-[10px] text-[#ffd700] hover:underline flex items-center gap-1">
+                      <a href={n.link} className="text-[10px] text-primary hover:underline flex items-center gap-1">
                         <ExternalLink className="w-3 h-3" /> Voir
                       </a>
                     )}
                   </div>
                 </div>
                 {!n.is_read && (
-                  <div className="w-2 h-2 rounded-full bg-[#ffd700] mt-2 flex-shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                 )}
               </div>
             </motion.div>

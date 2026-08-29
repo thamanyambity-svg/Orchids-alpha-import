@@ -96,7 +96,7 @@ export default function AdminInvoicesPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
@@ -116,8 +116,8 @@ export default function AdminInvoicesPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-[#ffd700]/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-[#ffd700]" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">

@@ -270,8 +270,8 @@ export default function AdminSuppliersPage() {
                                     <TableRow key={supplier.id}>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-lg bg-orange-100 flex items-center justify-center border border-orange-200">
-                                                    <Box className="h-5 w-5 text-orange-600" />
+                                                <div className="h-10 w-10 rounded-lg bg-warning-subtle flex items-center justify-center border border-warning-border">
+                                                    <Box className="h-5 w-5 text-warning" />
                                                 </div>
                                                 <div>
                                                     <div className="font-medium">{supplier.name}</div>
@@ -300,11 +300,11 @@ export default function AdminSuppliersPage() {
                                         </TableCell>
                                         <TableCell>
                                             {supplier.validated_by_admin ? (
-                                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
+                                                <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
                                                     <CheckCircle2 className="w-3 h-3 mr-1" /> {t("admin.suppliers.validated", "Validé")}
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">
+                                                <Badge variant="destructive" className="bg-destructive-subtle text-destructive hover:bg-destructive-subtle border-destructive-border">
                                                     <AlertCircle className="w-3 h-3 mr-1" /> À Valider
                                                 </Badge>
                                             )}
@@ -314,7 +314,7 @@ export default function AdminSuppliersPage() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                    className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                                                     onClick={() => handleValidation(supplier.id, false)}
                                                 >
                                                     <XCircle className="w-4 h-4 mr-2" />
@@ -327,7 +327,7 @@ export default function AdminSuppliersPage() {
                                                     </Button>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                                        className="bg-success hover:bg-success text-white"
                                                         onClick={() => handleValidation(supplier.id, true)}
                                                     >
                                                         <CheckCircle2 className="w-4 h-4 mr-2" />

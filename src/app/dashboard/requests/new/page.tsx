@@ -783,7 +783,7 @@ export default function NewRequestPage() {
                         <div className="space-y-2 text-xs">
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">{t("dashboard.requests.new.score", "Score")}</span>
-                            <span className="font-bold text-amber-500">{selectedPartner.performance_score}/5.0</span>
+                            <span className="font-bold text-warning">{selectedPartner.performance_score}/5.0</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">{t("dashboard.requests.new.orders", "Commandes")}</span>
@@ -812,9 +812,9 @@ export default function NewRequestPage() {
                     )}
 
                     <div className="flex flex-col gap-3">
-                      <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
-                        <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
-                        <p className="text-amber-700 font-medium">
+                      <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/20 text-xs">
+                        <ShieldCheck className="w-5 h-5 text-warning shrink-0" />
+                        <p className="text-warning font-medium">
                           {t("dashboard.requests.new.secured_funds", "Vos fonds sont sécurisés via notre compte séquestre jusqu'à validation de la livraison.")}
                         </p>
                       </div>

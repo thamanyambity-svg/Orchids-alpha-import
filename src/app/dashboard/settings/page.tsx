@@ -232,7 +232,7 @@ export default function SettingsPage() {
                   <h2 className="text-xl font-bold">{profile?.full_name || 'Nom non défini'}</h2>
                   <Badge
                     variant="default" // Changed from conditional variant to controlled style
-                    className={`text-[10px] ${profile?.status === 'VERIFIED' ? 'bg-green-500/20 text-green-600 border-green-200' : ''}`}
+                    className={`text-[10px] ${profile?.status === 'VERIFIED' ? 'bg-success/20 text-success border-success-border' : ''}`}
                   >
                     {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
                   </Badge>
@@ -455,7 +455,7 @@ export default function SettingsPage() {
                   </div>
                   <Badge
                     variant="default"
-                    className={`h-6 ${profile?.status === 'VERIFIED' ? 'bg-green-500/20 text-green-600 border-green-200' : ''}`}
+                    className={`h-6 ${profile?.status === 'VERIFIED' ? 'bg-success/20 text-success border-success-border' : ''}`}
                   >
                     {profile?.status === 'VERIFIED' ? 'Vérifié' : 'Non vérifié'}
                   </Badge>

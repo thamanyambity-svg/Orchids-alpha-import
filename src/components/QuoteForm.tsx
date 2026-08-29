@@ -35,34 +35,34 @@ export default function QuoteForm() {
             <div className="md:col-span-2">
               <label className="font-condensed text-xs text-white/40 tracking-widest uppercase block mb-2">{t("quote.type_label", "Type de marchandise")}</label>
               <select className="w-full px-5 py-4 border bg-transparent text-white text-sm transition-colors duration-200 focus:border-gold focus:outline-none" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
-                <option className="bg-[#0a1628]" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
-                <option className="bg-[#0a1628]" value="textile">{t("quote.type_textile", "Textile & Vêtements")}</option>
-                <option className="bg-[#0a1628]" value="electronique">{t("quote.type_electronique", "Électronique")}</option>
-                <option className="bg-[#0a1628]" value="agro">{t("quote.type_agro", "Agroalimentaire")}</option>
-                <option className="bg-[#0a1628]" value="machinerie">{t("quote.type_machinerie", "Machinerie industrielle")}</option>
-                <option className="bg-[#0a1628]" value="auto">{t("quote.type_auto", "Automobile & Pièces")}</option>
-                <option className="bg-[#0a1628]" value="autre">{t("quote.type_autre", "Autre")}</option>
+                <option className="bg-input" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
+                <option className="bg-input" value="textile">{t("quote.type_textile", "Textile & Vêtements")}</option>
+                <option className="bg-input" value="electronique">{t("quote.type_electronique", "Électronique")}</option>
+                <option className="bg-input" value="agro">{t("quote.type_agro", "Agroalimentaire")}</option>
+                <option className="bg-input" value="machinerie">{t("quote.type_machinerie", "Machinerie industrielle")}</option>
+                <option className="bg-input" value="auto">{t("quote.type_auto", "Automobile & Pièces")}</option>
+                <option className="bg-input" value="autre">{t("quote.type_autre", "Autre")}</option>
               </select>
             </div>
             <div>
               <label className="font-condensed text-xs text-white/40 tracking-widest uppercase block mb-2">{t("quote.origin_label", "Pays d'origine")}</label>
               <select className="w-full px-5 py-4 border bg-transparent text-white text-sm transition-colors duration-200 focus:border-gold focus:outline-none" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
-                <option className="bg-[#0a1628]" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
-                <option className="bg-[#0a1628]" value="Chine">{t("quote.origin_china", "Chine")}</option>
-                <option className="bg-[#0a1628]" value="Turquie">{t("quote.origin_turkey", "Turquie")}</option>
-                <option className="bg-[#0a1628]" value="Japon">{t("quote.origin_japan", "Japon")}</option>
-                <option className="bg-[#0a1628]" value="Thailande">{t("quote.origin_thailand", "Thaïlande")}</option>
-                <option className="bg-[#0a1628]" value="UAE">{t("quote.origin_uae", "Émirats Arabes Unis")}</option>
+                <option className="bg-input" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
+                <option className="bg-input" value="Chine">{t("quote.origin_china", "Chine")}</option>
+                <option className="bg-input" value="Turquie">{t("quote.origin_turkey", "Turquie")}</option>
+                <option className="bg-input" value="Japon">{t("quote.origin_japan", "Japon")}</option>
+                <option className="bg-input" value="Thailande">{t("quote.origin_thailand", "Thaïlande")}</option>
+                <option className="bg-input" value="UAE">{t("quote.origin_uae", "Émirats Arabes Unis")}</option>
               </select>
             </div>
             <div>
               <label className="font-condensed text-xs text-white/40 tracking-widest uppercase block mb-2">{t("quote.volume_label", "Volume mensuel estimé")}</label>
               <select className="w-full px-5 py-4 border bg-transparent text-white text-sm transition-colors duration-200 focus:border-gold focus:outline-none" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
-                <option className="bg-[#0a1628]" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
-                <option className="bg-[#0a1628]" value="1-5">{t("quote.volume_1_5", "1-5 conteneurs")}</option>
-                <option className="bg-[#0a1628]" value="6-20">{t("quote.volume_6_20", "6-20 conteneurs")}</option>
-                <option className="bg-[#0a1628]" value="21-50">{t("quote.volume_21_50", "21-50 conteneurs")}</option>
-                <option className="bg-[#0a1628]" value="50+">{t("quote.volume_50_plus", "50+ conteneurs")}</option>
+                <option className="bg-input" value="">{t("quote.select_placeholder", "Sélectionnez...")}</option>
+                <option className="bg-input" value="1-5">{t("quote.volume_1_5", "1-5 conteneurs")}</option>
+                <option className="bg-input" value="6-20">{t("quote.volume_6_20", "6-20 conteneurs")}</option>
+                <option className="bg-input" value="21-50">{t("quote.volume_21_50", "21-50 conteneurs")}</option>
+                <option className="bg-input" value="50+">{t("quote.volume_50_plus", "50+ conteneurs")}</option>
               </select>
             </div>
             <div className="md:col-span-2">
@@ -74,7 +74,7 @@ export default function QuoteForm() {
               <textarea rows={3} placeholder={t("quote.details_placeholder", "Produits, quantités, délais souhaités...")} className="w-full px-5 py-4 border bg-transparent text-white text-sm transition-colors duration-200 focus:border-gold focus:outline-none resize-none" style={{ borderColor: "rgba(255,255,255,0.12)" }} />
             </div>
             <div className="md:col-span-2">
-              <motion.button type="submit" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="w-full font-condensed text-sm font-bold py-5 bg-gold text-[#06101e] hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
+              <motion.button type="submit" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="w-full font-condensed text-sm font-bold py-5 bg-gold text-primary-foreground hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
                 {t("quote.submit", "Obtenir mon devis")}
               </motion.button>
             </div>

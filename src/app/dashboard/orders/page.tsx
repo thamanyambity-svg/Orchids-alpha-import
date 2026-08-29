@@ -56,12 +56,12 @@ const statusIcon: Record<string, React.ReactNode> = {
 
 const statusColor: Record<string, string> = {
   PENDING: "bg-muted text-muted-foreground",
-  AWAITING_DEPOSIT: "bg-amber-500/10 text-amber-500",
+  AWAITING_DEPOSIT: "bg-warning/10 text-warning",
   FUNDED: "bg-success/10 text-success",
   SOURCING: "bg-primary/10 text-primary",
   EXECUTING: "bg-chart-3/10 text-chart-3",
   PURCHASED: "bg-chart-2/10 text-chart-2",
-  AWAITING_BALANCE: "bg-amber-500/10 text-amber-500",
+  AWAITING_BALANCE: "bg-warning/10 text-warning",
   SHIPPED: "bg-chart-4/10 text-chart-4",
   DELIVERED: "bg-success/10 text-success",
   CLOSED: "bg-muted text-muted-foreground",
@@ -76,7 +76,7 @@ type Proof = {
 }
 
 const proofBadge: Record<Proof["status"], { label: string; className: string }> = {
-  PENDING_REVIEW: { label: "Justificatif en vérification", className: "bg-amber-500/10 text-amber-500" },
+  PENDING_REVIEW: { label: "Justificatif en vérification", className: "bg-warning/10 text-warning" },
   ACCEPTED: { label: "Justificatif validé", className: "bg-success/10 text-success" },
   REJECTED: { label: "Justificatif refusé", className: "bg-destructive/10 text-destructive" },
   SUPERSEDED: { label: "Justificatif remplacé", className: "bg-muted text-muted-foreground" },
@@ -141,9 +141,9 @@ export default function DashboardOrdersPage() {
 
       <div className="p-6">
         {pendingDeposit > 0 && (
-          <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
-            <p className="text-sm text-amber-500">
+          <div className="mb-6 p-4 rounded-xl bg-warning/10 border border-warning/20 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-warning flex-shrink-0" />
+            <p className="text-sm text-warning">
               {t("dashboard.orders.pending_deposit", "Vous avez {count} commande(s) en attente d'acompte.").replace("{count}", String(pendingDeposit))}
             </p>
           </div>
@@ -208,7 +208,7 @@ export default function DashboardOrdersPage() {
                       <div className="text-right">
                         <p className="text-lg font-bold">${order.total_amount?.toLocaleString()}</p>
                         {order.deposit_paid && !order.balance_paid && (
-                          <p className="text-[10px] text-amber-500">
+                          <p className="text-[10px] text-warning">
                             {t("dashboard.orders.balance_pending", "Solde 40% dû")}
                           </p>
                         )}

@@ -144,7 +144,7 @@ export default function SourcingSessionPage() {
           <h2 className="text-3xl font-bold tracking-tight">Validation Sourcing</h2>
           <p className="text-muted-foreground flex items-center gap-2">
             Demande {session.request?.reference} — {session.request?.category}
-            <Badge variant="outline" className="ml-2 bg-blue-50">
+            <Badge variant="outline" className="ml-2 bg-info-subtle">
               {session.status}
             </Badge>
           </p>
@@ -155,14 +155,14 @@ export default function SourcingSessionPage() {
         
         {/* Left Column: AI Summary */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-blue-50/50 p-6 rounded-lg border border-blue-100">
-            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-3">
+          <div className="bg-info-subtle/50 p-6 rounded-lg border border-info-border">
+            <h3 className="font-semibold text-info flex items-center gap-2 mb-3">
               <Bot className="w-5 h-5" /> Synthèse de l'Agent
             </h3>
-            <p className="text-sm text-blue-800/80 mb-4 leading-relaxed">
+            <p className="text-sm text-info/80 mb-4 leading-relaxed">
               {session.ai_reasoning}
             </p>
-            <div className="space-y-2 text-sm text-blue-700">
+            <div className="space-y-2 text-sm text-info">
               <div className="flex justify-between">
                 <span>Fournisseurs analysés:</span>
                 <span className="font-semibold">{session.suppliers_evaluated}</span>
@@ -179,12 +179,12 @@ export default function SourcingSessionPage() {
               <h3 className="font-semibold mb-4">Progression</h3>
               <div className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">En attente :</span>
+                  <span className="text-muted-foreground">En attente :</span>
                   <Badge variant="secondary">{pendingCount}</Badge>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Approuvés :</span>
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">{approvedCount}</Badge>
+                  <span className="text-muted-foreground">Approuvés :</span>
+                  <Badge className="bg-success-subtle text-success hover:bg-success-subtle">{approvedCount}</Badge>
                 </div>
               </div>
               
@@ -210,9 +210,9 @@ export default function SourcingSessionPage() {
         {/* Right Column: Matches List */}
         <div className="md:col-span-3">
           {matches.length === 0 ? (
-            <div className="text-center p-12 border rounded-lg bg-gray-50/50">
-              <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500">Aucun fournisseur n'a été retenu par l'IA.</p>
+            <div className="text-center p-12 border rounded-lg bg-muted/50">
+              <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground">Aucun fournisseur n'a été retenu par l'IA.</p>
             </div>
           ) : (
             <div className="space-y-4">

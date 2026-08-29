@@ -93,7 +93,7 @@ export function EscrowSimulator() {
             </p>
             <Link
               href="/contact"
-              className="self-start bg-gold px-[34px] py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+              className="self-start bg-gold px-[34px] py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
             >
               {t("site.cta.platform", "Accéder à la plateforme")}
             </Link>

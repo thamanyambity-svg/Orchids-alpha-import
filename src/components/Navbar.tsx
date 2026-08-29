@@ -63,7 +63,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
           <Link href="/login">
-            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} className="hidden sm:flex font-condensed text-xs px-6 py-2.5 border border-gold text-gold hover:bg-gold hover:text-[#06101e] transition-all duration-200 tracking-[0.25em] uppercase" style={{ boxShadow: scrolled ? "0 0 20px -5px hsl(42 85% 55% / 0.3)" : "none" }}>
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} className="hidden sm:flex font-condensed text-xs px-6 py-2.5 border border-gold text-gold hover:bg-gold hover:text-primary-foreground transition-all duration-200 tracking-[0.25em] uppercase" style={{ boxShadow: scrolled ? "0 0 20px -5px hsl(42 85% 55% / 0.3)" : "none" }}>
               {t("nav.login", "Connexion")}
             </motion.button>
           </Link>
@@ -90,7 +90,7 @@ export default function Navbar() {
           <LanguageSwitcher />
         </div>
         <Link href="/register">
-          <motion.button className="w-full font-condensed text-sm font-bold py-5 bg-gold text-[#06101e] tracking-[0.3em] uppercase glow-gold mt-8" initial={false} animate={menuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.3, delay: 0.35 }}>
+          <motion.button className="w-full font-condensed text-sm font-bold py-5 bg-gold text-primary-foreground tracking-[0.3em] uppercase glow-gold mt-8" initial={false} animate={menuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.3, delay: 0.35 }}>
             {t("hero.cta.platform", "Accéder à la plateforme")}
           </motion.button>
         </Link>

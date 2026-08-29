@@ -135,11 +135,11 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 relative">
                 <Bell className="w-5 h-5 text-muted-foreground" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-background animate-pulse" />
+                  <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full border-2 border-background animate-pulse" />
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0 bg-[#0a0e14] border-white/10" align="end">
+            <PopoverContent className="w-80 p-0 bg-card border-white/10" align="end">
               <div className="p-4 border-b border-white/5 flex justify-between items-center">
                 <h4 className="font-semibold text-white">{t("dashboard.header.notifications", "Notifications")}</h4>
                 {unreadCount > 0 && <span className="text-xs text-muted-foreground">{unreadCount} non lues</span>}
@@ -153,12 +153,12 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
                   notifications.map(n => (
                     <div
                       key={n.id}
-                      className={`p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${!n.is_read ? 'bg-blue-500/5' : ''}`}
+                      className={`p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${!n.is_read ? 'bg-info/5' : ''}`}
                       onClick={() => markAsRead(n.id)}
                     >
-                      <h5 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'font-medium text-gray-400'}`}>{n.title}</h5>
+                      <h5 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'font-medium text-muted-foreground'}`}>{n.title}</h5>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.message}</p>
-                      <span className="text-[10px] text-gray-500 mt-2 block">{new Date(n.created_at).toLocaleTimeString()}</span>
+                      <span className="text-[10px] text-muted-foreground mt-2 block">{new Date(n.created_at).toLocaleTimeString()}</span>
                     </div>
                   ))
                 )}
