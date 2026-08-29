@@ -19,26 +19,7 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-secondary text-secondary-foreground",
-  VALIDATED: "bg-primary/10 text-primary",
-  EXECUTING: "bg-info/10 text-info",
-  SHIPPED: "bg-info/10 text-info",
-  DELIVERED: "bg-success/10 text-success",
-    CLOSED: "bg-success/10 text-success",
-    CANCELLED: "bg-destructive/10 text-destructive",
-  }
-  
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    VALIDATED: "À traiter",
-    EXECUTING: "En cours",
-    SHIPPED: "Expédié",
-    DELIVERED: "Livré",
-    CLOSED: "Terminé",
-    CANCELLED: "Annulé",
-  }
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 export default function PartnerRequestsPage() {
   const { t } = useLanguage()
@@ -141,8 +122,8 @@ export default function PartnerRequestsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColors[request.status]}`}>
-                          {t("partner.requests.status_" + request.status, statusLabels[request.status])}
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
+                          {t("partner.requests.status_" + request.status, statusLabel(REQUEST_STATUS, request.status))}
                       </span>
                     </div>
                     <h3 className="font-semibold text-lg mb-1 truncate">{request.product_name}</h3>

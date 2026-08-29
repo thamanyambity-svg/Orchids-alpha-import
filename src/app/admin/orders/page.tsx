@@ -24,36 +24,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  AWAITING_DEPOSIT: "Acompte requis",
-  FUNDED: "Financé",
-  SOURCING: "En sourcing",
-  EXECUTING: "En exécution",
-  PURCHASED: "Acheté",
-  AWAITING_BALANCE: "Solde requis",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  CLOSED: "Fermé",
-  INCIDENT: "Incident",
-  FROZEN: "Bloqué",
-  CANCELLED: "Annulé",
-}
 
-const statusColor: Record<string, string> = {
-  PENDING: "bg-white/10 text-white/60",
-  AWAITING_DEPOSIT: "bg-warning/10 text-warning",
-  FUNDED: "bg-success/10 text-success",
-  SOURCING: "bg-primary/10 text-primary",
-  EXECUTING: "bg-chart-3/10 text-chart-3",
-  PURCHASED: "bg-chart-2/10 text-chart-2",
-  AWAITING_BALANCE: "bg-warning/10 text-warning",
-  SHIPPED: "bg-chart-4/10 text-chart-4",
-  DELIVERED: "bg-success/10 text-success",
-  CLOSED: "bg-white/10 text-white/60",
-  INCIDENT: "bg-destructive/10 text-destructive",
-}
 
 export default function AdminOrdersPage() {
   const { t } = useLanguage()
@@ -125,8 +98,8 @@ export default function AdminOrdersPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("admin.orders.all", "Tous")}</SelectItem>
-            {Object.entries(statusLabels).map(([key, label]) => (
-              <SelectItem key={key} value={key}>{label}</SelectItem>
+            {Object.entries(REQUEST_STATUS).map(([key, meta]) => (
+              <SelectItem key={key} value={key}>{meta.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -159,8 +132,8 @@ export default function AdminOrdersPage() {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold text-white">{order.import_requests?.product_name || "Importation"}</span>
-                        <Badge className={statusColor[order.status] || ""}>
-                          {statusLabels[order.status] || order.status}
+                        <Badge className={statusBadge(REQUEST_STATUS, order.status)}>
+                          {statusLabel(REQUEST_STATUS, order.status)}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-white/40">

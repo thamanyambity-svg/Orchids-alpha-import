@@ -33,16 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
-
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  VALIDATED: "À traiter",
-  EXECUTING: "En cours d'exécution",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  CLOSED: "Terminé",
-  CANCELLED: "Annulé",
-}
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 const documentTypeLabels: Record<string, string> = {
   PROFORMA_INVOICE: "Facture Proforma",
@@ -158,7 +149,7 @@ export default function PartnerRequestDetailPage() {
       
       const { data } = await response.json()
       setRequest({ ...request, status: data.status })
-      toast.success(`Statut mis à jour : ${statusLabels[newStatus]}`)
+      toast.success(`Statut mis à jour : ${statusLabel(REQUEST_STATUS, newStatus)}`)
     } catch (error: any) {
       console.error('Error updating status:', error)
       toast.error(`Erreur: ${error.message}`)

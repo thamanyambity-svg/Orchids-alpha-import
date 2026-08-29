@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { PAYMENT_PROOF_STATUS, statusBadge } from "@/lib/design/status"
 
 type Proof = {
   id: string
@@ -34,12 +35,6 @@ type Proof = {
 
 const MIN_REASON_LENGTH = 10
 
-const statusBadge: Record<Proof["status"], string> = {
-  PENDING_REVIEW: "bg-primary/10 text-primary",
-  ACCEPTED: "bg-success/10 text-success",
-  REJECTED: "bg-destructive/10 text-destructive",
-  SUPERSEDED: "bg-muted text-muted-foreground",
-}
 
 function formatAmount(proof: Proof) {
   if (proof.declared_amount == null) return "—"
@@ -190,7 +185,7 @@ export default function AdminPaymentProofsPage() {
                             <span className="font-semibold text-white">
                               {proof.order_reference || proof.order_id.slice(0, 8)}
                             </span>
-                            <Badge className={statusBadge[proof.status]}>
+                            <Badge className={statusBadge(PAYMENT_PROOF_STATUS, proof.status)}>
                               {t("admin.proofs.status.pending", "En attente")}
                             </Badge>
                           </div>
@@ -304,7 +299,7 @@ export default function AdminPaymentProofsPage() {
                     className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <Badge className={statusBadge[proof.status]}>
+                      <Badge className={statusBadge(PAYMENT_PROOF_STATUS, proof.status)}>
                         {proof.status === "ACCEPTED"
                           ? t("admin.proofs.status.accepted", "Validé")
                           : t("admin.proofs.status.rejected", "Refusé")}

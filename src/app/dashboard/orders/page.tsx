@@ -23,22 +23,8 @@ import { Badge } from "@/components/ui/badge"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
 import { PaymentProofDialog } from "@/components/dashboard/payment-proof-dialog"
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  AWAITING_DEPOSIT: "Acompte requis",
-  FUNDED: "Financé",
-  SOURCING: "En sourcing",
-  EXECUTING: "En exécution",
-  PURCHASED: "Acheté",
-  AWAITING_BALANCE: "Solde requis",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  CLOSED: "Fermé",
-  INCIDENT: "Incident",
-  FROZEN: "Bloqué",
-  CANCELLED: "Annulé",
-}
 
 const statusIcon: Record<string, React.ReactNode> = {
   PENDING: <Clock className="w-5 h-5" />,
@@ -54,19 +40,6 @@ const statusIcon: Record<string, React.ReactNode> = {
   INCIDENT: <AlertCircle className="w-5 h-5" />,
 }
 
-const statusColor: Record<string, string> = {
-  PENDING: "bg-muted text-muted-foreground",
-  AWAITING_DEPOSIT: "bg-warning/10 text-warning",
-  FUNDED: "bg-success/10 text-success",
-  SOURCING: "bg-primary/10 text-primary",
-  EXECUTING: "bg-chart-3/10 text-chart-3",
-  PURCHASED: "bg-chart-2/10 text-chart-2",
-  AWAITING_BALANCE: "bg-warning/10 text-warning",
-  SHIPPED: "bg-chart-4/10 text-chart-4",
-  DELIVERED: "bg-success/10 text-success",
-  CLOSED: "bg-muted text-muted-foreground",
-  INCIDENT: "bg-destructive/10 text-destructive",
-}
 
 type Proof = {
   id: string
@@ -184,14 +157,14 @@ export default function DashboardOrdersPage() {
                       href={`/dashboard/requests/${order.request_id}`}
                       className="flex min-w-0 flex-1 items-center gap-4"
                     >
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${statusColor[order.status] || "bg-muted"}`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${statusBadge(REQUEST_STATUS, order.status)}`}>
                         {statusIcon[order.status] || <Package className="w-5 h-5" />}
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-bold">{order.import_requests?.product_name || t("dashboard.orders.import", "Importation")}</h3>
-                          <Badge className={statusColor[order.status] || ""}>
-                            {statusLabels[order.status] || order.status}
+                          <Badge className={statusBadge(REQUEST_STATUS, order.status)}>
+                            {statusLabel(REQUEST_STATUS, order.status)}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">

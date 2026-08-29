@@ -18,14 +18,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
+import { INVOICE_STATUS, statusBadge } from "@/lib/design/status"
 
-const statusBadge: Record<string, string> = {
-  DRAFT: "bg-muted text-muted-foreground",
-  SENT: "bg-primary/10 text-primary",
-  PAID: "bg-success/10 text-success",
-  OVERDUE: "bg-destructive/10 text-destructive",
-  CANCELLED: "bg-muted text-muted-foreground",
-}
 
 const typeLabel: Record<string, string> = {
   PROFORMA: "Proforma",
@@ -122,7 +116,7 @@ export default function AdminInvoicesPage() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold text-white">{inv.number}</span>
-                      <Badge className={statusBadge[inv.status]}>
+                      <Badge className={statusBadge(INVOICE_STATUS, inv.status)}>
                         {inv.status === "DRAFT" ? "Brouillon" : inv.status === "SENT" ? "Envoyée" : inv.status === "PAID" ? "Payée" : inv.status === "OVERDUE" ? "En retard" : "Annulée"}
                       </Badge>
                       <Badge variant="outline" className="border-white/20 text-white/60">
