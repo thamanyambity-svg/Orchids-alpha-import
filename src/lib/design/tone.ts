@@ -34,13 +34,16 @@ const TONES: Record<Tone, ToneClasses> = {
     border: "border-border",
     dot: "bg-muted-foreground",
   },
+  // La tonalite marque n'utilise pas --primary pour son texte : l'or des
+  // boutons, lisible sous une etiquette blanche, tombe a un contraste de 1.9
+  // en texte sur fond clair. Elle a donc son propre bronze, --brand.
   brand: {
-    badge: "bg-primary/10 text-primary border-primary/30",
-    surface: "bg-primary/5 border-primary/20",
-    text: "text-primary",
-    icon: "text-primary",
-    border: "border-primary/30",
-    dot: "bg-primary",
+    badge: "bg-brand-subtle text-brand border-brand-border",
+    surface: "bg-brand-subtle/60 border-brand-border",
+    text: "text-brand",
+    icon: "text-brand",
+    border: "border-brand-border",
+    dot: "bg-brand",
   },
   info: {
     badge: "bg-info-subtle text-info border-info-border",

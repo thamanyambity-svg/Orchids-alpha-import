@@ -32,6 +32,9 @@
   --color-warning-foreground: hsl(var(--warning-foreground));
   --color-warning-subtle: hsl(var(--warning-subtle));
   --color-warning-border: hsl(var(--warning-border));
+  --color-brand: hsl(var(--brand));
+  --color-brand-subtle: hsl(var(--brand-subtle));
+  --color-brand-border: hsl(var(--brand-border));
   --color-info: hsl(var(--info));
   --color-info-foreground: hsl(var(--info-foreground));
   --color-info-subtle: hsl(var(--info-subtle));
@@ -91,6 +94,9 @@
   --info-foreground: 0 0% 100%;
   --info-subtle: 210 55% 13%;
   --info-border: 210 55% 27%;
+  --brand: 42 85% 60%;
+  --brand-subtle: 42 55% 12%;
+  --brand-border: 42 55% 28%;
   --border: 216 30% 15%;
   --input: 216 30% 13%;
   --ring: 42 85% 55%;
@@ -149,6 +155,9 @@
   --info-foreground: 0 0% 100%;
   --info-subtle: 210 92% 95%;
   --info-border: 210 60% 78%;
+  --brand: 38 92% 25%;
+  --brand-subtle: 42 90% 93%;
+  --brand-border: 42 55% 74%;
   --border: 210 15% 88%;
   --input: 210 15% 85%;
   --ring: 42 85% 45%;
