@@ -332,6 +332,50 @@ const en: Record<string, string> = {
   'spec.general.badge': "GENERAL",
   'spec.general.name_placeholder': "E.g. Centrifugal pump 50 m³/h - stainless steel",
   'spec.general.desc_placeholder': "Technical specs, intended use, materials...",
+  // Business statuses — keys generated from the registry in src/lib/design/status.ts.
+  'status.request.DRAFT': 'Draft',
+  'status.request.PENDING': 'Pending',
+  'status.request.ANALYSIS': 'Under review',
+  'status.request.VALIDATED': 'Approved',
+  'status.request.QUOTE_ACCEPTED': 'Quote accepted',
+  'status.request.REJECTED': 'Rejected',
+  'status.request.AWAITING_DEPOSIT': 'Deposit required',
+  'status.request.FUNDED': 'Funded',
+  'status.request.SOURCING': 'Sourcing',
+  'status.request.EXECUTING': 'In progress',
+  'status.request.PURCHASED': 'Purchased',
+  'status.request.AWAITING_BALANCE': 'Balance due',
+  'status.request.SHIPPED': 'Shipped',
+  'status.request.DELIVERED': 'Delivered',
+  'status.request.CLOSED': 'Closed',
+  'status.request.INCIDENT': 'Incident',
+  'status.request.FROZEN': 'Frozen',
+  'status.request.CANCELLED': 'Cancelled',
+
+  'status.quote.DRAFT': 'Draft',
+  'status.quote.SUBMITTED': 'Submitted',
+  'status.quote.ACCEPTED': 'Accepted',
+  'status.quote.REJECTED': 'Rejected',
+  'status.quote.EXPIRED': 'Expired',
+  'status.quote.REVISED': 'Revised',
+
+  'status.purchaseOrder.DRAFT': 'Draft',
+  'status.purchaseOrder.PENDING_SIGNATURE': 'Awaiting signature',
+  'status.purchaseOrder.SIGNED': 'Signed',
+  'status.purchaseOrder.CONFIRMED': 'Confirmed',
+  'status.purchaseOrder.CANCELLED': 'Cancelled',
+
+  'status.invoice.DRAFT': 'Draft',
+  'status.invoice.SENT': 'Sent',
+  'status.invoice.PAID': 'Paid',
+  'status.invoice.OVERDUE': 'Overdue',
+  'status.invoice.CANCELLED': 'Cancelled',
+
+  'status.paymentProof.PENDING_REVIEW': 'Pending review',
+  'status.paymentProof.ACCEPTED': 'Accepted',
+  'status.paymentProof.REJECTED': 'Rejected',
+  'status.paymentProof.SUPERSEDED': 'Superseded',
+
 }
 
 export default en

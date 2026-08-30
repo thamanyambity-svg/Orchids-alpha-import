@@ -148,7 +148,7 @@ export default function RequestsPage() {
                       </td>
                       <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
-                          {statusLabel(REQUEST_STATUS, request.status)}
+                          {statusLabel(REQUEST_STATUS, request.status, t)}
                         </span>
                       </td>
                       <td className="p-4 font-semibold">${request.budget_max?.toLocaleString()}</td>

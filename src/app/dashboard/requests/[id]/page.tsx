@@ -177,7 +177,7 @@ export default function RequestDetailsPage() {
           </Link>
         </Button>
         <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
-          {t("dashboard.request.status_" + request.status, statusLabel(REQUEST_STATUS, request.status))}
+          {statusLabel(REQUEST_STATUS, request.status, t)}
         </div>
       </div>
 
@@ -452,7 +452,7 @@ export default function RequestDetailsPage() {
                       </div>
                     </div>
                     <Badge variant="secondary" className={`ml-2 ${statusBadge(QUOTE_STATUS, quote.status)}`}>
-                      {t("dashboard.request.quote_status_" + quote.status, statusLabel(QUOTE_STATUS, quote.status))}
+                      {statusLabel(QUOTE_STATUS, quote.status, t)}
                     </Badge>
                   </CardHeader>
                   <CardContent className="space-y-4 pb-4">

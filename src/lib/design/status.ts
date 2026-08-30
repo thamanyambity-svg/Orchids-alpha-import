@@ -13,8 +13,15 @@
 import { tone, type Tone } from "@/lib/design/tone"
 
 export interface StatusMeta {
+  /** Libellé français, également utilisé comme repli de traduction. */
   label: string
   tone: Tone
+}
+
+export interface StatusRegistry {
+  /** Espace de noms de la famille, utilisé pour bâtir la clef de traduction. */
+  ns: string
+  entries: Record<string, StatusMeta>
 }
 
 /**
@@ -28,7 +35,9 @@ export interface StatusMeta {
  */
 
 /** Cycle de vie d'une demande d'importation, et des commandes qui en découlent. */
-export const REQUEST_STATUS: Record<string, StatusMeta> = {
+export const REQUEST_STATUS: StatusRegistry = {
+  ns: "request",
+  entries: {
   DRAFT: { label: "Brouillon", tone: "neutral" },
   PENDING: { label: "En attente", tone: "neutral" },
   ANALYSIS: { label: "En analyse", tone: "info" },
@@ -47,64 +56,92 @@ export const REQUEST_STATUS: Record<string, StatusMeta> = {
   INCIDENT: { label: "Incident", tone: "danger" },
   FROZEN: { label: "Gelé", tone: "neutral" },
   CANCELLED: { label: "Annulé", tone: "danger" },
+  },
 }
 
 /** Cycle de vie d'un devis partenaire. */
-export const QUOTE_STATUS: Record<string, StatusMeta> = {
+export const QUOTE_STATUS: StatusRegistry = {
+  ns: "quote",
+  entries: {
   DRAFT: { label: "Brouillon", tone: "neutral" },
   SUBMITTED: { label: "Envoyé", tone: "info" },
   ACCEPTED: { label: "Accepté", tone: "success" },
   REJECTED: { label: "Rejeté", tone: "danger" },
   EXPIRED: { label: "Expiré", tone: "warning" },
   REVISED: { label: "Révisé", tone: "warning" },
+  },
 }
 
 /** Cycle de vie d'un bon de commande. */
-export const PURCHASE_ORDER_STATUS: Record<string, StatusMeta> = {
+export const PURCHASE_ORDER_STATUS: StatusRegistry = {
+  ns: "purchaseOrder",
+  entries: {
   DRAFT: { label: "Brouillon", tone: "neutral" },
   PENDING_SIGNATURE: { label: "En attente de signature", tone: "warning" },
   SIGNED: { label: "Signé", tone: "info" },
   CONFIRMED: { label: "Confirmé", tone: "success" },
   CANCELLED: { label: "Annulé", tone: "danger" },
+  },
 }
 
 /** Cycle de vie d'une facture. */
-export const INVOICE_STATUS: Record<string, StatusMeta> = {
+export const INVOICE_STATUS: StatusRegistry = {
+  ns: "invoice",
+  entries: {
   DRAFT: { label: "Brouillon", tone: "neutral" },
   SENT: { label: "Envoyée", tone: "info" },
   PAID: { label: "Payée", tone: "success" },
   OVERDUE: { label: "En retard", tone: "danger" },
   CANCELLED: { label: "Annulée", tone: "neutral" },
+  },
 }
 
 /** Cycle de vie d'une preuve de paiement soumise par un acheteur. */
-export const PAYMENT_PROOF_STATUS: Record<string, StatusMeta> = {
+export const PAYMENT_PROOF_STATUS: StatusRegistry = {
+  ns: "paymentProof",
+  entries: {
   PENDING_REVIEW: { label: "À vérifier", tone: "warning" },
   ACCEPTED: { label: "Acceptée", tone: "success" },
   REJECTED: { label: "Rejetée", tone: "danger" },
   SUPERSEDED: { label: "Remplacée", tone: "neutral" },
+  },
 }
 
-type Registry = Record<string, StatusMeta>
-
 const FALLBACK: StatusMeta = { label: "Inconnu", tone: "neutral" }
+
+/** Clef de traduction d'un statut, unique pour toute l'application. */
+export function statusKey(registry: StatusRegistry, status: string): string {
+  return `status.${registry.ns}.${status}`
+}
 
 /**
  * Métadonnées d'un statut. Un statut absent du registre retombe sur une
  * tonalité neutre et son propre code plutôt que de perdre tout style, ce qui
  * arrivait avec FROZEN et CANCELLED dans les pages de commandes.
  */
-export function statusMeta(registry: Registry, status: string | null | undefined): StatusMeta {
+export function statusMeta(registry: StatusRegistry, status: string | null | undefined): StatusMeta {
   if (!status) return FALLBACK
-  return registry[status] ?? { label: status, tone: FALLBACK.tone }
+  return registry.entries[status] ?? { label: status, tone: FALLBACK.tone }
 }
 
-/** Libellé français d'un statut. */
-export function statusLabel(registry: Registry, status: string | null | undefined): string {
-  return statusMeta(registry, status).label
+/**
+ * Libellé d'un statut, traduit si un traducteur est fourni.
+ *
+ * Les neuf points d'affichage utilisaient auparavant trois préfixes de clef
+ * différents, et quatre d'entre eux n'appelaient pas la traduction du tout.
+ * Passer le `t` du contexte de langue ici suffit désormais.
+ */
+export function statusLabel(
+  registry: StatusRegistry,
+  status: string | null | undefined,
+  t?: (key: string, fallback?: string) => string
+): string {
+  const meta = statusMeta(registry, status)
+  if (!t || !status) return meta.label
+  return t(statusKey(registry, status), meta.label)
 }
 
 /** Classes de pastille d'un statut, issues du thème. */
-export function statusBadge(registry: Registry, status: string | null | undefined): string {
+export function statusBadge(registry: StatusRegistry, status: string | null | undefined): string {
   return tone(statusMeta(registry, status).tone).badge
 }

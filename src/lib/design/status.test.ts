@@ -23,7 +23,7 @@ describe("registre des statuts", () => {
   it("donne à chaque statut un libellé non vide et une tonalité connue", () => {
     const tones = ["neutral", "brand", "info", "success", "warning", "danger"]
     for (const [name, registry] of Object.entries(REGISTRIES)) {
-      for (const [code, meta] of Object.entries(registry)) {
+      for (const [code, meta] of Object.entries(registry.entries)) {
         expect(meta.label.trim(), `${name}.${code}`).not.toBe("")
         expect(tones, `${name}.${code}`).toContain(meta.tone)
       }
@@ -35,7 +35,7 @@ describe("registre des statuts", () => {
     // trahirait un contournement du thème.
     const brut = /-(slate|gray|zinc|red|orange|amber|yellow|green|emerald|blue|sky|indigo|purple|pink)-\d{2,3}|\[#[0-9a-f]{3,8}\]/i
     for (const registry of Object.values(REGISTRIES)) {
-      for (const code of Object.keys(registry)) {
+      for (const code of Object.keys(registry.entries)) {
         expect(statusBadge(registry, code)).not.toMatch(brut)
       }
     }
@@ -54,7 +54,7 @@ describe("registre des statuts", () => {
 
   it("couvre les statuts qui avaient perdu leur style : FROZEN et CANCELLED", () => {
     for (const code of ["FROZEN", "CANCELLED"]) {
-      expect(REQUEST_STATUS[code]).toBeDefined()
+      expect(REQUEST_STATUS.entries[code]).toBeDefined()
       expect(statusBadge(REQUEST_STATUS, code)).not.toBe("")
     }
   })

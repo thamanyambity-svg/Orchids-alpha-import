@@ -98,7 +98,7 @@ export default function AdminOrdersPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("admin.orders.all", "Tous")}</SelectItem>
-            {Object.entries(REQUEST_STATUS).map(([key, meta]) => (
+            {Object.entries(REQUEST_STATUS.entries).map(([key, meta]) => (
               <SelectItem key={key} value={key}>{meta.label}</SelectItem>
             ))}
           </SelectContent>
@@ -133,7 +133,7 @@ export default function AdminOrdersPage() {
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold text-foreground">{order.import_requests?.product_name || "Importation"}</span>
                         <Badge className={statusBadge(REQUEST_STATUS, order.status)}>
-                          {statusLabel(REQUEST_STATUS, order.status)}
+                          {statusLabel(REQUEST_STATUS, order.status, t)}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-foreground/40">

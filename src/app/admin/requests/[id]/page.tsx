@@ -403,7 +403,7 @@ export default function AdminRequestDetailPage() {
                 <Clock className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-bold uppercase tracking-wider">{statusLabel(REQUEST_STATUS, request.status)}</p>
+                <p className="text-sm font-bold uppercase tracking-wider">{statusLabel(REQUEST_STATUS, request.status, t)}</p>
                 <p className="text-xs text-muted-foreground">Maj le {format(new Date(request.updated_at || request.created_at), "d MMM à HH:mm")}</p>
               </div>
             </div>

@@ -149,7 +149,7 @@ export default function PartnerRequestDetailPage() {
       
       const { data } = await response.json()
       setRequest({ ...request, status: data.status })
-      toast.success(`Statut mis à jour : ${statusLabel(REQUEST_STATUS, newStatus)}`)
+      toast.success(`Statut mis à jour : ${statusLabel(REQUEST_STATUS, newStatus, t)}`)
     } catch (error: any) {
       console.error('Error updating status:', error)
       toast.error(`Erreur: ${error.message}`)

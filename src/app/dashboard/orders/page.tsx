@@ -164,7 +164,7 @@ export default function DashboardOrdersPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-bold">{order.import_requests?.product_name || t("dashboard.orders.import", "Importation")}</h3>
                           <Badge className={statusBadge(REQUEST_STATUS, order.status)}>
-                            {statusLabel(REQUEST_STATUS, order.status)}
+                            {statusLabel(REQUEST_STATUS, order.status, t)}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">

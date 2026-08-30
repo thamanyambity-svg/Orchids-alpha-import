@@ -123,7 +123,7 @@ export default function PartnerRequestsPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
-                          {t("partner.requests.status_" + request.status, statusLabel(REQUEST_STATUS, request.status))}
+                          {statusLabel(REQUEST_STATUS, request.status, t)}
                       </span>
                     </div>
                     <h3 className="font-semibold text-lg mb-1 truncate">{request.product_name}</h3>

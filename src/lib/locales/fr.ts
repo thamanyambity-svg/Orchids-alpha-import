@@ -332,6 +332,50 @@ const fr: Record<string, string> = {
   'spec.general.badge': "GÉNÉRAL",
   'spec.general.name_placeholder': "Ex. Pompe centrifuge 50 m³/h – acier inox 316L",
   'spec.general.desc_placeholder': "Caractéristiques techniques, usage prévu, matériaux, normes applicables...",
+  // Statuts métier — clefs générées depuis le registre src/lib/design/status.ts.
+  'status.request.DRAFT': 'Brouillon',
+  'status.request.PENDING': 'En attente',
+  'status.request.ANALYSIS': 'En analyse',
+  'status.request.VALIDATED': 'Validé',
+  'status.request.QUOTE_ACCEPTED': 'Devis accepté',
+  'status.request.REJECTED': 'Rejeté',
+  'status.request.AWAITING_DEPOSIT': 'Acompte requis',
+  'status.request.FUNDED': 'Financé',
+  'status.request.SOURCING': 'En sourcing',
+  'status.request.EXECUTING': 'En exécution',
+  'status.request.PURCHASED': 'Acheté',
+  'status.request.AWAITING_BALANCE': 'Solde requis',
+  'status.request.SHIPPED': 'Expédié',
+  'status.request.DELIVERED': 'Livré',
+  'status.request.CLOSED': 'Clôturé',
+  'status.request.INCIDENT': 'Incident',
+  'status.request.FROZEN': 'Gelé',
+  'status.request.CANCELLED': 'Annulé',
+
+  'status.quote.DRAFT': 'Brouillon',
+  'status.quote.SUBMITTED': 'Envoyé',
+  'status.quote.ACCEPTED': 'Accepté',
+  'status.quote.REJECTED': 'Rejeté',
+  'status.quote.EXPIRED': 'Expiré',
+  'status.quote.REVISED': 'Révisé',
+
+  'status.purchaseOrder.DRAFT': 'Brouillon',
+  'status.purchaseOrder.PENDING_SIGNATURE': 'En attente de signature',
+  'status.purchaseOrder.SIGNED': 'Signé',
+  'status.purchaseOrder.CONFIRMED': 'Confirmé',
+  'status.purchaseOrder.CANCELLED': 'Annulé',
+
+  'status.invoice.DRAFT': 'Brouillon',
+  'status.invoice.SENT': 'Envoyée',
+  'status.invoice.PAID': 'Payée',
+  'status.invoice.OVERDUE': 'En retard',
+  'status.invoice.CANCELLED': 'Annulée',
+
+  'status.paymentProof.PENDING_REVIEW': 'À vérifier',
+  'status.paymentProof.ACCEPTED': 'Acceptée',
+  'status.paymentProof.REJECTED': 'Rejetée',
+  'status.paymentProof.SUPERSEDED': 'Remplacée',
+
 }
 
 export default fr
