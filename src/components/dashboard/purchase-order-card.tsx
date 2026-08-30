@@ -186,7 +186,7 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
                 </div>
                 {!readOnly && canCancel && (
                   <Button variant="destructive" size="sm" onClick={handleCancel} className="whitespace-nowrap">
-                    <X className="w-3 h-3 mr-1" /> {t("po.cancel_now", "Annuler")}
+                    <X className="w-3 h-3 me-1" /> {t("po.cancel_now", "Annuler")}
                   </Button>
                 )}
               </div>
@@ -218,7 +218,7 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
               </h4>
               {cgvAccepted && (
                 <Badge variant="default" className="bg-success/10 text-success border-success-border">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                  <CheckCircle2 className="w-3 h-3 me-1" />
                   {t("po.cgv_accepted", "Acceptées le")} {new Date(po.cgv_accepted_at).toLocaleDateString()}
                 </Badge>
               )}
@@ -268,18 +268,18 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
           <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
             {onViewQuote && (
               <Button variant="outline" onClick={onViewQuote}>
-                <Eye className="w-4 h-4 mr-1" /> {t("po.view_quote", "Voir Devis")}
+                <Eye className="w-4 h-4 me-1" /> {t("po.view_quote", "Voir Devis")}
               </Button>
             )}
             <Button variant="outline" asChild>
               <a href={po.po_pdf_url} target="_blank" rel="noopener noreferrer">
-                <Download className="w-4 h-4 mr-1" /> {t("po.download_pdf", "PDF PO")}
+                <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF PO")}
               </a>
             </Button>
             {po.signed_po_pdf_url && (
               <Button variant="outline" asChild>
                 <a href={po.signed_po_pdf_url} target="_blank" rel="noopener noreferrer">
-                  <ShieldCheck className="w-4 h-4 mr-1" /> {t("po.download_signed", "PDF Signé")}
+                  <ShieldCheck className="w-4 h-4 me-1" /> {t("po.download_signed", "PDF Signé")}
                 </a>
               </Button>
             )}

@@ -132,7 +132,7 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
           <p className="text-muted-foreground">{requestData.reference} • {requestData.category}</p>
         </div>
         <Button variant="outline" onClick={onCancel} disabled={isLoading}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> {t("common.cancel", "Annuler")}
+          <ArrowLeft className="w-4 h-4 me-2" /> {t("common.cancel", "Annuler")}
         </Button>
       </div>
 

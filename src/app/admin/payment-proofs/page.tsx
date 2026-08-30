@@ -211,7 +211,7 @@ export default function AdminPaymentProofsPage() {
                           disabled={busyId === proof.id}
                           onClick={() => openProof(proof.id)}
                         >
-                          <ExternalLink className="w-4 h-4 mr-1" />
+                          <ExternalLink className="w-4 h-4 me-1" />
                           {t("admin.proofs.view", "Voir")}
                         </Button>
                         <Button
@@ -220,7 +220,7 @@ export default function AdminPaymentProofsPage() {
                           disabled={busyId === proof.id}
                           onClick={() => review(proof.id, "ACCEPT")}
                         >
-                          <Check className="w-4 h-4 mr-1" />
+                          <Check className="w-4 h-4 me-1" />
                           {t("admin.proofs.accept", "Valider")}
                         </Button>
                         <Button
@@ -233,7 +233,7 @@ export default function AdminPaymentProofsPage() {
                             setReason("")
                           }}
                         >
-                          <X className="w-4 h-4 mr-1" />
+                          <X className="w-4 h-4 me-1" />
                           {t("admin.proofs.reject", "Refuser")}
                         </Button>
                       </div>
@@ -267,7 +267,7 @@ export default function AdminPaymentProofsPage() {
                             disabled={busyId === proof.id || reason.trim().length < MIN_REASON_LENGTH}
                             onClick={() => review(proof.id, "REJECT")}
                           >
-                            {busyId === proof.id && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                            {busyId === proof.id && <Loader2 className="w-4 h-4 me-1 animate-spin" />}
                             {t("admin.proofs.confirm_reject", "Confirmer le refus")}
                           </Button>
                           <span className="text-xs text-foreground/30">

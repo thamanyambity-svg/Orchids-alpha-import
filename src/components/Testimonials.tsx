@@ -34,7 +34,7 @@ export default function Testimonials() {
               <motion.div key={active} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
                 <div className="mb-6">
                   {[...Array(testimonials[active].rating)].map((_, i) => (
-                    <span key={i} className="text-gold text-2xl mr-1">★</span>
+                    <span key={i} className="text-gold text-2xl me-1">★</span>
                   ))}
                 </div>
                 <blockquote className="font-sans text-xl md:text-2xl text-foreground/80 leading-relaxed mb-8 italic">&ldquo;{testimonials[active].quote}&rdquo;</blockquote>
@@ -54,7 +54,7 @@ export default function Testimonials() {
 
           <div className="lg:col-span-2 flex flex-row lg:flex-col gap-3 overflow-x-auto">
             {testimonials.map((item, i) => (
-              <motion.button key={i} onClick={() => setActive(i)} whileHover={{ x: 4 }} className="flex-shrink-0 text-left p-5 border transition-all duration-200 w-64 lg:w-auto" style={{ background: i === active ? "hsl(42 85% 55% / 0.08)" : "rgba(6,16,30,0.6)", borderColor: i === active ? "hsl(42 85% 55% / 0.4)" : "rgba(255,255,255,0.06)" }}>
+              <motion.button key={i} onClick={() => setActive(i)} whileHover={{ x: 4 }} className="flex-shrink-0 text-start p-5 border transition-all duration-200 w-64 lg:w-auto" style={{ background: i === active ? "hsl(42 85% 55% / 0.08)" : "rgba(6,16,30,0.6)", borderColor: i === active ? "hsl(42 85% 55% / 0.4)" : "rgba(255,255,255,0.06)" }}>
                 <p className="font-display text-foreground text-sm tracking-wider truncate">{item.name}</p>
                 <p className="font-condensed text-xs text-foreground/30 tracking-widest uppercase truncate mt-0.5">{item.location}</p>
               </motion.button>

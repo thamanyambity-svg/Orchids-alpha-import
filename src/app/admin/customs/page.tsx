@@ -180,7 +180,7 @@ export default function AdminCustomsPage() {
                 <TableHead>Client</TableHead>
                 <TableHead>Pays</TableHead>
                 <TableHead>Statut</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-end">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -199,7 +199,7 @@ export default function AdminCustomsPage() {
                     <TableCell>
                       <Badge variant="outline">{order.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-end">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/admin/requests/${order.request_id}`}>Voir</Link>
                       </Button>

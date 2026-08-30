@@ -227,7 +227,7 @@ export function PartnerWizard() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
+                <Card className="p-6 border-s-4 border-s-primary hover:bg-muted/50 transition-colors">
                     <ShieldCheck className="w-10 h-10 text-primary mb-4" />
                     <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.trust_card_title", "1. Confiance & Transparence")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
@@ -236,7 +236,7 @@ export function PartnerWizard() {
                     <CharterDialog type="trust" icon={ShieldCheck} />
                 </Card>
 
-                <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
+                <Card className="p-6 border-s-4 border-s-primary hover:bg-muted/50 transition-colors">
                     <Shield className="w-10 h-10 text-primary mb-4" />
                     <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.privacy_card_title", "2. Confidentialité (NDA)")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
@@ -245,7 +245,7 @@ export function PartnerWizard() {
                     <CharterDialog type="privacy" icon={Shield} />
                 </Card>
 
-                <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
+                <Card className="p-6 border-s-4 border-s-primary hover:bg-muted/50 transition-colors">
                     <Building2 className="w-10 h-10 text-primary mb-4" />
                     <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.legal_card_title", "3. Conformité Légale")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
@@ -254,7 +254,7 @@ export function PartnerWizard() {
                     <CharterDialog type="legal" icon={Building2} />
                 </Card>
 
-                <Card className="p-6 border-l-4 border-l-primary hover:bg-muted/50 transition-colors">
+                <Card className="p-6 border-s-4 border-s-primary hover:bg-muted/50 transition-colors">
                     <Banknote className="w-10 h-10 text-primary mb-4" />
                     <h3 className="text-xl font-semibold mb-2">{t("partner_wizard.financial_card_title", "4. Engagement Financier")}</h3>
                     <p className="text-muted-foreground text-sm line-clamp-2">
@@ -285,7 +285,7 @@ export function PartnerWizard() {
                     className="group min-w-[200px]"
                 >
                     {t("partner_wizard.validate", "Valider ces engagements")}
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="ms-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
             </div>
         </div>
@@ -310,7 +310,7 @@ export function PartnerWizard() {
                             {t("partner_wizard.deposit_desc", "Pour valider votre compte Partenaire, une caution remboursable sera exigée après validation de votre dossier juridique. Cette caution sert à couvrir les risques liés aux premières commandes et démontre votre sérieux.")}
                         </p>
                         <div className="p-4 rounded-lg bg-background/50 text-sm">
-                            <ul className="list-disc pl-5 space-y-2">
+                            <ul className="list-disc ps-5 space-y-2">
                                 <li>{t("partner_wizard.deposit_bullet1", "Montant fixé selon volume prévisionnel.")}</li>
                                 <li>{t("partner_wizard.deposit_bullet2", "Fonds séquestrés sur compte tiers sécurisé.")}</li>
                                 <li>{t("partner_wizard.deposit_bullet3", "Remboursable après 12 mois sans incident.")}</li>
@@ -324,7 +324,7 @@ export function PartnerWizard() {
                 <Button variant="ghost" onClick={() => setStep(1)}>{t("partner_wizard.back", "Retour")}</Button>
                 <Button onClick={() => setStep(3)} size="lg">
                     {t("partner_wizard.confirm_finance", "Je confirme ma capacité financière")}
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ms-2 w-4 h-4" />
                 </Button>
             </div>
         </div>
@@ -440,7 +440,7 @@ export function PartnerWizard() {
             <p className="text-xl text-muted-foreground mb-8">
                 {t("partner_wizard.success_desc", "Votre dossier a été transmis à notre service de conformité. Un administrateur va vérifier vos documents sous 24h à 48h.")}
             </p>
-            <div className="bg-card p-6 rounded-lg max-w-md mx-auto text-sm text-left space-y-2 border border-border">
+            <div className="bg-card p-6 rounded-lg max-w-md mx-auto text-sm text-start space-y-2 border border-border">
                 <p><strong>{t("partner_wizard.next_steps", "Prochaines étapes :")}</strong></p>
                 <p>{t("partner_wizard.step1", "1. Validation des documents légaux.")}</p>
                 <p>{t("partner_wizard.step2", "2. Envoi du contrat de partenariat et facture de caution.")}</p>

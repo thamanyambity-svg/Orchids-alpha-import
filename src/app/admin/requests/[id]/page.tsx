@@ -188,7 +188,7 @@ export default function AdminRequestDetailPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 Actions
-                <MoreVertical className="ml-2 w-4 h-4" />
+                <MoreVertical className="ms-2 w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

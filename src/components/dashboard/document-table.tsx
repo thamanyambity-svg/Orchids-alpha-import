@@ -50,13 +50,13 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-start border-collapse">
           <thead>
             <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-foreground/5">
               <th className="px-6 py-4 font-normal">Document</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">{t("document_table.status", "Statut")}</th>
-              <th className="px-6 py-4 font-normal text-right">Date</th>
+              <th className="px-6 py-4 font-normal text-end">Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-foreground/5">
@@ -75,7 +75,7 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
                   </td>
                   <td className="px-6 py-4 text-xs font-bold text-primary uppercase">{doc.type}</td>
                   <td className="px-6 py-4 text-xs text-muted-foreground uppercase">{doc.status}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-end">
                     <span className="px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-secondary/50 text-muted-foreground border border-foreground/5">
                       {new Date(doc.created_at).toLocaleDateString()}
                     </span>

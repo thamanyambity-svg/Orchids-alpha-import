@@ -53,7 +53,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
               <h3 className="text-xl font-bold tracking-tight uppercase">{request.category || 'Importation'}</h3>
               <p className="text-xs text-muted-foreground uppercase">{request.quantity} {request.unit} - Budget: {request.budget_min}$ - {request.budget_max}$</p>
             </div>
-            <div className="text-right">
+            <div className="text-end">
               <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/30 uppercase">
                 ● {statusLabel}
               </span>

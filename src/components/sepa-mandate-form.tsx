@@ -203,12 +203,12 @@ export function SepaMandateForm({ onSuccess, onClose }: SepaMandateFormProps) {
         <Button type="submit" disabled={loading} className="flex-1">
           {loading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="w-4 h-4 me-2 animate-spin" />
               {t("sepa.mandate.confirming", "Confirmation en cours...")}
             </>
           ) : (
             <>
-              <CreditCard className="w-4 h-4 mr-2" />
+              <CreditCard className="w-4 h-4 me-2" />
               {t("sepa.mandate.submit", "Activer le prélèvement SEPA")}
             </>
           )}

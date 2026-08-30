@@ -109,7 +109,7 @@ export function SiteNav() {
                       setLanguage(l.code as Language)
                       setLangOpen(false)
                     }}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left font-condensed text-[13px] tracking-[.14em] transition-colors hover:bg-foreground/5 ${
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-start font-condensed text-[13px] tracking-[.14em] transition-colors hover:bg-foreground/5 ${
                       l.code === language ? "text-gold" : "text-foreground/70"
                     }`}
                   >
@@ -140,7 +140,7 @@ export function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`bg-background px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] ${
+                className={`bg-background px-[18px] py-[19px] text-start font-condensed text-[15px] font-semibold uppercase tracking-[.28em] ${
                   pathname === link.href ? "text-gold" : "text-foreground/70"
                 }`}
               >
@@ -149,7 +149,7 @@ export function SiteNav() {
             ))}
             <Link
               href="/contact"
-              className="bg-background px-[18px] py-[19px] text-left font-condensed text-[15px] font-semibold uppercase tracking-[.28em] text-gold"
+              className="bg-background px-[18px] py-[19px] text-start font-condensed text-[15px] font-semibold uppercase tracking-[.28em] text-gold"
             >
               {t("site.quote.eyebrow", "Accès")}
             </Link>

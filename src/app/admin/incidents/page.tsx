@@ -127,14 +127,14 @@ export default function AdminIncidentsPage() {
         </div>
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <table className="w-full text-left">
+          <table className="w-full text-start">
             <thead className="bg-muted/50 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4">Incident / Commande</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Signalé par</th>
                 <th className="px-6 py-4">{t("admin.status", "Statut")}</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4 text-end">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -157,21 +157,21 @@ export default function AdminIncidentsPage() {
                   <td className="px-6 py-4">
                     {inc.status === "FROZEN" ? (
                       <Badge className="bg-destructive/10 text-destructive border-destructive/20 animate-pulse">
-                        <AlertTriangle className="w-3 h-3 mr-1" /> Gelé
+                        <AlertTriangle className="w-3 h-3 me-1" /> Gelé
                       </Badge>
                     ) : (
                       <Badge variant="secondary">{inc.status}</Badge>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+                  <td className="px-6 py-4 text-end space-x-2">
                     {inc.status === "OPEN" && (
                       <Button size="sm" variant="destructive" onClick={() => handleFreezeOrder(inc.id, inc.order_id)}>
-                        <AlertTriangle className="w-4 h-4 mr-1" /> Geler Commande
+                        <AlertTriangle className="w-4 h-4 me-1" /> Geler Commande
                       </Button>
                     )}
                     {inc.status === "FROZEN" && (
                       <Button size="sm" variant="default" onClick={() => handleResolveIncident(inc.id, inc.order_id)}>
-                        <CheckCircle2 className="w-4 h-4 mr-1" /> Résoudre
+                        <CheckCircle2 className="w-4 h-4 me-1" /> Résoudre
                       </Button>
                     )}
                   </td>

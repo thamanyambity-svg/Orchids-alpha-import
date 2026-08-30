@@ -143,7 +143,7 @@ export default function AdminExchangeRatesPage() {
         </div>
 
         <Button type="submit" disabled={saving || !currency || !value} className="h-10">
-          {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Plus className="w-4 h-4 mr-1" />}
+          {saving ? <Loader2 className="w-4 h-4 me-1 animate-spin" /> : <Plus className="w-4 h-4 me-1" />}
           {t("admin.rates.publish", "Publier")}
         </Button>
       </form>

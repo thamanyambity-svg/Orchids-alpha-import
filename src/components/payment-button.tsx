@@ -111,12 +111,12 @@ export function PaymentButton({
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 me-2 animate-spin" />
                 Prélèvement en cours...
               </>
             ) : (
               <>
-                <Landmark className="w-4 h-4 mr-2" />
+                <Landmark className="w-4 h-4 me-2" />
                 Payer par prélèvement SEPA ({pct}) — ${amount.toFixed(2)}
               </>
             )}
@@ -128,7 +128,7 @@ export function PaymentButton({
             disabled={disabled || loading}
             className="w-full text-xs"
           >
-            <CreditCard className="w-3 h-3 mr-1" />
+            <CreditCard className="w-3 h-3 me-1" />
             Payer par carte à la place
           </Button>
         </div>
@@ -141,12 +141,12 @@ export function PaymentButton({
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 me-2 animate-spin" />
                 Redirection...
               </>
             ) : (
               <>
-                <CreditCard className="w-4 h-4 mr-2" />
+                <CreditCard className="w-4 h-4 me-2" />
                 Payer par carte ({pct}) — ${amount.toFixed(2)}
               </>
             )}

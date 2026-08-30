@@ -119,7 +119,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
                     )}
                   </div>
                 )}
-                <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-right"}`}>
+                <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-end"}`}>
                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                     {isPartner ? (partner?.full_name || "Partenaire") : "Vous"}
                   </p>
@@ -140,7 +140,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Écrire un message..." 
-            className="bg-background/50 border-foreground/5 pr-24 h-12 rounded-xl"
+            className="bg-background/50 border-foreground/5 pe-24 h-12 rounded-xl"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">

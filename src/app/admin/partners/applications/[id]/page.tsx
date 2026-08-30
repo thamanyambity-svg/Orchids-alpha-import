@@ -107,7 +107,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     <h1 className="text-2xl font-bold">Candidature: {application.company_name}</h1>
                     <p className="text-muted-foreground text-sm">Soumis le {new Date(application.created_at).toLocaleString()}</p>
                 </div>
-                <div className="ml-auto">
+                <div className="ms-auto">
                     <Badge variant={application.status === 'PENDING' ? 'outline' : 'default'}>
                         {application.status}
                     </Badge>
@@ -219,7 +219,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
                             <Button className="bg-success hover:bg-success">
-                                <CheckCircle className="mr-2 w-4 h-4" />
+                                <CheckCircle className="me-2 w-4 h-4" />
                                 Approuver et créer le compte
                             </Button>
                         </DialogTrigger>

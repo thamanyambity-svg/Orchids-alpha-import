@@ -122,7 +122,7 @@ export default function LoginPage() {
 
       <main className="relative grid min-h-screen [grid-template-columns:1fr] lg:[grid-template-columns:1fr_1fr]">
         {/* Volet gauche : argumentaire, dans le style de la vitrine. */}
-        <section className="relative hidden overflow-hidden border-r border-[var(--line)] lg:block">
+        <section className="relative hidden overflow-hidden border-e border-[var(--line)] lg:block">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-[.22]"
             style={{
@@ -207,7 +207,7 @@ export default function LoginPage() {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="••••••••"
-                    className={`${FIELD} pr-12`}
+                    className={`${FIELD} pe-12`}
                   />
                   <button
                     type="button"

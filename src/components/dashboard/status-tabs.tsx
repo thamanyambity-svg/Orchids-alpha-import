@@ -17,7 +17,7 @@ export function StatusTabs({ status }: { status?: string }) {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-mono tracking-[0.2em] text-muted-foreground uppercase flex items-center gap-2">
-          {t("status_tabs.title", "Statut de la demande")} <span className="text-primary ml-2">{displayStatus}</span>
+          {t("status_tabs.title", "Statut de la demande")} <span className="text-primary ms-2">{displayStatus}</span>
         </h2>
       </div>
       

@@ -148,9 +148,9 @@ export default function AdminShippingPage() {
                                 <TableHead className="w-[200px]">Référence Dossier</TableHead>
                                 <TableHead>Origine / Mode</TableHead>
                                 <TableHead>{t("admin.shipping.required_docs", "Documents Requis (Normes Int.)")}</TableHead>
-                                <TableHead className="text-right">Valeur CIF</TableHead>
-                                <TableHead className="text-right">Détail Frais</TableHead>
-                                <TableHead className="text-right">Total Est.</TableHead>
+                                <TableHead className="text-end">Valeur CIF</TableHead>
+                                <TableHead className="text-end">Détail Frais</TableHead>
+                                <TableHead className="text-end">Total Est.</TableHead>
                                 <TableHead></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -204,10 +204,10 @@ export default function AdminShippingPage() {
                                                     ))}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-right font-medium">
+                                            <TableCell className="text-end font-medium">
                                                 ${shipment.total_amount?.toLocaleString()}
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <div className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                                                     <span className="flex justify-between gap-4">
                                                         <span>Fret:</span> <span className="font-mono text-foreground">${costs.freight.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
@@ -220,7 +220,7 @@ export default function AdminShippingPage() {
                                                     </span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <div className="font-bold text-success">
                                                     ${(costs.total + shipment.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                 </div>

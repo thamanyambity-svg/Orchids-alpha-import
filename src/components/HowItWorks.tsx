@@ -51,7 +51,7 @@ export default function HowItWorks() {
           <div className="w-full lg:w-64 xl:w-72 flex-shrink-0">
             <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
               {steps.map((s, i) => (
-                <motion.button key={s.num} onClick={() => setActiveStep(i)} whileTap={{ scale: 0.97 }} className="relative flex-shrink-0 flex items-center gap-4 p-5 border text-left transition-all duration-250" style={{ background: activeStep === i ? "rgba(42,65,85,0.5)" : "rgba(6,16,30,0.6)", borderColor: activeStep === i ? "hsl(42 85% 55% / 0.5)" : "rgba(255,255,255,0.06)" }}>
+                <motion.button key={s.num} onClick={() => setActiveStep(i)} whileTap={{ scale: 0.97 }} className="relative flex-shrink-0 flex items-center gap-4 p-5 border text-start transition-all duration-250" style={{ background: activeStep === i ? "rgba(42,65,85,0.5)" : "rgba(6,16,30,0.6)", borderColor: activeStep === i ? "hsl(42 85% 55% / 0.5)" : "rgba(255,255,255,0.06)" }}>
                   <div className="absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300" style={{ background: "hsl(42 85% 55%)", opacity: activeStep === i ? 1 : 0, transform: activeStep === i ? "scaleY(1)" : "scaleY(0)", transformOrigin: "top" }} />
                   <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center border transition-colors duration-250" style={{ borderColor: activeStep === i ? "hsl(42 85% 55%)" : "rgba(255,255,255,0.12)", background: activeStep === i ? "hsl(42 85% 55% / 0.1)" : "transparent" }}>
                     <span className="font-display text-2xl transition-colors duration-250" style={{ color: activeStep === i ? "hsl(42 85% 55%)" : "rgba(255,255,255,0.3)" }}>{s.num}</span>
@@ -84,7 +84,7 @@ export default function HowItWorks() {
                   {steps.map((_, si) => (
                     <button key={si} onClick={() => setActiveStep(si)} className={`transition-all duration-300 ${si === activeStep ? "w-8 h-1 bg-gold" : "w-4 h-1 bg-foreground/20"}`} />
                   ))}
-                  <span className="font-condensed text-xs text-foreground/25 tracking-widest ml-2">{activeStep + 1} / {steps.length}</span>
+                  <span className="font-condensed text-xs text-foreground/25 tracking-widest ms-2">{activeStep + 1} / {steps.length}</span>
                 </div>
               </motion.div>
             </AnimatePresence>

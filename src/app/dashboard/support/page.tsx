@@ -64,7 +64,7 @@ export default function SupportPage() {
                 >
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-start hover:bg-accent/50 transition-colors"
                   >
                     <span className="font-semibold">{faq.question}</span>
                     {openIndex === index ? (

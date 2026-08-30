@@ -85,7 +85,7 @@ export default function PartnerRequestsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("partner.requests.search", "Rechercher par référence ou produit...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

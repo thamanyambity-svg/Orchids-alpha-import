@@ -123,7 +123,15 @@ export function Hero() {
         </div>
 
         <h1 className="m-0 font-display text-[clamp(56px,12.5vw,206px)] leading-[.84] tracking-[-.012em] text-foreground">
-          <span key={slide.word} className="block overflow-hidden pb-[.04em]">
+          {/*
+            L'animation d'entrée découpe le mot en un bloc par caractère. Sous
+            dir="rtl" ces blocs se posent de droite à gauche et le mot s'affiche
+            à l'envers : « L'AFRIQUE » devenait « EUQIRFA'L » en arabe.
+            dir="auto" laisse le navigateur déduire la direction du premier
+            caractère fort du mot, donc chaque titre s'ordonne selon sa propre
+            écriture, quelle que soit la direction de la page.
+          */}
+          <span key={slide.word} dir="auto" className="block overflow-hidden pb-[.04em]">
             {slide.word.split("").map((ch, i) => (
               <span
                 key={`${slide.word}-${i}`}
@@ -169,7 +177,7 @@ export function Hero() {
               }}
             />
           ))}
-          <span className="ml-[14px] font-condensed text-[11px] tracking-[.36em] text-foreground/35">
+          <span className="ms-[14px] font-condensed text-[11px] tracking-[.36em] text-foreground/35">
             {String(index + 1).padStart(2, "0")} / {String(HERO.length).padStart(2, "0")}
           </span>
         </div>
@@ -212,7 +220,7 @@ export function TrustMarquee() {
           {[...items, ...items].map((label, i) => (
             <span
               key={`${label}-${i}`}
-              className="flex shrink-0 items-center gap-11 pr-11 font-condensed text-[14px] font-semibold uppercase tracking-[.34em] text-foreground/45 whitespace-nowrap"
+              className="flex shrink-0 items-center gap-11 pe-11 font-condensed text-[14px] font-semibold uppercase tracking-[.34em] text-foreground/45 whitespace-nowrap"
             >
               {label}
               <span className="block h-[5px] w-[5px] bg-gold" />
@@ -246,7 +254,7 @@ export function SplitBar({ height = 74, compact = false }: { height?: number; co
           {t("site.escrow.deposit", "Acompte à la commande")}
         </span>
       </div>
-      <div className="flex shrink-0 grow-0 basis-[40%] flex-col justify-center border border-l-0 border-gold bg-background px-[22px]">
+      <div className="flex shrink-0 grow-0 basis-[40%] flex-col justify-center border border-s-0 border-gold bg-background px-[22px]">
         <span className={`font-display ${figure} leading-[.9] text-gold`}>40 %</span>
         <span className={`font-condensed ${caption} font-bold uppercase tracking-[.24em] text-foreground/50`}>
           {t("site.escrow.balance", "Solde à réception conforme")}

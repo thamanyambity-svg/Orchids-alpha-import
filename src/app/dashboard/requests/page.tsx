@@ -73,7 +73,7 @@ export default function RequestsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("dashboard.requests.search", "Rechercher une demande...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -81,7 +81,7 @@ export default function RequestsPage() {
           <div className="flex gap-3">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="w-4 h-4 me-2" />
                 <SelectValue placeholder={t("dashboard.requests.filter_status", "Filtrer par statut")} />
               </SelectTrigger>
               <SelectContent>
@@ -113,13 +113,13 @@ export default function RequestsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/30">
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.reference", "Référence")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.product", "Produit")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.country", "Pays")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.status_col", "Statut")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.budget_max", "Budget Max")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.date", "Date")}</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.action", "Action")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.reference", "Référence")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.product", "Produit")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.country", "Pays")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.status_col", "Statut")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.budget_max", "Budget Max")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.date", "Date")}</th>
+                    <th className="text-end p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.action", "Action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -155,7 +155,7 @@ export default function RequestsPage() {
                       <td className="p-4 text-sm text-muted-foreground">
                         {new Date(request.created_at).toLocaleDateString()}
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="p-4 text-end">
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="sm" asChild>
                             <Link href={`/dashboard/requests/${request.id}`} className="flex items-center gap-1">

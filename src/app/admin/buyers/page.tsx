@@ -146,7 +146,7 @@ export default function AdminBuyersPage() {
                         <Input
                             type="search"
                             placeholder={t("admin.buyers.search", "Rechercher (Nom, Email)...")}
-                            className="pl-8"
+                            className="ps-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -161,7 +161,7 @@ export default function AdminBuyersPage() {
                                 <TableHead>{t("admin.buyers.status", "Statut")}</TableHead>
                                 <TableHead>Activité</TableHead>
                                 <TableHead>{t("admin.buyers.registration", "Inscription")}</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead className="text-end">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -204,11 +204,11 @@ export default function AdminBuyersPage() {
                                         <TableCell>
                                             {buyer.status === 'VERIFIED' ? (
                                                 <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
-                                                    <ShieldCheck className="w-3 h-3 mr-1" /> Vérifié
+                                                    <ShieldCheck className="w-3 h-3 me-1" /> Vérifié
                                                 </Badge>
                                             ) : buyer.status === 'SUSPENDED' ? (
                                                 <Badge variant="destructive">
-                                                    <ShieldAlert className="w-3 h-3 mr-1" /> Suspendu
+                                                    <ShieldAlert className="w-3 h-3 me-1" /> Suspendu
                                                 </Badge>
                                             ) : (
                                                 <Badge variant="secondary">{t("admin.buyers.pending", "En attente")}</Badge>
@@ -225,7 +225,7 @@ export default function AdminBuyersPage() {
                                         <TableCell>
                                             {new Date(buyer.created_at).toLocaleDateString('fr-FR')}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-end">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" className="h-8 w-8 p-0">

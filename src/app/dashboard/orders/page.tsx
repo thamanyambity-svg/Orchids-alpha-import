@@ -126,7 +126,7 @@ export default function DashboardOrdersPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t("dashboard.orders.search", "Rechercher par référence ou produit...")}
-            className="pl-9"
+            className="ps-9"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -178,7 +178,7 @@ export default function DashboardOrdersPage() {
                       </div>
                     </Link>
                     <div className="flex shrink-0 items-center gap-3">
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="text-lg font-bold">${order.total_amount?.toLocaleString()}</p>
                         {order.deposit_paid && !order.balance_paid && (
                           <p className="text-[10px] text-warning">

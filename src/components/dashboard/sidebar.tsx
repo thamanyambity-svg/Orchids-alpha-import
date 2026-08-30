@@ -71,7 +71,7 @@ export function DashboardSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-r border-foreground/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-e border-foreground/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/" className="flex items-center group">
           <div className="relative w-16 h-16 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -110,7 +110,7 @@ export function DashboardSidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-indicator"
-                      className="w-1 h-4 bg-primary rounded-full ml-auto"
+                      className="w-1 h-4 bg-primary rounded-full ms-auto"
                     />
                   )}
                 </Link>

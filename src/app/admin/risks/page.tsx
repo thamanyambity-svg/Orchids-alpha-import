@@ -124,7 +124,7 @@ export default function AdminRisksPage() {
                                     <TableHead>Ref</TableHead>
                                     <TableHead>Montant</TableHead>
                                     <TableHead>Client</TableHead>
-                                    <TableHead className="text-right">{t("admin.risks.status", "Statut")}</TableHead>
+                                    <TableHead className="text-end">{t("admin.risks.status", "Statut")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -138,7 +138,7 @@ export default function AdminRisksPage() {
                                             <TableCell className="font-mono text-xs">{order.reference}</TableCell>
                                             <TableCell className="font-bold">${order.total_amount?.toLocaleString()}</TableCell>
                                             <TableCell className="text-xs">{order.request?.buyer?.full_name}</TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <Badge variant="outline">{order.status}</Badge>
                                             </TableCell>
                                         </TableRow>
@@ -166,7 +166,7 @@ export default function AdminRisksPage() {
                                 <TableRow>
                                     <TableHead>Nom</TableHead>
                                     <TableHead>Type</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
+                                    <TableHead className="text-end">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -181,7 +181,7 @@ export default function AdminRisksPage() {
                                             <TableCell>
                                                 <Badge variant="destructive" className="text-[10px]">Fournisseur</Badge>
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <Button variant="ghost" size="sm" className="h-6 text-xs">Revoir</Button>
                                             </TableCell>
                                         </TableRow>

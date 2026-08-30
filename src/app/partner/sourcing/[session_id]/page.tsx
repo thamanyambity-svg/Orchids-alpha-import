@@ -144,7 +144,7 @@ export default function SourcingSessionPage() {
           <h2 className="text-3xl font-bold tracking-tight">Validation Sourcing</h2>
           <p className="text-muted-foreground flex items-center gap-2">
             Demande {session.request?.reference} — {session.request?.category}
-            <Badge variant="outline" className="ml-2 bg-info-subtle">
+            <Badge variant="outline" className="ms-2 bg-info-subtle">
               {session.status}
             </Badge>
           </p>
@@ -194,7 +194,7 @@ export default function SourcingSessionPage() {
                   disabled={approvedCount === 0 || pendingCount > 0 || sending}
                   onClick={handleSendRFQs}
                 >
-                  {sending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                  {sending ? <Loader2 className="w-4 h-4 me-2 animate-spin" /> : <Send className="w-4 h-4 me-2" />}
                   Envoyer RFQs ({approvedCount})
                 </Button>
                 {pendingCount > 0 && (

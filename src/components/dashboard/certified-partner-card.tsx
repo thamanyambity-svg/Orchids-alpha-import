@@ -163,14 +163,14 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
             onClick={handleWhatsApp}
             className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
           >
-            <Phone className="w-3 h-3 mr-2" />
+            <Phone className="w-3 h-3 me-2" />
             WhatsApp
           </Button>
           <Button
             onClick={handleEmail}
             className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
           >
-            <Mail className="w-3 h-3 mr-2" />
+            <Mail className="w-3 h-3 me-2" />
             Email
           </Button>
         </div>

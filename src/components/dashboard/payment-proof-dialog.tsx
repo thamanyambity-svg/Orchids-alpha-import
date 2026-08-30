@@ -106,7 +106,7 @@ export function PaymentProofDialog({ orderId, orderReference, supersedesProofId,
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" onClick={(e) => e.stopPropagation()}>
-          <Upload className="w-4 h-4 mr-1" />
+          <Upload className="w-4 h-4 me-1" />
           {t("proof.cta", "Envoyer un justificatif")}
         </Button>
       </DialogTrigger>
@@ -159,7 +159,7 @@ export function PaymentProofDialog({ orderId, orderReference, supersedesProofId,
 
           <DialogFooter>
             <Button type="submit" disabled={uploading || !file}>
-              {uploading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {uploading && <Loader2 className="w-4 h-4 me-2 animate-spin" />}
               {t("proof.submit", "Envoyer")}
             </Button>
           </DialogFooter>

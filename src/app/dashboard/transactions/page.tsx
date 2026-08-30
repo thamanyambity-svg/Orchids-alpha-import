@@ -68,14 +68,14 @@ export default function TransactionsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("dashboard.transactions.search", "Rechercher par référence ou produit...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <Select defaultValue="all">
             <SelectTrigger className="w-[180px]">
-              <Filter className="w-4 h-4 mr-2" />
+              <Filter className="w-4 h-4 me-2" />
               <SelectValue placeholder={t("dashboard.transactions.filter", "Filtrer")} />
             </SelectTrigger>
             <SelectContent>
@@ -120,7 +120,7 @@ export default function TransactionsPage() {
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-end">
                     <p className="text-xl font-bold">${transaction.amount?.toLocaleString()}</p>
                     <div className={`flex items-center gap-1 text-[10px] font-bold uppercase justify-end ${
                       transaction.status === 'succeeded' ? 'text-success' : 'text-warning'

@@ -49,7 +49,7 @@ export function PartnerShowcase() {
                 <Star key={i} className="w-4 h-4 fill-primary text-primary" />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground ml-2">Dubaï Global Hub</span>
+            <span className="text-xs text-muted-foreground ms-2">Dubaï Global Hub</span>
           </div>
 
           <div className="glass-dark p-6 rounded-2xl border border-foreground/10 flex items-center gap-4">
@@ -72,7 +72,7 @@ export function PartnerShowcase() {
             onClick={scrollToMessaging}
             className="rounded-xl px-8 h-12 bg-primary text-primary-foreground font-bold tracking-widest uppercase text-xs hover:scale-105 transition-transform"
           >
-            <MessageSquare className="w-4 h-4 mr-2" />
+            <MessageSquare className="w-4 h-4 me-2" />
             Contacter le partenaire
           </Button>
           <p className="text-[9px] text-muted-foreground uppercase text-center tracking-widest">Temps de réponse: ~15 min</p>

@@ -122,7 +122,7 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder={t("dashboard.header.search", "Rechercher une transaction...")}
-            className="w-80 pl-9 h-10 bg-foreground/5 border-foreground/10 rounded-xl focus:bg-foreground/10 transition-all"
+            className="w-80 ps-9 h-10 bg-foreground/5 border-foreground/10 rounded-xl focus:bg-foreground/10 transition-all"
           />
         </div>
 
@@ -175,8 +175,8 @@ export function DashboardHeader({ title, subtitle, showBackButton = true, childr
 
         <div className="h-8 w-[1px] bg-foreground/10" />
 
-        <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-xl hover:bg-foreground/5 transition-colors group">
-          <div className="text-right hidden sm:block">
+        <button className="flex items-center gap-3 ps-2 pe-1 py-1 rounded-xl hover:bg-foreground/5 transition-colors group">
+          <div className="text-end hidden sm:block">
             <p className="text-xs font-bold tracking-tight text-foreground">Bonjour, {firstName} !</p>
           </div>
           <div className="relative">

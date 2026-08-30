@@ -176,7 +176,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button size="sm">
-                            <Plus className="w-4 h-4 mr-2" />
+                            <Plus className="w-4 h-4 me-2" />
                             {t("admin.tracking.add_step", "Ajouter une étape")}
                         </Button>
                     </DialogTrigger>
@@ -235,7 +235,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                             </div>
 
                             <Button type="submit" className="w-full" disabled={submitting}>
-                                {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                                {submitting && <Loader2 className="w-4 h-4 me-2 animate-spin" />}
                                 {t("admin.tracking.save", "Enregistrer")}
                             </Button>
                         </form>
@@ -243,11 +243,11 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                 </Dialog>
             </div>
 
-            <div className="space-y-6 pl-2 relative border-l-2 border-border/50 ml-3">
+            <div className="space-y-6 ps-2 relative border-s-2 border-border/50 ms-3">
                 {loading ? (
                     <div className="py-8 text-center text-muted-foreground text-sm">{t("admin.tracking.loading", "Chargement...")}</div>
                 ) : events.length === 0 ? (
-                    <div className="py-8 pl-6 text-muted-foreground text-sm italic">
+                    <div className="py-8 ps-6 text-muted-foreground text-sm italic">
                         {t("admin.tracking.no_events", "Aucun événement de suivi enregistré pour le moment.")}
                     </div>
                 ) : (
@@ -256,7 +256,7 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
                         const Icon = statusOpt.icon
 
                         return (
-                            <div key={event.id} className="relative pl-8 group">
+                            <div key={event.id} className="relative ps-8 group">
                                 {/* Dot on timeline */}
                                 <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-background border-2 border-primary" />
 

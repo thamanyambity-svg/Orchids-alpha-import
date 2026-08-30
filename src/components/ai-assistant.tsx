@@ -289,7 +289,7 @@ export function AiAssistant() {
                                                     </h4>
                                                     <p className="text-muted-foreground text-xs mb-4">{msg.card.description}</p>
                                                     <Button className="w-full bg-gold hover:bg-gold/90 text-primary-foreground font-bold h-9 text-xs">
-                                                        {msg.card.cta} <ArrowRight className="w-3 h-3 ml-2" />
+                                                        {msg.card.cta} <ArrowRight className="w-3 h-3 ms-2" />
                                                     </Button>
                                                 </div>
                                             </motion.div>
@@ -304,7 +304,7 @@ export function AiAssistant() {
                                                         variant={opt.variant === 'gold' ? 'default' : 'outline'}
                                                         size="sm"
                                                         onClick={opt.action}
-                                                        className={`h-auto py-2 px-3 text-xs whitespace-normal text-left h-fit ${opt.variant === 'gold'
+                                                        className={`h-auto py-2 px-3 text-xs whitespace-normal text-start h-fit ${opt.variant === 'gold'
                                                             ? 'bg-gold text-primary-foreground hover:bg-gold/90 border-transparent'
                                                             : 'bg-transparent border-foreground/20 text-foreground hover:bg-foreground/10'
                                                             }`}

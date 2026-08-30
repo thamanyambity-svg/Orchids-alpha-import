@@ -42,7 +42,7 @@ export default function AdminSourcingMonitorPage() {
       case 'VALIDATED':
         return <Badge className="bg-info-subtle text-info">Validé</Badge>
       case 'SENT':
-        return <Badge className="bg-success-subtle text-success"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
+        return <Badge className="bg-success-subtle text-success"><CheckCircle2 className="w-3 h-3 me-1" /> RFQ Envoyés</Badge>
       case 'FAILED':
         return <Badge variant="destructive">Échec IA</Badge>
       default:

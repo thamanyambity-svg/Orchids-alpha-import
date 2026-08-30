@@ -163,7 +163,7 @@ export default function PartnerDashboardPage() {
                           {request.buyer_profiles?.company_name || request.buyer_profiles?.full_name} • {request.quantity}
                         </p>
                       </div>
-                      <div className="text-right hidden sm:block">
+                      <div className="text-end hidden sm:block">
                         <p className="font-semibold">
                           {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}
                         </p>

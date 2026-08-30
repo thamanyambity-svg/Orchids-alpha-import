@@ -102,7 +102,7 @@ function PaymentSuccessContent() {
           </p>
 
           {paymentDetails && (
-            <div className="bg-muted/50 rounded-xl p-4 mb-6 text-left space-y-3">
+            <div className="bg-muted/50 rounded-xl p-4 mb-6 text-start space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{t("payment.success.order", "Commande")}</span>
                 <span className="font-medium">{paymentDetails.orderReference}</span>

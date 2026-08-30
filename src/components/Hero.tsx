@@ -78,7 +78,7 @@ export default function Hero() {
       </svg>
 
       <div className="relative z-10 px-6 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col items-end md:items-center pr-4 md:pr-0">
+        <div className="flex flex-col items-end md:items-center pe-4 md:pe-0">
           <AnimatePresence mode="wait">
             <motion.p key={`tag-${current}`} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.5 }} className="font-condensed text-xs md:text-sm text-gold tracking-[0.5em] uppercase mb-6 font-semibold">
               {slide.tag}
@@ -86,13 +86,13 @@ export default function Hero() {
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            <motion.h1 key={`h1-${current}`} initial={{ opacity: 0, y: 50, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -30, scale: 1.02 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="font-display text-[14vw] md:text-[16vw] lg:text-[18vw] leading-none text-white tracking-wider mb-0 select-none text-right md:text-center" style={{ lineHeight: "0.88" }}>
+            <motion.h1 key={`h1-${current}`} initial={{ opacity: 0, y: 50, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -30, scale: 1.02 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="font-display text-[14vw] md:text-[16vw] lg:text-[18vw] leading-none text-white tracking-wider mb-0 select-none text-end md:text-center" style={{ lineHeight: "0.88" }}>
               {slide.headline}
             </motion.h1>
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            <motion.h2 key={`h2-${current}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.6, delay: 0.15 }} className="font-display text-[5vw] md:text-[5vw] lg:text-[5.5vw] leading-none text-gradient-gold tracking-[0.15em] mb-8 text-right md:text-center">
+            <motion.h2 key={`h2-${current}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.6, delay: 0.15 }} className="font-display text-[5vw] md:text-[5vw] lg:text-[5.5vw] leading-none text-gradient-gold tracking-[0.15em] mb-8 text-end md:text-center">
               {slide.sub}
             </motion.h2>
           </AnimatePresence>

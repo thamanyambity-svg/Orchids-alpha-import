@@ -196,7 +196,7 @@ export default function AdminSuppliersPage() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">{t("admin.suppliers.title", "Validation Fournisseurs")}</h1>
-                    <p className="text-muted-foreground mr-4">
+                    <p className="text-muted-foreground me-4">
                         {suppliers.length} fournisseurs • {toValidateCount} à valider
                     </p>
                 </div>
@@ -238,7 +238,7 @@ export default function AdminSuppliersPage() {
                         <Input
                             type="search"
                             placeholder={t("admin.suppliers.search", "Rechercher...")}
-                            className="pl-8"
+                            className="ps-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -253,7 +253,7 @@ export default function AdminSuppliersPage() {
                                 <TableHead>Partenaire Responsable</TableHead>
                                 <TableHead>Capacité</TableHead>
                                 <TableHead>{t("admin.suppliers.status", "Statut")}</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
+                                <TableHead className="text-end">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -301,15 +301,15 @@ export default function AdminSuppliersPage() {
                                         <TableCell>
                                             {supplier.validated_by_admin ? (
                                                 <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> {t("admin.suppliers.validated", "Validé")}
+                                                    <CheckCircle2 className="w-3 h-3 me-1" /> {t("admin.suppliers.validated", "Validé")}
                                                 </Badge>
                                             ) : (
                                                 <Badge variant="destructive" className="bg-destructive-subtle text-destructive hover:bg-destructive-subtle border-destructive-border">
-                                                    <AlertCircle className="w-3 h-3 mr-1" /> À Valider
+                                                    <AlertCircle className="w-3 h-3 me-1" /> À Valider
                                                 </Badge>
                                             )}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-end">
                                             {supplier.validated_by_admin ? (
                                                 <Button
                                                     variant="ghost"
@@ -317,7 +317,7 @@ export default function AdminSuppliersPage() {
                                                     className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                                                     onClick={() => handleValidation(supplier.id, false)}
                                                 >
-                                                    <XCircle className="w-4 h-4 mr-2" />
+                                                    <XCircle className="w-4 h-4 me-2" />
                                                     Suspendre
                                                 </Button>
                                             ) : (
@@ -330,7 +330,7 @@ export default function AdminSuppliersPage() {
                                                         className="bg-success hover:bg-success text-success-foreground"
                                                         onClick={() => handleValidation(supplier.id, true)}
                                                     >
-                                                        <CheckCircle2 className="w-4 h-4 mr-2" />
+                                                        <CheckCircle2 className="w-4 h-4 me-2" />
                                                         Valider
                                                     </Button>
                                                 </div>

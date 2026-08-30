@@ -167,7 +167,7 @@ export default function ResetPasswordPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className={`${FIELD} pr-12`}
+                    className={`${FIELD} pe-12`}
                   />
                   <button
                     type="button"

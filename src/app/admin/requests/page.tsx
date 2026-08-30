@@ -174,7 +174,7 @@ function AdminRequestsContent() {
             <input
               type="text"
               placeholder={t("admin.requests.search", "Rechercher une demande...")}
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              className="w-full ps-10 pe-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -196,7 +196,7 @@ function AdminRequestsContent() {
         </div>
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <table className="w-full text-left">
+          <table className="w-full text-start">
             <thead className="bg-muted/50 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4">Référence / Date</th>
@@ -204,7 +204,7 @@ function AdminRequestsContent() {
                 <th className="px-6 py-4">Catégorie / Pays</th>
                 <th className="px-6 py-4">Partenaire</th>
                 <th className="px-6 py-4">{t("admin.requests.status", "Statut")}</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4 text-end">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -263,7 +263,7 @@ function AdminRequestsContent() {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 text-xs text-primary hover:text-primary">
-                              <UserPlus className="w-3 h-3 mr-1" />
+                              <UserPlus className="w-3 h-3 me-1" />
                               Assigner
                             </Button>
                           </DropdownMenuTrigger>
@@ -280,7 +280,7 @@ function AdminRequestsContent() {
                     <td className="px-6 py-4">
                       {getStatusBadge(req.status)}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-end">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -290,24 +290,24 @@ function AdminRequestsContent() {
                         <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem asChild>
                             <Link href={`/admin/requests/${req.id}`} className="flex items-center">
-                              <Search className="w-4 h-4 mr-2" />
+                              <Search className="w-4 h-4 me-2" />
                               Détails
                             </Link>
                           </DropdownMenuItem>
                           {req.status === "ANALYSIS" && (
                             <>
                               <DropdownMenuItem onClick={() => handleValidateRequest(req.id)} className="text-success">
-                                <CheckCircle2 className="w-4 h-4 mr-2" />
+                                <CheckCircle2 className="w-4 h-4 me-2" />
                                 Valider la demande
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleRejectRequest(req.id)} className="text-destructive">
-                                <XCircle className="w-4 h-4 mr-2" />
+                                <XCircle className="w-4 h-4 me-2" />
                                 Refuser
                               </DropdownMenuItem>
                             </>
                           )}
                           <DropdownMenuItem className="text-warning">
-                            <AlertTriangle className="w-4 h-4 mr-2" />
+                            <AlertTriangle className="w-4 h-4 me-2" />
                             Signaler Incident
                           </DropdownMenuItem>
                         </DropdownMenuContent>

@@ -253,7 +253,7 @@ export default function AdminEmailsPage() {
                     variant="outline"
                     onClick={() => copyReply(selectedEmail.ai_suggested_reply!)}
                   >
-                    {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                    {copied ? <Check className="w-4 h-4 me-2" /> : <Copy className="w-4 h-4 me-2" />}
                     {copied ? "Copié !" : "Copier la réponse"}
                   </Button>
                 </div>
@@ -261,7 +261,7 @@ export default function AdminEmailsPage() {
 
               <Button asChild variant="outline" size="sm">
                 <a href={`mailto:${selectedEmail.from_email}?subject=Re: ${encodeURIComponent(selectedEmail.subject || "")}`}>
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                  <ExternalLink className="w-4 h-4 me-2" />
                   Répondre par email
                 </a>
               </Button>

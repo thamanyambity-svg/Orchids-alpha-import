@@ -156,7 +156,7 @@ export default function BuyerKycPage() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
         <Input
           placeholder={t("admin.kyc.search", "Rechercher un acheteur...")}
-          className="pl-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
+          className="ps-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -198,7 +198,7 @@ export default function BuyerKycPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-semibold text-foreground">{buyer.full_name || "N/A"}</span>
                             <Badge className={status.class}>
-                              <Icon className="w-3 h-3 mr-1" />
+                              <Icon className="w-3 h-3 me-1" />
                               {status.label}
                             </Badge>
                           </div>
@@ -215,7 +215,7 @@ export default function BuyerKycPage() {
                         className="border-foreground/10 text-foreground/60"
                         onClick={(e) => { e.stopPropagation(); viewDocs(buyer) }}
                       >
-                        <FileText className="w-4 h-4 mr-1" />
+                        <FileText className="w-4 h-4 me-1" />
                         {t("admin.kyc.view_docs", "Documents")}
                       </Button>
                     </div>
@@ -281,7 +281,7 @@ export default function BuyerKycPage() {
                     onClick={() => handleVerify(selectedBuyer.id)}
                     disabled={actionLoading}
                   >
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    <CheckCircle2 className="w-4 h-4 me-1" />
                     {t("admin.kyc.verify", "Vérifier")}
                   </Button>
                 )}
@@ -293,7 +293,7 @@ export default function BuyerKycPage() {
                     onClick={() => handleReject(selectedBuyer.id)}
                     disabled={actionLoading}
                   >
-                    <XCircle className="w-4 h-4 mr-1" />
+                    <XCircle className="w-4 h-4 me-1" />
                     {t("admin.kyc.reject", "Refuser")}
                   </Button>
                 )}

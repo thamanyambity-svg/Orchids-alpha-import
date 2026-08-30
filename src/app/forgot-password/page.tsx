@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
 
       <main className="relative grid min-h-screen [grid-template-columns:1fr] lg:[grid-template-columns:1fr_1fr]">
         {/* Volet gauche : même argumentaire que la page de connexion. */}
-        <section className="relative hidden overflow-hidden border-r border-[var(--line)] lg:block">
+        <section className="relative hidden overflow-hidden border-e border-[var(--line)] lg:block">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-[.22]"
             style={{

@@ -177,7 +177,7 @@ export default function ContactPage() {
                 key={type.value}
                 type="button"
                 onClick={() => handleTypeSelect(type.value)}
-                className={`flex-1 basis-[240px] px-6 py-5 text-left font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
+                className={`flex-1 basis-[240px] px-6 py-5 text-start font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
                   contactType === type.value
                     ? "bg-gold text-primary-foreground"
                     : "bg-[var(--navy)] text-foreground/60 hover:text-gold"

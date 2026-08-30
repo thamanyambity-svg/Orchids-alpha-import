@@ -158,7 +158,7 @@ export default function ApiDocsPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-4">Bonnes pratiques</h2>
-          <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
+          <ul className="space-y-2 text-sm text-muted-foreground list-disc ps-5">
             <li>Les webhooks sont idempotents : un même événement peut être reçu plusieurs fois sans effet de bord</li>
             <li>Les événements sont journalisés dans la table <code className="text-primary font-mono">audit_logs</code> avec le préfixe <code className="text-primary font-mono">N8N_</code></li>
             <li>En cas d&apos;erreur, le webhook répond avec un code 400 ou 500 et un message descriptif</li>

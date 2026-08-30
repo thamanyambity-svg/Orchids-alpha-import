@@ -190,7 +190,7 @@ export default function IncidentsPage() {
                   onClick={handleReportIncident}
                   disabled={isReporting}
                 >
-                  {isReporting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                  {isReporting && <Loader2 className="w-4 h-4 animate-spin me-2" />}
                   {t("dashboard.incidents.send", "Envoyer le signalement")}
                 </Button>
               </div>

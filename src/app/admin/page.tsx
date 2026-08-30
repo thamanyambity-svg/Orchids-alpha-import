@@ -182,19 +182,19 @@ export default function AdminDashboardPage() {
             <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Partenaires Actifs</h3>
             <Link href="/admin/partners">
               <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase tracking-widest hover:text-foreground">
-                Voir tout <ChevronDown className="w-3 h-3 ml-1" />
+                Voir tout <ChevronDown className="w-3 h-3 ms-1" />
               </Button>
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left border-b border-foreground/5">
+                <tr className="text-start border-b border-foreground/5">
                   <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Partenaire</th>
                   <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Pays</th>
                   <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Performance</th>
                   <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Volume</th>
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest text-right">{t("admin.status", "Statut")}</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest text-end">{t("admin.status", "Statut")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/5">
@@ -216,7 +216,7 @@ export default function AdminDashboardPage() {
                       </div>
                     </td>
                     <td className="py-4 text-xs font-bold text-foreground/80">{p.volume}</td>
-                    <td className="py-4 text-right">
+                    <td className="py-4 text-end">
                       <span className={cn(
                         "text-[10px] font-bold border px-2 py-0.5 rounded uppercase tracking-tighter",
                         p.status === 'Actif' ? "text-success border-success/20 bg-success/5" : "text-foreground/40 border-foreground/10 bg-foreground/5"
@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
             <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Demandes récentes</h3>
             <Link href="/admin/requests">
               <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase tracking-widest hover:text-foreground">
-                Voir tout <ListFilter className="w-3 h-3 ml-1" />
+                Voir tout <ListFilter className="w-3 h-3 ms-1" />
               </Button>
             </Link>
           </div>

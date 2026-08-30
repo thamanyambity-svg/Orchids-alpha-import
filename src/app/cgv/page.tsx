@@ -29,7 +29,7 @@ export default function CgvPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">{t("cgv.section3.title", "3. Tarifs et Paiement")}</h2>
                     <p>{t("cgv.section3.intro", "Les prix sont indiqués en Euros (EUR) et s'entendent FOB ou CIF selon le devis.")}</p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <ul className="list-disc ps-5 mt-2 space-y-1">
                         <li>{t("cgv.section3.item1", "Acompte 60% : exigible à la validation de la commande")}</li>
                         <li>{t("cgv.section3.item2", "Solde 40% : exigible à la confirmation de livraison")}</li>
                         <li>{t("cgv.section3.item3", "Paiement par carte bancaire ou prélèvement SEPA via Stripe")}</li>

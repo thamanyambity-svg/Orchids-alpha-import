@@ -217,7 +217,7 @@ export default function AdminSepaPage() {
             <div className="flex items-center gap-2">
               <Landmark className="w-5 h-5 text-primary" />
               <h2 className="font-semibold">Mandats SEPA actifs</h2>
-              <Badge variant="outline" className="ml-2">{mandates.length}</Badge>
+              <Badge variant="outline" className="ms-2">{mandates.length}</Badge>
             </div>
           </div>
           {mandates.length === 0 ? (
@@ -226,7 +226,7 @@ export default function AdminSepaPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="w-full text-start">
                 <thead className="bg-muted/30 text-xs font-medium uppercase text-muted-foreground">
                   <tr>
                     <th className="px-6 py-3">Acheteur</th>
@@ -270,7 +270,7 @@ export default function AdminSepaPage() {
             <div className="flex items-center gap-2">
               <Activity className="w-5 h-5 text-primary" />
               <h2 className="font-semibold">Transactions</h2>
-              <Badge variant="outline" className="ml-2">{transactions.length}</Badge>
+              <Badge variant="outline" className="ms-2">{transactions.length}</Badge>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -278,7 +278,7 @@ export default function AdminSepaPage() {
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="w-56 pl-9 pr-3 py-1.5 text-sm rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary/20 outline-none"
+                  className="w-56 ps-9 pe-3 py-1.5 text-sm rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary/20 outline-none"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -294,7 +294,7 @@ export default function AdminSepaPage() {
                 <option value="PENDING">En attente</option>
               </select>
               <Button variant="outline" size="sm" onClick={() => { fetchTransactions(); fetchMandates() }}>
-                <RefreshCw className="w-4 h-4 mr-1" /> Actualiser
+                <RefreshCw className="w-4 h-4 me-1" /> Actualiser
               </Button>
             </div>
           </div>
@@ -305,7 +305,7 @@ export default function AdminSepaPage() {
             <div className="p-8 text-center text-muted-foreground text-sm">Aucune transaction trouvée</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="w-full text-start">
                 <thead className="bg-muted/30 text-xs font-medium uppercase text-muted-foreground">
                   <tr>
                     <th className="px-6 py-3">Date</th>
@@ -313,7 +313,7 @@ export default function AdminSepaPage() {
                     <th className="px-6 py-3">Commande</th>
                     <th className="px-6 py-3">Type</th>
                     <th className="px-6 py-3">Stripe ID</th>
-                    <th className="px-6 py-3 text-right">Montant</th>
+                    <th className="px-6 py-3 text-end">Montant</th>
                     <th className="px-6 py-3 text-center">Statut</th>
                     <th className="px-6 py-3 text-center">Actions</th>
                   </tr>
@@ -338,7 +338,7 @@ export default function AdminSepaPage() {
                         <td className="px-6 py-3 text-xs font-mono text-muted-foreground max-w-[120px] truncate">
                           {tx.stripe_payment_intent_id || "—"}
                         </td>
-                        <td className="px-6 py-3 text-right font-bold font-mono">
+                        <td className="px-6 py-3 text-end font-bold font-mono">
                           {(Number(tx.amount) / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
                         </td>
                         <td className="px-6 py-3 text-center">
@@ -348,7 +348,7 @@ export default function AdminSepaPage() {
                             <Badge variant="destructive">Échec</Badge>
                           ) : (
                             <Badge variant="secondary" className="bg-warning/10 text-warning border-warning/20">
-                              <Clock className="w-3 h-3 mr-1" /> En attente
+                              <Clock className="w-3 h-3 me-1" /> En attente
                             </Badge>
                           )}
                         </td>
@@ -365,7 +365,7 @@ export default function AdminSepaPage() {
                               ) : (
                                 <RotateCcw className="w-3 h-3" />
                               )}
-                              <span className="ml-1">Relancer</span>
+                              <span className="ms-1">Relancer</span>
                             </Button>
                           )}
                         </td>

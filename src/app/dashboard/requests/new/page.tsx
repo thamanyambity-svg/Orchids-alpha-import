@@ -697,7 +697,7 @@ export default function NewRequestPage() {
                     className="w-full h-12 border-dashed border-2 hover:bg-primary/5 hover:border-primary/50 text-primary transition-all"
                     onClick={addItem}
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 me-2" />
                     {t("dashboard.requests.new.add_another_product", "Ajouter un autre produit à cette demande")}
                   </Button>
                 </div>
@@ -836,7 +836,7 @@ export default function NewRequestPage() {
 
                 <div className="flex justify-end gap-4 pt-4 border-t border-border">
                   <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 me-2" />
                     {t("dashboard.requests.new.back", "Retour")}
                   </Button>
                   <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
@@ -851,14 +851,14 @@ export default function NewRequestPage() {
 
           <div className="flex items-center justify-between mb-8">
             {currentStep === 1 ? (
-              <Button onClick={handleNext} disabled={isLoading} className="ml-auto gap-2">
+              <Button onClick={handleNext} disabled={isLoading} className="ms-auto gap-2">
                 {t("dashboard.requests.new.next", "Suivant")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             ) : currentStep === 2 ? (
-              <div className="flex gap-3 ml-auto">
+              <div className="flex gap-3 ms-auto">
                 <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 me-2" />
                   {t("dashboard.requests.new.back", "Retour")}
                 </Button>
                 <Button onClick={handleNext} disabled={isLoading} className="gap-2">
@@ -869,7 +869,7 @@ export default function NewRequestPage() {
             ) : (
               <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 me-2" />
                   {t("dashboard.requests.new.back", "Retour")}
                 </Button>
                 <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">

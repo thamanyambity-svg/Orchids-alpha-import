@@ -77,7 +77,7 @@ export default function PartnerCountries() {
         <div className="mt-auto pt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {countries.map((c, i) => (
             <motion.button key={c.code} onHoverStart={() => setActive(i)} onClick={() => setActive(i)} whileHover={{ y: -4 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.2 }}
-              className="relative p-4 border text-left transition-colors duration-200"
+              className="relative p-4 border text-start transition-colors duration-200"
               style={{
                 background: i === active ? `${c.accent}15` : "rgba(6,16,30,0.6)",
                 borderColor: i === active ? `${c.accent}60` : "rgba(255,255,255,0.06)",

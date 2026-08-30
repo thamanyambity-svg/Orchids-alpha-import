@@ -57,7 +57,7 @@ export default function PartnerSourcingIndexPage() {
       case 'VALIDATED':
         return <Badge className="bg-info-subtle text-info hover:bg-info-subtle">Validé (Admin info)</Badge>
       case 'SENT':
-        return <Badge className="bg-success-subtle text-success hover:bg-success-subtle"><CheckCircle2 className="w-3 h-3 mr-1" /> RFQ Envoyés</Badge>
+        return <Badge className="bg-success-subtle text-success hover:bg-success-subtle"><CheckCircle2 className="w-3 h-3 me-1" /> RFQ Envoyés</Badge>
       case 'FAILED':
         return <Badge variant="destructive">Échec IA</Badge>
       default:

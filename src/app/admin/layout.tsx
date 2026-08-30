@@ -11,7 +11,7 @@ export default function AdminLayout({
     <RoleGuard allowedRoles={['ADMIN']}>
       <div className="min-h-screen bg-background text-foreground overflow-hidden flex">
         <AdminSidebar />
-        <main className="flex-1 ml-64 h-screen overflow-y-auto custom-scrollbar relative flex flex-col">
+        <main className="flex-1 ms-64 h-screen overflow-y-auto custom-scrollbar relative flex flex-col">
           <AdminHeader />
           <div className="flex-1 relative">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-10 pointer-events-none" />

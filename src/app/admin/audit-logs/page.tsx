@@ -94,7 +94,7 @@ export default function AdminAuditLogsPage() {
           }}
         >
           <SelectTrigger className="w-[240px] bg-foreground/5 border-foreground/10 text-foreground">
-            <Filter className="w-4 h-4 mr-2" />
+            <Filter className="w-4 h-4 me-2" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -112,7 +112,7 @@ export default function AdminAuditLogsPage() {
           }}
         >
           <SelectTrigger className="w-[220px] bg-foreground/5 border-foreground/10 text-foreground">
-            <Eye className="w-4 h-4 mr-2" />
+            <Eye className="w-4 h-4 me-2" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

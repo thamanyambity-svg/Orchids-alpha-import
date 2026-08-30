@@ -92,14 +92,14 @@ export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
                 {t("tracking.title", "Suivi de l'expédition")}
             </h3>
 
-            <div className="space-y-8 pl-4 relative border-l-2 border-primary/20 ml-2">
+            <div className="space-y-8 ps-4 relative border-s-2 border-primary/20 ms-2">
                 {events.map((event, index) => {
                     const statusOpt = statusOptions.find(o => o.value === event.status) || { labelKey: "", label: event.status, icon: CheckCircle2 }
                     const Icon = statusOpt.icon
                     const isLatest = index === 0
 
                     return (
-                        <div key={event.id} className="relative pl-8">
+                        <div key={event.id} className="relative ps-8">
                             {/* Timeline Dot */}
                             <div className={`absolute -left-[11px] top-1 w-5 h-5 rounded-full border-4 border-background flex items-center justify-center ${isLatest ? 'bg-primary' : 'bg-muted-foreground/30'}`}>
                                 {isLatest && <div className="w-2 h-2 rounded-full bg-foreground animate-pulse" />}

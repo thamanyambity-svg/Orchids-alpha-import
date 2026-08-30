@@ -86,14 +86,14 @@ export default function AdminOrdersPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
           <Input
             placeholder={t("admin.orders.search", "Rechercher...")}
-            className="pl-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
+            className="ps-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[180px] bg-foreground/5 border-foreground/10 text-foreground">
-            <Filter className="w-4 h-4 mr-2" />
+            <Filter className="w-4 h-4 me-2" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

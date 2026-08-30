@@ -152,7 +152,7 @@ export default function AdminSupportPage() {
                                         <TableHead>Commande</TableHead>
                                         <TableHead>Client</TableHead>
                                         <TableHead>{t("admin.support.status", "Statut")}</TableHead>
-                                        <TableHead className="text-right">Action</TableHead>
+                                        <TableHead className="text-end">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -176,7 +176,7 @@ export default function AdminSupportPage() {
                                                         {incident.status}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-end">
                                                     <Button variant="ghost" size="sm">Gérer</Button>
                                                 </TableCell>
                                             </TableRow>
@@ -202,7 +202,7 @@ export default function AdminSupportPage() {
                                         <TableHead>Expéditeur</TableHead>
                                         <TableHead>Message</TableHead>
                                         <TableHead>Lu</TableHead>
-                                        <TableHead className="text-right">Action</TableHead>
+                                        <TableHead className="text-end">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -219,7 +219,7 @@ export default function AdminSupportPage() {
                                                 <TableCell>
                                                     {msg.is_read ? <CheckCircle2 className="w-4 h-4 text-success" /> : <div className="w-2 h-2 rounded-full bg-info" />}
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-end">
                                                     <Button variant="ghost" size="sm">Répondre</Button>
                                                 </TableCell>
                                             </TableRow>

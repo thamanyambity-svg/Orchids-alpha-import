@@ -198,7 +198,7 @@ export default function PartnerRequestDetailPage() {
             <DropdownMenuTrigger asChild>
               <Button disabled={updating}>
                 {updating ? t("partner.request.updating", "Mise à jour...") : t("partner.request.change_status", "Modifier le statut")}
-                <MoreVertical className="ml-2 w-4 h-4" />
+                <MoreVertical className="ms-2 w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

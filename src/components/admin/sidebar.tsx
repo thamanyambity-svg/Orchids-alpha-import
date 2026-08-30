@@ -100,7 +100,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-foreground/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-e border-foreground/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/admin" className="flex items-center group">
           <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -138,7 +138,7 @@ export function AdminSidebar() {
                   <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
 
                   {item.badge && (
-                    <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-foreground rounded-full">
+                    <span className="ms-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-foreground rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -146,7 +146,7 @@ export function AdminSidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute left-0 w-1 h-6 bg-primary rounded-r-full shadow-[0_0_10px_#ffd700]"
+                      className="absolute left-0 w-1 h-6 bg-primary rounded-e-full shadow-[0_0_10px_#ffd700]"
                     />
                   )}
                 </Link>

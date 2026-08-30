@@ -10,7 +10,7 @@ export default function DashboardLayout({
     <RoleGuard allowedRoles={['BUYER']}>
       <div className="min-h-screen bg-background">
         <DashboardSidebar />
-        <main className="ml-64">
+        <main className="ms-64">
           {children}
         </main>
       </div>

@@ -253,7 +253,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="text-right hidden sm:block">
+              <div className="text-end hidden sm:block">
                 <p className="text-[10px] text-muted-foreground mb-1">ID Client</p>
                 <p className="font-mono text-xs bg-muted px-2 py-1 rounded">{profile?.id?.slice(0, 8).toUpperCase() || '-'}</p>
               </div>
@@ -331,7 +331,7 @@ export default function SettingsPage() {
                         <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="full_name"
-                          className="pl-9"
+                          className="ps-9"
                           value={profile?.full_name || ''}
                           onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
                           placeholder="Jean Dupont"
@@ -344,7 +344,7 @@ export default function SettingsPage() {
                         <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="email"
-                          className="pl-9"
+                          className="ps-9"
                           value={profile?.email || ''}
                           disabled
                         />
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                         <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="phone"
-                          className="pl-9"
+                          className="ps-9"
                           value={profile?.phone || ''}
                           onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                           placeholder="+243..."
@@ -367,7 +367,7 @@ export default function SettingsPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
-                  <Button type="submit" disabled={saving} className="ml-auto gap-2">
+                  <Button type="submit" disabled={saving} className="ms-auto gap-2">
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     Enregistrer les modifications
                   </Button>
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                         <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="company_name"
-                          className="pl-9"
+                          className="ps-9"
                           value={profile?.company_name || ''}
                           onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
                           placeholder="Alpha Trading SARL"
@@ -424,7 +424,7 @@ export default function SettingsPage() {
                         <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="city"
-                          className="pl-9"
+                          className="ps-9"
                           value={profile?.city || ''}
                           onChange={(e) => setProfile({ ...profile, city: e.target.value })}
                           placeholder="Kinshasa"
@@ -434,7 +434,7 @@ export default function SettingsPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
-                  <Button type="submit" disabled={saving} className="ml-auto gap-2">
+                  <Button type="submit" disabled={saving} className="ms-auto gap-2">
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     {t("dashboard.settings.save_company", "Sauvegarder les infos entreprise")}
                   </Button>

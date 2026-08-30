@@ -92,7 +92,7 @@ export default function ProcessPage() {
                     <th
                       key={head}
                       scope="col"
-                      className={`border-b border-[var(--line)] bg-[var(--navy2)] px-[18px] py-4 text-left font-condensed text-[11px] font-bold uppercase tracking-[.28em] text-gold ${
+                      className={`border-b border-[var(--line)] bg-[var(--navy2)] px-[18px] py-4 text-start font-condensed text-[11px] font-bold uppercase tracking-[.28em] text-gold ${
                         i === 0 ? "w-14" : ""
                       }`}
                     >

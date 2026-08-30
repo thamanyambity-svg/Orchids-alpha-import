@@ -50,7 +50,7 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
             <span className="flex items-center gap-1"><Hash className="w-4 h-4" /> AI Score: {match.score}/10</span>
           </div>
         </div>
-        <div className="text-right flex flex-col items-end gap-2">
+        <div className="text-end flex flex-col items-end gap-2">
           <Badge variant={match.score >= 8 ? 'default' : 'secondary'} className={match.score >= 8 ? 'bg-info' : ''}>
             Score: {match.score}
           </Badge>
@@ -112,13 +112,13 @@ export function SupplierMatchCard({ match, onStatusChange }: SupplierMatchCardPr
             className="border-destructive-border text-destructive hover:bg-destructive-subtle hover:text-destructive"
             onClick={() => onStatusChange(match.id, 'REJECTED', notes)}
           >
-            <XCircle className="w-4 h-4 mr-2" /> Rejeter
+            <XCircle className="w-4 h-4 me-2" /> Rejeter
           </Button>
           <Button 
             className="bg-success hover:bg-success text-success-foreground"
             onClick={() => onStatusChange(match.id, 'APPROVED', notes)}
           >
-            <CheckCircle2 className="w-4 h-4 mr-2" /> Approuver pour RFQ
+            <CheckCircle2 className="w-4 h-4 me-2" /> Approuver pour RFQ
           </Button>
         </CardFooter>
       )}

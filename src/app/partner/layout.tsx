@@ -10,7 +10,7 @@ export default function PartnerLayout({
     <RoleGuard allowedRoles={['PARTNER']}>
       <div className="min-h-screen bg-background">
         <PartnerSidebar />
-        <main className="ml-64">
+        <main className="ms-64">
           {children}
         </main>
       </div>

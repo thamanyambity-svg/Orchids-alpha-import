@@ -75,13 +75,13 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-start border-collapse">
           <thead>
             <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-foreground/5">
               <th className="px-6 py-4 font-normal">Date</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">Montant</th>
-              <th className="px-6 py-4 font-normal text-right">{t("transaction.status", "Statut")}</th>
+              <th className="px-6 py-4 font-normal text-end">{t("transaction.status", "Statut")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-foreground/5">
@@ -105,7 +105,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
                       {tx.amount} {tx.currency}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-end">
                     <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
                       tx.status === "PAID" || tx.status === "BLOCKED"
                         ? "bg-primary/20 text-primary border border-primary/30" 
