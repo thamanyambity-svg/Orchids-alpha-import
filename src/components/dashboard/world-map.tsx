@@ -29,7 +29,12 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
   useEffect(() => {
     if (!mapContainer.current) return
 
-    console.log("Initializing map with partners:", partners)
+    // Sans jeton, mapbox-gl lève « An API access token is required ». Comme
+    // l'appel part d'un useEffect, l'exception remonte à la frontière d'erreur
+    // et fait tomber toute la page hôte — le tableau de bord d'administration
+    // devenait une page 500 entière pour une carte décorative absente.
+    // On sort proprement : le composant affiche un état de repli.
+    if (!mapboxToken) return
 
     mapboxgl.accessToken = mapboxToken
 
@@ -169,6 +174,21 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
       })
     }
   }, [selectedCountry])
+
+  if (!mapboxToken) {
+    return (
+      <div className="relative flex h-[400px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/30 px-6 text-center">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18" />
+        </svg>
+        <p className="text-sm font-semibold text-foreground">Carte du réseau indisponible</p>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          La variable NEXT_PUBLIC_MAPBOX_TOKEN n&apos;est pas configurée. Le reste du tableau de bord fonctionne normalement.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="relative w-full h-[400px] rounded-2xl overflow-hidden border border-border shadow-inner">
