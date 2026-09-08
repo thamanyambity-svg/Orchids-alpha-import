@@ -55,14 +55,32 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
+  const [erreur, setErreur] = useState<string | null>(null)
+
   useEffect(() => {
     async function fetchDashboard() {
       try {
         const res = await fetch('/api/admin/dashboard')
-        const json = await res.json()
+        const json = await res.json().catch(() => null)
+
+        // res.ok n'était pas vérifié : une réponse d'erreur — un 401 le temps
+        // que la session s'établisse, par exemple — renvoie { error: "..." },
+        // un objet truthy. Le repli `data || { stats: [], ... }` ne s'appliquait
+        // donc pas, stats valait undefined, et stats.map() levait une exception
+        // que la frontière d'erreur affichait en page 500.
+        if (!res.ok) {
+          setErreur(
+            res.status === 401 || res.status === 403
+              ? "Session expirée ou droits insuffisants. Reconnectez-vous."
+              : (json?.error as string) || `Le tableau de bord n'a pas pu être chargé (${res.status}).`
+          )
+          return
+        }
+
         setData(json)
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error)
+        setErreur("Le tableau de bord est injoignable. Vérifiez votre connexion.")
       } finally {
         setLoading(false)
       }
@@ -78,13 +96,28 @@ export default function AdminDashboardPage() {
     )
   }
 
-  const { stats, partners, recentRequests, auditLogs, criticalAlerts } = data || {
-    stats: [],
-    partners: [],
-    recentRequests: [],
-    auditLogs: [],
-    criticalAlerts: []
+  if (erreur) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 min-h-[60vh] px-6 text-center">
+        <div className="w-12 h-12 rounded-full bg-destructive-subtle border border-destructive-border flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6 text-destructive" />
+        </div>
+        <p className="text-sm text-muted-foreground max-w-md">{erreur}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold"
+        >
+          Réessayer
+        </button>
+      </div>
+    )
   }
+
+  const stats = Array.isArray(data?.stats) ? data.stats : []
+  const partners = Array.isArray(data?.partners) ? data.partners : []
+  const recentRequests = Array.isArray(data?.recentRequests) ? data.recentRequests : []
+  const auditLogs = Array.isArray(data?.auditLogs) ? data.auditLogs : []
+  const criticalAlerts = Array.isArray(data?.criticalAlerts) ? data.criticalAlerts : []
 
   // Zones Alpha : Turquie, Dubai, Chine, Japon, Thaïlande uniquement
   const ALLOWED_CODES = ['CHN', 'CN', 'TUR', 'TR', 'ARE', 'UAE', 'AE', 'JPN', 'JP', 'THA', 'TH']
@@ -126,10 +159,11 @@ export default function AdminDashboardPage() {
 
           // Determine link target based on label logic
           let href = "/admin"
-          if (stat.label.includes("Funds")) href = "/admin/finances"
-          else if (stat.label.includes("Demandes")) href = "/admin/requests"
-          else if (stat.label.includes("Fret")) href = "/admin/shipping"
-          else if (stat.label.includes("Partenaires")) href = "/admin/partners"
+          const libelle: string = stat.label ?? ""
+          if (libelle.includes("Funds")) href = "/admin/finances"
+          else if (libelle.includes("Demandes")) href = "/admin/requests"
+          else if (libelle.includes("Fret")) href = "/admin/shipping"
+          else if (libelle.includes("Partenaires")) href = "/admin/partners"
 
           return (
             <Link key={i} href={href} className="block">
