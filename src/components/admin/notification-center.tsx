@@ -39,8 +39,8 @@ export function NotificationCenter() {
   const items = data?.items ?? []
 
   const iconMap: Record<string, React.ReactNode> = {
-    incident: <AlertTriangle className="w-4 h-4 text-amber-500" />,
-    message: <MessageSquare className="w-4 h-4 text-blue-500" />,
+    incident: <AlertTriangle className="w-4 h-4 text-warning" />,
+    message: <MessageSquare className="w-4 h-4 text-info" />,
     contact: <Mail className="w-4 h-4 text-primary" />,
     audit: <Activity className="w-4 h-4 text-muted-foreground" />,
   }
@@ -51,11 +51,11 @@ export function NotificationCenter() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative text-white/70 hover:text-white hover:bg-white/5"
+          className="relative text-foreground/70 hover:text-foreground hover:bg-foreground/5"
         >
           <Bell className="w-5 h-5" />
           {total > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-amber-500 text-[10px] font-bold text-white flex items-center justify-center">
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-warning text-[10px] font-bold text-foreground flex items-center justify-center">
               {total > 99 ? "99+" : total}
             </span>
           )}

@@ -64,7 +64,7 @@ export default function SupportPage() {
                 >
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-start hover:bg-accent/50 transition-colors"
                   >
                     <span className="font-semibold">{faq.question}</span>
                     {openIndex === index ? (
@@ -120,7 +120,7 @@ export default function SupportPage() {
                     <p className="text-xs text-muted-foreground">Réponse sous 15 minutes</p>
                   </div>
                 </div>
-                <Button className="w-full bg-success hover:bg-success/90 text-white gap-2">
+                <Button className="w-full bg-success hover:bg-success/90 text-success-foreground gap-2">
                   Démarrer la discussion
                   <ExternalLink className="w-4 h-4" />
                 </Button>

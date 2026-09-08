@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { analyzeEmail } from '@/lib/email-ai'
 import { verifySvixSignature } from '@/lib/webhook-verify'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
+// Le client d'administration est construit paresseusement dans lib/supabase/admin :
+// des assertions non nulles au chargement du module faisaient échouer la
+// compilation dans un environnement dépourvu de ces variables.
 
 interface ResendInboundEvent {
   type: 'email.received'
@@ -53,6 +54,39 @@ export async function POST(request: NextRequest) {
     }
 
     const { email_id, from, to, subject } = event.data
+    const { email: fromEmail, name: fromName } = parseEmailAddress(from)
+
+    const supabase = createAdminClient()
+
+    // ------------------------------------------------------------------
+    // Idempotence : on réclame l'e-mail AVANT tout travail coûteux.
+    //
+    // L'analyse appelle OpenAI — un appel facturé — et elle s'exécutait avant
+    // l'insertion. resend_email_id étant UNIQUE, une livraison rejouée par
+    // Resend payait l'appel, échouait ensuite en 23505, renvoyait 500, et
+    // Resend rejouait : une boucle qui brûle du crédit sans jamais aboutir.
+    //
+    // La ligne minimale est posée d'abord ; un doublon est acquitté en 200,
+    // comme le fait déjà le webhook Stripe. Contenu et analyse suivent, par
+    // mise à jour.
+    // ------------------------------------------------------------------
+    const { error: claimError } = await supabase.from('inbound_emails').insert({
+      resend_email_id: email_id,
+      from_email: fromEmail,
+      from_name: fromName || null,
+      to_emails: to,
+      subject: subject || null,
+      status: 'PENDING',
+    })
+
+    if (claimError) {
+      if ((claimError as { code?: string }).code === '23505') {
+        console.log(`[resend] e-mail ${email_id} déjà reçu — ignoré (idempotence)`)
+        return NextResponse.json({ ok: true, received: false, duplicate: true })
+      }
+      console.error('Inbound email claim error:', claimError)
+      return NextResponse.json({ error: claimError.message }, { status: 500 })
+    }
 
     // Récupérer le contenu complet via l'API Resend
     let bodyText = ''
@@ -69,32 +103,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { email: fromEmail, name: fromName } = parseEmailAddress(from)
-
-    // Analyse IA
+    // Analyse IA — appel facturé, exécuté une seule fois par e-mail puisque
+    // la réclamation ci-dessus a déjà écarté les doublons.
     const analysis = await analyzeEmail(fromEmail, subject || '', bodyText || subject || '')
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
-
-    const { error } = await supabase.from('inbound_emails').insert({
-      resend_email_id: email_id,
-      from_email: fromEmail,
-      from_name: fromName || null,
-      to_emails: to,
-      subject: subject || null,
-      body_text: bodyText || null,
-      body_html: bodyHtml || null,
-      ai_category: analysis?.category || null,
-      ai_priority: analysis?.priority || null,
-      ai_summary: analysis?.summary || null,
-      ai_suggested_reply: analysis?.suggestedReply || null,
-      ai_processed_at: analysis ? new Date().toISOString() : null,
-      status: 'PENDING',
-    })
+    const { error } = await supabase
+      .from('inbound_emails')
+      .update({
+        body_text: bodyText || null,
+        body_html: bodyHtml || null,
+        ai_category: analysis?.category || null,
+        ai_priority: analysis?.priority || null,
+        ai_summary: analysis?.summary || null,
+        ai_suggested_reply: analysis?.suggestedReply || null,
+        ai_processed_at: analysis ? new Date().toISOString() : null,
+      })
+      .eq('resend_email_id', email_id)
 
     if (error) {
-      console.error('Inbound email insert error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      // L'e-mail est déjà enregistré : renvoyer 500 ferait rejouer Resend sur
+      // une livraison déjà acceptée. L'enrichissement manquant est signalé.
+      console.error('Inbound email enrichment error:', error)
+      return NextResponse.json({ ok: true, email_id, enriched: false })
     }
 
     return NextResponse.json({ ok: true, email_id })

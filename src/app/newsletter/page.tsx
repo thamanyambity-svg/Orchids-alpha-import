@@ -62,7 +62,7 @@ export default function NewsletterPage() {
             />
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "S'inscrire"}
-              {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
+              {!loading && <ArrowRight className="w-4 h-4 ms-2" />}
             </Button>
             <p className="text-xs text-muted-foreground">
               Pas de spam. Désinscription à tout moment.

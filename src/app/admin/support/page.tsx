@@ -96,7 +96,7 @@ export default function AdminSupportPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Incidents Ouverts</CardTitle>
-                        <AlertTriangle className="h-4 w-4 text-red-500" />
+                        <AlertTriangle className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
@@ -152,7 +152,7 @@ export default function AdminSupportPage() {
                                         <TableHead>Commande</TableHead>
                                         <TableHead>Client</TableHead>
                                         <TableHead>{t("admin.support.status", "Statut")}</TableHead>
-                                        <TableHead className="text-right">Action</TableHead>
+                                        <TableHead className="text-end">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -176,7 +176,7 @@ export default function AdminSupportPage() {
                                                         {incident.status}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-end">
                                                     <Button variant="ghost" size="sm">Gérer</Button>
                                                 </TableCell>
                                             </TableRow>
@@ -202,7 +202,7 @@ export default function AdminSupportPage() {
                                         <TableHead>Expéditeur</TableHead>
                                         <TableHead>Message</TableHead>
                                         <TableHead>Lu</TableHead>
-                                        <TableHead className="text-right">Action</TableHead>
+                                        <TableHead className="text-end">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -217,9 +217,9 @@ export default function AdminSupportPage() {
                                                 <TableCell>{msg.sender?.full_name || msg.sender?.email}</TableCell>
                                                 <TableCell className="max-w-md truncate text-muted-foreground">{msg.content}</TableCell>
                                                 <TableCell>
-                                                    {msg.is_read ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <div className="w-2 h-2 rounded-full bg-blue-500" />}
+                                                    {msg.is_read ? <CheckCircle2 className="w-4 h-4 text-success" /> : <div className="w-2 h-2 rounded-full bg-info" />}
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-end">
                                                     <Button variant="ghost" size="sm">Répondre</Button>
                                                 </TableCell>
                                             </TableRow>

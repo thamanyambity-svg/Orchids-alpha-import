@@ -332,6 +332,50 @@ const tr: Record<string, string> = {
   'spec.general.badge': "GENEL",
   'spec.general.name_placeholder': "Örn. Santrifüj pompa 50 m³/h - paslanmaz çelik",
   'spec.general.desc_placeholder': "Teknik özellikler, kullanım amacı, malzemeler...",
+  // Statuts métier — clefs générées depuis le registre src/lib/design/status.ts.
+  'status.request.DRAFT': 'Taslak',
+  'status.request.PENDING': 'Beklemede',
+  'status.request.ANALYSIS': 'İnceleniyor',
+  'status.request.VALIDATED': 'Onaylandı',
+  'status.request.QUOTE_ACCEPTED': 'Teklif kabul edildi',
+  'status.request.REJECTED': 'Reddedildi',
+  'status.request.AWAITING_DEPOSIT': 'Peşinat gerekli',
+  'status.request.FUNDED': 'Finanse edildi',
+  'status.request.SOURCING': 'Tedarik ediliyor',
+  'status.request.EXECUTING': 'Yürütülüyor',
+  'status.request.PURCHASED': 'Satın alındı',
+  'status.request.AWAITING_BALANCE': 'Bakiye gerekli',
+  'status.request.SHIPPED': 'Sevk edildi',
+  'status.request.DELIVERED': 'Teslim edildi',
+  'status.request.CLOSED': 'Kapatıldı',
+  'status.request.INCIDENT': 'Olay',
+  'status.request.FROZEN': 'Donduruldu',
+  'status.request.CANCELLED': 'İptal edildi',
+
+  'status.quote.DRAFT': 'Taslak',
+  'status.quote.SUBMITTED': 'Gönderildi',
+  'status.quote.ACCEPTED': 'Kabul edildi',
+  'status.quote.REJECTED': 'Reddedildi',
+  'status.quote.EXPIRED': 'Süresi doldu',
+  'status.quote.REVISED': 'Revize edildi',
+
+  'status.purchaseOrder.DRAFT': 'Taslak',
+  'status.purchaseOrder.PENDING_SIGNATURE': 'İmza bekleniyor',
+  'status.purchaseOrder.SIGNED': 'İmzalandı',
+  'status.purchaseOrder.CONFIRMED': 'Onaylandı',
+  'status.purchaseOrder.CANCELLED': 'İptal edildi',
+
+  'status.invoice.DRAFT': 'Taslak',
+  'status.invoice.SENT': 'Gönderildi',
+  'status.invoice.PAID': 'Ödendi',
+  'status.invoice.OVERDUE': 'Gecikmiş',
+  'status.invoice.CANCELLED': 'İptal edildi',
+
+  'status.paymentProof.PENDING_REVIEW': 'İnceleme bekliyor',
+  'status.paymentProof.ACCEPTED': 'Kabul edildi',
+  'status.paymentProof.REJECTED': 'Reddedildi',
+  'status.paymentProof.SUPERSEDED': 'Değiştirildi',
+
 }
 
 export default tr

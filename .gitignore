@@ -44,5 +44,7 @@ Orchid-Analysis 3/
 next-env.d.ts
 .env*.local
 .env*
+# Le gabarit ne contient que des noms de variables, jamais de valeur.
+!.env.example
 test-results/
 playwright-report/

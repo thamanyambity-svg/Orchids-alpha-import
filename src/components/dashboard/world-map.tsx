@@ -29,7 +29,12 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
   useEffect(() => {
     if (!mapContainer.current) return
 
-    console.log("Initializing map with partners:", partners)
+    // Sans jeton, mapbox-gl lève « An API access token is required ». Comme
+    // l'appel part d'un useEffect, l'exception remonte à la frontière d'erreur
+    // et fait tomber toute la page hôte — le tableau de bord d'administration
+    // devenait une page 500 entière pour une carte décorative absente.
+    // On sort proprement : le composant affiche un état de repli.
+    if (!mapboxToken) return
 
     mapboxgl.accessToken = mapboxToken
 
@@ -112,7 +117,7 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
               </div>
             </div>
             <div class="flex items-center justify-between text-[10px] mb-2">
-              <span class="text-amber-500 font-bold">★ ${hasPartner.performance_score}/5.0</span>
+              <span class="text-warning font-bold">★ ${hasPartner.performance_score}/5.0</span>
               <span class="text-muted-foreground">${hasPartner.total_orders_handled}+ commandes</span>
             </div>
             <div class="text-[9px] py-1 px-2 bg-primary/5 border border-primary/10 rounded text-primary font-medium text-center">
@@ -160,15 +165,30 @@ export function WorldMap({ mapboxToken, selectedCountry, onCountrySelect, partne
         if (inner) {
           if (code === selectedCountry) {
             inner.classList.remove('bg-primary/30')
-            inner.classList.add('bg-primary', 'border-white', 'shadow-primary/50')
+            inner.classList.add('bg-primary', 'border-foreground', 'shadow-primary/50')
           } else {
-            inner.classList.remove('bg-primary', 'border-white', 'shadow-primary/50')
+            inner.classList.remove('bg-primary', 'border-foreground', 'shadow-primary/50')
             inner.classList.add('bg-primary/30', 'border-primary')
           }
         }
       })
     }
   }, [selectedCountry])
+
+  if (!mapboxToken) {
+    return (
+      <div className="relative flex h-[400px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/30 px-6 text-center">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18" />
+        </svg>
+        <p className="text-sm font-semibold text-foreground">Carte du réseau indisponible</p>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          La variable NEXT_PUBLIC_MAPBOX_TOKEN n&apos;est pas configurée. Le reste du tableau de bord fonctionne normalement.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="relative w-full h-[400px] rounded-2xl overflow-hidden border border-border shadow-inner">

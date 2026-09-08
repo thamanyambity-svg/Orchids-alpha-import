@@ -18,28 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-muted text-muted-foreground",
-  ANALYSIS: "bg-primary/10 text-primary",
-  VALIDATED: "bg-chart-2/10 text-chart-2",
-  EXECUTING: "bg-chart-3/10 text-chart-3",
-  SHIPPED: "bg-chart-4/10 text-chart-4",
-  DELIVERED: "bg-success/10 text-success",
-  INCIDENT: "bg-destructive/10 text-destructive",
-  CLOSED: "bg-muted text-muted-foreground",
-}
-
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  ANALYSIS: "En analyse",
-  VALIDATED: "Validé",
-  EXECUTING: "En exécution",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  INCIDENT: "Incident",
-  CLOSED: "Fermé",
-}
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 export default function RequestsPage() {
   const { t } = useLanguage()
@@ -94,7 +73,7 @@ export default function RequestsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("dashboard.requests.search", "Rechercher une demande...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -102,7 +81,7 @@ export default function RequestsPage() {
           <div className="flex gap-3">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="w-4 h-4 me-2" />
                 <SelectValue placeholder={t("dashboard.requests.filter_status", "Filtrer par statut")} />
               </SelectTrigger>
               <SelectContent>
@@ -134,13 +113,13 @@ export default function RequestsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/30">
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.reference", "Référence")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.product", "Produit")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.country", "Pays")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.status_col", "Statut")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.budget_max", "Budget Max")}</th>
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.date", "Date")}</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.action", "Action")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.reference", "Référence")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.product", "Produit")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.country", "Pays")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.status_col", "Statut")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.budget_max", "Budget Max")}</th>
+                    <th className="text-start p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.date", "Date")}</th>
+                    <th className="text-end p-4 text-sm font-medium text-muted-foreground">{t("dashboard.requests.action", "Action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -168,15 +147,15 @@ export default function RequestsPage() {
                         {request.countries?.flag} {request.countries?.name}
                       </td>
                       <td className="p-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[request.status]}`}>
-                          {statusLabels[request.status]}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
+                          {statusLabel(REQUEST_STATUS, request.status, t)}
                         </span>
                       </td>
                       <td className="p-4 font-semibold">${request.budget_max?.toLocaleString()}</td>
                       <td className="p-4 text-sm text-muted-foreground">
                         {new Date(request.created_at).toLocaleDateString()}
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="p-4 text-end">
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="sm" asChild>
                             <Link href={`/dashboard/requests/${request.id}`} className="flex items-center gap-1">

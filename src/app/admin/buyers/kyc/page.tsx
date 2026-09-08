@@ -148,15 +148,15 @@ export default function BuyerKycPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{t("admin.kyc.title", "Vérification KYC")}</h1>
-        <p className="text-white/40 text-sm">{t("admin.kyc.subtitle", "Vérifiez les documents d'identité des acheteurs")}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("admin.kyc.title", "Vérification KYC")}</h1>
+        <p className="text-foreground/40 text-sm">{t("admin.kyc.subtitle", "Vérifiez les documents d'identité des acheteurs")}</p>
       </div>
 
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
         <Input
           placeholder={t("admin.kyc.search", "Rechercher un acheteur...")}
-          className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+          className="ps-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -166,12 +166,12 @@ export default function BuyerKycPage() {
         <div className="lg:col-span-2">
           {loading ? (
             <div className="flex justify-center p-12">
-              <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-              <Shield className="w-12 h-12 text-white/20 mx-auto mb-4" />
-              <h3 className="font-semibold text-white/50">{t("admin.kyc.empty", "Aucun acheteur à vérifier")}</h3>
+            <div className="p-12 text-center border-2 border-dashed border-foreground/10 rounded-2xl">
+              <Shield className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
+              <h3 className="font-semibold text-foreground/50">{t("admin.kyc.empty", "Aucun acheteur à vérifier")}</h3>
             </div>
           ) : (
             <div className="space-y-3">
@@ -184,25 +184,25 @@ export default function BuyerKycPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className={`bg-white/5 border p-4 rounded-xl transition-colors cursor-pointer hover:bg-white/[0.07] ${
-                      selectedBuyer?.id === buyer.id ? "border-[#ffd700]/50" : "border-white/10"
+                    className={`bg-foreground/5 border p-4 rounded-xl transition-colors cursor-pointer hover:bg-foreground/[0.07] ${
+                      selectedBuyer?.id === buyer.id ? "border-primary/50" : "border-foreground/10"
                     }`}
                     onClick={() => viewDocs(buyer)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[#ffd700]/10 flex items-center justify-center">
-                          <User className="w-5 h-5 text-[#ffd700]" />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-white">{buyer.full_name || "N/A"}</span>
+                            <span className="font-semibold text-foreground">{buyer.full_name || "N/A"}</span>
                             <Badge className={status.class}>
-                              <Icon className="w-3 h-3 mr-1" />
+                              <Icon className="w-3 h-3 me-1" />
                               {status.label}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-white/40">
+                          <div className="flex items-center gap-3 text-xs text-foreground/40">
                             <span>{buyer.email}</span>
                             <span>•</span>
                             <span>{buyer.total_docs} document(s)</span>
@@ -212,10 +212,10 @@ export default function BuyerKycPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-white/10 text-white/60"
+                        className="border-foreground/10 text-foreground/60"
                         onClick={(e) => { e.stopPropagation(); viewDocs(buyer) }}
                       >
-                        <FileText className="w-4 h-4 mr-1" />
+                        <FileText className="w-4 h-4 me-1" />
                         {t("admin.kyc.view_docs", "Documents")}
                       </Button>
                     </div>
@@ -226,20 +226,20 @@ export default function BuyerKycPage() {
           )}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-4">
           {selectedBuyer ? (
             <div>
-              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/10">
-                <div className="w-12 h-12 rounded-full bg-[#ffd700]/10 flex items-center justify-center">
-                  <User className="w-6 h-6 text-[#ffd700]" />
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-foreground/10">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white">{selectedBuyer.full_name || "N/A"}</h3>
-                  <p className="text-xs text-white/40">{selectedBuyer.email}</p>
+                  <h3 className="font-semibold text-foreground">{selectedBuyer.full_name || "N/A"}</h3>
+                  <p className="text-xs text-foreground/40">{selectedBuyer.email}</p>
                 </div>
               </div>
 
-              <div className="space-y-2 mb-4 text-xs text-white/60">
+              <div className="space-y-2 mb-4 text-xs text-foreground/60">
                 {selectedBuyer.phone && (
                   <div className="flex items-center gap-2">
                     <Phone className="w-3 h-3" /> {selectedBuyer.phone}
@@ -253,20 +253,20 @@ export default function BuyerKycPage() {
               </div>
 
               <div className="space-y-2 mb-6">
-                <h4 className="text-xs text-white/40 uppercase tracking-wider mb-2">
+                <h4 className="t-label text-muted-foreground mb-2">
                   {t("admin.kyc.documents_title", "Documents soumis")} ({kycDocs.length})
                 </h4>
                 {kycDocs.length === 0 ? (
-                  <p className="text-xs text-white/30 italic">{t("admin.kyc.no_docs", "Aucun document soumis")}</p>
+                  <p className="text-xs text-foreground/30 italic">{t("admin.kyc.no_docs", "Aucun document soumis")}</p>
                 ) : (
                   kycDocs.map((doc: any) => (
-                    <div key={doc.id} className="flex items-center justify-between bg-white/5 rounded-lg p-2">
+                    <div key={doc.id} className="flex items-center justify-between bg-foreground/5 rounded-lg p-2">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-white/40" />
-                        <span className="text-xs text-white/70 truncate max-w-[120px]">{doc.name || "Document"}</span>
+                        <FileText className="w-4 h-4 text-foreground/40" />
+                        <span className="text-xs text-foreground/70 truncate max-w-[120px]">{doc.name || "Document"}</span>
                       </div>
                       <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-3 h-3 text-white/40 hover:text-white" />
+                        <ExternalLink className="w-3 h-3 text-foreground/40 hover:text-foreground" />
                       </a>
                     </div>
                   ))
@@ -277,11 +277,11 @@ export default function BuyerKycPage() {
                 {selectedBuyer.kyc_status !== "VERIFIED" && (
                   <Button
                     size="sm"
-                    className="flex-1 bg-success hover:bg-success/90 text-white"
+                    className="flex-1 bg-success hover:bg-success/90 text-success-foreground"
                     onClick={() => handleVerify(selectedBuyer.id)}
                     disabled={actionLoading}
                   >
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    <CheckCircle2 className="w-4 h-4 me-1" />
                     {t("admin.kyc.verify", "Vérifier")}
                   </Button>
                 )}
@@ -293,7 +293,7 @@ export default function BuyerKycPage() {
                     onClick={() => handleReject(selectedBuyer.id)}
                     disabled={actionLoading}
                   >
-                    <XCircle className="w-4 h-4 mr-1" />
+                    <XCircle className="w-4 h-4 me-1" />
                     {t("admin.kyc.reject", "Refuser")}
                   </Button>
                 )}
@@ -301,8 +301,8 @@ export default function BuyerKycPage() {
             </div>
           ) : (
             <div className="p-6 text-center">
-              <Shield className="w-8 h-8 text-white/20 mx-auto mb-2" />
-              <p className="text-sm text-white/40">{t("admin.kyc.select_buyer", "Sélectionnez un acheteur pour voir ses documents")}</p>
+              <Shield className="w-8 h-8 text-foreground/20 mx-auto mb-2" />
+              <p className="text-sm text-foreground/40">{t("admin.kyc.select_buyer", "Sélectionnez un acheteur pour voir ses documents")}</p>
             </div>
           )}
         </div>

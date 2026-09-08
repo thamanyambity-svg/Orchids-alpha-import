@@ -41,84 +41,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PurchaseOrderCard } from "@/components/dashboard/purchase-order-card"
 import { QuoteSubmissionForm } from "@/components/dashboard/quote-submission-form"
-
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  DRAFT: "Brouillon",
-  ANALYSIS: "En analyse",
-  VALIDATED: "Validé",
-  REJECTED: "Rejeté",
-  AWAITING_DEPOSIT: "En attente acompte",
-  AWAITING_BALANCE: "En attente solde",
-  EXECUTING: "En exécution",
-  SHIPPED: "Expédié",
-  DELIVERED: "Livré",
-  INCIDENT: "Incident",
-  CLOSED: "Fermé",
-  QUOTE_ACCEPTED: "Devis accepté",
-  FUNDED: "Financé",
-  SOURCING: "Sourcing",
-  PURCHASED: "Acheté",
-  FROZEN: "Gelé",
-  CANCELLED: "Annulé"
-}
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-muted text-muted-foreground",
-  DRAFT: "bg-muted text-muted-foreground",
-  ANALYSIS: "bg-primary/10 text-primary",
-  VALIDATED: "bg-chart-2/10 text-chart-2",
-  REJECTED: "bg-destructive/10 text-destructive",
-  AWAITING_DEPOSIT: "bg-amber/10 text-amber-600",
-  AWAITING_BALANCE: "bg-amber/10 text-amber-600",
-  EXECUTING: "bg-chart-3/10 text-chart-3",
-  SHIPPED: "bg-chart-4/10 text-chart-4",
-  DELIVERED: "bg-success/10 text-success",
-  INCIDENT: "bg-destructive/10 text-destructive",
-  CLOSED: "bg-muted text-muted-foreground",
-  QUOTE_ACCEPTED: "bg-primary/10 text-primary",
-  FUNDED: "bg-success/10 text-success",
-  SOURCING: "bg-chart-3/10 text-chart-3",
-  PURCHASED: "bg-chart-4/10 text-chart-4",
-  FROZEN: "bg-muted text-muted-foreground",
-  CANCELLED: "bg-destructive/10 text-destructive"
-}
-
-const quoteStatusLabels: Record<string, string> = {
-  DRAFT: "Brouillon",
-  SUBMITTED: "Envoyé",
-  ACCEPTED: "Accepté",
-  REJECTED: "Rejeté",
-  EXPIRED: "Expiré",
-  REVISED: "Révisé"
-}
-
-const quoteStatusColors: Record<string, string> = {
-  DRAFT: "bg-muted text-muted-foreground",
-  SUBMITTED: "bg-primary/10 text-primary",
-  ACCEPTED: "bg-success/10 text-success",
-  REJECTED: "bg-destructive/10 text-destructive",
-  EXPIRED: "bg-muted text-muted-foreground",
-  REVISED: "bg-amber/10 text-amber-600"
-}
-
-const poStatusLabels: Record<string, string> = {
-  GENERATED: "Généré",
-  PENDING_SIGNATURE: "En attente signature",
-  SIGNED: "Signé",
-  CONFIRMED: "Confirmé",
-  CANCELLED: "Annulé",
-  EXPIRED: "Expiré"
-}
-
-const poStatusColors: Record<string, string> = {
-  GENERATED: "bg-muted text-muted-foreground",
-  PENDING_SIGNATURE: "bg-amber/10 text-amber-600",
-  SIGNED: "bg-primary/10 text-primary",
-  CONFIRMED: "bg-success/10 text-success",
-  CANCELLED: "bg-destructive/10 text-destructive",
-  EXPIRED: "bg-muted text-muted-foreground"
-}
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
+import { QUOTE_STATUS } from "@/lib/design/status"
 
 export default function RequestDetailsPage() {
   const { id } = useParams()
@@ -252,17 +176,17 @@ export default function RequestDetailsPage() {
             {t("dashboard.request.back", "Retour aux demandes")}
           </Link>
         </Button>
-        <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[request.status]}`}>
-          {t("dashboard.request.status_" + request.status, statusLabels[request.status])}
+        <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
+          {statusLabel(REQUEST_STATUS, request.status, t)}
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5 md:grid-cols-7">
           <TabsTrigger value="overview">{t("dashboard.request.tab_overview", "Vue d'ensemble")}</TabsTrigger>
-          <TabsTrigger value="quotes">{t("dashboard.request.tab_quotes", "Devis / Proforma")} {quotes.length > 0 && <Badge variant="secondary" className="ml-1">{quotes.length}</Badge>}</TabsTrigger>
-          <TabsTrigger value="purchase_orders">{t("dashboard.request.tab_po", "Bons de Commande")} {purchaseOrders.length > 0 && <Badge variant="secondary" className="ml-1">{purchaseOrders.length}</Badge>}</TabsTrigger>
-          <TabsTrigger value="documents">{t("dashboard.request.tab_docs", "Documents")} {documents.length > 0 && <Badge variant="secondary" className="ml-1">{documents.length}</Badge>}</TabsTrigger>
+          <TabsTrigger value="quotes">{t("dashboard.request.tab_quotes", "Devis / Proforma")} {quotes.length > 0 && <Badge variant="secondary" className="ms-1">{quotes.length}</Badge>}</TabsTrigger>
+          <TabsTrigger value="purchase_orders">{t("dashboard.request.tab_po", "Bons de Commande")} {purchaseOrders.length > 0 && <Badge variant="secondary" className="ms-1">{purchaseOrders.length}</Badge>}</TabsTrigger>
+          <TabsTrigger value="documents">{t("dashboard.request.tab_docs", "Documents")} {documents.length > 0 && <Badge variant="secondary" className="ms-1">{documents.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="tracking">{t("dashboard.request.tab_tracking", "Tracking")}</TabsTrigger>
           <TabsTrigger value="history">{t("dashboard.request.tab_history", "Historique")}</TabsTrigger>
           {(request.role === "PARTNER" || request.role === "ADMIN") && (
@@ -477,13 +401,13 @@ export default function RequestDetailsPage() {
                   Historique
                 </h3>
                 <div className="space-y-4">
-                  <div className="relative pl-6 pb-4 border-l border-border last:pb-0">
+                  <div className="relative ps-6 pb-4 border-s border-border last:pb-0">
                     <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-primary" />
                     <p className="text-xs font-bold">Demande créée</p>
                     <p className="text-[10px] text-muted-foreground">{new Date(request.created_at).toLocaleString()}</p>
                   </div>
                   {order && (
-                    <div className="relative pl-6 pb-4 border-l border-border last:pb-0">
+                    <div className="relative ps-6 pb-4 border-s border-border last:pb-0">
                       <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-primary" />
                       <p className="text-xs font-bold">Proposition commerciale</p>
                       <p className="text-[10px] text-muted-foreground">{new Date(order.created_at).toLocaleString()}</p>
@@ -501,7 +425,7 @@ export default function RequestDetailsPage() {
             <h2 className="text-xl font-bold">{t("dashboard.request.tab_quotes", "Devis / Proforma")}</h2>
             {request.assigned_partner && (
               <Button onClick={() => setShowQuoteForm(true)}>
-                <PenSquare className="w-4 h-4 mr-2" />
+                <PenSquare className="w-4 h-4 me-2" />
                 {t("dashboard.request.new_quote", "Nouveau Devis")}
               </Button>
             )}
@@ -527,8 +451,8 @@ export default function RequestDetailsPage() {
                         </div>
                       </div>
                     </div>
-                    <Badge variant="secondary" className={`ml-2 ${quoteStatusColors[quote.status]}`}>
-                      {t("dashboard.request.quote_status_" + quote.status, quoteStatusLabels[quote.status])}
+                    <Badge variant="secondary" className={`ms-2 ${statusBadge(QUOTE_STATUS, quote.status)}`}>
+                      {statusLabel(QUOTE_STATUS, quote.status, t)}
                     </Badge>
                   </CardHeader>
                   <CardContent className="space-y-4 pb-4">
@@ -565,7 +489,7 @@ export default function RequestDetailsPage() {
                     {quote.proforma_pdf_url && (
                       <Button variant="outline" asChild className="mt-2">
                         <a href={quote.proforma_pdf_url} target="_blank" rel="noopener noreferrer">
-                          <Download className="w-4 h-4 mr-1" />
+                          <Download className="w-4 h-4 me-1" />
                           Proforma PDF
                         </a>
                       </Button>
@@ -650,27 +574,27 @@ export default function RequestDetailsPage() {
         <TabsContent value="history" className="animate-in fade-in">
           <h2 className="text-xl font-bold mb-6">{t("dashboard.request.tab_history", "Historique complet")}</h2>
           <div className="space-y-4">
-            <div className="relative pl-6 pb-4 border-l border-border last:pb-0">
+            <div className="relative ps-6 pb-4 border-s border-border last:pb-0">
               <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-primary" />
               <p className="text-xs font-bold">Demande créée</p>
               <p className="text-[10px] text-muted-foreground">{new Date(request.created_at).toLocaleString()}</p>
             </div>
             {quotes.length > 0 && quotes.map((q) => (
-              <div key={q.id} className="relative pl-6 pb-4 border-l border-border last:pb-0">
+              <div key={q.id} className="relative ps-6 pb-4 border-s border-border last:pb-0">
                 <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-primary" />
                 <p className="text-xs font-bold">Devis v{q.version} - {q.status}</p>
                 <p className="text-[10px] text-muted-foreground">{new Date(q.submitted_at || q.created_at).toLocaleString()}</p>
               </div>
             ))}
             {order && (
-              <div className="relative pl-6 pb-4 border-l border-border last:pb-0">
+              <div className="relative ps-6 pb-4 border-s border-border last:pb-0">
                 <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-primary" />
                 <p className="text-xs font-bold">Commande créée</p>
                 <p className="text-[10px] text-muted-foreground">{new Date(order.created_at).toLocaleString()}</p>
               </div>
             )}
             {purchaseOrders.map((po) => (
-              <div key={po.id} className="relative pl-6 pb-4 border-l border-border last:pb-0">
+              <div key={po.id} className="relative ps-6 pb-4 border-s border-border last:pb-0">
                 <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-success" />
                 <p className="text-xs font-bold">PO: {po.po_number} - {po.status}</p>
                 <p className="text-[10px] text-muted-foreground">{new Date(po.created_at).toLocaleString()}</p>

@@ -19,26 +19,7 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-secondary text-secondary-foreground",
-  VALIDATED: "bg-primary/10 text-primary",
-  EXECUTING: "bg-blue-500/10 text-blue-500",
-  SHIPPED: "bg-purple-500/10 text-purple-500",
-  DELIVERED: "bg-green-500/10 text-green-500",
-    CLOSED: "bg-green-600/10 text-green-600",
-    CANCELLED: "bg-destructive/10 text-destructive",
-  }
-  
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    VALIDATED: "À traiter",
-    EXECUTING: "En cours",
-    SHIPPED: "Expédié",
-    DELIVERED: "Livré",
-    CLOSED: "Terminé",
-    CANCELLED: "Annulé",
-  }
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 export default function PartnerDashboardPage() {
   const { t } = useLanguage()
@@ -173,8 +154,8 @@ export default function PartnerDashboardPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
-                          <span className={`px-2 py-0.5 rounded text-xs ${statusColors[request.status]}`}>
-                            {t("partner.home.status_" + request.status, statusLabels[request.status])}
+                          <span className={`px-2 py-0.5 rounded text-xs ${statusBadge(REQUEST_STATUS, request.status)}`}>
+                            {statusLabel(REQUEST_STATUS, request.status, t)}
                           </span>
                         </div>
                         <p className="font-medium truncate">{request.product_name}</p>
@@ -182,7 +163,7 @@ export default function PartnerDashboardPage() {
                           {request.buyer_profiles?.company_name || request.buyer_profiles?.full_name} • {request.quantity}
                         </p>
                       </div>
-                      <div className="text-right hidden sm:block">
+                      <div className="text-end hidden sm:block">
                         <p className="font-semibold">
                           {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(request.budget)}
                         </p>

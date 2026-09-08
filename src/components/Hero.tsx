@@ -78,7 +78,7 @@ export default function Hero() {
       </svg>
 
       <div className="relative z-10 px-6 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col items-end md:items-center pr-4 md:pr-0">
+        <div className="flex flex-col items-end md:items-center pe-4 md:pe-0">
           <AnimatePresence mode="wait">
             <motion.p key={`tag-${current}`} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.5 }} className="font-condensed text-xs md:text-sm text-gold tracking-[0.5em] uppercase mb-6 font-semibold">
               {slide.tag}
@@ -86,23 +86,23 @@ export default function Hero() {
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            <motion.h1 key={`h1-${current}`} initial={{ opacity: 0, y: 50, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -30, scale: 1.02 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="font-display text-[14vw] md:text-[16vw] lg:text-[18vw] leading-none text-white tracking-wider mb-0 select-none text-right md:text-center" style={{ lineHeight: "0.88" }}>
+            <motion.h1 key={`h1-${current}`} initial={{ opacity: 0, y: 50, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -30, scale: 1.02 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="font-display text-[14vw] md:text-[16vw] lg:text-[18vw] leading-none text-white tracking-wider mb-0 select-none text-end md:text-center" style={{ lineHeight: "0.88" }}>
               {slide.headline}
             </motion.h1>
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            <motion.h2 key={`h2-${current}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.6, delay: 0.15 }} className="font-display text-[5vw] md:text-[5vw] lg:text-[5.5vw] leading-none text-gradient-gold tracking-[0.15em] mb-8 text-right md:text-center">
+            <motion.h2 key={`h2-${current}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.6, delay: 0.15 }} className="font-display text-[5vw] md:text-[5vw] lg:text-[5.5vw] leading-none text-gradient-gold tracking-[0.15em] mb-8 text-end md:text-center">
               {slide.sub}
             </motion.h2>
           </AnimatePresence>
         </div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.6 }} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-[#06101e] hover:bg-[hsl(44_90%_65%)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
+          <Link href="/register" className="font-condensed text-sm font-bold px-12 py-4 bg-gold text-primary-foreground hover:bg-[var(--gold-light)] transition-all duration-200 tracking-[0.3em] uppercase glow-gold">
             Accéder à la plateforme
           </Link>
-          <Link href="/how-it-works" className="font-condensed text-sm px-12 py-4 border border-white/25 text-white/80 hover:border-gold hover:text-gold transition-all duration-200 tracking-[0.3em] uppercase">
+          <Link href="/how-it-works" className="font-condensed text-sm px-12 py-4 border border-foreground/25 text-foreground/80 hover:border-gold hover:text-gold transition-all duration-200 tracking-[0.3em] uppercase">
             Découvrir →
           </Link>
         </motion.div>
@@ -110,11 +110,11 @@ export default function Hero() {
 
       <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex gap-3">
         {slides.map((_, i) => (
-          <button key={i} onClick={() => setCurrent(i)} className={`transition-all duration-400 ${i === current ? "w-8 h-1 bg-gold" : "w-4 h-1 bg-white/30 hover:bg-white/60"}`} />
+          <button key={i} onClick={() => setCurrent(i)} className={`transition-all duration-400 ${i === current ? "w-8 h-1 bg-gold" : "w-4 h-1 bg-foreground/30 hover:bg-foreground/60"}`} />
         ))}
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.7 }} className="absolute bottom-0 left-0 right-0 z-20 flex justify-around items-center py-5 px-8 border-t border-white/10" style={{ background: "rgba(6,16,30,0.85)", backdropFilter: "blur(20px)" }}>
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.7 }} className="absolute bottom-0 left-0 right-0 z-20 flex justify-around items-center py-5 px-8 border-t border-foreground/10" style={{ background: "rgba(6,16,30,0.85)", backdropFilter: "blur(20px)" }}>
         {[
           { val: "$2.4B+", label: t("hero.stat.goods", "Marchandises déplacées") },
           { val: "47", label: t("hero.stat.countries", "Pays partenaires") },
@@ -123,13 +123,13 @@ export default function Hero() {
         ].map((s, i) => (
           <div key={i} className="text-center">
             <div className="font-display text-2xl md:text-3xl text-gradient-gold">{s.val}</div>
-            <div className="font-condensed text-[10px] md:text-xs text-white/40 uppercase tracking-widest">{s.label}</div>
+            <div className="font-condensed text-[10px] md:text-xs text-foreground/40 uppercase tracking-widest">{s.label}</div>
           </div>
         ))}
       </motion.div>
 
       <motion.div className="absolute bottom-24 right-10 z-20 flex-col items-center gap-2 hidden md:flex" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-          <span className="font-condensed text-[10px] text-white/30 uppercase tracking-[0.3em] rotate-90 mb-6">{t("hero.scroll", "Scroll")}</span>
+          <span className="font-condensed text-[10px] text-foreground/30 uppercase tracking-[0.3em] rotate-90 mb-6">{t("hero.scroll", "Scroll")}</span>
         <div className="w-px h-16 bg-gradient-to-b from-gold/60 to-transparent" />
       </motion.div>
     </section>

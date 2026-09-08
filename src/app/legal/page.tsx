@@ -15,7 +15,7 @@ export default function LegalPage() {
                     <p>
                         {t("legal.section1.content", 'Le site <strong>Alpha A Ambity</strong> (accessible à l\'adresse https://aonosekehouseinvestmentdrc.site) est édité par la société <strong>A.ONOSEKE INVESTMENT</strong>.')}
                     </p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <ul className="list-disc ps-5 mt-2 space-y-1">
                         <li>{t("legal.section1.editor", "<strong>Siège Social :</strong> Kinshasa, République Démocratique du Congo")}</li>
                         <li>{t("legal.section1.address", "<strong>Forme Juridique :</strong> Société par Actions Simplifiée (SAS) / SARL (À confirmer selon statuts)")}</li>
                         <li>{t("legal.section1.email", "<strong>Email de contact :</strong> contact@aonosekehouseinvestmentdrc.site")}</li>

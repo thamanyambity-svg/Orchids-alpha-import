@@ -56,11 +56,11 @@ export function LanguageSwitcher() {
                                 >
                                     <Check
                                         className={cn(
-                                            "mr-2 h-4 w-4",
+                                            "me-2 h-4 w-4",
                                             language === lang.code ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    <span className="mr-2 text-lg">{lang.flag}</span>
+                                    <span className="me-2 text-lg">{lang.flag}</span>
                                     {lang.label}
                                 </CommandItem>
                             ))}

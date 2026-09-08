@@ -23,7 +23,7 @@ const ORDER_STATES: [string, string, string][] = [
   ["CLOSED", "Solde libéré, dossier clos", "Admin"],
 ]
 
-const CELL = "border-b border-[hsl(216_30%_18%/.5)] px-[18px] py-[15px] font-condensed text-[15px] tracking-[.05em]"
+const CELL = "border-b border-border/50 px-[18px] py-[15px] font-condensed text-[15px] tracking-[.05em]"
 
 export default function ProcessPage() {
   const { t } = useLanguage()
@@ -47,7 +47,7 @@ export default function ProcessPage() {
               className="grid gap-8 border-b border-[var(--line)] py-[42px] [grid-template-columns:110px_1fr] max-sm:[grid-template-columns:1fr]"
             >
               <div>
-                <span className="block font-display text-[72px] leading-[.8] text-[hsl(42_85%_55%/.3)]">
+                <span className="block font-display text-[72px] leading-[.8] text-primary/30">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="mt-[10px] block font-condensed text-[11px] font-semibold uppercase tracking-[.24em] text-gold">
@@ -55,10 +55,10 @@ export default function ProcessPage() {
                 </span>
               </div>
               <div>
-                <h3 className="mb-[14px] mt-0 font-display text-[clamp(28px,3.4vw,44px)] leading-none text-white">
+                <h3 className="mb-[14px] mt-0 font-display text-[clamp(28px,3.4vw,44px)] leading-none text-foreground">
                   {t(`${key}.title`, "")}
                 </h3>
-                <p className="m-0 text-[18px] font-light leading-[1.65] text-white/60 [text-wrap:pretty]">
+                <p className="m-0 text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
                   {t(`${key}.long`, "")}
                 </p>
               </div>
@@ -74,7 +74,7 @@ export default function ProcessPage() {
           </div>
           <p
             data-reveal
-            className="mb-11 max-w-[680px] text-[18px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]"
+            className="mb-11 max-w-[680px] text-[18px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]"
           >
             {t("site.states.body", "")}
           </p>
@@ -92,7 +92,7 @@ export default function ProcessPage() {
                     <th
                       key={head}
                       scope="col"
-                      className={`border-b border-[var(--line)] bg-[var(--navy2)] px-[18px] py-4 text-left font-condensed text-[11px] font-bold uppercase tracking-[.28em] text-gold ${
+                      className={`border-b border-[var(--line)] bg-[var(--navy2)] px-[18px] py-4 text-start font-condensed text-[11px] font-bold uppercase tracking-[.28em] text-gold ${
                         i === 0 ? "w-14" : ""
                       }`}
                     >
@@ -103,11 +103,11 @@ export default function ProcessPage() {
               </thead>
               <tbody>
                 {ORDER_STATES.map(([state, what, who], row) => (
-                  <tr key={state} className={row % 2 ? "bg-[hsl(216_40%_9%/.45)]" : undefined}>
-                    <td className={`${CELL} text-[hsl(42_85%_55%/.7)]`}>{String(row + 1).padStart(2, "0")}</td>
-                    <td className={`${CELL} text-white`}>{state}</td>
-                    <td className={`${CELL} text-white/60`}>{what}</td>
-                    <td className={`${CELL} text-white/50`}>{who}</td>
+                  <tr key={state} className={row % 2 ? "bg-card/45" : undefined}>
+                    <td className={`${CELL} text-primary/70`}>{String(row + 1).padStart(2, "0")}</td>
+                    <td className={`${CELL} text-foreground`}>{state}</td>
+                    <td className={`${CELL} text-foreground/60`}>{what}</td>
+                    <td className={`${CELL} text-foreground/50`}>{who}</td>
                   </tr>
                 ))}
               </tbody>

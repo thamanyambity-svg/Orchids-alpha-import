@@ -180,7 +180,7 @@ export function SepaMandateForm({ onSuccess, onClose }: SepaMandateFormProps) {
         />
       </div>
 
-      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 flex items-start gap-2">
+      <div className="p-3 rounded-lg bg-warning/10 border border-warning/20 text-xs text-warning flex items-start gap-2">
         <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
         <p>
           {t("sepa.mandate.authorization", "En soumettant ce formulaire, vous autorisez Alpha Import Exchange et Stripe à débiter votre compte via prélèvement SEPA conformément au mandat de prélèvement SEPA.")}
@@ -203,12 +203,12 @@ export function SepaMandateForm({ onSuccess, onClose }: SepaMandateFormProps) {
         <Button type="submit" disabled={loading} className="flex-1">
           {loading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="w-4 h-4 me-2 animate-spin" />
               {t("sepa.mandate.confirming", "Confirmation en cours...")}
             </>
           ) : (
             <>
-              <CreditCard className="w-4 h-4 mr-2" />
+              <CreditCard className="w-4 h-4 me-2" />
               {t("sepa.mandate.submit", "Activer le prélèvement SEPA")}
             </>
           )}

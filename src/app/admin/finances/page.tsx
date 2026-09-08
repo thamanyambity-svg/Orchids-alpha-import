@@ -117,7 +117,7 @@ export default function AdminFinancesPage() {
             <input
               type="text"
               placeholder={t("admin.finances.search", "Rechercher (Stripe ID, Nom)...")}
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-full ps-10 pe-4 py-2 rounded-lg bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -125,16 +125,16 @@ export default function AdminFinancesPage() {
         </div>
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-muted/50 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <table className="w-full text-start">
+            <thead className="bg-muted/50 text-xs font-medium uppercase font-condensed tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4">Date</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Utilisateur</th>
                 <th className="px-6 py-4">Commande</th>
                 <th className="px-6 py-4">Stripe ID</th>
-                <th className="px-6 py-4 text-right">Montant</th>
-                <th className="px-6 py-4 text-right">{t("admin.finances.status", "Statut")}</th>
+                <th className="px-6 py-4 text-end">Montant</th>
+                <th className="px-6 py-4 text-end">{t("admin.finances.status", "Statut")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -160,10 +160,10 @@ export default function AdminFinancesPage() {
                     <td className="px-6 py-4 text-xs font-mono text-muted-foreground">
                       {tx.stripe_payment_id || '-'}
                     </td>
-                    <td className="px-6 py-4 text-right font-bold">
+                    <td className="px-6 py-4 text-end font-bold">
                       ${Number(tx.amount).toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-end">
                       {tx.status === 'SUCCEEDED' ? (
                         <Badge className="bg-success/10 text-success border-success/20">Succès</Badge>
                       ) : (

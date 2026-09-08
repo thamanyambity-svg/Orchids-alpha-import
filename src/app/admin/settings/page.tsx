@@ -182,17 +182,17 @@ export default function AdminSettingsPage() {
                   <User className="w-8 h-8 text-primary" />
                 )}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera className="w-6 h-6 text-white" />
+                  <Camera className="w-6 h-6 text-foreground" />
                 </div>
               </div>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-success rounded-full flex items-center justify-center border-2 border-background z-10">
-                <CheckCircle2 className="w-3 h-3 text-white" />
+                <CheckCircle2 className="w-3 h-3 text-foreground" />
               </div>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold">{profile?.full_name || 'Admin'}</h2>
-                <Badge variant="default" className="bg-green-500/20 text-green-600 border-green-200 text-[10px]">Administrateur</Badge>
+                <Badge variant="default" className="bg-success/20 text-success border-success-border text-[10px]">Administrateur</Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-3">{profile?.company_name || 'AlphaIX Admin'}</p>
               <div className="flex flex-wrap gap-4 text-xs">
@@ -260,7 +260,7 @@ export default function AdminSettingsPage() {
                         <User className="w-10 h-10 text-primary" />
                       )}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Upload className="w-8 h-8 text-white" />
+                        <Upload className="w-8 h-8 text-foreground" />
                       </div>
                     </div>
                     <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">
@@ -280,7 +280,7 @@ export default function AdminSettingsPage() {
                       <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="full_name"
-                        className="pl-9"
+                        className="ps-9"
                         value={profile?.full_name || ''}
                         onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
                         placeholder="Admin Alpha"
@@ -293,7 +293,7 @@ export default function AdminSettingsPage() {
                       <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="email"
-                        className="pl-9"
+                        className="ps-9"
                         value={profile?.email || ''}
                         disabled
                       />
@@ -305,7 +305,7 @@ export default function AdminSettingsPage() {
                       <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="phone"
-                        className="pl-9"
+                        className="ps-9"
                         value={profile?.phone || ''}
                         onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         placeholder="+243..."
@@ -315,7 +315,7 @@ export default function AdminSettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
-                <Button type="submit" disabled={saving} className="ml-auto gap-2">
+                <Button type="submit" disabled={saving} className="ms-auto gap-2">
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Enregistrer les modifications
                 </Button>
@@ -341,7 +341,7 @@ export default function AdminSettingsPage() {
                       <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="company_name"
-                        className="pl-9"
+                        className="ps-9"
                         value={profile?.company_name || ''}
                         onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
                         placeholder="Alpha Trading SARL"
@@ -372,7 +372,7 @@ export default function AdminSettingsPage() {
                       <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                       <Input
                         id="city"
-                        className="pl-9"
+                        className="ps-9"
                         value={profile?.city || ''}
                         onChange={(e) => setProfile({ ...profile, city: e.target.value })}
                         placeholder="Kinshasa"
@@ -382,7 +382,7 @@ export default function AdminSettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
-                <Button type="submit" disabled={saving} className="ml-auto gap-2">
+                <Button type="submit" disabled={saving} className="ms-auto gap-2">
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     {t("admin.settings.save_institutional", "Sauvegarder les infos institutionnelles")}
                 </Button>

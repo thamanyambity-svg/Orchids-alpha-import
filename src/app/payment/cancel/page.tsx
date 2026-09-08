@@ -25,9 +25,9 @@ function PaymentCancelContent() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6"
+            className="w-20 h-20 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-6"
           >
-            <XCircle className="w-10 h-10 text-amber-500" />
+            <XCircle className="w-10 h-10 text-warning" />
           </motion.div>
 
           <h1 className="text-2xl font-bold mb-2">{t("payment.cancel.title", "Paiement annulé")}</h1>

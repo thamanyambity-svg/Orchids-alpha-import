@@ -15,18 +15,18 @@ export function QuoteWizard() {
   ]
 
   return (
-    <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-[#020308]/90 p-6 text-white">
+    <div className="mx-auto max-w-3xl rounded-2xl border border-foreground/10 bg-background/90 p-6 text-foreground">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase text-white/60">{t("quotewizard.title", "Demande de devis")}</p>
+          <p className="text-xs uppercase text-foreground/60">{t("quotewizard.title", "Demande de devis")}</p>
           <h3 className="text-lg font-semibold">{steps[step].title}</h3>
-          <p className="text-sm text-white/60">{steps[step].hint}</p>
+          <p className="text-sm text-foreground/60">{steps[step].hint}</p>
         </div>
-        <div className="text-sm text-white/50">{t("quotewizard.step", "Étape")} {step + 1}/{steps.length}</div>
+        <div className="text-sm text-foreground/50">{t("quotewizard.step", "Étape")} {step + 1}/{steps.length}</div>
       </div>
 
       <div className="mb-4">
-        <input placeholder="Titre de la demande (ex: 1000 pièces)" className="w-full rounded-md border border-white/10 bg-[#020205] px-4 py-3 text-white placeholder:text-white/40" />
+        <input placeholder="Titre de la demande (ex: 1000 pièces)" className="w-full rounded-md border border-foreground/10 bg-background px-4 py-3 text-foreground placeholder:text-foreground/40" />
       </div>
 
       <div className="flex items-center justify-between gap-4">
@@ -34,11 +34,11 @@ export function QuoteWizard() {
           {t("quotewizard.prev", "Précédent")}
         </Button>
         {step < steps.length - 1 ? (
-          <Button onClick={() => setStep((s) => s + 1)} className="h-12 bg-gradient-to-r from-[#4d8cff] to-[#1f59ff]">
+          <Button onClick={() => setStep((s) => s + 1)} className="h-12 bg-gradient-to-r from-info to-info/70">
             {t("quotewizard.next", "Suivant")}
           </Button>
         ) : (
-          <Button onClick={() => alert(t("quotewizard.sent", "Devis envoyé — nous vous contacterons bientôt."))} className="h-12 bg-green-600">
+          <Button onClick={() => alert(t("quotewizard.sent", "Devis envoyé — nous vous contacterons bientôt."))} className="h-12 bg-success">
             {t("quotewizard.send", "Envoyer la demande")}
           </Button>
         )}

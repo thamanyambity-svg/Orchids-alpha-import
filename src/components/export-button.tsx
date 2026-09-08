@@ -27,9 +27,9 @@ export function ExportButton({ data, filename, headers, label = "Exporter CSV" }
   return (
     <Button variant="outline" size="sm" onClick={handleExport} disabled={loading || !data.length}>
       {loading ? (
-        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+        <Loader2 className="w-4 h-4 me-1 animate-spin" />
       ) : (
-        <Download className="w-4 h-4 mr-1" />
+        <Download className="w-4 h-4 me-1" />
       )}
       {label}
     </Button>

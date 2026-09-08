@@ -124,22 +124,22 @@ export default function WorldMap() {
       <div className="max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-12">
           <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("worldmap.subtitle", "Couverture mondiale")}</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("worldmap.title_notre", "NOTRE")} <span className="text-gradient-gold">{t("worldmap.title_reseau", "RÉSEAU")}</span></h2>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-foreground leading-none">{t("worldmap.title_notre", "NOTRE")} <span className="text-gradient-gold">{t("worldmap.title_reseau", "RÉSEAU")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
           </div>
         </motion.div>
 
-        <div className="relative w-full aspect-[2/1] max-h-[500px] border border-white/5" style={{ background: "hsl(216 45% 3%)" }}>
+        <div className="relative w-full aspect-[2/1] max-h-[500px] border border-foreground/5" style={{ background: "hsl(216 45% 3%)" }}>
           <canvas ref={canvasRef} className="w-full h-full" />
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-gold" />
-            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">{t("worldmap.hub_central", "Hub central")}</span>
+            <span className="font-condensed text-[10px] text-foreground/20 tracking-widest uppercase">{t("worldmap.hub_central", "Hub central")}</span>
           </div>
           <div className="absolute top-4 left-24 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
-            <span className="font-condensed text-[10px] text-white/20 tracking-widest uppercase">{t("worldmap.partner_cities", "Villes partenaires")}</span>
+            <span className="font-condensed text-[10px] text-foreground/20 tracking-widest uppercase">{t("worldmap.partner_cities", "Villes partenaires")}</span>
           </div>
         </div>
       </div>

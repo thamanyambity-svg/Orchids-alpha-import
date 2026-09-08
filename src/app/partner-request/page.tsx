@@ -31,14 +31,14 @@ export default function PartnerRequestPage() {
               data-reveal
               className="grid gap-[30px] border-b border-[var(--line)] py-[38px] [grid-template-columns:96px_1fr] max-sm:[grid-template-columns:1fr]"
             >
-              <span className="font-display text-[64px] leading-[.8] text-[hsl(42_85%_55%/.3)]">
+              <span className="font-display text-[64px] leading-[.8] text-primary/30">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
-                <h3 className="mb-3 mt-0 font-display text-[clamp(26px,3.2vw,40px)] leading-[1.02] text-white">
+                <h3 className="mb-3 mt-0 font-display text-[clamp(26px,3.2vw,40px)] leading-[1.02] text-foreground">
                   {t(`${key}.title`, "")}
                 </h3>
-                <p className="m-0 text-[18px] font-light leading-[1.65] text-white/60 [text-wrap:pretty]">
+                <p className="m-0 text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
                   {t(`${key}.body`, "")}
                 </p>
               </div>
@@ -46,16 +46,16 @@ export default function PartnerRequestPage() {
           ))}
 
           <div data-reveal className="mt-[52px] border border-[var(--line)] bg-[var(--navy)] px-[34px] py-11">
-            <h3 className="mb-[14px] mt-0 font-display text-[34px] leading-[1.02] text-white">
+            <h3 className="mb-[14px] mt-0 font-display text-[34px] leading-[1.02] text-foreground">
               {t("site.part.reqTitle", "CANDIDATER")}
             </h3>
-            <p className="mb-7 mt-0 max-w-[560px] text-[17px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">
+            <p className="mb-7 mt-0 max-w-[560px] text-[17px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">
               {t("site.part.reqBody", "")}
             </p>
             <div className="flex flex-wrap gap-[14px]">
               <a
                 href="#candidature"
-                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
               >
                 {t("site.part.reqBtn", "Déposer une candidature")}
               </a>
@@ -63,7 +63,7 @@ export default function PartnerRequestPage() {
                 href="https://wa.me/243818924674"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-[var(--line)] px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+                className="border border-[var(--line)] px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-foreground/80 transition-colors duration-300 hover:border-gold hover:text-gold"
               >
                 WhatsApp
               </Link>

@@ -14,8 +14,8 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-2xl p-6 relative overflow-hidden group flex flex-col items-center justify-center min-h-[200px]"
       >
-        <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">Aucune demande active</p>
-        <p className="text-[10px] text-muted-foreground uppercase mt-2">{t("summary.create_prompt", "Créez une nouvelle demande pour commencer")}</p>
+        <p className="text-muted-foreground font-mono text-sm uppercase font-condensed tracking-widest">Aucune demande active</p>
+        <p className="t-label text-[10px] text-muted-foreground mt-2">{t("summary.create_prompt", "Créez une nouvelle demande pour commencer")}</p>
       </motion.div>
     )
   }
@@ -31,12 +31,12 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground font-mono text-sm tracking-widest uppercase">RÉSUMÉ #{request.reference || request.id.slice(0, 8)}</span>
+          <span className="text-muted-foreground font-mono text-sm tracking-widest uppercase font-condensed">RÉSUMÉ #{request.reference || request.id.slice(0, 8)}</span>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </div>
         <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground uppercase">
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${request.status === 'CLOSED' ? 'bg-green-500' : 'bg-primary'}`} />
+            <div className={`w-2 h-2 rounded-full ${request.status === 'CLOSED' ? 'bg-success' : 'bg-primary'}`} />
             <span>{statusLabel}</span>
           </div>
             <span>ALPHA IMPORT EXCHANGE SÉCURISÉ</span>
@@ -53,7 +53,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
               <h3 className="text-xl font-bold tracking-tight uppercase">{request.category || 'Importation'}</h3>
               <p className="text-xs text-muted-foreground uppercase">{request.quantity} {request.unit} - Budget: {request.budget_min}$ - {request.budget_max}$</p>
             </div>
-            <div className="text-right">
+            <div className="text-end">
               <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/30 uppercase">
                 ● {statusLabel}
               </span>

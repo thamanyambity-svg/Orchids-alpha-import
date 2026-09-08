@@ -107,7 +107,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     <h1 className="text-2xl font-bold">Candidature: {application.company_name}</h1>
                     <p className="text-muted-foreground text-sm">Soumis le {new Date(application.created_at).toLocaleString()}</p>
                 </div>
-                <div className="ml-auto">
+                <div className="ms-auto">
                     <Badge variant={application.status === 'PENDING' ? 'outline' : 'default'}>
                         {application.status}
                     </Badge>
@@ -166,7 +166,7 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                                 application.documents.map((doc: any, i: number) => (
                                     <div key={i} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
                                         <div className="flex items-center gap-3">
-                                            <FileText className="w-5 h-5 text-blue-500" />
+                                            <FileText className="w-5 h-5 text-info" />
                                             <div>
                                                 <p className="font-medium text-sm">{doc.name}</p>
                                                 <p className="text-xs text-muted-foreground">Document uploadé</p>
@@ -194,11 +194,11 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     <CardContent>
                         <div className="flex gap-4">
                             <div className="flex items-center gap-2">
-                                {application.agreements?.finance_accepted ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
+                                {application.agreements?.finance_accepted ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
                                 <span className="text-sm">Conditions Financières Acceptées</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                {application.agreements?.privacy_accepted ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
+                                {application.agreements?.privacy_accepted ? <CheckCircle className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
                                 <span className="text-sm">Politique Confidentialité & Charte</span>
                             </div>
                         </div>
@@ -218,8 +218,8 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                     */}
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button className="bg-green-600 hover:bg-green-700">
-                                <CheckCircle className="mr-2 w-4 h-4" />
+                            <Button className="bg-success hover:bg-success">
+                                <CheckCircle className="me-2 w-4 h-4" />
                                 Approuver et créer le compte
                             </Button>
                         </DialogTrigger>

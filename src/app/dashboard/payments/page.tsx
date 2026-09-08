@@ -80,9 +80,9 @@ export default function PaymentsPage() {
             </div>
             <Badge className={mandateActive ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"}>
               {mandateActive ? (
-                <><CheckCircle2 className="w-3 h-3 mr-1" /> {t("dashboard.payments.active", "Actif")}</>
+                <><CheckCircle2 className="w-3 h-3 me-1" /> {t("dashboard.payments.active", "Actif")}</>
               ) : (
-                <><Clock className="w-3 h-3 mr-1" /> {t("dashboard.payments.inactive", "Inactif")}</>
+                <><Clock className="w-3 h-3 me-1" /> {t("dashboard.payments.inactive", "Inactif")}</>
               )}
             </Badge>
           </div>
@@ -105,7 +105,7 @@ export default function PaymentsPage() {
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="w-full">
-                  <Landmark className="w-4 h-4 mr-2" />
+                  <Landmark className="w-4 h-4 me-2" />
                   {t("dashboard.payments.activate_sepa", "Activer le prélèvement SEPA")}
                 </Button>
               </DialogTrigger>

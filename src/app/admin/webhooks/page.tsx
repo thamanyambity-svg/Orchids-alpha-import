@@ -118,8 +118,8 @@ export default function AdminWebhooksPage() {
           </div>
           <div className="p-5 rounded-xl bg-card border border-border">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <ExternalLink className="w-5 h-5 text-blue-500" />
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+                <ExternalLink className="w-5 h-5 text-info" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Stripe</p>
@@ -129,8 +129,8 @@ export default function AdminWebhooksPage() {
           </div>
           <div className="p-5 rounded-xl bg-card border border-border">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <Activity className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-success" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">n8n</p>
@@ -147,7 +147,7 @@ export default function AdminWebhooksPage() {
             <input
               type="text"
               placeholder="Rechercher par type ou ID..."
-              className="w-64 pl-9 pr-3 py-1.5 text-sm rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-64 ps-9 pe-3 py-1.5 text-sm rounded-lg bg-background border border-border focus:ring-2 focus:ring-primary/20 outline-none"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -162,7 +162,7 @@ export default function AdminWebhooksPage() {
             <option value="n8n">n8n</option>
           </select>
           <Button variant="outline" size="sm" onClick={fetchEvents}>
-            <RefreshCw className="w-4 h-4 mr-1" /> Actualiser
+            <RefreshCw className="w-4 h-4 me-1" /> Actualiser
           </Button>
         </div>
 
@@ -183,14 +183,14 @@ export default function AdminWebhooksPage() {
                 <button
                   key={event.id}
                   onClick={() => setSelectedEvent(selectedEvent?.id === event.id ? null : event)}
-                  className="w-full text-left px-6 py-4 hover:bg-muted/20 transition-colors"
+                  className="w-full text-start px-6 py-4 hover:bg-muted/20 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         event.source === "stripe"
-                          ? "bg-blue-500/10 text-blue-500"
-                          : "bg-emerald-500/10 text-emerald-500"
+                          ? "bg-info/10 text-info"
+                          : "bg-success/10 text-success"
                       }`}>
                         {event.source === "stripe" ? (
                           <ExternalLink className="w-4 h-4" />
@@ -210,8 +210,8 @@ export default function AdminWebhooksPage() {
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-success/10 text-success border-success/20 ml-4">
-                      <CheckCircle2 className="w-3 h-3 mr-1" /> Traité
+                    <Badge className="bg-success/10 text-success border-success/20 ms-4">
+                      <CheckCircle2 className="w-3 h-3 me-1" /> Traité
                     </Badge>
                   </div>
 

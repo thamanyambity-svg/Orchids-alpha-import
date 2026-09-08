@@ -112,14 +112,14 @@ export default function DashboardDocumentsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder={t("dashboard.documents.search", "Rechercher un document...")}
-              className="pl-9"
+              className="ps-9"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="w-[200px]">
-              <Filter className="w-4 h-4 mr-2" />
+              <Filter className="w-4 h-4 me-2" />
               <SelectValue placeholder={t("dashboard.documents.filter_type", "Type")} />
             </SelectTrigger>
             <SelectContent>

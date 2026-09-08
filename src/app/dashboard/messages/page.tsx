@@ -70,7 +70,7 @@ export default function MessagesPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("dashboard.messages.search", "Rechercher une conversation...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -107,11 +107,11 @@ export default function MessagesPage() {
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-2">
+                  <div className="text-end shrink-0">
+                    <p className="t-label text-[10px] text-muted-foreground font-bold mb-2">
                       {new Date(message.created_at).toLocaleDateString()}
                     </p>
-                    <div className="w-2 h-2 rounded-full bg-primary ml-auto" />
+                    <div className="w-2 h-2 rounded-full bg-primary ms-auto" />
                   </div>
                 </div>
               </motion.div>

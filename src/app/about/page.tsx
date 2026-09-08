@@ -30,7 +30,7 @@ export default function AboutPage() {
               className="mt-7 h-4 w-[120px] origin-left bg-gold"
               style={{ animation: "barIn .9s .2s cubic-bezier(.16,1,.3,1) both" }}
             />
-            <p className="mt-7 text-[19px] font-light leading-[1.62] text-white/60 [text-wrap:pretty]">
+            <p className="mt-7 text-[19px] font-light leading-[1.62] text-foreground/60 [text-wrap:pretty]">
               {t("site.about.missionBody", "")}
             </p>
           </div>
@@ -49,10 +49,10 @@ export default function AboutPage() {
                 <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-gold">
                   {t(`site.about.${key}.tag`, "")}
                 </span>
-                <h3 className="mb-3 mt-0 font-display text-[28px] leading-[1.05] text-white">
+                <h3 className="mb-3 mt-0 font-display text-[28px] leading-[1.05] text-foreground">
                   {t(`site.about.${key}.title`, "")}
                 </h3>
-                <p className="m-0 text-[16px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">
+                <p className="m-0 text-[16px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">
                   {t(`site.about.${key}.body`, "")}
                 </p>
               </div>
@@ -72,19 +72,19 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-[1440px] px-8">
           <div data-reveal className="max-w-[720px]">
             <SectionTitle size="sm">{t("site.about.groupTitle", "LE GROUPE")}</SectionTitle>
-            <p className="mt-6 text-[18px] font-light leading-[1.65] text-white/60 [text-wrap:pretty]">
+            <p className="mt-6 text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
               {t("site.about.groupBody", "")}
             </p>
             <div className="mt-9 flex flex-wrap gap-[14px]">
               <Link
                 href="/plateforme"
-                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                className="bg-gold px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
               >
                 {t("site.nav.platform", "Plateforme")}
               </Link>
               <Link
                 href="/contact"
-                className="border border-[var(--line)] px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+                className="border border-[var(--line)] px-[38px] py-[19px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-foreground/80 transition-colors duration-300 hover:border-gold hover:text-gold"
               >
                 {t("site.quote.title", "DEMANDER UNE COTATION")}
               </Link>

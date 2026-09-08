@@ -40,18 +40,18 @@ export default function ServicesPage() {
                   className="flex flex-col justify-center py-[92px]"
                   style={{ order: service.flip ? 2 : 1 }}
                 >
-                  <span className="mb-5 block font-display text-[74px] leading-[.8] text-[hsl(42_85%_55%/.24)]">
+                  <span className="mb-5 block font-display text-[74px] leading-[.8] text-primary/25">
                     {service.num}
                   </span>
-                  <h2 className="m-0 font-display text-[clamp(36px,4.4vw,64px)] leading-[.96] text-white">
+                  <h2 className="m-0 font-display text-[clamp(36px,4.4vw,64px)] leading-[.96] text-foreground">
                     {t(`site.svc.${service.key}.title`, "")}
                   </h2>
                   <div className="my-6 h-[14px] w-[100px] bg-gold" />
-                  <p className="mb-[26px] max-w-[520px] text-[18px] font-light leading-[1.65] text-white/60 [text-wrap:pretty]">
+                  <p className="mb-[26px] max-w-[520px] text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
                     {t(`site.svc.${service.key}.body`, "")}
                   </p>
                   {hasDetail && (
-                    <span className="inline-block self-start border border-[var(--line)] px-[18px] py-3 font-condensed text-[13px] font-medium uppercase tracking-[.2em] text-white/55">
+                    <span className="inline-block self-start border border-[var(--line)] px-[18px] py-3 font-condensed text-[13px] font-medium uppercase tracking-[.2em] text-foreground/55">
                       {detail}
                     </span>
                   )}

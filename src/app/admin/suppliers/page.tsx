@@ -196,7 +196,7 @@ export default function AdminSuppliersPage() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">{t("admin.suppliers.title", "Validation Fournisseurs")}</h1>
-                    <p className="text-muted-foreground mr-4">
+                    <p className="text-muted-foreground me-4">
                         {suppliers.length} fournisseurs • {toValidateCount} à valider
                     </p>
                 </div>
@@ -218,7 +218,7 @@ export default function AdminSuppliersPage() {
                         variant={activeTab === id ? "default" : "outline"}
                         size="sm"
                         onClick={() => setActiveTab(id)}
-                        className="rounded-full text-xs font-bold uppercase tracking-wider shrink-0"
+                        className="rounded-full text-xs font-bold uppercase font-condensed tracking-wider shrink-0"
                     >
                         {label}
                     </Button>
@@ -238,7 +238,7 @@ export default function AdminSuppliersPage() {
                         <Input
                             type="search"
                             placeholder={t("admin.suppliers.search", "Rechercher...")}
-                            className="pl-8"
+                            className="ps-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -253,7 +253,7 @@ export default function AdminSuppliersPage() {
                                 <TableHead>Partenaire Responsable</TableHead>
                                 <TableHead>Capacité</TableHead>
                                 <TableHead>{t("admin.suppliers.status", "Statut")}</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
+                                <TableHead className="text-end">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -270,8 +270,8 @@ export default function AdminSuppliersPage() {
                                     <TableRow key={supplier.id}>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-lg bg-orange-100 flex items-center justify-center border border-orange-200">
-                                                    <Box className="h-5 w-5 text-orange-600" />
+                                                <div className="h-10 w-10 rounded-lg bg-warning-subtle flex items-center justify-center border border-warning-border">
+                                                    <Box className="h-5 w-5 text-warning" />
                                                 </div>
                                                 <div>
                                                     <div className="font-medium">{supplier.name}</div>
@@ -300,24 +300,24 @@ export default function AdminSuppliersPage() {
                                         </TableCell>
                                         <TableCell>
                                             {supplier.validated_by_admin ? (
-                                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> {t("admin.suppliers.validated", "Validé")}
+                                                <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
+                                                    <CheckCircle2 className="w-3 h-3 me-1" /> {t("admin.suppliers.validated", "Validé")}
                                                 </Badge>
                                             ) : (
-                                                <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">
-                                                    <AlertCircle className="w-3 h-3 mr-1" /> À Valider
+                                                <Badge variant="destructive" className="bg-destructive-subtle text-destructive hover:bg-destructive-subtle border-destructive-border">
+                                                    <AlertCircle className="w-3 h-3 me-1" /> À Valider
                                                 </Badge>
                                             )}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-end">
                                             {supplier.validated_by_admin ? (
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                    className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                                                     onClick={() => handleValidation(supplier.id, false)}
                                                 >
-                                                    <XCircle className="w-4 h-4 mr-2" />
+                                                    <XCircle className="w-4 h-4 me-2" />
                                                     Suspendre
                                                 </Button>
                                             ) : (
@@ -327,10 +327,10 @@ export default function AdminSuppliersPage() {
                                                     </Button>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                                        className="bg-success hover:bg-success text-success-foreground"
                                                         onClick={() => handleValidation(supplier.id, true)}
                                                     >
-                                                        <CheckCircle2 className="w-4 h-4 mr-2" />
+                                                        <CheckCircle2 className="w-4 h-4 me-2" />
                                                         Valider
                                                     </Button>
                                                 </div>

@@ -40,7 +40,7 @@ export default function HowItWorks() {
       <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-16 py-24 min-h-screen flex flex-col">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
           <p className="font-condensed text-xs text-gold tracking-[0.5em] uppercase mb-3">{t("how.subtitle", "Processus simplifié")}</p>
-          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-white leading-none">{t("how.title.prefix", "COMMENT")} <span className="text-gradient-gold">{t("how.title", "ÇA MARCHE")}</span></h2>
+          <h2 className="font-display text-[12vw] md:text-[8vw] lg:text-[7vw] text-foreground leading-none">{t("how.title.prefix", "COMMENT")} <span className="text-gradient-gold">{t("how.title", "ÇA MARCHE")}</span></h2>
           <div className="flex items-center gap-4 mt-4">
             <div className="w-16 h-[2px] bg-gold" />
             <div className="w-4 h-[2px] bg-gold/40" />
@@ -51,7 +51,7 @@ export default function HowItWorks() {
           <div className="w-full lg:w-64 xl:w-72 flex-shrink-0">
             <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
               {steps.map((s, i) => (
-                <motion.button key={s.num} onClick={() => setActiveStep(i)} whileTap={{ scale: 0.97 }} className="relative flex-shrink-0 flex items-center gap-4 p-5 border text-left transition-all duration-250" style={{ background: activeStep === i ? "rgba(42,65,85,0.5)" : "rgba(6,16,30,0.6)", borderColor: activeStep === i ? "hsl(42 85% 55% / 0.5)" : "rgba(255,255,255,0.06)" }}>
+                <motion.button key={s.num} onClick={() => setActiveStep(i)} whileTap={{ scale: 0.97 }} className="relative flex-shrink-0 flex items-center gap-4 p-5 border text-start transition-all duration-250" style={{ background: activeStep === i ? "rgba(42,65,85,0.5)" : "rgba(6,16,30,0.6)", borderColor: activeStep === i ? "hsl(42 85% 55% / 0.5)" : "rgba(255,255,255,0.06)" }}>
                   <div className="absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300" style={{ background: "hsl(42 85% 55%)", opacity: activeStep === i ? 1 : 0, transform: activeStep === i ? "scaleY(1)" : "scaleY(0)", transformOrigin: "top" }} />
                   <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center border transition-colors duration-250" style={{ borderColor: activeStep === i ? "hsl(42 85% 55%)" : "rgba(255,255,255,0.12)", background: activeStep === i ? "hsl(42 85% 55% / 0.1)" : "transparent" }}>
                     <span className="font-display text-2xl transition-colors duration-250" style={{ color: activeStep === i ? "hsl(42 85% 55%)" : "rgba(255,255,255,0.3)" }}>{s.num}</span>
@@ -70,21 +70,21 @@ export default function HowItWorks() {
                 <div className="mb-6">
                   <span className="font-display text-[18vw] md:text-[10vw] text-gradient-gold leading-none opacity-90">{steps[activeStep].num}</span>
                 </div>
-                <h3 className="font-display text-4xl md:text-5xl lg:text-6xl text-white tracking-wider leading-none mb-6">{steps[activeStep].title}</h3>
-                <p className="font-sans text-base text-white/60 leading-relaxed mb-10 max-w-lg">{steps[activeStep].desc}</p>
+                <h3 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground tracking-wider leading-none mb-6">{steps[activeStep].title}</h3>
+                <p className="font-sans text-base text-foreground/60 leading-relaxed mb-10 max-w-lg">{steps[activeStep].desc}</p>
                 <div className="flex flex-wrap gap-3 mb-10">
                   {steps[activeStep].detail.map((d, di) => (
                     <motion.div key={d} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: di * 0.07 }} className="flex items-center gap-2 border border-gold/20 px-4 py-2" style={{ background: "hsl(42 85% 55% / 0.06)" }}>
                       <div className="w-1.5 h-1.5 rounded-full bg-gold" />
-                      <span className="font-condensed text-xs text-white/60 tracking-widest uppercase">{d}</span>
+                      <span className="font-condensed text-xs text-foreground/60 tracking-widest uppercase">{d}</span>
                     </motion.div>
                   ))}
                 </div>
                 <div className="flex items-center gap-3">
                   {steps.map((_, si) => (
-                    <button key={si} onClick={() => setActiveStep(si)} className={`transition-all duration-300 ${si === activeStep ? "w-8 h-1 bg-gold" : "w-4 h-1 bg-white/20"}`} />
+                    <button key={si} onClick={() => setActiveStep(si)} className={`transition-all duration-300 ${si === activeStep ? "w-8 h-1 bg-gold" : "w-4 h-1 bg-foreground/20"}`} />
                   ))}
-                  <span className="font-condensed text-xs text-white/25 tracking-widest ml-2">{activeStep + 1} / {steps.length}</span>
+                  <span className="font-condensed text-xs text-foreground/25 tracking-widest ms-2">{activeStep + 1} / {steps.length}</span>
                 </div>
               </motion.div>
             </AnimatePresence>

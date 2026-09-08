@@ -67,22 +67,22 @@ export default function PlatformPage() {
               <div
                 key={role.key}
                 data-reveal
-                className="border-t-2 border-transparent bg-[var(--navy2)] px-[30px] pb-[50px] pt-11 transition-[border-color,background] duration-[400ms] hover:border-gold hover:bg-[hsl(216_40%_12%)]"
+                className="border-t-2 border-transparent bg-[var(--navy2)] px-[30px] pb-[50px] pt-11 transition-[border-color,background] duration-[400ms] hover:border-gold hover:bg-secondary"
               >
                 <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
                   {t(`site.role.${role.key}.code`, "")}
                 </span>
-                <h3 className="mb-3 mt-0 font-display text-[32px] leading-[1.02] text-white">
+                <h3 className="mb-3 mt-0 font-display text-[32px] leading-[1.02] text-foreground">
                   {t(`site.role.${role.key}.title`, "")}
                 </h3>
-                <p className="mb-[26px] mt-0 text-[17px] font-light leading-[1.62] text-white/58 [text-wrap:pretty]">
+                <p className="mb-[26px] mt-0 text-[17px] font-light leading-[1.62] text-foreground/58 [text-wrap:pretty]">
                   {t(`site.role.${role.key}.body`, "")}
                 </p>
                 <div className="flex flex-col gap-[9px] border-t border-[var(--line)] pt-[22px]">
                   {role.items.map((item) => (
                     <span
                       key={item}
-                      className="flex items-center gap-[11px] font-condensed text-[14px] font-medium uppercase tracking-[.14em] text-white/50"
+                      className="flex items-center gap-[11px] font-condensed text-[14px] font-medium uppercase tracking-[.14em] text-foreground/50"
                     >
                       <span className="block h-1 w-1 shrink-0 bg-gold" />
                       {item}
@@ -102,7 +102,7 @@ export default function PlatformPage() {
           </div>
           <p
             data-reveal
-            className="mb-11 max-w-[660px] text-[18px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]"
+            className="mb-11 max-w-[660px] text-[18px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]"
           >
             {t("site.sec.body", "")}
           </p>
@@ -116,10 +116,10 @@ export default function PlatformPage() {
                 <span className="mb-4 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-gold">
                   {t(`site.${key}.tag`, "")}
                 </span>
-                <h3 className="mb-3 mt-0 font-display text-[26px] leading-[1.05] text-white">
+                <h3 className="mb-3 mt-0 font-display text-[26px] leading-[1.05] text-foreground">
                   {t(`site.${key}.title`, "")}
                 </h3>
-                <p className="m-0 text-[15px] font-light leading-[1.62] text-white/55 [text-wrap:pretty]">
+                <p className="m-0 text-[15px] font-light leading-[1.62] text-foreground/55 [text-wrap:pretty]">
                   {t(`site.${key}.body`, "")}
                 </p>
               </div>

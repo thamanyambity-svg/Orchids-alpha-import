@@ -16,8 +16,13 @@ export async function POST(req: Request) {
     }
 
     const supabase = createAdminClient()
+    // La colonne subscribed_at n'existe pas : la table porte created_at,
+    // confirmed_at et unsubscribed_at. L'écrire faisait échouer chaque
+    // inscription en 500, sur toute base construite depuis le dépôt.
+    // created_at vaut NOW() par défaut et suffit à dater l'inscription ;
+    // confirmed_at reste vide, il appartient au double opt-in.
     const { error } = await supabase.from("newsletter_subscribers").upsert(
-      { email, source: source || "web", subscribed_at: new Date().toISOString() },
+      { email, source: source || "web" },
       { onConflict: "email" }
     )
 

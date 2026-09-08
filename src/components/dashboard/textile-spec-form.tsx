@@ -140,7 +140,7 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Section 1 — Identification */}
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.product_name", "Désignation commerciale")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.product_name", "Désignation commerciale")} *</Label>
             <Input
               placeholder={t("spec.textile.name_placeholder", "Ex. T-shirt col rond 180 g/m² – coton bio")}
               value={formData.product_name}
@@ -150,27 +150,27 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.textile.category", "Catégorie")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.textile.category", "Catégorie")} *</Label>
             <Select value={formData.category} onValueChange={v => update("category", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{TEXTILE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.textile.composition", "Composition")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.textile.composition", "Composition")} *</Label>
             <Select value={formData.composition} onValueChange={v => update("composition", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{COMPOSITIONS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">
               <span className="flex items-center gap-1.5"><Scale className="w-3 h-3" />{t("spec.textile.gsm", "Grammage (g/m²)")}</span>
             </Label>
             <Input type="number" placeholder="Ex. 180" value={formData.weight_gsm} onChange={e => update("weight_gsm", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">
               <span className="flex items-center gap-1.5"><Palette className="w-3 h-3" />{t("spec.textile.color", "Référence couleur (Pantone / RAL)")}</span>
             </Label>
             <Input placeholder="Ex. Pantone 19-4052 TCX" value={formData.color_reference} onChange={e => update("color_reference", e.target.value)} disabled={readOnly} className="h-10" />
@@ -179,7 +179,7 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
 
         {/* Section 2 — Tailles & Quantités */}
         <div className="rounded-lg border border-border p-4 space-y-4">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+          <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground flex items-center gap-1.5">
             <Grid3x3 className="w-3 h-3" />{t("spec.textile.sizes", "Tailles & Quantités par taille")}
           </Label>
           <div className="flex flex-wrap gap-2">
@@ -216,15 +216,15 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Section 3 — Budget */}
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.target_price", "Prix cible ($/pièce)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.target_price", "Prix cible ($/pièce)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.target_price_usd} onChange={e => update("target_price_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_min_usd} onChange={e => update("budget_min_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_max_usd} onChange={e => update("budget_max_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
         </div>
@@ -235,7 +235,7 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
           onClick={() => setShowOptional(!showOptional)}
           className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors w-full justify-between py-2 border-t border-border/50"
         >
-          <span className="font-medium uppercase tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
+          <span className="font-medium uppercase font-condensed tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
           {showOptional ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
 
@@ -243,7 +243,7 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
           <div className="space-y-4 pt-2">
             {/* Certifications */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground flex items-center gap-1.5">
                 <Shield className="w-3 h-3" />{t("spec.certifications", "Certifications requises")}
               </Label>
               <div className="flex flex-wrap gap-2">
@@ -261,24 +261,24 @@ export function TextileSpecForm({ initialData, onChange, readOnly, lineNumber }:
 
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.packaging", "Emballage")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.packaging", "Emballage")}</Label>
                 <Select value={formData.packaging_type} onValueChange={v => update("packaging_type", v)} disabled={readOnly}>
                   <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
                   <SelectContent>{PACKAGING_TYPES.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.pieces_per_carton", "Pièces / carton")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.pieces_per_carton", "Pièces / carton")}</Label>
                 <Input type="number" placeholder="Ex. 50" value={formData.packing_per_carton} onChange={e => update("packing_per_carton", e.target.value)} disabled={readOnly} className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.hs_code", "Code SH (HS Code)")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.hs_code", "Code SH (HS Code)")}</Label>
                 <Input placeholder="Ex. 6109.10" value={formData.hs_code} onChange={e => update("hs_code", e.target.value)} disabled={readOnly} className="h-10 font-mono" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.textile.labeling", "Exigences d'étiquetage")}</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.textile.labeling", "Exigences d'étiquetage")}</Label>
               <Textarea
                 placeholder={t("spec.textile.labeling_placeholder", "Composition, pays d'origine, taille, instructions d'entretien, marque...")}
                 value={formData.labeling_requirements}

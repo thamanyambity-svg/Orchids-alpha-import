@@ -332,6 +332,50 @@ const ar: Record<string, string> = {
   'spec.general.badge': "عام",
   'spec.general.name_placeholder': "مثال: مضخة طرد مركزي 50 م³/ساعة - فولاذ مقاوم للصدأ",
   'spec.general.desc_placeholder': "المواصفات الفنية، الاستخدام المقصود، المواد...",
+  // Statuts métier — clefs générées depuis le registre src/lib/design/status.ts.
+  'status.request.DRAFT': 'مسودة',
+  'status.request.PENDING': 'قيد الانتظار',
+  'status.request.ANALYSIS': 'قيد التحليل',
+  'status.request.VALIDATED': 'معتمد',
+  'status.request.QUOTE_ACCEPTED': 'تم قبول العرض',
+  'status.request.REJECTED': 'مرفوض',
+  'status.request.AWAITING_DEPOSIT': 'مطلوب دفعة مقدمة',
+  'status.request.FUNDED': 'تم التمويل',
+  'status.request.SOURCING': 'جاري التوريد',
+  'status.request.EXECUTING': 'قيد التنفيذ',
+  'status.request.PURCHASED': 'تم الشراء',
+  'status.request.AWAITING_BALANCE': 'مطلوب سداد الرصيد',
+  'status.request.SHIPPED': 'تم الشحن',
+  'status.request.DELIVERED': 'تم التسليم',
+  'status.request.CLOSED': 'مغلق',
+  'status.request.INCIDENT': 'حادث',
+  'status.request.FROZEN': 'مجمد',
+  'status.request.CANCELLED': 'ملغى',
+
+  'status.quote.DRAFT': 'مسودة',
+  'status.quote.SUBMITTED': 'مُرسل',
+  'status.quote.ACCEPTED': 'مقبول',
+  'status.quote.REJECTED': 'مرفوض',
+  'status.quote.EXPIRED': 'منتهي الصلاحية',
+  'status.quote.REVISED': 'مُنقَّح',
+
+  'status.purchaseOrder.DRAFT': 'مسودة',
+  'status.purchaseOrder.PENDING_SIGNATURE': 'بانتظار التوقيع',
+  'status.purchaseOrder.SIGNED': 'موقَّع',
+  'status.purchaseOrder.CONFIRMED': 'مؤكَّد',
+  'status.purchaseOrder.CANCELLED': 'ملغى',
+
+  'status.invoice.DRAFT': 'مسودة',
+  'status.invoice.SENT': 'مُرسلة',
+  'status.invoice.PAID': 'مدفوعة',
+  'status.invoice.OVERDUE': 'متأخرة',
+  'status.invoice.CANCELLED': 'ملغاة',
+
+  'status.paymentProof.PENDING_REVIEW': 'قيد المراجعة',
+  'status.paymentProof.ACCEPTED': 'مقبولة',
+  'status.paymentProof.REJECTED': 'مرفوضة',
+  'status.paymentProof.SUPERSEDED': 'مُستبدلة',
+
 }
 
 export default ar

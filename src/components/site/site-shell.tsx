@@ -49,20 +49,20 @@ function SiteFooter() {
   const { t } = useLanguage()
 
   return (
-    <footer className="border-t border-[var(--line)] bg-[hsl(216_48%_4%)] px-0 pb-8 pt-[76px]">
+    <footer className="border-t border-[var(--line)] bg-background px-0 pb-8 pt-[76px]">
       <div className="mx-auto max-w-[1440px] px-8">
         <div className="grid gap-11 border-b border-[var(--line)] pb-[52px] [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
           <div>
             <div className="mb-4 flex items-baseline gap-[10px]">
-              <span className="font-display text-[32px] leading-[.9] text-white">ALPHA</span>
+              <span className="font-display text-[32px] leading-[.9] text-foreground">ALPHA</span>
               <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
                 Import
               </span>
             </div>
-            <p className="mb-[18px] max-w-[300px] text-[16px] font-light leading-[1.6] text-white/45">
+            <p className="mb-[18px] max-w-[300px] text-[16px] font-light leading-[1.6] text-foreground/45">
               {t("site.foot.subsidiary", "Filiale du Groupe A.Onoseke Investment RDC")}
             </p>
-            <p className="max-w-[300px] text-[15px] font-light leading-[1.7] text-white/35">
+            <p className="max-w-[300px] text-[15px] font-light leading-[1.7] text-foreground/35">
               {t("site.foot.address", "Kinshasa, République Démocratique du Congo")}
             </p>
           </div>
@@ -76,7 +76,7 @@ function SiteFooter() {
                 <Link
                   key={key}
                   href="/services"
-                  className="font-condensed text-[16px] font-light tracking-[.04em] text-white/45 transition-colors hover:text-gold"
+                  className="font-condensed text-[16px] font-light tracking-[.04em] text-foreground/45 transition-colors hover:text-gold"
                 >
                   {t(key, fallback)}
                 </Link>
@@ -93,7 +93,7 @@ function SiteFooter() {
                 <Link
                   key={origin}
                   href="/countries"
-                  className="font-condensed text-[16px] font-light tracking-[.04em] text-white/45 transition-colors hover:text-gold"
+                  className="font-condensed text-[16px] font-light tracking-[.04em] text-foreground/45 transition-colors hover:text-gold"
                 >
                   {origin}
                 </Link>
@@ -117,7 +117,7 @@ function SiteFooter() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="font-condensed text-[16px] font-light tracking-[.04em] text-white/45 transition-colors hover:text-gold"
+                  className="font-condensed text-[16px] font-light tracking-[.04em] text-foreground/45 transition-colors hover:text-gold"
                 >
                   {item.label}
                 </Link>
@@ -127,10 +127,10 @@ function SiteFooter() {
         </div>
 
         <div className="flex flex-wrap justify-between gap-[18px] pt-[26px]">
-          <span className="font-condensed text-[12px] uppercase tracking-[.22em] text-white/30">
+          <span className="font-condensed text-[12px] uppercase tracking-[.22em] text-foreground/30">
             {t("site.foot.rights", "© 2026 A.Onoseke Investment. Tous droits réservés.")}
           </span>
-          <span className="font-condensed text-[12px] uppercase tracking-[.22em] text-white/30">
+          <span className="font-condensed text-[12px] uppercase tracking-[.22em] text-foreground/30">
             Kinshasa · RDC
           </span>
         </div>
@@ -161,7 +161,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         href={`https://wa.me/${WHATSAPP}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-[26px] right-[26px] z-[800] bg-gold px-[26px] py-[17px] font-condensed text-[12px] font-bold uppercase tracking-[.26em] text-[#0a1018] whitespace-nowrap"
+        className="fixed bottom-[26px] right-[26px] z-[800] bg-gold px-[26px] py-[17px] font-condensed text-[12px] font-bold uppercase tracking-[.26em] text-primary-foreground whitespace-nowrap"
         style={{
           boxShadow: "0 14px 40px hsl(42 85% 55% / .28)",
           animation: "drift 4s ease-in-out infinite",

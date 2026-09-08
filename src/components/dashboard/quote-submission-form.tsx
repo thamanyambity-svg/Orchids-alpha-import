@@ -132,7 +132,7 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
           <p className="text-muted-foreground">{requestData.reference} • {requestData.category}</p>
         </div>
         <Button variant="outline" onClick={onCancel} disabled={isLoading}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> {t("common.cancel", "Annuler")}
+          <ArrowLeft className="w-4 h-4 me-2" /> {t("common.cancel", "Annuler")}
         </Button>
       </div>
 
@@ -215,7 +215,7 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{t("dashboard.partner.total_fees", "Total Frais")}</p>
-                    <p className="text-2xl font-bold text-amber-600">${totals.fees.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-warning">${totals.fees.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{t("dashboard.partner.grand_total", "TOTAL FINAL")}</p>
@@ -296,8 +296,8 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
                   <Input type="number" min="1" max="90" value={quoteData.validity_days} onChange={e => handleChange("validity_days", e.target.value)} />
                 </div>
               </div>
-              <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
-                <p className="text-sm text-amber-700 font-medium">{t("dashboard.partner.quote_validity_note", "Le devis sera valable 30 jours par défaut. Passé ce délai, une nouvelle proposition sera nécessaire.")}</p>
+              <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl">
+                <p className="text-sm text-warning font-medium">{t("dashboard.partner.quote_validity_note", "Le devis sera valable 30 jours par défaut. Passé ce délai, une nouvelle proposition sera nécessaire.")}</p>
               </div>
             </CardContent>
           </Card>

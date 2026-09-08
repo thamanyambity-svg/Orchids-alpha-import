@@ -23,9 +23,24 @@
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
-  --color-gold: hsl(42 85% 55%);
-  --color-success: oklch(0.72 0.19 145);
-  --color-warning: oklch(0.78 0.18 65);
+  --color-gold: var(--gold);
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-success-subtle: hsl(var(--success-subtle));
+  --color-success-border: hsl(var(--success-border));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-warning-subtle: hsl(var(--warning-subtle));
+  --color-warning-border: hsl(var(--warning-border));
+  --color-brand: hsl(var(--brand));
+  --color-brand-subtle: hsl(var(--brand-subtle));
+  --color-brand-border: hsl(var(--brand-border));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-info-subtle: hsl(var(--info-subtle));
+  --color-info-border: hsl(var(--info-border));
+  --color-destructive-subtle: hsl(var(--destructive-subtle));
+  --color-destructive-border: hsl(var(--destructive-border));
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
@@ -37,11 +52,11 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-1: hsl(var(--chart-1));
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -63,8 +78,30 @@
   --muted-foreground: 210 10% 50%;
   --accent: 216 35% 16%;
   --accent-foreground: 210 15% 95%;
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 84% 66%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-subtle: 0 50% 13%;
+  --destructive-border: 0 50% 28%;
+  --success: 145 62% 45%;
+  --success-foreground: 0 0% 100%;
+  --success-subtle: 145 45% 12%;
+  --success-border: 145 45% 25%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 216 45% 6%;
+  --warning-subtle: 38 60% 12%;
+  --warning-border: 38 60% 26%;
+  --info: 210 90% 58%;
+  --info-foreground: 0 0% 100%;
+  --info-subtle: 210 55% 13%;
+  --info-border: 210 55% 27%;
+  --brand: 42 85% 60%;
+  --brand-subtle: 42 55% 12%;
+  --brand-border: 42 55% 28%;
+  --chart-1: 42 85% 58%;
+  --chart-2: 168 68% 46%;
+  --chart-3: 210 90% 62%;
+  --chart-4: 265 72% 68%;
+  --chart-5: 18 85% 62%;
   --border: 216 30% 15%;
   --input: 216 30% 13%;
   --ring: 42 85% 55%;
@@ -107,8 +144,30 @@
   --muted-foreground: 210 10% 45%;
   --accent: 42 85% 90%;
   --accent-foreground: 216 45% 12%;
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 72% 42%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-subtle: 0 86% 96%;
+  --destructive-border: 0 60% 82%;
+  --success: 145 65% 30%;
+  --success-foreground: 0 0% 100%;
+  --success-subtle: 145 60% 94%;
+  --success-border: 145 40% 76%;
+  --warning: 30 92% 29%;
+  --warning-foreground: 0 0% 100%;
+  --warning-subtle: 38 92% 93%;
+  --warning-border: 38 60% 74%;
+  --info: 212 88% 40%;
+  --info-foreground: 0 0% 100%;
+  --info-subtle: 210 92% 95%;
+  --info-border: 210 60% 78%;
+  --brand: 38 92% 25%;
+  --brand-subtle: 42 90% 93%;
+  --brand-border: 42 55% 74%;
+  --chart-1: 38 92% 32%;
+  --chart-2: 168 72% 26%;
+  --chart-3: 212 88% 40%;
+  --chart-4: 265 62% 46%;
+  --chart-5: 14 78% 40%;
   --border: 210 15% 88%;
   --input: 210 15% 85%;
   --ring: 42 85% 45%;
@@ -128,6 +187,44 @@
 }
 
 html { scroll-behavior: smooth; }
+
+/* ---------------------------------------------------------------------------
+   Surface marine permanente.
+
+   Le site vitrine et les pages d'authentification sont peints en marine dans
+   les deux themes : leurs sections utilisent --navy et --navy2, et les heros
+   posent un voile sombre par-dessus la photographie. La surface sous le texte
+   ne change donc jamais, et le texte doit y rester clair meme lorsque
+   l'utilisateur bascule l'application en theme clair.
+
+   Plutot que de figer du blanc dans chaque titre, on epingle ici les jetons de
+   premier plan sur leurs valeurs sombres pour tout le sous-arbre. Les
+   composants continuent d'ecrire text-foreground, border-border, etc.
+   --------------------------------------------------------------------------- */
+.site-shell {
+  --foreground: 210 15% 95%;
+  --muted-foreground: 210 12% 68%;
+  --card: 216 40% 9%;
+  --card-foreground: 210 15% 95%;
+  --popover: 216 40% 9%;
+  --popover-foreground: 210 15% 95%;
+  --background: 216 45% 6%;
+  --border: 216 30% 18%;
+  --input: 216 30% 13%;
+  --secondary: 216 35% 14%;
+  --secondary-foreground: 210 15% 90%;
+  --muted: 216 30% 11%;
+  --primary: 42 85% 55%;
+  --primary-foreground: 216 45% 6%;
+  --brand: 42 85% 60%;
+  --brand-subtle: 42 55% 12%;
+  --brand-border: 42 55% 28%;
+  --gold: hsl(42 85% 55%);
+  --gold-light: hsl(44 90% 65%);
+  --gold-dark: hsl(38 75% 42%);
+  --line: hsl(216 30% 18%);
+  color: hsl(var(--foreground));
+}
 
 @keyframes svgPulse1 {
   0%, 100% { r: 22; opacity: 0.2; }
@@ -151,27 +248,27 @@ html { scroll-behavior: smooth; }
 }
 
 @layer utilities {
-  .text-gold { color: hsl(42 85% 55%); }
-  .bg-gold { background-color: hsl(42 85% 55%); }
-  .border-gold { border-color: hsl(42 85% 55%); }
+  .text-gold { color: var(--gold); }
+  .bg-gold { background-color: var(--gold); }
+  .border-gold { border-color: var(--gold); }
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(44 90% 70%) 0%, hsl(42 85% 55%) 50%, hsl(36 70% 40%) 100%);
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .glow-gold { box-shadow: 0 0 50px -8px hsl(42 85% 55% / 0.6); }
-  .glow-gold-sm { box-shadow: 0 0 25px -5px hsl(42 85% 55% / 0.4); }
+  .glow-gold { box-shadow: 0 0 50px -8px hsl(var(--primary) / 0.6); }
+  .glow-gold-sm { box-shadow: 0 0 25px -5px hsl(var(--primary) / 0.4); }
   .glass {
-    background: hsl(216 40% 9% / 0.75);
+    background: hsl(var(--card) / 0.75);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
   .diagonal-lines {
     background-image: repeating-linear-gradient(
       45deg,
-      hsl(42 85% 55% / 0.06) 0px,
-      hsl(42 85% 55% / 0.06) 1px,
+      hsl(var(--primary) / 0.06) 0px,
+      hsl(var(--primary) / 0.06) 1px,
       transparent 1px,
       transparent 14px
     );
@@ -179,12 +276,58 @@ html { scroll-behavior: smooth; }
   .diagonal-lines-strong {
     background-image: repeating-linear-gradient(
       45deg,
-      hsl(42 85% 55% / 0.12) 0px,
-      hsl(42 85% 55% / 0.12) 1px,
+      hsl(var(--primary) / 0.12) 0px,
+      hsl(var(--primary) / 0.12) 1px,
       transparent 1px,
       transparent 10px
     );
   }
+  /* ─────────────────────────────────────────────────────────────────────
+     Primitives typographiques de la marque.
+
+     La vitrine porte toute la signature typographique — capitales condensées,
+     interlettrage large — pendant que le back-office et les espaces client
+     retombent sur Inter en casse normale. Les deux moitiés du produit ne se
+     ressemblaient pas.
+
+     La vitrine n'avait pourtant pas de système : quinze valeurs
+     d'interlettrage différentes, réglées élément par élément. Ces trois
+     primitives en extraient l'essentiel et servent les deux zones.
+
+     Elles s'appliquent au CHROME — libellés, en-têtes de colonnes, actions —
+     jamais au corps des tableaux : des capitales condensées à .24em se lisent
+     mal en lecture rapide sur des données denses.
+     ───────────────────────────────────────────────────────────────────── */
+
+  /* Sur-titre de section : « Espace client », « Chiffres clés ». */
+  .t-eyebrow {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+    line-height: 1.2;
+  }
+
+  /* Libellé d'indicateur, en-tête de colonne, étiquette de formulaire. */
+  .t-label {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    line-height: 1.3;
+  }
+
+  /* Action : bouton, lien d'appel. */
+  .t-action {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+  }
+
   .font-display { font-family: var(--font-display), 'Barlow Condensed', sans-serif; }
   .font-condensed { font-family: var(--font-condensed), system-ui, sans-serif; }
   @keyframes marquee {
@@ -207,7 +350,7 @@ html { scroll-behavior: smooth; }
     100% { background-position: 200% center; }
   }
   .animate-shimmer {
-    background: linear-gradient(90deg, hsl(42 85% 55% / 0.0) 0%, hsl(42 85% 55% / 0.4) 50%, hsl(42 85% 55% / 0.0) 100%);
+    background: linear-gradient(90deg, hsl(var(--primary) / 0) 0%, hsl(var(--primary) / 0.4) 50%, hsl(var(--primary) / 0) 100%);
     background-size: 200% auto;
     animation: shimmer 3s linear infinite;
   }
@@ -223,18 +366,18 @@ html { scroll-behavior: smooth; }
   .animate-kenburns { animation: kenburns 8s ease-out forwards; }
   .pattern-grid {
     background-image:
-      linear-gradient(hsl(216 30% 15% / 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(216 30% 15% / 0.5) 1px, transparent 1px);
+      linear-gradient(hsl(var(--border) / 0.6) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.6) 1px, transparent 1px);
     background-size: 60px 60px;
   }
   .pattern-dots {
-    background-image: radial-gradient(circle, hsl(216 30% 20%) 1px, transparent 1px);
+    background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 }
 
 ::selection {
-  background: hsl(42 85% 55% / 0.3);
+  background: hsl(var(--primary) / 0.3);
 }
 
 ::-webkit-scrollbar {
@@ -243,16 +386,21 @@ html { scroll-behavior: smooth; }
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(216 45% 6%);
+  background: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(216 30% 20%);
+  background: hsl(var(--border));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(216 30% 30%);
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Firefox : meme rendu que la barre WebKit ci-dessus. */
+html {
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
 }
 
 nextjs-portal {

@@ -36,7 +36,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const PRIORITY_COLORS: Record<string, string> = {
   HAUTE: "bg-destructive/20 text-destructive border-destructive/30",
-  MOYENNE: "bg-amber-500/20 text-amber-500 border-amber-500/30",
+  MOYENNE: "bg-warning/20 text-warning border-warning/30",
   BASSE: "bg-muted text-muted-foreground",
 }
 
@@ -118,7 +118,7 @@ export default function AdminEmailsPage() {
         </div>
       </div>
 
-      <Card className="border-white/10 bg-white/5">
+      <Card className="border-foreground/10 bg-foreground/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Bot className="w-5 h-5 text-primary" />
@@ -126,8 +126,8 @@ export default function AdminEmailsPage() {
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             Chaque email reçu est analysé automatiquement : catégorie, priorité, résumé et proposition de réponse.
-            Configurez le webhook Resend <code className="text-xs bg-white/10 px-1 rounded">email.received</code> vers{" "}
-            <code className="text-xs bg-white/10 px-1 rounded">/api/webhooks/resend/inbound</code>
+            Configurez le webhook Resend <code className="text-xs bg-foreground/10 px-1 rounded">email.received</code> vers{" "}
+            <code className="text-xs bg-foreground/10 px-1 rounded">/api/webhooks/resend/inbound</code>
           </p>
         </CardHeader>
       </Card>
@@ -253,7 +253,7 @@ export default function AdminEmailsPage() {
                     variant="outline"
                     onClick={() => copyReply(selectedEmail.ai_suggested_reply!)}
                   >
-                    {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                    {copied ? <Check className="w-4 h-4 me-2" /> : <Copy className="w-4 h-4 me-2" />}
                     {copied ? "Copié !" : "Copier la réponse"}
                   </Button>
                 </div>
@@ -261,7 +261,7 @@ export default function AdminEmailsPage() {
 
               <Button asChild variant="outline" size="sm">
                 <a href={`mailto:${selectedEmail.from_email}?subject=Re: ${encodeURIComponent(selectedEmail.subject || "")}`}>
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                  <ExternalLink className="w-4 h-4 me-2" />
                   Répondre par email
                 </a>
               </Button>

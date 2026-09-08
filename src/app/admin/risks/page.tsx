@@ -71,35 +71,35 @@ export default function AdminRisksPage() {
 
             {/* KPI Section */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card className="bg-red-50 border-red-200">
+                <Card className="bg-destructive-subtle border-destructive-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-red-800">{t("admin.risks.high_value_orders", "Commandes à Haute Valeur")}</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-red-600" />
+                        <CardTitle className="text-sm font-medium text-destructive">{t("admin.risks.high_value_orders", "Commandes à Haute Valeur")}</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-red-900">{highRiskOrders.length}</div>
-                        <p className="text-xs text-red-600">Nécessitent une double validation</p>
+                        <div className="text-2xl font-bold text-destructive">{highRiskOrders.length}</div>
+                        <p className="text-xs text-destructive">Nécessitent une double validation</p>
                     </CardContent>
                 </Card>
 
-                <Card className="bg-orange-50 border-orange-200">
+                <Card className="bg-warning-subtle border-warning-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-orange-800">{t("admin.risks.restricted_suppliers", "Fournisseurs Restreints")}</CardTitle>
-                        <AlertOctagon className="h-4 w-4 text-orange-600" />
+                        <CardTitle className="text-sm font-medium text-warning">{t("admin.risks.restricted_suppliers", "Fournisseurs Restreints")}</CardTitle>
+                        <AlertOctagon className="h-4 w-4 text-warning" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-orange-900">{restrictedSuppliers.length}</div>
-                        <p className="text-xs text-orange-600">Non conformes ou en probation</p>
+                        <div className="text-2xl font-bold text-warning">{restrictedSuppliers.length}</div>
+                        <p className="text-xs text-warning">Non conformes ou en probation</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Score de Risque Global</CardTitle>
-                        <ShieldAlert className="h-4 w-4 text-green-600" />
+                        <ShieldAlert className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-700">Faible</div>
+                        <div className="text-2xl font-bold text-success">Faible</div>
                         <p className="text-xs text-muted-foreground">Basé sur les incidents actifs</p>
                     </CardContent>
                 </Card>
@@ -110,7 +110,7 @@ export default function AdminRisksPage() {
                 <Card className="col-span-1">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-red-500" />
+                            <TrendingUp className="w-5 h-5 text-destructive" />
                             Transactions Sensibles (&gt; 10k€)
                         </CardTitle>
                         <CardDescription>
@@ -124,7 +124,7 @@ export default function AdminRisksPage() {
                                     <TableHead>Ref</TableHead>
                                     <TableHead>Montant</TableHead>
                                     <TableHead>Client</TableHead>
-                                    <TableHead className="text-right">{t("admin.risks.status", "Statut")}</TableHead>
+                                    <TableHead className="text-end">{t("admin.risks.status", "Statut")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -138,7 +138,7 @@ export default function AdminRisksPage() {
                                             <TableCell className="font-mono text-xs">{order.reference}</TableCell>
                                             <TableCell className="font-bold">${order.total_amount?.toLocaleString()}</TableCell>
                                             <TableCell className="text-xs">{order.request?.buyer?.full_name}</TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <Badge variant="outline">{order.status}</Badge>
                                             </TableCell>
                                         </TableRow>
@@ -153,7 +153,7 @@ export default function AdminRisksPage() {
                 <Card className="col-span-1">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <AlertTriangle className="w-5 h-5 text-orange-500" />
+                            <AlertTriangle className="w-5 h-5 text-warning" />
                             Alertes Conformité
                         </CardTitle>
                         <CardDescription>
@@ -166,7 +166,7 @@ export default function AdminRisksPage() {
                                 <TableRow>
                                     <TableHead>Nom</TableHead>
                                     <TableHead>Type</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
+                                    <TableHead className="text-end">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -181,7 +181,7 @@ export default function AdminRisksPage() {
                                             <TableCell>
                                                 <Badge variant="destructive" className="text-[10px]">Fournisseur</Badge>
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="text-end">
                                                 <Button variant="ghost" size="sm" className="h-6 text-xs">Revoir</Button>
                                             </TableCell>
                                         </TableRow>

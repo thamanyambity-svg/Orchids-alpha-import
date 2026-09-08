@@ -119,7 +119,7 @@ export default function CountryPage() {
         >
           <Button size="lg" asChild>
             <Link href="/register">
-              Commencer mon import depuis {country.name} <ArrowRight className="w-4 h-4 ml-2" />
+              Commencer mon import depuis {country.name} <ArrowRight className="w-4 h-4 ms-2" />
             </Link>
           </Button>
         </motion.div>

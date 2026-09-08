@@ -43,7 +43,7 @@ export default function Navbar() {
         <motion.a href="/" className="flex items-center gap-3 flex-shrink-0" style={{ scale: logoSize, transformOrigin: "left center" }} whileHover={{ opacity: 0.9 }} transition={{ duration: 0.15 }}>
           <div className="flex flex-col">
             <span className="font-display text-3xl text-white drop-shadow-[0_0_16px_hsl(42_85%_55%/0.5)]">ALPHA IMPORT</span>
-            <span className="font-condensed text-[8px] text-white/30 tracking-[0.18em] uppercase leading-none mt-0.5">
+            <span className="font-condensed text-[8px] text-foreground/30 tracking-[0.18em] uppercase leading-none mt-0.5">
               Filiale du Groupe A.Onoseke Investment RDC
             </span>
           </div>
@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <Link key={link.key} href={link.href}>
-              <motion.span className="relative font-condensed text-xs tracking-[0.35em] uppercase text-white/55 hover:text-white transition-colors duration-200 group cursor-pointer" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
+              <motion.span className="relative font-condensed text-xs tracking-[0.35em] uppercase text-foreground/55 hover:text-white transition-colors duration-200 group cursor-pointer" whileHover={{ y: -1 }} transition={{ duration: 0.15 }}>
                 {t(link.key, link.label)}
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-250 origin-left" />
               </motion.span>
@@ -63,7 +63,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
           <Link href="/login">
-            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} className="hidden sm:flex font-condensed text-xs px-6 py-2.5 border border-gold text-gold hover:bg-gold hover:text-[#06101e] transition-all duration-200 tracking-[0.25em] uppercase" style={{ boxShadow: scrolled ? "0 0 20px -5px hsl(42 85% 55% / 0.3)" : "none" }}>
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} className="hidden sm:flex font-condensed text-xs px-6 py-2.5 border border-gold text-gold hover:bg-gold hover:text-primary-foreground transition-all duration-200 tracking-[0.25em] uppercase" style={{ boxShadow: scrolled ? "0 0 20px -5px hsl(42 85% 55% / 0.3)" : "none" }}>
               {t("nav.login", "Connexion")}
             </motion.button>
           </Link>
@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className="flex flex-col gap-1 flex-1">
           {NAV_LINKS.map((link, i) => (
             <Link key={link.key} href={link.href} onClick={() => setMenuOpen(false)}>
-              <motion.span className="block font-display text-4xl text-white/70 hover:text-white hover:text-gradient-gold py-4 border-b border-white/6 transition-colors duration-200 cursor-pointer" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
+              <motion.span className="block font-display text-4xl text-foreground/70 hover:text-white hover:text-gradient-gold py-4 border-b border-foreground/6 transition-colors duration-200 cursor-pointer" initial={false} animate={menuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }} transition={{ duration: 0.3, delay: menuOpen ? i * 0.07 : 0 }}>
                 {t(link.key, link.label)}
               </motion.span>
             </Link>
@@ -90,7 +90,7 @@ export default function Navbar() {
           <LanguageSwitcher />
         </div>
         <Link href="/register">
-          <motion.button className="w-full font-condensed text-sm font-bold py-5 bg-gold text-[#06101e] tracking-[0.3em] uppercase glow-gold mt-8" initial={false} animate={menuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.3, delay: 0.35 }}>
+          <motion.button className="w-full font-condensed text-sm font-bold py-5 bg-gold text-primary-foreground tracking-[0.3em] uppercase glow-gold mt-8" initial={false} animate={menuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.3, delay: 0.35 }}>
             {t("hero.cta.platform", "Accéder à la plateforme")}
           </motion.button>
         </Link>

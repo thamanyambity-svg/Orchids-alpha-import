@@ -12,10 +12,10 @@ import { useReveal } from "@/components/site/use-reveal"
 import { PageHero } from "@/components/site/sections"
 
 const FIELD =
-  "w-full border border-[var(--line)] bg-[hsl(216_45%_6%)] px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-white outline-none transition-colors placeholder:text-white/25 focus:border-gold"
+  "w-full border border-[var(--line)] bg-background px-4 py-[15px] font-condensed text-[15px] tracking-[.06em] text-foreground outline-none transition-colors placeholder:text-foreground/25 focus:border-gold"
 
 const LABEL =
-  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-white/50"
+  "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-foreground/50"
 
 export default function ContactPage() {
   const router = useRouter()
@@ -110,38 +110,38 @@ export default function ContactPage() {
               <span className="font-condensed text-[11px] font-bold uppercase tracking-[.34em] text-gold">
                 {t("site.access.title", "Espace client")}
               </span>
-              <h2 className="m-0 font-display text-[clamp(32px,3.8vw,52px)] leading-none text-white">
+              <h2 className="m-0 font-display text-[clamp(32px,3.8vw,52px)] leading-none text-foreground">
                 {t("site.access.head", "TOUT SE PASSE DANS VOTRE ESPACE")}
               </h2>
-              <p className="m-0 text-[17px] font-light leading-[1.62] text-white/58 [text-wrap:pretty]">
+              <p className="m-0 text-[17px] font-light leading-[1.62] text-foreground/58 [text-wrap:pretty]">
                 {t("site.access.body", "")}
               </p>
               <div className="mt-[6px] flex flex-wrap gap-3">
                 <Link
                   href="/login"
-                  className="bg-gold px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-[#0a1018] whitespace-nowrap"
+                  className="bg-gold px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-primary-foreground whitespace-nowrap"
                 >
                   {t("site.access.login", "Connexion")}
                 </Link>
                 <Link
                   href="/register"
-                  className="border border-[var(--line)] px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-white/80 transition-colors duration-300 hover:border-gold hover:text-gold"
+                  className="border border-[var(--line)] px-8 py-[18px] font-condensed text-[12px] font-bold uppercase tracking-[.28em] text-foreground/80 transition-colors duration-300 hover:border-gold hover:text-gold"
                 >
                   {t("site.access.register", "Créer un compte")}
                 </Link>
               </div>
-              <p className="m-0 mt-2 text-[14px] font-light leading-[1.6] text-white/38 [text-wrap:pretty]">
+              <p className="m-0 mt-2 text-[14px] font-light leading-[1.6] text-foreground/38 [text-wrap:pretty]">
                 {t("site.access.note", "")}
               </p>
             </div>
 
-            <div className="flex flex-col justify-center gap-[30px] bg-[hsl(216_45%_6%)] px-[34px] py-12">
+            <div className="flex flex-col justify-center gap-[30px] bg-background px-[34px] py-12">
               {contacts.map((c) => (
                 <div key={c.label}>
                   <span className="mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-gold">
                     {c.label}
                   </span>
-                  <span className="block break-words font-display text-[25px] leading-[1.16] text-white">
+                  <span className="block break-words font-display text-[25px] leading-[1.16] text-foreground">
                     {c.value}
                   </span>
                 </div>
@@ -166,7 +166,7 @@ export default function ContactPage() {
                 {t("contact.form.eyebrow", "Nous écrire")}
               </span>
             </div>
-            <h2 className="m-0 font-display text-[clamp(34px,4.4vw,68px)] leading-[.92] text-white">
+            <h2 className="m-0 font-display text-[clamp(34px,4.4vw,68px)] leading-[.92] text-foreground">
               {t("contact.form.title", "UNE QUESTION ?")}
             </h2>
           </div>
@@ -177,10 +177,10 @@ export default function ContactPage() {
                 key={type.value}
                 type="button"
                 onClick={() => handleTypeSelect(type.value)}
-                className={`flex-1 basis-[240px] px-6 py-5 text-left font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
+                className={`flex-1 basis-[240px] px-6 py-5 text-start font-condensed text-[13px] font-semibold uppercase tracking-[.2em] transition-colors ${
                   contactType === type.value
-                    ? "bg-gold text-[#0a1018]"
-                    : "bg-[var(--navy)] text-white/60 hover:text-gold"
+                    ? "bg-gold text-primary-foreground"
+                    : "bg-[var(--navy)] text-foreground/60 hover:text-gold"
                 }`}
               >
                 {type.label}
@@ -221,7 +221,7 @@ export default function ContactPage() {
             </div>
             <div className="md:col-span-2">
               <button type="submit" disabled={isLoading}
-                className="flex items-center justify-center gap-3 bg-gold px-11 py-[19px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-[#0a1018] transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0">
+                className="flex items-center justify-center gap-3 bg-gold px-11 py-[19px] font-condensed text-[13px] font-bold uppercase tracking-[.28em] text-primary-foreground transition-transform duration-300 hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0">
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {t("contact.form.send", "Envoyer")}
               </button>

@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { requireRole, handleApiError } from '@/lib/auth-guard'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 
@@ -21,20 +21,17 @@ const ADMIN_CC_EMAILS = [
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Session et rôle passent par le garde partagé : c'est la seule
+    // implémentation testée de cette règle, et deux implémentations d'un même
+    // contrôle d'accès finissent toujours par diverger.
+    const { supabase, user } = await requireRole(['PARTNER', 'ADMIN'])
 
-    // Vérifier que l'utilisateur est PARTNER ou ADMIN
+    // Le nom complet sert à signer les demandes de cotation.
     const { data: profile } = await supabaseAdmin
       .from('profiles')
-      .select('role, full_name')
+      .select('full_name')
       .eq('id', user.id)
       .single()
-
-    if (!profile || !['PARTNER', 'ADMIN'].includes(profile.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
 
     const { session_id } = await req.json()
     if (!session_id) {
@@ -171,8 +168,11 @@ ${match.rfq_message_en}
       results: sentResults,
     })
 
-  } catch (error: any) {
+  } catch (error) {
+    // handleApiError préserve le statut des ApiError du garde : sans lui, un
+    // 401 ou un 403 était aplati en 500 et l'appelant ne savait pas qu'il
+    // devait se reconnecter.
     console.error('Send RFQ error:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return handleApiError(error)
   }
 }

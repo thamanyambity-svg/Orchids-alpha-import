@@ -79,10 +79,10 @@ export async function GET() {
 
     return NextResponse.json({
       stats: [
-        { label: "Total Funds contrôlés", value: `${totalFunds.toLocaleString()}$`, icon: "Wallet", trend: null, color: "text-[#ffd700]" },
-        { label: "Demandes en cours", value: activeRequests?.toString() || "0", icon: "FileText", trend: null, color: "text-blue-400" },
-        { label: "Fret maritime en cours", value: `${totalShipping.toLocaleString()}$`, icon: "Ship", trend: null, color: "text-orange-400" },
-        { label: "Partenaires à bord", value: partnersCount?.toString() || "0", icon: "UserCheck", trend: null, color: "text-emerald-400" },
+        { label: "Total Funds contrôlés", value: `${totalFunds.toLocaleString()}$`, icon: "Wallet", trend: null, color: "text-primary" },
+        { label: "Demandes en cours", value: activeRequests?.toString() || "0", icon: "FileText", trend: null, color: "text-info" },
+        { label: "Fret maritime en cours", value: `${totalShipping.toLocaleString()}$`, icon: "Ship", trend: null, color: "text-warning" },
+        { label: "Partenaires à bord", value: partnersCount?.toString() || "0", icon: "UserCheck", trend: null, color: "text-success" },
       ],
       partners: partners?.map(p => ({
         name: p.profile?.full_name || "Anonyme",
@@ -122,11 +122,11 @@ export async function GET() {
 
 function getStatusColor(status: string) {
   switch (status) {
-    case 'ANALYSIS': return "text-blue-400 bg-blue-400/10"
-    case 'PENDING': return "text-emerald-400 bg-emerald-400/10"
-    case 'VALIDATED': return "text-purple-400 bg-purple-400/10"
-    case 'SHIPPED': return "text-orange-400 bg-orange-400/10"
-    default: return "text-white/40 bg-white/5"
+    case 'ANALYSIS': return "text-info bg-info/10"
+    case 'PENDING': return "text-success bg-success/10"
+    case 'VALIDATED': return "text-info bg-info/10"
+    case 'SHIPPED': return "text-warning bg-warning/10"
+    default: return "text-muted-foreground bg-muted/50"
   }
 }
 

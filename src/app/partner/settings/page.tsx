@@ -186,7 +186,7 @@ export default function PartnerSettingsPage() {
                           <User className="w-10 h-10 text-primary" />
                         )}
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Upload className="w-8 h-8 text-white" />
+                          <Upload className="w-8 h-8 text-foreground" />
                         </div>
                       </div>
                       <button type="button" className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform">
@@ -215,7 +215,7 @@ export default function PartnerSettingsPage() {
                           <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
                             id="company_name" 
-                            className="pl-9"
+                            className="ps-9"
                             value={profile?.company_name || ''} 
                             onChange={(e) => setProfile({ ...profile, company_name: e.target.value })}
                             placeholder="Alpha Partner SARL" 
@@ -228,7 +228,7 @@ export default function PartnerSettingsPage() {
                           <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
                             id="email" 
-                            className="pl-9" 
+                            className="ps-9" 
                             value={profile?.email || ''} 
                             disabled 
                           />
@@ -240,7 +240,7 @@ export default function PartnerSettingsPage() {
                           <Phone className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                           <Input 
                             id="phone" 
-                            className="pl-9" 
+                            className="ps-9" 
                             value={profile?.phone || ''} 
                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                             placeholder="+..." 
@@ -250,7 +250,7 @@ export default function PartnerSettingsPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="border-t border-border bg-secondary/10 px-6 py-4">
-                    <Button type="submit" disabled={saving} className="ml-auto gap-2">
+                    <Button type="submit" disabled={saving} className="ms-auto gap-2">
                       {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                       Enregistrer
                     </Button>

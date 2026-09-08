@@ -332,6 +332,50 @@ const zh: Record<string, string> = {
   'spec.general.badge': "常规",
   'spec.general.name_placeholder': "例：离心泵 50 m³/h - 不锈钢",
   'spec.general.desc_placeholder': "技术规格，预期用途，材料...",
+  // Statuts métier — clefs générées depuis le registre src/lib/design/status.ts.
+  'status.request.DRAFT': '草稿',
+  'status.request.PENDING': '待处理',
+  'status.request.ANALYSIS': '分析中',
+  'status.request.VALIDATED': '已核准',
+  'status.request.QUOTE_ACCEPTED': '报价已接受',
+  'status.request.REJECTED': '已拒绝',
+  'status.request.AWAITING_DEPOSIT': '需付定金',
+  'status.request.FUNDED': '已付款',
+  'status.request.SOURCING': '采购中',
+  'status.request.EXECUTING': '执行中',
+  'status.request.PURCHASED': '已采购',
+  'status.request.AWAITING_BALANCE': '需付尾款',
+  'status.request.SHIPPED': '已发货',
+  'status.request.DELIVERED': '已交付',
+  'status.request.CLOSED': '已结案',
+  'status.request.INCIDENT': '异常',
+  'status.request.FROZEN': '已冻结',
+  'status.request.CANCELLED': '已取消',
+
+  'status.quote.DRAFT': '草稿',
+  'status.quote.SUBMITTED': '已提交',
+  'status.quote.ACCEPTED': '已接受',
+  'status.quote.REJECTED': '已拒绝',
+  'status.quote.EXPIRED': '已过期',
+  'status.quote.REVISED': '已修订',
+
+  'status.purchaseOrder.DRAFT': '草稿',
+  'status.purchaseOrder.PENDING_SIGNATURE': '待签署',
+  'status.purchaseOrder.SIGNED': '已签署',
+  'status.purchaseOrder.CONFIRMED': '已确认',
+  'status.purchaseOrder.CANCELLED': '已取消',
+
+  'status.invoice.DRAFT': '草稿',
+  'status.invoice.SENT': '已发送',
+  'status.invoice.PAID': '已支付',
+  'status.invoice.OVERDUE': '已逾期',
+  'status.invoice.CANCELLED': '已取消',
+
+  'status.paymentProof.PENDING_REVIEW': '待审核',
+  'status.paymentProof.ACCEPTED': '已接受',
+  'status.paymentProof.REJECTED': '已拒绝',
+  'status.paymentProof.SUPERSEDED': '已被替代',
+
 }
 
 export default zh

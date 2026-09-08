@@ -71,7 +71,7 @@ export function DashboardSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-r border-white/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar/50 backdrop-blur-xl border-e border-foreground/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/" className="flex items-center group">
           <div className="relative w-16 h-16 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -99,18 +99,18 @@ export function DashboardSidebar() {
                     "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group",
                     isActive
                       ? "bg-primary/10 text-primary border border-primary/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                   )}
                 >
                   <item.icon className={cn(
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
                     isActive ? "text-primary" : "text-muted-foreground"
                   )} />
-                  <span className="font-medium tracking-tight">{t(item.labelKey, item.label)}</span>
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">{t(item.labelKey, item.label)}</span>
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-indicator"
-                      className="w-1 h-4 bg-primary rounded-full ml-auto"
+                      className="w-1 h-4 bg-primary rounded-full ms-auto"
                     />
                   )}
                 </Link>
@@ -124,7 +124,7 @@ export function DashboardSidebar() {
         <Link
           href="/dashboard/settings"
           className={cn(
-            "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group text-muted-foreground hover:text-foreground hover:bg-white/5",
+            "flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 group text-muted-foreground hover:text-foreground hover:bg-foreground/5",
             pathname === "/dashboard/settings" && "bg-primary/10 text-primary border border-primary/20"
           )}
         >

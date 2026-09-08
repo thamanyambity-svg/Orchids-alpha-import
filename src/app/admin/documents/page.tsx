@@ -69,23 +69,23 @@ export default function AdminDocumentsPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{t("admin.documents.title", "Documents")}</h1>
-        <p className="text-white/40 text-sm">{t("admin.documents.subtitle", "Tous les documents déposés sur la plateforme")}</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("admin.documents.title", "Documents")}</h1>
+        <p className="text-foreground/40 text-sm">{t("admin.documents.subtitle", "Tous les documents déposés sur la plateforme")}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
           <Input
             placeholder={t("admin.documents.search", "Rechercher un document...")}
-            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+            className="ps-9 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[200px] bg-white/5 border-white/10 text-white">
-            <Filter className="w-4 h-4 mr-2" />
+          <SelectTrigger className="w-[200px] bg-foreground/5 border-foreground/10 text-foreground">
+            <Filter className="w-4 h-4 me-2" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -99,12 +99,12 @@ export default function AdminDocumentsPage() {
 
       {loading ? (
         <div className="flex justify-center p-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ffd700]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl">
-          <FolderOpen className="w-12 h-12 text-white/20 mx-auto mb-4" />
-          <h3 className="font-semibold text-white/50">{t("admin.documents.empty", "Aucun document")}</h3>
+        <div className="p-12 text-center border-2 border-dashed border-foreground/10 rounded-2xl">
+          <FolderOpen className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
+          <h3 className="font-semibold text-foreground/50">{t("admin.documents.empty", "Aucun document")}</h3>
         </div>
       ) : (
         <div className="space-y-3">
@@ -114,23 +114,23 @@ export default function AdminDocumentsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.02 }}
-              className="bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/[0.07] transition-colors"
+              className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl hover:bg-foreground/[0.07] transition-colors"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-[#ffd700]/10 flex items-center justify-center flex-shrink-0">
-                    <FileText className="w-5 h-5 text-[#ffd700]" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-white truncate">{doc.name || "Document"}</h4>
+                      <h4 className="font-medium text-foreground truncate">{doc.name || "Document"}</h4>
                       {doc.document_type && (
-                        <Badge variant="outline" className="border-white/20 text-white/60 text-[10px]">
+                        <Badge variant="outline" className="border-foreground/20 text-foreground/60 text-[10px]">
                           {docTypeLabel[doc.document_type] || doc.document_type}
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-white/40">
+                    <div className="flex items-center gap-3 text-xs text-foreground/40">
                       {doc.import_requests?.reference && (
                         <span className="font-mono">{doc.import_requests.reference}</span>
                       )}
@@ -150,13 +150,13 @@ export default function AdminDocumentsPage() {
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {doc.request_id && (
                     <Link href={`/admin/requests/${doc.request_id}`}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-white/40 hover:text-white">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/40 hover:text-foreground">
                         <ExternalLink className="w-4 h-4" />
                       </Button>
                     </Link>
                   )}
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" download>
-                    <Button variant="outline" size="icon" className="h-8 w-8 border-white/10 text-white/40 hover:text-white">
+                    <Button variant="outline" size="icon" className="h-8 w-8 border-foreground/10 text-foreground/40 hover:text-foreground">
                       <Download className="w-4 h-4" />
                     </Button>
                   </a>

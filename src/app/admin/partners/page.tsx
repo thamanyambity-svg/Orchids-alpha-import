@@ -222,14 +222,14 @@ export default function AdminPartnersPage() {
                 <div className="flex items-center gap-2">
                     <Button variant="outline" asChild>
                         <Link href="/partner-request" target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-2 h-4 w-4" />
+                            <ExternalLink className="me-2 h-4 w-4" />
                             Formulaire de candidature
                         </Link>
                     </Button>
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
                             <Button>
-                                <UserCheck className="mr-2 h-4 w-4" />
+                                <UserCheck className="me-2 h-4 w-4" />
                                 Créer un partenaire
                             </Button>
                         </DialogTrigger>
@@ -255,7 +255,7 @@ export default function AdminPartnersPage() {
                     <TabsTrigger value="APPLICATIONS" className="relative">
                         Candidatures
                         {applications.length > 0 && (
-                            <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                            <span className="ms-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] text-foreground">
                                 {applications.length}
                             </span>
                         )}
@@ -281,7 +281,7 @@ export default function AdminPartnersPage() {
                                         <TableHead>Contact</TableHead>
                                         <TableHead>Date</TableHead>
                                                 <TableHead>{t("admin.partners.documents", "Documents")}</TableHead>
-                                        <TableHead className="text-right">Action</TableHead>
+                                        <TableHead className="text-end">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -310,7 +310,7 @@ export default function AdminPartnersPage() {
                                                         {Array.isArray(app.documents) ? app.documents.length : 0} fichiers
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-end">
                                                     <Button size="sm" onClick={() => handleReviewApplication(app.id)}>
                                                         Examiner
                                                     </Button>
@@ -340,7 +340,7 @@ export default function AdminPartnersPage() {
                                     <Input
                                         type="search"
                                         placeholder={t("admin.partners.search", "Rechercher (Nom, Ville)...")}
-                                        className="pl-8"
+                                        className="ps-8"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
@@ -355,7 +355,7 @@ export default function AdminPartnersPage() {
                                             <TableHead>{t("admin.partners.contract_status", "Contrat & Statut")}</TableHead>
                                             <TableHead>Performance</TableHead>
                                             <TableHead>Volume</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                            <TableHead className="text-end">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -374,11 +374,11 @@ export default function AdminPartnersPage() {
                                                 <TableRow key={partner.id}>
                                                     <TableCell>
                                                         <div className="flex items-center gap-3">
-                                                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
-                                                                <Briefcase className="h-5 w-5 text-blue-600" />
+                                                            <div className="h-10 w-10 rounded-full bg-info-subtle flex items-center justify-center border border-info-border">
+                                                                <Briefcase className="h-5 w-5 text-info" />
                                                             </div>
                                                             <div>
-                                                                <div className="font-medium text-blue-900">{partner.full_name}</div>
+                                                                <div className="font-medium text-info">{partner.full_name}</div>
                                                                 <div className="text-xs text-muted-foreground">{partner.email}</div>
                                                             </div>
                                                         </div>
@@ -392,14 +392,14 @@ export default function AdminPartnersPage() {
                                                     <TableCell>
                                                         <div className="flex flex-col gap-1 items-start">
                                                             {partner.contract_status === 'ACTIVE' ? (
-                                                                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200">
-                                                                    <FileCheck className="w-3 h-3 mr-1" /> Contrat Actif
+                                                                <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
+                                                                    <FileCheck className="w-3 h-3 me-1" /> Contrat Actif
                                                                 </Badge>
                                                             ) : (
                                                                 <Badge variant="outline">{t("admin.partners.pending", "En attente")}</Badge>
                                                             )}
                                                             {partner.status !== 'VERIFIED' && (
-                                                                <span className="text-[10px] text-amber-600 font-medium px-1">
+                                                                <span className="text-[10px] text-warning font-medium px-1">
                                                                     (Kyc: {partner.status})
                                                                 </span>
                                                             )}
@@ -407,7 +407,7 @@ export default function AdminPartnersPage() {
                                                     </TableCell>
                                                     <TableCell>
                                                         <div className="flex items-center gap-1 font-medium">
-                                                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                            <Star className="w-4 h-4 text-warning fill-warning" />
                                                             {partner.performance_score}/5
                                                         </div>
                                                     </TableCell>
@@ -416,7 +416,7 @@ export default function AdminPartnersPage() {
                                                             <span className="font-bold">{partner.total_orders_handled}</span> commandes
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-right">
+                                                    <TableCell className="text-end">
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -430,13 +430,13 @@ export default function AdminPartnersPage() {
                                                                     Contacter
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuItem onClick={() => setEditingPartner(partner)}>
-                                                                    <Edit className="w-4 h-4 mr-2" /> {t("admin.partners.edit", "Modifier")}
+                                                                    <Edit className="w-4 h-4 me-2" /> {t("admin.partners.edit", "Modifier")}
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuItem>Voir le Contrat</DropdownMenuItem>
                                                                 <DropdownMenuItem>{t("admin.partners.view_suppliers", "Voir les Fournisseurs")}</DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
-                                                                <DropdownMenuItem className="text-red-600">Résilier Contrat</DropdownMenuItem>
+                                                                <DropdownMenuItem className="text-destructive">Résilier Contrat</DropdownMenuItem>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </TableCell>

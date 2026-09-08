@@ -46,16 +46,16 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
   if (!requestId) {
     return (
       <div className="glass rounded-3xl overflow-hidden mt-6 p-10 text-center">
-        <p className="text-muted-foreground uppercase text-xs tracking-widest">Aucune transaction disponible</p>
+        <p className="text-muted-foreground uppercase font-condensed text-xs tracking-widest">Aucune transaction disponible</p>
       </div>
     )
   }
 
   return (
     <div className="glass rounded-3xl overflow-hidden mt-6">
-      <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <div className="p-6 border-b border-foreground/5 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <h3 className="text-sm font-bold tracking-widest uppercase">HISTORIQUE DES TRANSACTIONS</h3>
+          <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">HISTORIQUE DES TRANSACTIONS</h3>
           <div className="flex items-center gap-2">
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -64,7 +64,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
                 <button className="p-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
                   <Clock className="w-4 h-4" />
                 </button>
-                <button className="p-1.5 rounded-lg hover:bg-white/5 text-muted-foreground transition-colors">
+                <button className="p-1.5 rounded-lg hover:bg-foreground/5 text-muted-foreground transition-colors">
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
               </>
@@ -75,41 +75,41 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-start border-collapse">
           <thead>
-            <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-white/5">
+            <tr className="text-[10px] font-mono text-muted-foreground uppercase font-condensed tracking-widest border-b border-foreground/5">
               <th className="px-6 py-4 font-normal">Date</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">Montant</th>
-              <th className="px-6 py-4 font-normal text-right">{t("transaction.status", "Statut")}</th>
+              <th className="px-6 py-4 font-normal text-end">{t("transaction.status", "Statut")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-foreground/5">
             {payments.length === 0 && !loading ? (
               <tr>
                 <td colSpan={4} className="px-6 py-10 text-center text-muted-foreground text-xs uppercase">{t("transaction.empty", "Aucune transaction trouvée")}</td>
               </tr>
             ) : (
               payments.map((tx, idx) => (
-                <tr key={idx} className="group hover:bg-white/[0.02] transition-colors">
+                <tr key={idx} className="group hover:bg-foreground/[0.02] transition-colors">
                   <td className="px-6 py-4">
                     <span className="text-xs font-mono text-muted-foreground">
                       {new Date(tx.created_at).toLocaleDateString()}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-xs font-bold text-white uppercase tracking-tight">{tx.type.replace('_', ' ')}</p>
+                    <p className="text-xs font-bold text-foreground uppercase tracking-tight">{tx.type.replace('_', ' ')}</p>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm font-bold text-primary">
                       {tx.amount} {tx.currency}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+                  <td className="px-6 py-4 text-end">
+                    <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase font-condensed tracking-wider ${
                       tx.status === "PAID" || tx.status === "BLOCKED"
                         ? "bg-primary/20 text-primary border border-primary/30" 
-                        : "bg-secondary/50 text-muted-foreground border border-white/5"
+                        : "bg-secondary/50 text-muted-foreground border border-foreground/5"
                     }`}>
                       {tx.status}
                     </span>

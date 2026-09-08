@@ -80,13 +80,13 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
 
   return (
     <div className="glass rounded-3xl overflow-hidden flex flex-col h-full min-h-[500px]">
-      <div className="p-6 border-b border-white/5 flex items-center justify-between">
+      <div className="p-6 border-b border-foreground/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
             <MessageSquare className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-sm font-bold tracking-widest uppercase">MESSAGERIE</h3>
+            <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">MESSAGERIE</h3>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -102,8 +102,8 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">Aucun message</p>
-            <p className="text-[10px] text-muted-foreground uppercase">Commencez la discussion avec votre partenaire</p>
+            <p className="t-label text-muted-foregroundst">Aucun message</p>
+            <p className="t-label text-[10px] text-muted-foreground">Commencez la discussion avec votre partenaire</p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -119,8 +119,8 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
                     )}
                   </div>
                 )}
-                <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-right"}`}>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-end"}`}>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase font-condensed tracking-widest">
                     {isPartner ? (partner?.full_name || "Partenaire") : "Vous"}
                   </p>
                   <div className={`p-4 rounded-2xl text-sm ${isPartner ? "bg-secondary/50 rounded-tl-none" : "bg-primary text-primary-foreground rounded-tr-none"}`}>
@@ -140,7 +140,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Écrire un message..." 
-            className="bg-background/50 border-white/5 pr-24 h-12 rounded-xl"
+            className="bg-background/50 border-foreground/5 pe-24 h-12 rounded-xl"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">

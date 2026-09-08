@@ -41,19 +41,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
-
-const statusLabels: Record<string, string> = {
-  DRAFT: "Brouillon",
-  ANALYSIS: "En analyse",
-  VALIDATED: "Validée",
-  REJECTED: "Refusée",
-  AWAITING_DEPOSIT: "Attente Acompte",
-  EXECUTING: "Exécution",
-  SHIPPED: "Expédiée",
-  DELIVERED: "Livrée",
-  CLOSED: "Clôturée",
-  INCIDENT: "Incident",
-}
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 const documentTypeLabels: Record<string, string> = {
   PROFORMA_INVOICE: "Facture Proforma",
@@ -200,7 +188,7 @@ export default function AdminRequestDetailPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 Actions
-                <MoreVertical className="ml-2 w-4 h-4" />
+                <MoreVertical className="ms-2 w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -415,7 +403,7 @@ export default function AdminRequestDetailPage() {
                 <Clock className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-bold uppercase tracking-wider">{statusLabels[request.status]}</p>
+                <p className="text-sm font-bold uppercase font-condensed tracking-wider">{statusLabel(REQUEST_STATUS, request.status, t)}</p>
                 <p className="text-xs text-muted-foreground">Maj le {format(new Date(request.updated_at || request.created_at), "d MMM à HH:mm")}</p>
               </div>
             </div>

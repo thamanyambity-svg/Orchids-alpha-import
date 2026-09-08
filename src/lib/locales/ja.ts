@@ -332,6 +332,50 @@ const ja: Record<string, string> = {
   'spec.general.badge': "一般",
   'spec.general.name_placeholder': "例：遠心ポンプ 50 m³/h - ステンレススチール",
   'spec.general.desc_placeholder': "技術仕様、使用目的、材料...",
+  // Statuts métier — clefs générées depuis le registre src/lib/design/status.ts.
+  'status.request.DRAFT': '下書き',
+  'status.request.PENDING': '保留中',
+  'status.request.ANALYSIS': '分析中',
+  'status.request.VALIDATED': '承認済み',
+  'status.request.QUOTE_ACCEPTED': '見積承諾済み',
+  'status.request.REJECTED': '却下',
+  'status.request.AWAITING_DEPOSIT': '前金が必要',
+  'status.request.FUNDED': '入金済み',
+  'status.request.SOURCING': '調達中',
+  'status.request.EXECUTING': '実行中',
+  'status.request.PURCHASED': '購入済み',
+  'status.request.AWAITING_BALANCE': '残金が必要',
+  'status.request.SHIPPED': '出荷済み',
+  'status.request.DELIVERED': '配達済み',
+  'status.request.CLOSED': '完了',
+  'status.request.INCIDENT': '問題発生',
+  'status.request.FROZEN': '凍結',
+  'status.request.CANCELLED': 'キャンセル',
+
+  'status.quote.DRAFT': '下書き',
+  'status.quote.SUBMITTED': '提出済み',
+  'status.quote.ACCEPTED': '承諾済み',
+  'status.quote.REJECTED': '却下',
+  'status.quote.EXPIRED': '期限切れ',
+  'status.quote.REVISED': '改訂済み',
+
+  'status.purchaseOrder.DRAFT': '下書き',
+  'status.purchaseOrder.PENDING_SIGNATURE': '署名待ち',
+  'status.purchaseOrder.SIGNED': '署名済み',
+  'status.purchaseOrder.CONFIRMED': '確定済み',
+  'status.purchaseOrder.CANCELLED': 'キャンセル',
+
+  'status.invoice.DRAFT': '下書き',
+  'status.invoice.SENT': '送付済み',
+  'status.invoice.PAID': '支払済み',
+  'status.invoice.OVERDUE': '支払期限超過',
+  'status.invoice.CANCELLED': 'キャンセル',
+
+  'status.paymentProof.PENDING_REVIEW': '確認待ち',
+  'status.paymentProof.ACCEPTED': '承認済み',
+  'status.paymentProof.REJECTED': '却下',
+  'status.paymentProof.SUPERSEDED': '差し替え済み',
+
 }
 
 export default ja

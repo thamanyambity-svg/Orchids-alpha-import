@@ -70,11 +70,11 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
       case 'GENERATED':
         return { label: t("po.status.generated", "Généré"), color: "bg-muted text-muted-foreground", icon: FileText }
       case 'PENDING_SIGNATURE':
-        return { label: t("po.status.pending_signature", "En attente signature"), color: "bg-amber-500/10 text-amber-700 border-amber-200", icon: AlertCircle }
+        return { label: t("po.status.pending_signature", "En attente signature"), color: "bg-warning/10 text-warning border-warning-border", icon: AlertCircle }
       case 'SIGNED':
-        return { label: t("po.status.signed", "Signé (48h)"), color: "bg-blue-500/10 text-blue-700 border-blue-200", icon: CheckCircle2 }
+        return { label: t("po.status.signed", "Signé (48h)"), color: "bg-info/10 text-info border-info-border", icon: CheckCircle2 }
       case 'CONFIRMED':
-        return { label: t("po.status.confirmed", "Confirmé"), color: "bg-green-500/10 text-green-700 border-green-200", icon: ShieldCheck }
+        return { label: t("po.status.confirmed", "Confirmé"), color: "bg-success/10 text-success border-success-border", icon: ShieldCheck }
       case 'CANCELLED':
         return { label: t("po.status.cancelled", "Annulé"), color: "bg-destructive/10 text-destructive border-destructive/20", icon: XCircle }
       case 'EXPIRED':
@@ -143,7 +143,7 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
             </div>
           </div>
           {po.status === 'CONFIRMED' && (
-            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-500/10 px-3 py-1 rounded-full">
+            <div className="flex items-center gap-2 text-sm text-success bg-success/10 px-3 py-1 rounded-full">
               <CheckCircle2 className="w-4 h-4" />
               {t("po.auto_confirmed", "Confirmé automatiquement après 48h")}
             </div>
@@ -165,7 +165,7 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
             </div>
             <div className="p-4 bg-card border border-border rounded-xl">
               <p className="text-sm text-muted-foreground">{t("po.balance", "Solde (40%)")}</p>
-              <p className="text-2xl font-bold text-amber-600">${Number(po.balance_amount_usd).toLocaleString()} {po.currency}</p>
+              <p className="text-2xl font-bold text-warning">${Number(po.balance_amount_usd).toLocaleString()} {po.currency}</p>
             </div>
             <div className="p-4 bg-card border border-border rounded-xl">
               <p className="text-sm text-muted-foreground">{t("po.incoterm", "Incoterm")}</p>
@@ -175,18 +175,18 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
 
           {/* Timer 48h ou Statut */}
           {po.status === 'SIGNED' && timeRemaining && timeRemaining !== "EXPIRED" && (
-            <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+            <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Timer className="w-6 h-6 text-amber-600" />
+                  <Timer className="w-6 h-6 text-warning" />
                   <div>
-                    <p className="font-semibold text-amber-700">{t("po.cancellation_window", "Fenêtre d'annulation 48h active")}</p>
-                    <p className="text-sm text-amber-600">{t("po.expires_in", "Expire dans")} <span className="font-mono font-bold">{timeRemaining}</span></p>
+                    <p className="font-semibold text-warning">{t("po.cancellation_window", "Fenêtre d'annulation 48h active")}</p>
+                    <p className="text-sm text-warning">{t("po.expires_in", "Expire dans")} <span className="font-mono font-bold">{timeRemaining}</span></p>
                   </div>
                 </div>
                 {!readOnly && canCancel && (
                   <Button variant="destructive" size="sm" onClick={handleCancel} className="whitespace-nowrap">
-                    <X className="w-3 h-3 mr-1" /> {t("po.cancel_now", "Annuler")}
+                    <X className="w-3 h-3 me-1" /> {t("po.cancel_now", "Annuler")}
                   </Button>
                 )}
               </div>
@@ -194,13 +194,13 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
           )}
 
           {po.status === 'PENDING_SIGNATURE' && (
-            <div className="p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl">
+            <div className="p-4 bg-info/5 border border-info/20 rounded-xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Signature className="w-6 h-6 text-blue-600" />
+                  <Signature className="w-6 h-6 text-info" />
                   <div>
-                    <p className="font-semibold text-blue-700">{t("po.action_required", "Action requise : Signature CGV")}</p>
-                    <p className="text-sm text-blue-600">{t("po.sign_to_validate", "Signez le bon de commande pour valider l'engagement")}</p>
+                    <p className="font-semibold text-info">{t("po.action_required", "Action requise : Signature CGV")}</p>
+                    <p className="text-sm text-info">{t("po.sign_to_validate", "Signez le bon de commande pour valider l'engagement")}</p>
                   </div>
                 </div>
               </div>
@@ -217,41 +217,41 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
                 {t("po.cgv_section", "Conditions Générales de Vente (CGV)")}
               </h4>
               {cgvAccepted && (
-                <Badge variant="default" className="bg-green-500/10 text-green-700 border-green-200">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                <Badge variant="default" className="bg-success/10 text-success border-success-border">
+                  <CheckCircle2 className="w-3 h-3 me-1" />
                   {t("po.cgv_accepted", "Acceptées le")} {new Date(po.cgv_accepted_at).toLocaleDateString()}
                 </Badge>
               )}
             </div>
 
             {!cgvAccepted ? (
-              <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl space-y-3">
-                <p className="text-sm text-amber-700">
+              <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl space-y-3">
+                <p className="text-sm text-warning">
                   {t("po.cgv_must_accept", "Vous devez accepter les CGV AlphaIX pour signer le bon de commande.")}
                 </p>
                 <Button variant="outline" onClick={() => setShowCGV(true)} className="w-full gap-2">
                   <FileText className="w-4 h-4" />
                   {t("po.read_cgv", "Lire les CGV complètes")}
                 </Button>
-                <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg border border-warning/20 bg-warning/5">
                   <input
                     type="checkbox"
                     onChange={(e) => setCgvAccepted(e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary border-amber-500 rounded"
+                    className="mt-1 h-4 w-4 text-primary border-warning rounded"
                   />
                   <div className="text-sm">
-                    <span className="font-medium text-amber-700">{t("po.i_accept_cgv", "J'accepte les CGV AlphaIX")}</span>
-                    <p className="text-amber-600 mt-1">{t("po.cgv_implication", "Cela inclut : paiement sécurisé séquestre, 60/40, annulation 48h, inspection, médiation litiges.")}</p>
+                    <span className="font-medium text-warning">{t("po.i_accept_cgv", "J'accepte les CGV AlphaIX")}</span>
+                    <p className="text-warning mt-1">{t("po.cgv_implication", "Cela inclut : paiement sécurisé séquestre, 60/40, annulation 48h, inspection, médiation litiges.")}</p>
                   </div>
                 </label>
               </div>
             ) : (
-              <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl flex items-center justify-between">
+              <div className="p-4 bg-success/5 border border-success/20 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <CheckCircle2 className="w-6 h-6 text-success" />
                   <div>
-                    <p className="font-semibold text-green-700">{t("po.cgv_accepted", "CGV Acceptées")}</p>
-                    <p className="text-sm text-green-600">{t("po.ready_to_sign", "Vous pouvez maintenant signer le bon de commande")}</p>
+                    <p className="font-semibold text-success">{t("po.cgv_accepted", "CGV Acceptées")}</p>
+                    <p className="text-sm text-success">{t("po.ready_to_sign", "Vous pouvez maintenant signer le bon de commande")}</p>
                   </div>
                 </div>
                 {!readOnly && po.status !== 'CONFIRMED' && po.status !== 'CANCELLED' && (
@@ -268,18 +268,18 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
           <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
             {onViewQuote && (
               <Button variant="outline" onClick={onViewQuote}>
-                <Eye className="w-4 h-4 mr-1" /> {t("po.view_quote", "Voir Devis")}
+                <Eye className="w-4 h-4 me-1" /> {t("po.view_quote", "Voir Devis")}
               </Button>
             )}
             <Button variant="outline" asChild>
               <a href={po.po_pdf_url} target="_blank" rel="noopener noreferrer">
-                <Download className="w-4 h-4 mr-1" /> {t("po.download_pdf", "PDF PO")}
+                <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF PO")}
               </a>
             </Button>
             {po.signed_po_pdf_url && (
               <Button variant="outline" asChild>
                 <a href={po.signed_po_pdf_url} target="_blank" rel="noopener noreferrer">
-                  <ShieldCheck className="w-4 h-4 mr-1" /> {t("po.download_signed", "PDF Signé")}
+                  <ShieldCheck className="w-4 h-4 me-1" /> {t("po.download_signed", "PDF Signé")}
                 </a>
               </Button>
             )}

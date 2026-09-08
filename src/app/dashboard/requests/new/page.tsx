@@ -602,7 +602,7 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">{t("dashboard.requests.new.transport_mode", "Mode d'expédition")} *</Label>
+                      <Label className="font-semibold text-sm uppercase font-condensed tracking-wide text-muted-foreground">{t("dashboard.requests.new.transport_mode", "Mode d'expédition")} *</Label>
                       <div className="grid grid-cols-2 gap-3">
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
@@ -697,7 +697,7 @@ export default function NewRequestPage() {
                     className="w-full h-12 border-dashed border-2 hover:bg-primary/5 hover:border-primary/50 text-primary transition-all"
                     onClick={addItem}
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 me-2" />
                     {t("dashboard.requests.new.add_another_product", "Ajouter un autre produit à cette demande")}
                   </Button>
                 </div>
@@ -751,7 +751,7 @@ export default function NewRequestPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("dashboard.requests.new.product_list", "Liste des Produits")}</p>
+                        <p className="text-sm font-semibold uppercase font-condensed tracking-wider text-muted-foreground">{t("dashboard.requests.new.product_list", "Liste des Produits")}</p>
                         {items.map((item, idx) => (
                           <div key={item.id} className="p-4 rounded-xl bg-card border border-border">
                             <div className="flex justify-between items-start mb-2">
@@ -783,7 +783,7 @@ export default function NewRequestPage() {
                         <div className="space-y-2 text-xs">
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">{t("dashboard.requests.new.score", "Score")}</span>
-                            <span className="font-bold text-amber-500">{selectedPartner.performance_score}/5.0</span>
+                            <span className="font-bold text-warning">{selectedPartner.performance_score}/5.0</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">{t("dashboard.requests.new.orders", "Commandes")}</span>
@@ -812,9 +812,9 @@ export default function NewRequestPage() {
                     )}
 
                     <div className="flex flex-col gap-3">
-                      <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs">
-                        <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
-                        <p className="text-amber-700 font-medium">
+                      <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/20 text-xs">
+                        <ShieldCheck className="w-5 h-5 text-warning shrink-0" />
+                        <p className="text-warning font-medium">
                           {t("dashboard.requests.new.secured_funds", "Vos fonds sont sécurisés via notre compte séquestre jusqu'à validation de la livraison.")}
                         </p>
                       </div>
@@ -836,7 +836,7 @@ export default function NewRequestPage() {
 
                 <div className="flex justify-end gap-4 pt-4 border-t border-border">
                   <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 me-2" />
                     {t("dashboard.requests.new.back", "Retour")}
                   </Button>
                   <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
@@ -851,14 +851,14 @@ export default function NewRequestPage() {
 
           <div className="flex items-center justify-between mb-8">
             {currentStep === 1 ? (
-              <Button onClick={handleNext} disabled={isLoading} className="ml-auto gap-2">
+              <Button onClick={handleNext} disabled={isLoading} className="ms-auto gap-2">
                 {t("dashboard.requests.new.next", "Suivant")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             ) : currentStep === 2 ? (
-              <div className="flex gap-3 ml-auto">
+              <div className="flex gap-3 ms-auto">
                 <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 me-2" />
                   {t("dashboard.requests.new.back", "Retour")}
                 </Button>
                 <Button onClick={handleNext} disabled={isLoading} className="gap-2">
@@ -869,7 +869,7 @@ export default function NewRequestPage() {
             ) : (
               <div className="flex justify-end gap-4">
                 <Button variant="outline" onClick={handleBack} disabled={isLoading}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <ArrowLeft className="w-4 h-4 me-2" />
                   {t("dashboard.requests.new.back", "Retour")}
                 </Button>
                 <Button onClick={handleSubmit} disabled={isLoading} className="gap-2">

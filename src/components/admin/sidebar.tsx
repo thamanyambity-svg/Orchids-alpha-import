@@ -27,6 +27,9 @@ import {
   IdCard,
   FolderOpen,
   Landmark,
+  ReceiptText,
+  ScrollText,
+  TrendingUp,
   Webhook,
   Bot
 } from "lucide-react"
@@ -34,6 +37,16 @@ import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import type { LucideIcon } from "lucide-react"
+
+/** Libellé affiché pour chacun des six rôles de l'enum user_role. */
+const LIBELLES_ROLE: Record<string, string> = {
+  ADMIN: "Admin Principal",
+  PARTNER: "Partenaire",
+  PARTNER_COUNTRY: "Partenaire Pays",
+  FISCAL_CONSULTANT: "Consultant Fiscal",
+  ACCOUNTANT: "Comptable",
+  BUYER: "Acheteur",
+}
 
 type NavItem = { href: string; label: string; labelKey: string; icon: LucideIcon; badge?: number }
 
@@ -50,9 +63,12 @@ const navItems: NavItem[] = [
   { href: "/admin/finances", label: "Transactions", labelKey: "admin.sidebar.finances", icon: Wallet },
   { href: "/admin/finances/invoices", label: "Factures", labelKey: "admin.sidebar.invoices", icon: FileText },
   { href: "/admin/finances/sepa", label: "Prélèvements SEPA", labelKey: "admin.sidebar.sepa", icon: Landmark },
+  { href: "/admin/payment-proofs", label: "Justificatifs de paiement", labelKey: "admin.sidebar.payment_proofs", icon: ReceiptText },
+  { href: "/admin/exchange-rates", label: "Taux de change", labelKey: "admin.sidebar.exchange_rates", icon: TrendingUp },
   { href: "/admin/risks", label: "Gestion des Risques", labelKey: "admin.sidebar.risks", icon: Shield },
   { href: "/admin/customs", label: "Douanes & Conformité", labelKey: "admin.sidebar.customs", icon: FileCheck },
   { href: "/admin/reporting", label: "Journal d'Audit", labelKey: "admin.sidebar.reporting", icon: Activity },
+  { href: "/admin/audit-logs", label: "Accès aux documents", labelKey: "admin.sidebar.audit_logs", icon: ScrollText },
   { href: "/admin/settings", label: "Paramètres", labelKey: "admin.sidebar.settings", icon: Settings },
   { href: "/admin/support", label: "Support", labelKey: "admin.sidebar.support", icon: LifeBuoy },
   { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
@@ -80,7 +96,10 @@ export function AdminSidebar() {
 
         setUser({
           full_name: profile?.full_name || t("admin.sidebar.administrator", "Administrateur"),
-          role: profile?.role === 'admin' ? t("admin.sidebar.admin_principal", "Admin Principal") : t("admin.sidebar.user", "Utilisateur")
+          // profiles.role est un enum en MAJUSCULES ('ADMIN', 'PARTNER', …).
+          // La comparaison se faisait contre 'admin' en minuscules : un
+          // administrateur voyait donc « Utilisateur » sous son nom.
+          role: LIBELLES_ROLE[profile?.role ?? ""] ?? t("admin.sidebar.user", "Utilisateur")
         })
       }
     }
@@ -94,7 +113,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0e14] border-r border-white/5 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card border-e border-foreground/5 flex flex-col z-50">
       <div className="p-6">
         <Link href="/admin" className="flex items-center group">
           <div className="relative w-20 h-20 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -121,18 +140,18 @@ export function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-300 relative group",
                     isActive
-                      ? "text-white bg-gradient-to-r from-white/10 to-transparent border border-white/10 shadow-lg"
-                      : "text-white/50 hover:text-white hover:bg-white/5"
+                      ? "text-foreground bg-gradient-to-r from-foreground/10 to-transparent border border-foreground/10 shadow-lg"
+                      : "text-foreground/50 hover:text-foreground hover:bg-foreground/5"
                   )}
                 >
                   <item.icon className={cn(
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
-                    isActive ? "text-[#ffd700]" : ""
+                    isActive ? "text-primary" : ""
                   )} />
-                  <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">{t(item.labelKey, item.label)}</span>
 
                   {item.badge && (
-                    <span className="ml-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-white rounded-full">
+                    <span className="ms-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-foreground rounded-full">
                       {item.badge}
                     </span>
                   )}
@@ -140,7 +159,7 @@ export function AdminSidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute left-0 w-1 h-6 bg-[#ffd700] rounded-r-full shadow-[0_0_10px_#ffd700]"
+                      className="absolute left-0 w-1 h-6 bg-primary rounded-e-full shadow-[0_0_10px_#ffd700]"
                     />
                   )}
                 </Link>
@@ -151,19 +170,19 @@ export function AdminSidebar() {
       </nav>
 
       <div className="p-4 mt-auto">
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 mb-4">
+        <div className="p-4 rounded-2xl bg-gradient-to-br from-foreground/5 to-transparent border border-foreground/5 mb-4">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-[#ffd700]/10 flex items-center justify-center border border-[#ffd700]/20">
-              <Crown className="w-4 h-4 text-[#ffd700]" />
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+              <Crown className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
-              <p className="text-[10px] text-white/40 uppercase tracking-tighter">{user?.role || "..."}</p>
+              <p className="text-xs font-semibold text-foreground truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
+              <p className="t-label text-[10px] text-muted-foreground">{user?.role || "..."}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-colors border border-white/5"
+            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-foreground/5 hover:bg-foreground/10 text-foreground/60 hover:text-foreground text-xs transition-colors border border-foreground/5"
           >
             <LogOut className="w-3.5 h-3.5" />
             {t("admin.sidebar.logout", "Déconnexion")}

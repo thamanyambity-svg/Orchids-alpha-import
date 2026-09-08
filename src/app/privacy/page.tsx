@@ -24,7 +24,7 @@ export default function PrivacyPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">{t("privacy.section2.title", "2. Données Collectées")}</h2>
                     <p>{t("privacy.section2.intro", "Nous collectons les données suivantes :")}</p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <ul className="list-disc ps-5 mt-2 space-y-1">
                         <li>{t("privacy.section2.item1", "Données d'identification : nom, prénom, adresse email, numéro de téléphone")}</li>
                         <li>{t("privacy.section2.item2", "Données professionnelles : nom de l'entreprise, numéro de TVA, registre de commerce")}</li>
                         <li>{t("privacy.section2.item3", "Données de transaction : historique des commandes, informations de paiement (traitées via Stripe)")}</li>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">{t("privacy.section3.title", "3. Finalités du Traitement")}</h2>
                     <p>{t("privacy.section3.intro", "Vos données sont traitées pour :")}</p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <ul className="list-disc ps-5 mt-2 space-y-1">
                         <li>{t("privacy.section3.item1", "La gestion de votre compte et de vos commandes d'importation")}</li>
                         <li>{t("privacy.section3.item2", "Le traitement des paiements via notre prestataire Stripe")}</li>
                         <li>{t("privacy.section3.item3", "La vérification KYC (Know Your Customer) obligatoire")}</li>
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
                 <section>
                     <h2 className="text-xl font-semibold text-foreground mb-4">{t("privacy.section7.title", "7. Vos Droits")}</h2>
                     <p>{t("privacy.section7.intro", "Conformément à la réglementation applicable, vous disposez des droits suivants :")}</p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <ul className="list-disc ps-5 mt-2 space-y-1">
                         <li>{t("privacy.section7.item1", "Droit d'accès : obtenir une copie de vos données")}</li>
                         <li>{t("privacy.section7.item2", "Droit de rectification : corriger des informations inexactes")}</li>
                         <li>{t("privacy.section7.item3", "Droit à l'effacement : demander la suppression de vos données")}</li>

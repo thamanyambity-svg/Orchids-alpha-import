@@ -60,7 +60,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
             </AvatarFallback>
           </Avatar>
           <div className="absolute -bottom-2 -right-2 bg-background rounded-full p-1 shadow-md border border-border">
-            <div className="bg-green-500 w-3 h-3 rounded-full" />
+            <div className="bg-success w-3 h-3 rounded-full" />
           </div>
         </div>
 
@@ -69,7 +69,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
             <h3 className="text-2xl font-bold tracking-tight">{partner.full_name}</h3>
             <p className="text-primary font-medium">{partner.company_name}</p>
             <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1 text-amber-500">
+              <div className="flex items-center gap-1 text-warning">
                 <Star className="w-4 h-4 fill-current" />
                 <span className="font-bold">{partner.performance_score}</span>
               </div>
@@ -91,7 +91,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Button 
               variant="outline" 
-              className="w-full gap-2 border-green-500/20 hover:bg-green-500/10 hover:text-green-600 transition-all duration-300"
+              className="w-full gap-2 border-success/20 hover:bg-success/10 hover:text-success transition-all duration-300"
               onClick={() => {
                 window.open(`https://wa.me/${partner.whatsapp_number.replace(/[^0-9]/g, '')}`, '_blank')
                 onContact?.('whatsapp')
@@ -113,7 +113,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
             </Button>
             <Button 
               variant="outline" 
-              className="w-full gap-2 border-blue-500/20 hover:bg-blue-500/10 hover:text-blue-600 transition-all duration-300"
+              className="w-full gap-2 border-info/20 hover:bg-info/10 hover:text-info transition-all duration-300"
               onClick={() => {
                 window.location.href = `tel:${partner.phone}`
                 onContact?.('phone')

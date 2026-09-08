@@ -40,9 +40,15 @@ export default function RegisterPage() {
         email: formData.email,
         password: formData.password,
         options: {
+          // Tous les champs saisis passent par les métadonnées : le déclencheur
+          // on_auth_user_created est le seul à pouvoir écrire dans profiles et
+          // buyer_profiles au moment de l'inscription, puisque la confirmation
+          // d'e-mail est exigée et qu'aucune session n'existe encore.
           data: {
             full_name: formData.full_name,
             phone: formData.phone,
+            company_name: formData.company_name || null,
+            activity_type: formData.activity_type,
           }
         }
       })
@@ -52,34 +58,11 @@ export default function RegisterPage() {
         return
       }
 
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert({
-            id: authData.user.id,
-            email: formData.email,
-            full_name: formData.full_name,
-            phone: formData.phone,
-            company_name: formData.company_name || null,
-            role: "BUYER",
-            status: "PENDING",
-          })
-
-        if (profileError) {
-          console.error(profileError)
-        }
-
-        const { error: buyerError } = await supabase
-          .from("buyer_profiles")
-          .insert({
-            user_id: authData.user.id,
-            activity_type: formData.activity_type,
-          })
-
-        if (buyerError) {
-          console.error(buyerError)
-        }
-      }
+      // Les insertions client dans profiles et buyer_profiles ont été retirées :
+      // sans session, le RLS les refusait en 42501 et l'erreur était avalée par
+      // un console.error. Le téléphone, la société et le type d'activité étaient
+      // donc silencieusement perdus. Le déclencheur les enregistre désormais
+      // depuis les métadonnées ci-dessus.
 
       toast.success(t("register.success", "Compte créé avec succès ! Vérifiez votre email."))
       router.push("/login")
@@ -173,7 +156,7 @@ export default function RegisterPage() {
                   id="full_name"
                   type="text"
                   placeholder={t("register.name_placeholder", "Jean Dupont")}
-                  className="pl-10 h-12"
+                  className="ps-10 h-12"
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   required
@@ -189,7 +172,7 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   placeholder={t("register.email_placeholder", "votre@email.com")}
-                  className="pl-10 h-12"
+                  className="ps-10 h-12"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -205,7 +188,7 @@ export default function RegisterPage() {
                   id="phone"
                   type="tel"
                   placeholder={t("register.phone_placeholder", "+243 000 000 000")}
-                  className="pl-10 h-12"
+                  className="ps-10 h-12"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   required
@@ -221,7 +204,7 @@ export default function RegisterPage() {
                   id="company_name"
                   type="text"
                   placeholder={t("register.company_placeholder", "Nom de votre entreprise")}
-                  className="pl-10 h-12"
+                  className="ps-10 h-12"
                   value={formData.company_name}
                   onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                 />
@@ -256,7 +239,7 @@ export default function RegisterPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder={t("register.password_placeholder", "••••••••")}
-                  className="pl-10 pr-10 h-12"
+                  className="ps-10 pe-10 h-12"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -279,7 +262,7 @@ export default function RegisterPage() {
               ) : (
                 <>
                   {t("register.submit", "Créer mon compte")}
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 ms-2" />
                 </>
               )}
             </Button>

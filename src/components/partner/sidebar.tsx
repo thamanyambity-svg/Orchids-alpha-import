@@ -42,7 +42,7 @@ export function PartnerSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-e border-sidebar-border flex flex-col">
       <div className="p-6">
         <Link href="/partner" className="flex items-center group">
           <div className="relative w-16 h-16 bg-black rounded-lg transition-transform group-hover:scale-105">
@@ -88,8 +88,10 @@ export function PartnerSidebar() {
                   )}
                 >
                   <item.icon className="w-5 h-5" />
-                  {t(item.labelKey, item.label)}
-                  {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">
+                    {t(item.labelKey, item.label)}
+                  </span>
+                  {isActive && <ChevronRight className="w-4 h-4 ms-auto" />}
                 </Link>
               </li>
             )

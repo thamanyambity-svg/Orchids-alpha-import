@@ -19,26 +19,7 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { createClient } from "@/lib/supabase/client"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
-
-const statusColors: Record<string, string> = {
-  PENDING: "bg-secondary text-secondary-foreground",
-  VALIDATED: "bg-primary/10 text-primary",
-  EXECUTING: "bg-blue-500/10 text-blue-500",
-  SHIPPED: "bg-purple-500/10 text-purple-500",
-  DELIVERED: "bg-green-500/10 text-green-500",
-    CLOSED: "bg-green-600/10 text-green-600",
-    CANCELLED: "bg-destructive/10 text-destructive",
-  }
-  
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    VALIDATED: "À traiter",
-    EXECUTING: "En cours",
-    SHIPPED: "Expédié",
-    DELIVERED: "Livré",
-    CLOSED: "Terminé",
-    CANCELLED: "Annulé",
-  }
+import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 export default function PartnerRequestsPage() {
   const { t } = useLanguage()
@@ -104,7 +85,7 @@ export default function PartnerRequestsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input 
               placeholder={t("partner.requests.search", "Rechercher par référence ou produit...")} 
-              className="pl-9"
+              className="ps-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -141,8 +122,8 @@ export default function PartnerRequestsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs text-muted-foreground">{request.reference}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColors[request.status]}`}>
-                          {t("partner.requests.status_" + request.status, statusLabels[request.status])}
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>
+                          {statusLabel(REQUEST_STATUS, request.status, t)}
                       </span>
                     </div>
                     <h3 className="font-semibold text-lg mb-1 truncate">{request.product_name}</h3>

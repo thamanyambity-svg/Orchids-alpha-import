@@ -146,7 +146,7 @@ export default function AdminBuyersPage() {
                         <Input
                             type="search"
                             placeholder={t("admin.buyers.search", "Rechercher (Nom, Email)...")}
-                            className="pl-8"
+                            className="ps-8"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -161,7 +161,7 @@ export default function AdminBuyersPage() {
                                 <TableHead>{t("admin.buyers.status", "Statut")}</TableHead>
                                 <TableHead>Activité</TableHead>
                                 <TableHead>{t("admin.buyers.registration", "Inscription")}</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead className="text-end">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -203,12 +203,12 @@ export default function AdminBuyersPage() {
                                         </TableCell>
                                         <TableCell>
                                             {buyer.status === 'VERIFIED' ? (
-                                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
-                                                    <ShieldCheck className="w-3 h-3 mr-1" /> Vérifié
+                                                <Badge className="bg-success-subtle text-success hover:bg-success-subtle border-success-border">
+                                                    <ShieldCheck className="w-3 h-3 me-1" /> Vérifié
                                                 </Badge>
                                             ) : buyer.status === 'SUSPENDED' ? (
                                                 <Badge variant="destructive">
-                                                    <ShieldAlert className="w-3 h-3 mr-1" /> Suspendu
+                                                    <ShieldAlert className="w-3 h-3 me-1" /> Suspendu
                                                 </Badge>
                                             ) : (
                                                 <Badge variant="secondary">{t("admin.buyers.pending", "En attente")}</Badge>
@@ -218,14 +218,14 @@ export default function AdminBuyersPage() {
                                             <div className="text-sm space-y-1">
                                                 <div><span className="font-medium">{buyer.total_requests}</span> demandes</div>
                                                 <div className="text-xs text-muted-foreground">
-                                                    <span className="font-medium text-amber-600">{buyer.active_orders}</span> commandes actives
+                                                    <span className="font-medium text-warning">{buyer.active_orders}</span> commandes actives
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             {new Date(buyer.created_at).toLocaleDateString('fr-FR')}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-end">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -240,7 +240,7 @@ export default function AdminBuyersPage() {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem>Voir détails (Bientôt)</DropdownMenuItem>
-                                                    <DropdownMenuItem className="text-red-600">Suspendre (Bientôt)</DropdownMenuItem>
+                                                    <DropdownMenuItem className="text-destructive">Suspendre (Bientôt)</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
