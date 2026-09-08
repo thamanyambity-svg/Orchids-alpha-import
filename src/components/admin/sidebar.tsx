@@ -38,6 +38,16 @@ import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import type { LucideIcon } from "lucide-react"
 
+/** Libellé affiché pour chacun des six rôles de l'enum user_role. */
+const LIBELLES_ROLE: Record<string, string> = {
+  ADMIN: "Admin Principal",
+  PARTNER: "Partenaire",
+  PARTNER_COUNTRY: "Partenaire Pays",
+  FISCAL_CONSULTANT: "Consultant Fiscal",
+  ACCOUNTANT: "Comptable",
+  BUYER: "Acheteur",
+}
+
 type NavItem = { href: string; label: string; labelKey: string; icon: LucideIcon; badge?: number }
 
 const navItems: NavItem[] = [
@@ -86,7 +96,10 @@ export function AdminSidebar() {
 
         setUser({
           full_name: profile?.full_name || t("admin.sidebar.administrator", "Administrateur"),
-          role: profile?.role === 'admin' ? t("admin.sidebar.admin_principal", "Admin Principal") : t("admin.sidebar.user", "Utilisateur")
+          // profiles.role est un enum en MAJUSCULES ('ADMIN', 'PARTNER', …).
+          // La comparaison se faisait contre 'admin' en minuscules : un
+          // administrateur voyait donc « Utilisateur » sous son nom.
+          role: LIBELLES_ROLE[profile?.role ?? ""] ?? t("admin.sidebar.user", "Utilisateur")
         })
       }
     }
@@ -135,7 +148,7 @@ export function AdminSidebar() {
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
                     isActive ? "text-primary" : ""
                   )} />
-                  <span className="font-medium tracking-wide">{t(item.labelKey, item.label)}</span>
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">{t(item.labelKey, item.label)}</span>
 
                   {item.badge && (
                     <span className="ms-auto w-5 h-5 flex items-center justify-center bg-destructive text-[10px] font-bold text-foreground rounded-full">
@@ -164,7 +177,7 @@ export function AdminSidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-foreground truncate">{user?.full_name || t("admin.sidebar.loading", "Chargement...")}</p>
-              <p className="text-[10px] text-foreground/40 uppercase tracking-tighter">{user?.role || "..."}</p>
+              <p className="t-label text-[10px] text-muted-foreground">{user?.role || "..."}</p>
             </div>
           </div>
           <button

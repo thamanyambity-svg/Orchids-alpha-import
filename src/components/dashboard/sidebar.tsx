@@ -106,7 +106,7 @@ export function DashboardSidebar() {
                     "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
                     isActive ? "text-primary" : "text-muted-foreground"
                   )} />
-                  <span className="font-medium tracking-tight">{t(item.labelKey, item.label)}</span>
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">{t(item.labelKey, item.label)}</span>
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-indicator"

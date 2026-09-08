@@ -88,7 +88,9 @@ export function PartnerSidebar() {
                   )}
                 >
                   <item.icon className="w-5 h-5" />
-                  {t(item.labelKey, item.label)}
+                  <span className="font-condensed text-[13px] font-semibold uppercase tracking-[.16em]">
+                    {t(item.labelKey, item.label)}
+                  </span>
                   {isActive && <ChevronRight className="w-4 h-4 ms-auto" />}
                 </Link>
               </li>
