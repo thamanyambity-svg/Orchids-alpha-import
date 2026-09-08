@@ -113,6 +113,31 @@ export async function confirmDirectDebitMandate(
     throw new Error(`SetupIntent not confirmed: status=${setupIntent.status}`)
   }
 
+  // Le SetupIntent doit appartenir au client Stripe de CET utilisateur.
+  //
+  // Sans cette vérification, seul le statut était contrôlé : quiconque
+  // obtenait l'identifiant d'un SetupIntent d'autrui — écran partagé, journal,
+  // copie d'écran — pouvait rattacher le compte bancaire d'un tiers à son
+  // propre profil, puis se faire prélever sur ce compte à chaque commande.
+  const { data: profil, error: profilError } = await supabaseAdmin
+    .from('profiles')
+    .select('stripe_customer_id')
+    .eq('id', userId)
+    .single()
+
+  if (profilError || !profil?.stripe_customer_id) {
+    throw new Error('No Stripe customer for this account')
+  }
+
+  const clientDuSetupIntent =
+    typeof setupIntent.customer === 'string'
+      ? setupIntent.customer
+      : setupIntent.customer?.id ?? null
+
+  if (clientDuSetupIntent !== profil.stripe_customer_id) {
+    throw new Error('SetupIntent does not belong to this account')
+  }
+
   const paymentMethodId = setupIntent.payment_method as string
   const mandateId = setupIntent.mandate as string
 
