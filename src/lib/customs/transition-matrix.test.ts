@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { verifyTransitionAllowed, normalizeCustomsActorRole } from "./transition-matrix"
+import { verifyTransitionAllowed, normalizeCustomsActorRole, allowedNextStatuses } from "./transition-matrix"
 import { isCustomsFileStatus } from "./status-display"
 import type { CustomsFileStatus } from "./types"
 
@@ -92,5 +92,49 @@ describe("isCustomsFileStatus", () => {
     }
     expect(isCustomsFileStatus("SHIPPED")).toBe(false)
     expect(isCustomsFileStatus("")).toBe(false)
+  })
+})
+
+describe('allowedNextStatuses — ce que l\'interface a le droit de proposer', () => {
+  it('propose à un administrateur les suites de la matrice, blocage compris', () => {
+    expect(allowedNextStatuses('DRAFT', 'ADMIN').sort()).toEqual(['BLOCKED', 'PRE_ADVICE'])
+    expect(allowedNextStatuses('IN_CUSTOMS', 'ADMIN').sort()).toEqual(['BLOCKED', 'LIQUIDATED'])
+  })
+
+  it('ne propose aucune suite depuis un dossier libéré', () => {
+    expect(allowedNextStatuses('RELEASED', 'ADMIN')).toEqual([])
+    expect(allowedNextStatuses('RELEASED', 'PARTNER')).toEqual([])
+  })
+
+  it('restreint le partenaire à la marche avant, sans blocage', () => {
+    expect(allowedNextStatuses('DRAFT', 'PARTNER')).toEqual(['PRE_ADVICE'])
+    expect(allowedNextStatuses('PAID', 'PARTNER')).toEqual([])
+    for (const depuis of ['DRAFT', 'PRE_ADVICE', 'IN_CUSTOMS', 'LIQUIDATED'] as const) {
+      expect(allowedNextStatuses(depuis, 'PARTNER')).not.toContain('BLOCKED')
+    }
+  })
+
+  it('ne propose rien au comptable, qui ne touche pas au statut douanier', () => {
+    for (const depuis of ['DRAFT', 'IN_CUSTOMS', 'PAID'] as const) {
+      expect(allowedNextStatuses(depuis, 'ACCOUNTANT')).toEqual([])
+    }
+  })
+
+  it('ne propose jamais une transition que le serveur refuserait', () => {
+    // Le garde-fou qui compte : tout ce que l'interface offre doit passer la
+    // vérification serveur. Sinon l'utilisateur voit un bouton qui échoue.
+    const statuts = ['DRAFT', 'PRE_ADVICE', 'IN_CUSTOMS', 'LIQUIDATED', 'PAID', 'RELEASED', 'BLOCKED'] as const
+    for (const role of ['ADMIN', 'PARTNER', 'PARTNER_COUNTRY', 'FISCAL_CONSULTANT', 'ACCOUNTANT']) {
+      for (const depuis of statuts) {
+        for (const vers of allowedNextStatuses(depuis, role)) {
+          const verdict = verifyTransitionAllowed(depuis, vers, role)
+          expect(verdict.allowed, `${role} : ${depuis} → ${vers}`).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('rend un rôle inconnu totalement inerte', () => {
+    expect(allowedNextStatuses('DRAFT', 'INTRUS')).toEqual([])
   })
 })

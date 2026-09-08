@@ -47,6 +47,23 @@ const ALLOWED_TRANSITIONS: Record<
   ACCOUNTANT: {},
 }
 
+/**
+ * Statuts vers lesquels ce rôle peut faire passer un dossier depuis son statut
+ * courant. L'interface s'en sert pour ne proposer que des transitions valides,
+ * plutôt que de laisser l'utilisateur en tenter une qui sera refusée.
+ *
+ * La matrice reste la seule vérité : le serveur revérifie toujours.
+ */
+export function allowedNextStatuses(
+  currentStatus: CustomsFileStatus,
+  role: string
+): CustomsFileStatus[] {
+  const actor = normalizeCustomsActorRole(role)
+  const parRole = ALLOWED_TRANSITIONS[actor]
+  if (!parRole) return []
+  return parRole[currentStatus] ?? []
+}
+
 export function verifyTransitionAllowed(
   currentStatus: CustomsFileStatus,
   newStatus: CustomsFileStatus,

@@ -1,216 +1,352 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useLanguage } from "@/lib/i18n-context"
-import { createClient } from "@/lib/supabase/client"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { FileCheck, Package, MapPin } from "lucide-react"
-import Link from "next/link"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { AlertTriangle, Loader2, Package, RefreshCw, Ship, Plane, Truck } from "lucide-react"
+import { toast } from "sonner"
+import { tone } from "@/lib/design/tone"
+import { getStatusLabel } from "@/lib/customs/status-display"
+import { allowedNextStatuses } from "@/lib/customs/transition-matrix"
+import type { CustomsFileStatus } from "@/lib/customs/types"
+
+/**
+ * Dossiers douaniers — back-office.
+ *
+ * Cette page interrogeait `tracking_events` et `orders` en direct, alors que le
+ * module douanier expose déjà ses routes : /api/customs/files, son changement
+ * de statut et sa nomenclature de taxes. Le backend n'avait donc aucun
+ * consommateur, et l'écran montrait autre chose que le dossier douanier.
+ *
+ * Les transitions proposées viennent de la matrice partagée : on n'offre que ce
+ * que le rôle peut faire. Le serveur revérifie systématiquement — la matrice
+ * reste la seule vérité, l'interface n'en est qu'un reflet.
+ */
+
+type DossierDouanier = {
+  id: string
+  order_id: string | null
+  order_reference: string | null
+  country_code: string | null
+  transport_mode: "AIR" | "SEA" | "LAND" | null
+  transport_ref: string | null
+  vessel_flight_name: string | null
+  container_number: string | null
+  status: CustomsFileStatus
+  updated_at: string | null
+  created_at: string | null
+}
+
+const TONALITE_PAR_STATUT: Record<CustomsFileStatus, Parameters<typeof tone>[0]> = {
+  DRAFT: "neutral",
+  PRE_ADVICE: "info",
+  IN_CUSTOMS: "info",
+  LIQUIDATED: "brand",
+  PAID: "success",
+  RELEASED: "success",
+  BLOCKED: "danger",
+}
+
+const STATUTS: CustomsFileStatus[] = [
+  "DRAFT",
+  "PRE_ADVICE",
+  "IN_CUSTOMS",
+  "LIQUIDATED",
+  "PAID",
+  "RELEASED",
+  "BLOCKED",
+]
+
+const ICONE_TRANSPORT = { AIR: Plane, SEA: Ship, LAND: Truck } as const
 
 export default function AdminCustomsPage() {
   const { t } = useLanguage()
-  const [customsEvents, setCustomsEvents] = useState<any[]>([])
-  const [pendingOrders, setPendingOrders] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+
+  const [dossiers, setDossiers] = useState<DossierDouanier[]>([])
+  const [chargement, setChargement] = useState(true)
+  const [erreur, setErreur] = useState<string | null>(null)
+  const [filtre, setFiltre] = useState<CustomsFileStatus | "ALL">("ALL")
+  const [recherche, setRecherche] = useState("")
+
+  const [cible, setCible] = useState<{ dossier: DossierDouanier; statut: CustomsFileStatus } | null>(null)
+  const [motif, setMotif] = useState("")
+  const [envoi, setEnvoi] = useState(false)
+
+  // Le middleware réserve /admin au rôle ADMIN : les transitions proposées
+  // sont donc celles de ce rôle.
+  const role = "ADMIN"
+
+  const charger = useCallback(async () => {
+    setChargement(true)
+    setErreur(null)
+    try {
+      const res = await fetch("/api/customs/files")
+      const json = await res.json().catch(() => null)
+      if (!res.ok) {
+        setErreur(
+          res.status === 401 || res.status === 403
+            ? t("admin.customs.forbidden", "Session expirée ou droits insuffisants.")
+            : (json?.error as string) ??
+                t("admin.customs.load_error", "Les dossiers douaniers n'ont pas pu être chargés.")
+        )
+        return
+      }
+      setDossiers(Array.isArray(json?.files) ? json.files : [])
+    } catch {
+      setErreur(t("admin.customs.unreachable", "Le service douanier est injoignable."))
+    } finally {
+      setChargement(false)
+    }
+  }, [t])
 
   useEffect(() => {
-    fetchCustomsData()
-  }, [])
+    charger()
+  }, [charger])
 
-  async function fetchCustomsData() {
-    setLoading(true)
+  async function appliquerTransition() {
+    if (!cible) return
+    const exigeMotif = cible.statut === "BLOCKED"
+    if (exigeMotif && motif.trim().length < 3) {
+      toast.error(t("admin.customs.reason_required", "Un blocage doit être motivé."))
+      return
+    }
+
+    setEnvoi(true)
     try {
-      // 1. Tracking events with CUSTOMS status or customs-related
-      const { data: eventsData } = await supabase
-        .from('tracking_events')
-        .select(`
-          *,
-          request:import_requests(
-            id,
-            reference,
-            buyer:profiles(full_name, email),
-            country:countries(name, code)
-          )
-        `)
-        .eq('status', 'CUSTOMS')
-        .order('event_date', { ascending: false })
-
-      // 2. Orders in transit/shipped that might reach customs
-      const { data: ordersData } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          request:import_requests(
-            reference,
-            buyer:profiles(full_name),
-            country:countries(name, code)
-          )
-        `)
-        .in('status', ['SHIPPED', 'EXECUTING', 'PURCHASED'])
-        .order('updated_at', { ascending: false })
-
-      setCustomsEvents(eventsData || [])
-      setPendingOrders(ordersData || [])
-    } catch (error) {
-      console.error("Error fetching customs data:", error)
+      const res = await fetch(`/api/customs/files/${cible.dossier.id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: cible.statut,
+          ...(motif.trim() ? { reason: motif.trim() } : {}),
+        }),
+      })
+      const json = await res.json().catch(() => null)
+      if (!res.ok) {
+        toast.error((json?.error as string) ?? t("admin.customs.transition_failed", "Transition refusée."))
+        return
+      }
+      toast.success(
+        t("admin.customs.transition_done", "Dossier passé en ") + getStatusLabel(cible.statut)
+      )
+      setCible(null)
+      setMotif("")
+      await charger()
+    } catch {
+      toast.error(t("admin.customs.unreachable", "Le service douanier est injoignable."))
     } finally {
-      setLoading(false)
+      setEnvoi(false)
     }
   }
 
-  if (loading) {
+  const q = recherche.trim().toLowerCase()
+  const visibles = dossiers
+    .filter((d) => filtre === "ALL" || d.status === filtre)
+    .filter(
+      (d) =>
+        !q ||
+        (d.order_reference ?? "").toLowerCase().includes(q) ||
+        (d.container_number ?? "").toLowerCase().includes(q) ||
+        (d.transport_ref ?? "").toLowerCase().includes(q) ||
+        (d.vessel_flight_name ?? "").toLowerCase().includes(q)
+    )
+
+  const compteurs = STATUTS.map((s) => ({
+    statut: s,
+    n: dossiers.filter((d) => d.status === s).length,
+  }))
+
+  if (chargement) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-[200px]">
-        <div className="animate-pulse text-muted-foreground">Chargement...</div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    )
+  }
+
+  if (erreur) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 min-h-[60vh] px-6 text-center">
+        <div className="w-12 h-12 rounded-full bg-destructive-subtle border border-destructive-border flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6 text-destructive" />
+        </div>
+        <p className="text-sm text-muted-foreground max-w-md">{erreur}</p>
+        <Button onClick={charger} variant="outline">
+          {t("admin.customs.retry", "Réessayer")}
+        </Button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Douanes & Conformité</h1>
-        <p className="text-muted-foreground">
-          Suivi des déclarations douanières et conformité des expéditions.
-        </p>
+    <div className="p-6 space-y-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold mb-2">{t("admin.customs.title", "Dossiers douaniers")}</h1>
+          <p className="text-sm text-muted-foreground">
+            {t("admin.customs.subtitle", "Suivi du dédouanement, de la pré-alerte à la mainlevée")}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={charger} className="gap-2">
+          <RefreshCw className="w-4 h-4" />
+          {t("admin.customs.refresh", "Actualiser")}
+        </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">En Douane</CardTitle>
-            <FileCheck className="h-4 w-4 text-warning" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{customsEvents.length}</div>
-            <p className="text-xs text-muted-foreground">Événements douaniers signalés</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("admin.customs.orders_in_progress", "Commandes en cours")}</CardTitle>
-            <Package className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{pendingOrders.length}</div>
-            <p className="text-xs text-muted-foreground">Commandes en cours</p>
-          </CardContent>
-        </Card>
+      {/* Répartition par statut, cliquable pour filtrer */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        {compteurs.map(({ statut, n }) => {
+          const actif = filtre === statut
+          const couleurs = tone(TONALITE_PAR_STATUT[statut])
+          return (
+            <button
+              key={statut}
+              onClick={() => setFiltre(actif ? "ALL" : statut)}
+              className={`rounded-xl border p-3 text-start transition-colors ${
+                actif ? couleurs.surface : "bg-muted/30 border-border hover:bg-muted/50"
+              }`}
+            >
+              <p className="t-label text-muted-foreground mb-1">{getStatusLabel(statut)}</p>
+              <p className={`text-xl font-bold ${actif ? couleurs.text : "text-foreground"}`}>{n}</p>
+            </button>
+          )
+        })}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Événements Douaniers
-          </CardTitle>
-          <CardDescription>
-            Suivi des passages en douane et déblocages
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("admin.customs.date", "Date")}</TableHead>
-                <TableHead>{t("admin.customs.status", "Statut")}</TableHead>
-                <TableHead>{t("admin.customs.location", "Lieu")}</TableHead>
-                <TableHead>Demande</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Description</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {customsEvents.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Aucun événement douanier enregistré. Les passages en douane apparaîtront ici.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                customsEvents.map((ev) => (
-                  <TableRow key={ev.id}>
-                    <TableCell>{new Date(ev.event_date).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Badge variant={ev.status === 'CUSTOMS' ? 'default' : 'outline'}>
-                        {ev.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{ev.location}</TableCell>
-                    <TableCell className="font-mono text-xs">
-                      <Link href={`/admin/requests/${ev.request_id}`} className="text-primary hover:underline">
-                        {ev.request?.reference || ev.request_id?.slice(0, 8)}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{ev.request?.buyer?.full_name || "—"}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm max-w-xs truncate">
-                      {ev.description || "—"}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <Input
+        value={recherche}
+        onChange={(e) => setRecherche(e.target.value)}
+        placeholder={t("admin.customs.search", "Référence, conteneur, navire ou vol…")}
+        className="max-w-md"
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.customs.pending_clearance", "Commandes en attente de dédouanement")}</CardTitle>
-          <CardDescription>
-            Expéditions pouvant arriver en douane prochainement
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Réf. Commande</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Pays</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead className="text-end">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pendingOrders.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    Aucune commande en transit pour le moment.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                pendingOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono">{order.reference}</TableCell>
-                    <TableCell>{order.request?.buyer?.full_name || "—"}</TableCell>
-                    <TableCell>{order.request?.country?.name || order.request?.country?.code || "—"}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{order.status}</Badge>
-                    </TableCell>
-                    <TableCell className="text-end">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/requests/${order.request_id}`}>Voir</Link>
+      {visibles.length === 0 ? (
+        <div className="p-12 text-center border-2 border-dashed border-border rounded-2xl">
+          <Package className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+          <h3 className="font-semibold text-muted-foreground">
+            {dossiers.length === 0
+              ? t("admin.customs.empty", "Aucun dossier douanier ouvert")
+              : t("admin.customs.no_match", "Aucun dossier ne correspond")}
+          </h3>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {visibles.map((d) => {
+            const couleurs = tone(TONALITE_PAR_STATUT[d.status])
+            const suites = allowedNextStatuses(d.status, role)
+            const Icone = d.transport_mode ? ICONE_TRANSPORT[d.transport_mode] : Package
+            return (
+              <div
+                key={d.id}
+                className="bg-muted/30 border border-border p-4 rounded-xl flex flex-wrap items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <Icone className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="font-semibold">
+                        {d.order_reference ?? t("admin.customs.no_reference", "Sans référence")}
+                      </span>
+                      <Badge className={couleurs.badge}>{getStatusLabel(d.status)}</Badge>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                      {d.container_number && <span className="font-mono">{d.container_number}</span>}
+                      {d.vessel_flight_name && <span>{d.vessel_flight_name}</span>}
+                      {d.country_code && <span>{d.country_code}</span>}
+                      {d.updated_at && (
+                        <span>{new Date(d.updated_at).toLocaleDateString("fr-FR")}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {suites.length === 0 ? (
+                    <span className="t-label text-muted-foreground">
+                      {t("admin.customs.terminal", "Aucune suite possible")}
+                    </span>
+                  ) : (
+                    suites.map((s) => (
+                      <Button
+                        key={s}
+                        size="sm"
+                        variant={s === "BLOCKED" ? "destructive" : "outline"}
+                        onClick={() => {
+                          setCible({ dossier: d, statut: s })
+                          setMotif("")
+                        }}
+                      >
+                        {getStatusLabel(s)}
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                    ))
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <Dialog open={!!cible} onOpenChange={(ouvert) => !ouvert && setCible(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t("admin.customs.confirm_title", "Changer le statut du dossier")}
+            </DialogTitle>
+            <DialogDescription>
+              {cible && (
+                <>
+                  {getStatusLabel(cible.dossier.status)} → {getStatusLabel(cible.statut)}
+                  {cible.dossier.order_reference ? ` · ${cible.dossier.order_reference}` : ""}
+                </>
               )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <label className="t-label text-muted-foreground">
+              {cible?.statut === "BLOCKED"
+                ? t("admin.customs.reason_label", "Motif du blocage (obligatoire)")
+                : t("admin.customs.note_label", "Note (facultative)")}
+            </label>
+            <Input
+              value={motif}
+              onChange={(e) => setMotif(e.target.value)}
+              placeholder={t("admin.customs.reason_placeholder", "Ex. : documents manquants à l'arrivée")}
+            />
+            {cible?.statut === "BLOCKED" && (
+              <p className="text-xs text-muted-foreground">
+                {t(
+                  "admin.customs.reason_help",
+                  "Un blocage arrête la marchandise : le motif est la seule trace de la raison."
+                )}
+              </p>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCible(null)} disabled={envoi}>
+              {t("admin.customs.cancel", "Annuler")}
+            </Button>
+            <Button onClick={appliquerTransition} disabled={envoi}>
+              {envoi && <Loader2 className="w-4 h-4 me-2 animate-spin" />}
+              {t("admin.customs.confirm", "Confirmer")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
