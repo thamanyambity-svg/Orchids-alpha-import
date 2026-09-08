@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import { signalerIncidentClient } from "@/lib/monitoring/client"
 
 /**
  * Dernier filet : la frontière d'erreur de la racine.
@@ -23,6 +24,15 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error("Erreur racine :", error)
+    // Marqué fatal : à ce stade l'application n'a pas démarré du tout, ce qui
+    // n'a pas la même gravité qu'une page qui échoue.
+    signalerIncidentClient({
+      name: error.name,
+      message: error.message || String(error),
+      stack: error.stack,
+      digest: error.digest,
+      fatal: true,
+    })
   }, [error])
 
   const enDeveloppement = process.env.NODE_ENV === "development"

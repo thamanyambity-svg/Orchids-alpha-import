@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import { signalerIncidentClient } from "@/lib/monitoring/client"
 
 /**
  * Frontière d'erreur de l'application.
@@ -14,8 +15,10 @@ import { useEffect } from "react"
  * internes — mais l'identifiant technique (digest) est montré, car c'est lui
  * qui permet de retrouver l'incident dans les journaux du serveur.
  *
- * Dans les deux cas l'erreur part dans la console, prête à être captée par
- * une supervision.
+ * Dans les deux cas l'erreur part dans la console et remonte à la supervision :
+ * une erreur de rendu ne laisse aucune trace côté serveur, et c'est justement
+ * cette classe de pannes — un script bloqué, une réponse inattendue — qui
+ * passait entièrement inaperçue.
  */
 export default function Error({
   error,
@@ -28,6 +31,12 @@ export default function Error({
 
   useEffect(() => {
     console.error("Frontière d'erreur :", error)
+    signalerIncidentClient({
+      name: error.name,
+      message: error.message || String(error),
+      stack: error.stack,
+      digest: error.digest,
+    })
   }, [error])
 
   return (

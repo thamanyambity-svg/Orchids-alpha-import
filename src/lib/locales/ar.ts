@@ -137,6 +137,7 @@ const ar: Record<string, string> = {
   'admin.sidebar.invoices': 'الفواتير',
   'admin.sidebar.sepa': 'الخصم المباشر SEPA',
   'admin.sidebar.webhooks': 'Webhooks',
+  'admin.sidebar.errors': 'الأعطال',
   'admin.invoices.title': 'الفواتير',
   'admin.invoices.subtitle': 'إدارة جميع الفواتير الأولية والتجارية والنهائية',
   'admin.invoices.search': 'بحث...',

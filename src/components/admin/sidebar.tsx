@@ -31,7 +31,8 @@ import {
   ScrollText,
   TrendingUp,
   Webhook,
-  Bot
+  Bot,
+  ServerCrash
 } from "lucide-react"
 import { useLanguage } from "@/lib/i18n-context"
 import { createClient } from "@/lib/supabase/client"
@@ -74,6 +75,7 @@ const navItems: NavItem[] = [
   { href: "/admin/emails", label: "Boîte Mail IA", labelKey: "admin.sidebar.emails", icon: Mail },
   { href: "/admin/notifications", label: "Notifications", labelKey: "admin.sidebar.notifications", icon: Bell },
   { href: "/admin/webhooks", label: "Webhooks", labelKey: "admin.sidebar.webhooks", icon: Webhook },
+  { href: "/admin/errors", label: "Incidents", labelKey: "admin.sidebar.errors", icon: ServerCrash },
   { href: "/admin/documents", label: "Documents", labelKey: "admin.sidebar.documents", icon: FolderOpen },
 ]
 

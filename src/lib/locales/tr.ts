@@ -137,6 +137,7 @@ const tr: Record<string, string> = {
   'admin.sidebar.invoices': 'Faturalar',
   'admin.sidebar.sepa': 'SEPA Otomatik Ödeme',
   'admin.sidebar.webhooks': 'Webhooks',
+  'admin.sidebar.errors': 'Olaylar',
   'admin.invoices.title': 'Faturalar',
   'admin.invoices.subtitle': 'Tüm proforma, ticari ve nihai faturaları yönetin',
   'admin.invoices.search': 'Ara...',

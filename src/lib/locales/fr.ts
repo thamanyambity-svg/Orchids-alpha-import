@@ -137,6 +137,7 @@ const fr: Record<string, string> = {
   'admin.sidebar.invoices': 'Factures',
   'admin.sidebar.sepa': 'Prélèvements SEPA',
   'admin.sidebar.webhooks': 'Webhooks',
+  'admin.sidebar.errors': 'Incidents',
   'admin.invoices.title': 'Factures',
   'admin.invoices.subtitle': 'Gérez l\'ensemble des factures proforma, commerciales et finales',
   'admin.invoices.search': 'Rechercher...',

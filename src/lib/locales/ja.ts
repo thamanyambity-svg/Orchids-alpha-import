@@ -137,6 +137,7 @@ const ja: Record<string, string> = {
   'admin.sidebar.invoices': '請求書',
   'admin.sidebar.sepa': 'SEPA口座振替',
   'admin.sidebar.webhooks': 'Webhooks',
+  'admin.sidebar.errors': 'インシデント',
   'admin.invoices.title': '請求書',
   'admin.invoices.subtitle': 'すべてのプロフォーマ、商業、最終請求書を管理',
   'admin.invoices.search': '検索...',

@@ -137,6 +137,7 @@ const zh: Record<string, string> = {
   'admin.sidebar.invoices': '发票',
   'admin.sidebar.sepa': 'SEPA直接借记',
   'admin.sidebar.webhooks': 'Webhooks',
+  'admin.sidebar.errors': '故障事件',
   'admin.invoices.title': '发票',
   'admin.invoices.subtitle': '管理所有形式发票、商业发票和最终发票',
   'admin.invoices.search': '搜索...',

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { UserRole } from '@/lib/types'
@@ -81,11 +81,58 @@ export async function requireRole(roles: UserRole[]): Promise<AuthContext> {
 /**
  * Convertit une erreur capturée en réponse JSON normalisée.
  * Préserve le status des ApiError, fallback en 500 sinon (sans fuiter le détail interne).
+ *
+ * Rapporte aussi l'incident à la supervision. C'est indispensable ici et non
+ * redondant avec `onRequestError` de l'instrumentation : ce bloc *rattrape*
+ * l'erreur, donc Next ne la voit jamais passer et ne la signale pas.
+ *
+ * Seules les défaillances sont rapportées. Une `ApiError` en 4xx est une
+ * réponse métier attendue — un identifiant absent, un droit refusé — et la
+ * remonter noierait les vrais incidents sous le bruit du fonctionnement normal.
  */
-export function handleApiError(error: unknown): NextResponse {
+export function handleApiError(error: unknown, contexte?: { route?: string; method?: string }): NextResponse {
+  const estAttendue = error instanceof ApiError && error.status < 500
+  const status = error instanceof ApiError ? error.status : 500
+
+  if (!estAttendue) {
+    signalerIncident(error, status, contexte)
+  }
+
   if (error instanceof ApiError) {
     return NextResponse.json({ error: error.message }, { status: error.status })
   }
-  console.error('Unhandled API error:', error)
   return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+}
+
+/**
+ * Envoie l'incident sans faire attendre la réponse ni pouvoir la faire échouer.
+ *
+ * `after` diffère l'exécution jusqu'après l'envoi de la réponse. Sans lui, une
+ * promesse simplement lancée serait interrompue à la fin de l'invocation sur
+ * un hébergement sans serveur : l'incident ne serait écrit qu'une fois sur
+ * deux, précisément quand la plateforme est chargée.
+ */
+function signalerIncident(
+  error: unknown,
+  status: number,
+  contexte?: { route?: string; method?: string }
+): void {
+  const envoyer = async () => {
+    const { reportError } = await import('@/lib/monitoring/report')
+    await reportError(error, {
+      source: 'api',
+      level: status >= 500 ? 'error' : 'warning',
+      status,
+      route: contexte?.route,
+      method: contexte?.method,
+    })
+  }
+
+  try {
+    after(envoyer)
+  } catch {
+    // Hors contexte de requête (test unitaire, script) : `after` refuse. On
+    // envoie directement, sans jamais laisser l'échec remonter.
+    void envoyer().catch(() => {})
+  }
 }

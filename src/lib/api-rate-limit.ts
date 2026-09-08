@@ -46,6 +46,13 @@ const BUDGETS: [string, Budget][] = [
   // Ouvert aux visiteurs : très strict.
   ["/api/newsletter/", { maxRequests: 5, windowMs: HEURE }],
 
+  // Remontée d'erreurs depuis le navigateur. Ouverte par nécessité — une
+  // erreur survient souvent avant toute authentification, et c'est justement
+  // celle-là qu'on veut voir. Le budget reste étroit : une page en boucle
+  // d'erreur ne doit pas pouvoir écrire sans fin, et un tiers ne doit pas
+  // pouvoir noyer le tableau de bord sous du bruit fabriqué.
+  ["/api/monitoring/", { maxRequests: 20, windowMs: MINUTE }],
+
   // Back-office : lecture fréquente par des comptes connus.
   ["/api/admin/", { maxRequests: 240, windowMs: MINUTE }],
 

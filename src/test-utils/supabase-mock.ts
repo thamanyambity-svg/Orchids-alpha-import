@@ -8,10 +8,24 @@ import { vi } from "vitest"
  * HTTP que la forme exacte du payload envoyé à la base.
  */
 
+export type SupabaseFiltre = {
+  operateur: string
+  colonne: string
+  valeur?: any
+}
+
 export type SupabaseOp = {
   table: string
   type: "select" | "insert" | "update" | "delete"
   payload?: any
+  /**
+   * Filtres appliqués à l'opération, dans l'ordre.
+   *
+   * Sans eux, un test ne peut vérifier que la donnée renvoyée, jamais la
+   * restriction demandée — or c'est souvent la restriction qui porte la règle
+   * de sécurité : « seulement les miens », « seulement les non résolus ».
+   */
+  filtres: SupabaseFiltre[]
 }
 
 type Resolver = (op: SupabaseOp) => { data?: any; error?: any }
@@ -20,17 +34,37 @@ export function createSupabaseMock(resolver: Resolver) {
   const ops: SupabaseOp[] = []
 
   const from = vi.fn((table: string) => {
-    const op: SupabaseOp = { table, type: "select" }
+    const op: SupabaseOp = { table, type: "select", filtres: [] }
     ops.push(op)
 
     const settle = () => Promise.resolve(resolver(op))
 
+    const noter = (operateur: string) => (colonne: string, valeur?: any) => {
+      op.filtres.push({ operateur, colonne, valeur })
+      return builder
+    }
+
     const builder: any = {
       select: () => builder,
-      eq: () => builder,
-      in: () => builder,
+      eq: noter("eq"),
+      neq: noter("neq"),
+      in: noter("in"),
+      is: noter("is"),
+      gt: noter("gt"),
+      gte: noter("gte"),
+      lt: noter("lt"),
+      lte: noter("lte"),
+      like: noter("like"),
+      ilike: noter("ilike"),
+      contains: noter("contains"),
+      // `.not(colonne, operateur, valeur)` a une signature à trois arguments.
+      not: (colonne: string, operateur: string, valeur?: any) => {
+        op.filtres.push({ operateur: `not.${operateur}`, colonne, valeur })
+        return builder
+      },
       order: () => builder,
       limit: () => builder,
+      range: () => builder,
       insert: (payload: any) => {
         op.type = "insert"
         op.payload = payload
@@ -59,6 +93,12 @@ export function createSupabaseMock(resolver: Resolver) {
     /** Dernière opération enregistrée pour une table donnée. */
     lastOp: (table: string, type?: SupabaseOp["type"]) =>
       [...ops].reverse().find((o) => o.table === table && (!type || o.type === type)),
+    /** Vrai si la dernière opération sur cette table portait ce filtre. */
+    aFiltre: (table: string, operateur: string, colonne: string) =>
+      [...ops]
+        .reverse()
+        .find((o) => o.table === table)
+        ?.filtres.some((f) => f.operateur === operateur && f.colonne === colonne) ?? false,
   }
 }
 
