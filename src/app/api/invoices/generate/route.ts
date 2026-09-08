@@ -1,11 +1,47 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin as supabase } from "@/lib/supabase/admin"
 import { generateInvoice } from "@/components/invoices/generate-invoice"
+import { requireRole, handleApiError, ApiError } from "@/lib/auth-guard"
 
+/** Les trois seuls types de facture acceptés, alignés sur l'enum invoice_type. */
+const TYPES_AUTORISES = ["PROFORMA", "COMMERCIAL", "FINAL"] as const
+type TypeFacture = (typeof TYPES_AUTORISES)[number]
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/**
+ * Génère une facture PDF pour une commande.
+ *
+ * Cette route était ouverte à tous : sans authentification, avec le client
+ * service_role, elle acceptait n'importe quel orderId et renvoyait le nom,
+ * l'adresse électronique, la société et l'adresse de l'acheteur. Elle
+ * téléversait en plus un PDF dans le bucket « invoices » et insérait une
+ * ligne dans la table invoices — donc une écriture non authentifiée, pas
+ * seulement une fuite.
+ *
+ * L'émission d'une facture est un acte d'administration : elle est désormais
+ * réservée au rôle ADMIN. Le client service_role est conservé APRÈS ce
+ * contrôle, parce que le téléversement dans le bucket et l'écriture de la
+ * facture sont des opérations système, conformément à la stratégie décrite
+ * dans lib/auth-guard.
+ */
 export async function POST(req: Request) {
   try {
-    const { orderId, type } = await req.json()
+    await requireRole(["ADMIN"])
+
+    const corps = await req.json().catch(() => null)
+    if (!corps || typeof corps !== "object") {
+      throw new ApiError(400, "Corps de requête invalide")
+    }
+
+    const { orderId, type } = corps as { orderId?: unknown; type?: unknown }
+
+    if (typeof orderId !== "string" || !UUID.test(orderId)) {
+      throw new ApiError(400, "orderId doit être un UUID")
+    }
+    if (typeof type !== "string" || !TYPES_AUTORISES.includes(type as TypeFacture)) {
+      throw new ApiError(400, `type doit valoir ${TYPES_AUTORISES.join(", ")}`)
+    }
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -91,7 +127,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ invoice, url: publicUrl.publicUrl })
   } catch (error) {
-    console.error("Invoice generation error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return handleApiError(error)
   }
 }
