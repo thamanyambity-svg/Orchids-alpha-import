@@ -16,16 +16,27 @@ const securityHeaders = [
   },
   {
     // CSP volontairement compatible avec Next + Tailwind + Supabase + Mapbox.
+    //
+    // Stripe est listé explicitement : `loadStripe` injecte un script depuis
+    // js.stripe.com et monte une iframe servie par le même hôte. Sans ces
+    // origines, le script est refusé, `stripePromise` vaut null, et le mandat
+    // SEPA échoue sur « Stripe n'a pas pu être chargé » — sans rien signaler
+    // ailleurs qu'en console. Toute origine retirée d'ici casse le paiement en
+    // production, pas les tests.
+    //
     // Prochaine étape possible : CSP stricte basée sur nonce (via middleware).
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
       "worker-src 'self' blob:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://api.stripe.com",
+      // js.stripe.com sert l'iframe de collecte ; hooks.stripe.com sert les
+      // redirections d'authentification 3-D Secure.
+      "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "object-src 'none'",
