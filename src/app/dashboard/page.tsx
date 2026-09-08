@@ -97,7 +97,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.1 }}
             className="flex items-center gap-3"
           >
-            <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase font-condensed tracking-widest">
               <span>{t("dashboard.home.status", "Statut:")}</span>
               <span className="text-success font-bold flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
@@ -109,7 +109,7 @@ export default function DashboardPage() {
             </div>
             {profile?.countries && (
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-muted-foreground uppercase">{profile.countries.name}</span>
+                <span className="t-label text-[10px] text-muted-foreground">{profile.countries.name}</span>
                 {profile.countries.code === 'AE' && (
                   <div className="w-5 h-3 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
                     <div className="h-1/3 bg-[#ff0000]" />
@@ -156,7 +156,7 @@ export default function DashboardPage() {
 
       {/* Footer info */}
       <footer className="mt-20 border-t border-foreground/5 py-8 text-center">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+        <p className="t-label text-[10px] text-muted-foreground tracking-[0.2em]">
           © 2026 Alpha A Ambity - Confidentiel & Sécurisé
         </p>
       </footer>

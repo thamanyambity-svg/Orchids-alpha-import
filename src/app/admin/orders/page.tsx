@@ -68,15 +68,15 @@ export default function AdminOrdersPage() {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
-          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.total", "Total commandes")}</p>
+          <p className="t-label text-muted-foreground mb-1">{t("admin.orders.total", "Total commandes")}</p>
           <p className="text-2xl font-bold text-foreground">{orders.length}</p>
         </div>
         <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
-          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.active", "En cours")}</p>
+          <p className="t-label text-muted-foreground mb-1">{t("admin.orders.active", "En cours")}</p>
           <p className="text-2xl font-bold text-primary">{activeOrders}</p>
         </div>
         <div className="bg-foreground/5 border border-foreground/10 p-4 rounded-xl">
-          <p className="text-xs text-foreground/40 uppercase tracking-wider mb-1">{t("admin.orders.revenue", "Volume total")}</p>
+          <p className="t-label text-muted-foreground mb-1">{t("admin.orders.revenue", "Volume total")}</p>
           <p className="text-2xl font-bold text-success">${totalRevenue.toLocaleString()}</p>
         </div>
       </div>

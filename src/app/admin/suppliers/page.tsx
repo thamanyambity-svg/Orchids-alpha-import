@@ -218,7 +218,7 @@ export default function AdminSuppliersPage() {
                         variant={activeTab === id ? "default" : "outline"}
                         size="sm"
                         onClick={() => setActiveTab(id)}
-                        className="rounded-full text-xs font-bold uppercase tracking-wider shrink-0"
+                        className="rounded-full text-xs font-bold uppercase font-condensed tracking-wider shrink-0"
                     >
                         {label}
                     </Button>

@@ -128,7 +128,7 @@ export default function AdminIncidentsPage() {
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <table className="w-full text-start">
-            <thead className="bg-muted/50 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <thead className="bg-muted/50 text-xs font-medium uppercase font-condensed tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4">Incident / Commande</th>
                 <th className="px-6 py-4">Type</th>

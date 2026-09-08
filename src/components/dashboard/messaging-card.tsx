@@ -86,7 +86,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
             <MessageSquare className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-sm font-bold tracking-widest uppercase">MESSAGERIE</h3>
+            <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">MESSAGERIE</h3>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -102,8 +102,8 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">Aucun message</p>
-            <p className="text-[10px] text-muted-foreground uppercase">Commencez la discussion avec votre partenaire</p>
+            <p className="t-label text-muted-foregroundst">Aucun message</p>
+            <p className="t-label text-[10px] text-muted-foreground">Commencez la discussion avec votre partenaire</p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -120,7 +120,7 @@ export function MessagingCard({ partner }: { partner?: Profile | null }) {
                   </div>
                 )}
                 <div className={`space-y-1 max-w-[80%] ${isPartner ? "" : "text-end"}`}>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase font-condensed tracking-widest">
                     {isPartner ? (partner?.full_name || "Partenaire") : "Vous"}
                   </p>
                   <div className={`p-4 rounded-2xl text-sm ${isPartner ? "bg-secondary/50 rounded-tl-none" : "bg-primary text-primary-foreground rounded-tr-none"}`}>

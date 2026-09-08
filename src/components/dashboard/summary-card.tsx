@@ -14,8 +14,8 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
         animate={{ opacity: 1, y: 0 }}
         className="glass rounded-2xl p-6 relative overflow-hidden group flex flex-col items-center justify-center min-h-[200px]"
       >
-        <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">Aucune demande active</p>
-        <p className="text-[10px] text-muted-foreground uppercase mt-2">{t("summary.create_prompt", "Créez une nouvelle demande pour commencer")}</p>
+        <p className="text-muted-foreground font-mono text-sm uppercase font-condensed tracking-widest">Aucune demande active</p>
+        <p className="t-label text-[10px] text-muted-foreground mt-2">{t("summary.create_prompt", "Créez une nouvelle demande pour commencer")}</p>
       </motion.div>
     )
   }
@@ -31,7 +31,7 @@ export function SummaryCard({ request }: { request?: ImportRequest | null }) {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground font-mono text-sm tracking-widest uppercase">RÉSUMÉ #{request.reference || request.id.slice(0, 8)}</span>
+          <span className="text-muted-foreground font-mono text-sm tracking-widest uppercase font-condensed">RÉSUMÉ #{request.reference || request.id.slice(0, 8)}</span>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </div>
         <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground uppercase">

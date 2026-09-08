@@ -120,7 +120,7 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
       <div className="p-6 space-y-6">
         {/* Type de véhicule */}
         <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.type", "Type de commande")} *</Label>
+          <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.type", "Type de commande")} *</Label>
           <div className="flex gap-2">
             {["NEUF","OCCASION","PIECES_DETACHEES"].map(type => (
               <button
@@ -137,18 +137,18 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Identification */}
         <div className="grid md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.brand", "Marque")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.brand", "Marque")} *</Label>
             <Select value={formData.brand} onValueChange={v => update("brand", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{BRANDS.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.model", "Modèle")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.model", "Modèle")} *</Label>
             <Input placeholder="Ex. Hilux, G-Class, Land Cruiser" value={formData.model} onChange={e => update("model", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.year", "Année modèle")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.year", "Année modèle")} *</Label>
             <Input type="number" min={1990} max={new Date().getFullYear() + 1} placeholder="Ex. 2023" value={formData.year} onChange={e => update("year", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
         </div>
@@ -156,25 +156,25 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Spécifications techniques */}
         <div className="rounded-lg border border-border p-4 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.engine", "Motorisation")}</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.engine", "Motorisation")}</Label>
             <Select value={formData.engine_type} onValueChange={v => update("engine_type", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{ENGINE_TYPES.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.displacement", "Cylindrée (cc)")}</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.displacement", "Cylindrée (cc)")}</Label>
             <Input type="number" placeholder="Ex. 2755" value={formData.engine_displacement_cc} onChange={e => update("engine_displacement_cc", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.transmission", "Boîte de vitesses")}</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.transmission", "Boîte de vitesses")}</Label>
             <Select value={formData.transmission} onValueChange={v => update("transmission", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{TRANSMISSIONS.map(tx => <SelectItem key={tx} value={tx}>{tx}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.drivetrain", "Transmission")}</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.drivetrain", "Transmission")}</Label>
             <Select value={formData.drivetrain} onValueChange={v => update("drivetrain", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{DRIVETRAINS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
@@ -186,18 +186,18 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {formData.vehicle_type !== "NEUF" && (
           <div className="rounded-lg border border-warning/20 bg-warning/5 p-4 grid md:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.condition", "État général")} *</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.condition", "État général")} *</Label>
               <Select value={formData.condition} onValueChange={v => update("condition", v)} disabled={readOnly}>
                 <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
                 <SelectContent>{CONDITIONS.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.mileage", "Kilométrage (km)")} *</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.mileage", "Kilométrage (km)")} *</Label>
               <Input type="number" min={0} placeholder="Ex. 85 000" value={formData.mileage_km} onChange={e => update("mileage_km", e.target.value)} disabled={readOnly} className="h-10" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.first_reg", "1ère mise en circulation")}</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.first_reg", "1ère mise en circulation")}</Label>
               <Input type="date" value={formData.first_registration_date} onChange={e => update("first_registration_date", e.target.value)} disabled={readOnly} className="h-10" />
             </div>
           </div>
@@ -206,15 +206,15 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
         {/* Budget */}
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.target_price", "Prix cible ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.target_price", "Prix cible ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.target_price_usd} onChange={e => update("target_price_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_min_usd} onChange={e => update("budget_min_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_max_usd} onChange={e => update("budget_max_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
         </div>
@@ -225,7 +225,7 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
           onClick={() => setShowOptional(!showOptional)}
           className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors w-full justify-between py-2 border-t border-border/50"
         >
-          <span className="font-medium uppercase tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
+          <span className="font-medium uppercase font-condensed tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
           {showOptional ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
 
@@ -233,20 +233,20 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
           <div className="space-y-4 pt-2">
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.color_ext", "Couleur extérieure")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.color_ext", "Couleur extérieure")}</Label>
                 <Input placeholder="Ex. Noir, Blanc perle" value={formData.color_exterior} onChange={e => update("color_exterior", e.target.value)} disabled={readOnly} className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.color_int", "Couleur intérieure")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.color_int", "Couleur intérieure")}</Label>
                 <Input placeholder="Ex. Noir cuir" value={formData.color_interior} onChange={e => update("color_interior", e.target.value)} disabled={readOnly} className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.country_origin", "Pays d'origine")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.country_origin", "Pays d'origine")}</Label>
                 <Input placeholder="Ex. Allemagne, Japon" value={formData.country_origin} onChange={e => update("country_origin", e.target.value)} disabled={readOnly} className="h-10" />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.vehicle.equipment", "Équipements & Options souhaités")}</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.equipment", "Équipements & Options souhaités")}</Label>
               <Textarea
                 placeholder={t("spec.vehicle.equipment_placeholder", "Ex. GPS, toit ouvrant, caméra de recul, sièges chauffants...")}
                 value={formData.equipment_notes}
@@ -257,7 +257,7 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
             </div>
             {/* Documents requis */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground flex items-center gap-1.5">
                 <FileText className="w-3 h-3" />{t("spec.vehicle.required_docs", "Documents requis à l'importation")}
               </Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

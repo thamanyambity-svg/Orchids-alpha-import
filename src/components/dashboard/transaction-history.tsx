@@ -46,7 +46,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
   if (!requestId) {
     return (
       <div className="glass rounded-3xl overflow-hidden mt-6 p-10 text-center">
-        <p className="text-muted-foreground uppercase text-xs tracking-widest">Aucune transaction disponible</p>
+        <p className="text-muted-foreground uppercase font-condensed text-xs tracking-widest">Aucune transaction disponible</p>
       </div>
     )
   }
@@ -55,7 +55,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
     <div className="glass rounded-3xl overflow-hidden mt-6">
       <div className="p-6 border-b border-foreground/5 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <h3 className="text-sm font-bold tracking-widest uppercase">HISTORIQUE DES TRANSACTIONS</h3>
+          <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">HISTORIQUE DES TRANSACTIONS</h3>
           <div className="flex items-center gap-2">
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -77,7 +77,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
       <div className="overflow-x-auto">
         <table className="w-full text-start border-collapse">
           <thead>
-            <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-foreground/5">
+            <tr className="text-[10px] font-mono text-muted-foreground uppercase font-condensed tracking-widest border-b border-foreground/5">
               <th className="px-6 py-4 font-normal">Date</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">Montant</th>
@@ -106,7 +106,7 @@ export function TransactionHistory({ requestId }: { requestId?: string }) {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-end">
-                    <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+                    <span className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase font-condensed tracking-wider ${
                       tx.status === "PAID" || tx.status === "BLOCKED"
                         ? "bg-primary/20 text-primary border border-primary/30" 
                         : "bg-secondary/50 text-muted-foreground border border-foreground/5"

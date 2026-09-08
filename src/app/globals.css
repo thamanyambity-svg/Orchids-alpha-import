@@ -282,6 +282,52 @@ html { scroll-behavior: smooth; }
       transparent 10px
     );
   }
+  /* ─────────────────────────────────────────────────────────────────────
+     Primitives typographiques de la marque.
+
+     La vitrine porte toute la signature typographique — capitales condensées,
+     interlettrage large — pendant que le back-office et les espaces client
+     retombent sur Inter en casse normale. Les deux moitiés du produit ne se
+     ressemblaient pas.
+
+     La vitrine n'avait pourtant pas de système : quinze valeurs
+     d'interlettrage différentes, réglées élément par élément. Ces trois
+     primitives en extraient l'essentiel et servent les deux zones.
+
+     Elles s'appliquent au CHROME — libellés, en-têtes de colonnes, actions —
+     jamais au corps des tableaux : des capitales condensées à .24em se lisent
+     mal en lecture rapide sur des données denses.
+     ───────────────────────────────────────────────────────────────────── */
+
+  /* Sur-titre de section : « Espace client », « Chiffres clés ». */
+  .t-eyebrow {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+    line-height: 1.2;
+  }
+
+  /* Libellé d'indicateur, en-tête de colonne, étiquette de formulaire. */
+  .t-label {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    line-height: 1.3;
+  }
+
+  /* Action : bouton, lien d'appel. */
+  .t-action {
+    font-family: var(--font-condensed), 'Barlow Condensed', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+  }
+
   .font-display { font-family: var(--font-display), 'Barlow Condensed', sans-serif; }
   .font-condensed { font-family: var(--font-condensed), system-ui, sans-serif; }
   @keyframes marquee {

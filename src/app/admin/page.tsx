@@ -185,7 +185,7 @@ export default function AdminDashboardPage() {
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-foreground/40 font-medium mb-1 uppercase tracking-wider">{stat.label}</p>
+                  <p className="text-xs text-foreground/40 font-medium mb-1 uppercase font-condensed tracking-wider">{stat.label}</p>
                   <h3 className="text-2xl font-bold text-foreground">{stat.value}</h3>
 
                   <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -213,9 +213,9 @@ export default function AdminDashboardPage() {
         {/* Partners Table */}
         <div className="lg:col-span-2 p-6 rounded-2xl bg-card border border-foreground/5">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Partenaires Actifs</h3>
+            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase font-condensed">Partenaires Actifs</h3>
             <Link href="/admin/partners">
-              <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase tracking-widest hover:text-foreground">
+              <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase font-condensed tracking-widest hover:text-foreground">
                 Voir tout <ChevronDown className="w-3 h-3 ms-1" />
               </Button>
             </Link>
@@ -224,11 +224,11 @@ export default function AdminDashboardPage() {
             <table className="w-full">
               <thead>
                 <tr className="text-start border-b border-foreground/5">
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Partenaire</th>
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Pays</th>
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Performance</th>
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest">Volume</th>
-                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase tracking-widest text-end">{t("admin.status", "Statut")}</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase font-condensed tracking-widest">Partenaire</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase font-condensed tracking-widest">Pays</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase font-condensed tracking-widest">Performance</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase font-condensed tracking-widest">Volume</th>
+                  <th className="pb-4 text-[10px] font-bold text-foreground/20 uppercase font-condensed tracking-widest text-end">{t("admin.status", "Statut")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/5">
@@ -272,9 +272,9 @@ export default function AdminDashboardPage() {
         {/* Recent Requests List */}
         <div className="p-6 rounded-2xl bg-card border border-foreground/5">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Demandes récentes</h3>
+            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase font-condensed">Demandes récentes</h3>
             <Link href="/admin/requests">
-              <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase tracking-widest hover:text-foreground">
+              <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40 uppercase font-condensed tracking-widest hover:text-foreground">
                 Voir tout <ListFilter className="w-3 h-3 ms-1" />
               </Button>
             </Link>
@@ -312,7 +312,7 @@ export default function AdminDashboardPage() {
         <div className="p-6 rounded-2xl bg-card border border-foreground/5">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Journal d&apos;Audit</h3>
+              <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase font-condensed">Journal d&apos;Audit</h3>
               {auditLogs.length > 0 && <span className="w-4 h-4 flex items-center justify-center bg-destructive text-[8px] font-bold text-foreground rounded-full">{auditLogs.length}</span>}
             </div>
             <Button variant="ghost" size="sm" className="text-[10px] text-foreground/40">Synchronisé</Button>
@@ -345,7 +345,7 @@ export default function AdminDashboardPage() {
         {/* Critical Alerts */}
         <div className="p-6 rounded-2xl bg-card border border-foreground/5">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase">Alertes Critiques</h3>
+            <h3 className="text-sm font-bold tracking-[0.2em] text-foreground/80 uppercase font-condensed">Alertes Critiques</h3>
             <div className="flex gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive" />
             </div>
@@ -359,7 +359,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-foreground mb-1">{alert.title}</h4>
-                    <p className="text-[10px] text-foreground/40 uppercase tracking-widest">{alert.location} • {alert.time}</p>
+                    <p className="text-[10px] text-foreground/40 uppercase font-condensed tracking-widest">{alert.location} • {alert.time}</p>
                   </div>
                   <Link href="/admin/risks">
                     <Button variant="ghost" size="sm" className="text-[10px] text-destructive hover:bg-destructive/10">Voir</Button>

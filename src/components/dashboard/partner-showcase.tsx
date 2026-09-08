@@ -38,7 +38,7 @@ export function PartnerShowcase() {
               <div className="h-1/3 bg-black" />
               <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-[#00732f]" />
             </div>
-            <span className="text-sm font-mono tracking-widest text-foreground/80 uppercase">Dubai</span>
+            <span className="text-sm font-mono tracking-widest text-foreground/80 uppercase font-condensed">Dubai</span>
           </div>
 
           <h2 className="text-4xl font-bold mb-2 tracking-tight text-foreground">MAARMALA - Head Officer</h2>
@@ -70,12 +70,12 @@ export function PartnerShowcase() {
         <div className="flex flex-col gap-3">
           <Button 
             onClick={scrollToMessaging}
-            className="rounded-xl px-8 h-12 bg-primary text-primary-foreground font-bold tracking-widest uppercase text-xs hover:scale-105 transition-transform"
+            className="rounded-xl px-8 h-12 bg-primary text-primary-foreground font-bold tracking-widest uppercase font-condensed text-xs hover:scale-105 transition-transform"
           >
             <MessageSquare className="w-4 h-4 me-2" />
             Contacter le partenaire
           </Button>
-          <p className="text-[9px] text-muted-foreground uppercase text-center tracking-widest">Temps de réponse: ~15 min</p>
+          <p className="text-[9px] text-muted-foreground uppercase font-condensed text-center tracking-widest">Temps de réponse: ~15 min</p>
         </div>
       </div>
     </motion.div>

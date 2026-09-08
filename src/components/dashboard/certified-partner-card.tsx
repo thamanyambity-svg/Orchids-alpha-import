@@ -92,10 +92,10 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
               <ShieldCheck className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mb-1">
+              <p className="t-label text-[10px] text-muted-foreground tracking-widest leading-none mb-1">
                 {partner ? t("certified_partner.assigned", "Partenaire Assigné") : t("certified_partner.certified", "Partenaire Certifié")}
               </p>
-              <h3 className="text-sm font-bold tracking-widest uppercase">
+              <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">
                 {partner ? t("certified_partner.your_partner", "VOTRE PARTENAIRE") : t("certified_partner.certified_dubai", "CERTIFIÉ DUBAÏ")}
               </h3>
             </div>
@@ -120,7 +120,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
           <div>
             <h4 className="text-lg font-bold text-foreground tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-muted-foreground uppercase">{displayPartner.city} {displayPartner.countries?.name}</span>
+              <span className="t-label text-[10px] text-muted-foreground">{displayPartner.city} {displayPartner.countries?.name}</span>
               {displayPartner.countries?.code === 'AE' && (
                 <div className="w-4 h-2.5 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
                   <div className="h-1/3 bg-[#ff0000]" />
@@ -161,14 +161,14 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
         <div className="grid grid-cols-2 gap-3 mb-4">
           <Button
             onClick={handleWhatsApp}
-            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
+            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-foreground transition-all font-bold tracking-widest uppercase font-condensed text-[10px]"
           >
             <Phone className="w-3 h-3 me-2" />
             WhatsApp
           </Button>
           <Button
             onClick={handleEmail}
-            className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase text-[10px]"
+            className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase font-condensed text-[10px]"
           >
             <Mail className="w-3 h-3 me-2" />
             Email
@@ -177,7 +177,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
 
         <Button
           onClick={() => scrollToSection('messaging-section')}
-          className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase text-xs shadow-lg shadow-primary/20"
+          className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase font-condensed text-xs shadow-lg shadow-primary/20"
         >
           {t("certified_partner.open_secure_chat", "Ouvrir le Chat Sécurisé")}
         </Button>

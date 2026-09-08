@@ -108,7 +108,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
         {/* Identification */}
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.product_name", "Désignation commerciale")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.product_name", "Désignation commerciale")} *</Label>
             <Input
               placeholder={t("spec.general.name_placeholder", "Ex. Pompe centrifuge 50 m³/h – acier inox 316L")}
               value={formData.product_name}
@@ -118,7 +118,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.description", "Description & spécifications")}</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.description", "Description & spécifications")}</Label>
             <Textarea
               placeholder={t("spec.general.desc_placeholder", "Caractéristiques techniques, usage prévu, matériaux, normes applicables...")}
               value={formData.description}
@@ -131,7 +131,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
 
         {/* Spécifications libres (clé/valeur) */}
         <div className="rounded-lg border border-border p-4 space-y-3">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.tech_specs", "Spécifications techniques")}</Label>
+          <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.tech_specs", "Spécifications techniques")}</Label>
           {specsEntries.length === 0 && (
             <p className="text-xs text-muted-foreground">{t("spec.tech_specs_hint", "Ajoutez vos spécifications techniques sous forme de paires clé / valeur.")}</p>
           )}
@@ -164,11 +164,11 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
         {/* Quantité & Budget */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.quantity", "Quantité")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.quantity", "Quantité")} *</Label>
             <Input type="number" min={1} placeholder="1" value={formData.quantity} onChange={e => update("quantity", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.unit", "Unité")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.unit", "Unité")} *</Label>
             <Select value={formData.unit} onValueChange={v => update("unit", v)} disabled={readOnly}>
               <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -184,11 +184,11 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_min", "Budget min ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_min_usd} onChange={e => update("budget_min_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
+            <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.budget_max", "Budget max ($)")} *</Label>
             <Input type="number" step="0.01" placeholder="0.00" value={formData.budget_max_usd} onChange={e => update("budget_max_usd", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
         </div>
@@ -199,7 +199,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
           onClick={() => setShowOptional(!showOptional)}
           className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors w-full justify-between py-2 border-t border-border/50"
         >
-          <span className="font-medium uppercase tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
+          <span className="font-medium uppercase font-condensed tracking-wide">{t("spec.optional", "Informations complémentaires (optionnel)")}</span>
           {showOptional ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
 
@@ -207,7 +207,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
           <div className="space-y-4 pt-2">
             {/* Certifications */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1.5">
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground flex items-center gap-1.5">
                 <Shield className="w-3 h-3" />{t("spec.certifications", "Certifications requises")}
               </Label>
               <div className="flex flex-wrap gap-2">
@@ -225,12 +225,12 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
 
             <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-1.5 md:col-span-2">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.hs_code", "Code SH / HS Code (6–10 chiffres)")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.hs_code", "Code SH / HS Code (6–10 chiffres)")}</Label>
                 <Input placeholder="Ex. 8517.12.00" value={formData.hs_code} onChange={e => update("hs_code", e.target.value)} disabled={readOnly} className="h-10 font-mono" />
                 <p className="text-xs text-muted-foreground">{t("spec.hs_code_hint", "Code harmonisé du Système Harmonisé (SH) – 6 premiers chiffres universels")}</p>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.packaging", "Type d'emballage")}</Label>
+                <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.packaging", "Type d'emballage")}</Label>
                 <Select value={formData.packaging_type} onValueChange={v => update("packaging_type", v)} disabled={readOnly}>
                   <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
                   <SelectContent>{PACKAGING_TYPES.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
@@ -239,7 +239,7 @@ export function GeneralSpecForm({ initialData, onChange, readOnly, lineNumber, c
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("spec.notes", "Remarques & instructions particulières")}</Label>
+              <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.notes", "Remarques & instructions particulières")}</Label>
               <Textarea
                 placeholder={t("spec.notes_placeholder", "Exigences spécifiques, contraintes logistiques, instructions d'emballage...")}
                 value={formData.notes}

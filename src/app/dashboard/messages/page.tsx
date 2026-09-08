@@ -108,7 +108,7 @@ export default function MessagesPage() {
                   </div>
 
                   <div className="text-end shrink-0">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-2">
+                    <p className="t-label text-[10px] text-muted-foreground font-bold mb-2">
                       {new Date(message.created_at).toLocaleDateString()}
                     </p>
                     <div className="w-2 h-2 rounded-full bg-primary ms-auto" />

@@ -155,7 +155,7 @@ export default function AdminExchangeRatesPage() {
       ) : (
         <div className="space-y-10">
           <section>
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground/50">
+            <h2 className="mb-4 text-sm font-semibold uppercase font-condensed tracking-wider text-foreground/50">
               {t("admin.rates.active", "Taux en vigueur")}
             </h2>
 
@@ -195,7 +195,7 @@ export default function AdminExchangeRatesPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground/50">
+            <h2 className="mb-4 text-sm font-semibold uppercase font-condensed tracking-wider text-foreground/50">
               {t("admin.rates.history", "Historique")}
             </h2>
 

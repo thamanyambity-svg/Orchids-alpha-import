@@ -602,7 +602,7 @@ export default function NewRequestPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">{t("dashboard.requests.new.transport_mode", "Mode d'expédition")} *</Label>
+                      <Label className="font-semibold text-sm uppercase font-condensed tracking-wide text-muted-foreground">{t("dashboard.requests.new.transport_mode", "Mode d'expédition")} *</Label>
                       <div className="grid grid-cols-2 gap-3">
                         <div
                           onClick={() => setFormData({ ...formData, transportMode: 'SEA' })}
@@ -751,7 +751,7 @@ export default function NewRequestPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{t("dashboard.requests.new.product_list", "Liste des Produits")}</p>
+                        <p className="text-sm font-semibold uppercase font-condensed tracking-wider text-muted-foreground">{t("dashboard.requests.new.product_list", "Liste des Produits")}</p>
                         {items.map((item, idx) => (
                           <div key={item.id} className="p-4 rounded-xl bg-card border border-border">
                             <div className="flex justify-between items-start mb-2">

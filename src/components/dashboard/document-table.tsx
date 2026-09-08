@@ -37,7 +37,7 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
   if (!requestId) {
     return (
       <div className="glass rounded-3xl overflow-hidden p-10 text-center">
-        <p className="text-muted-foreground uppercase text-xs tracking-widest">Aucun document disponible</p>
+        <p className="text-muted-foreground uppercase font-condensed text-xs tracking-widest">Aucun document disponible</p>
       </div>
     )
   }
@@ -45,14 +45,14 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
   return (
     <div className="glass rounded-3xl overflow-hidden">
       <div className="p-6 border-b border-foreground/5 flex items-center justify-between">
-        <h3 className="text-sm font-bold tracking-widest uppercase">DOCUMENTS DE LA DEMANDE</h3>
+        <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">DOCUMENTS DE LA DEMANDE</h3>
         {loading ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <MoreHorizontal className="w-5 h-5 text-muted-foreground cursor-pointer" />}
       </div>
       
       <div className="overflow-x-auto">
         <table className="w-full text-start border-collapse">
           <thead>
-            <tr className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest border-b border-foreground/5">
+            <tr className="text-[10px] font-mono text-muted-foreground uppercase font-condensed tracking-widest border-b border-foreground/5">
               <th className="px-6 py-4 font-normal">Document</th>
               <th className="px-6 py-4 font-normal">Type</th>
               <th className="px-6 py-4 font-normal">{t("document_table.status", "Statut")}</th>
@@ -76,7 +76,7 @@ export function DocumentTable({ requestId }: { requestId?: string }) {
                   <td className="px-6 py-4 text-xs font-bold text-primary uppercase">{doc.type}</td>
                   <td className="px-6 py-4 text-xs text-muted-foreground uppercase">{doc.status}</td>
                   <td className="px-6 py-4 text-end">
-                    <span className="px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-secondary/50 text-muted-foreground border border-foreground/5">
+                    <span className="px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase font-condensed tracking-wider bg-secondary/50 text-muted-foreground border border-foreground/5">
                       {new Date(doc.created_at).toLocaleDateString()}
                     </span>
                   </td>

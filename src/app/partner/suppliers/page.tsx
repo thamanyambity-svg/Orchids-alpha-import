@@ -319,12 +319,12 @@ export default function PartnerSuppliersPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     {supplier.validated_by_admin ? (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full uppercase font-condensed tracking-wider">
                         <CheckCircle2 className="w-3 h-3" />
                         {t("partner.suppliers.validated", "Validé Alpha")}
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full uppercase font-condensed tracking-wider">
                         {t("partner.suppliers.pending", "En attente")}
                       </div>
                     )}

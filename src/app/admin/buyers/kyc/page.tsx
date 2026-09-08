@@ -253,7 +253,7 @@ export default function BuyerKycPage() {
               </div>
 
               <div className="space-y-2 mb-6">
-                <h4 className="text-xs text-foreground/40 uppercase tracking-wider mb-2">
+                <h4 className="t-label text-muted-foreground mb-2">
                   {t("admin.kyc.documents_title", "Documents soumis")} ({kycDocs.length})
                 </h4>
                 {kycDocs.length === 0 ? (

@@ -151,7 +151,7 @@ export default function AdminPaymentProofsPage() {
       ) : (
         <div className="space-y-10">
           <section>
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground/50">
+            <h2 className="mb-4 text-sm font-semibold uppercase font-condensed tracking-wider text-foreground/50">
               {t("admin.proofs.pending", "En attente")} ({pending.length})
             </h2>
 
@@ -243,7 +243,7 @@ export default function AdminPaymentProofsPage() {
                       <div className="mt-4 border-t border-foreground/10 pt-4">
                         <label
                           htmlFor={`reason-${proof.id}`}
-                          className="mb-2 block text-xs uppercase tracking-wider text-foreground/50"
+                          className="mb-2 block t-label text-foreground/50"
                         >
                           {t("admin.proofs.reason_label", "Motif du refus")}
                         </label>
@@ -283,7 +283,7 @@ export default function AdminPaymentProofsPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground/50">
+            <h2 className="mb-4 text-sm font-semibold uppercase font-condensed tracking-wider text-foreground/50">
               {t("admin.proofs.recent", "Décisions récentes")}
             </h2>
 

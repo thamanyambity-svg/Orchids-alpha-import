@@ -163,7 +163,7 @@ function AdminRequestsContent() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.active ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
                 <step.icon className="w-4 h-4" />
               </div>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{step.label}</span>
+              <span className="text-[10px] font-medium uppercase font-condensed tracking-wider text-muted-foreground">{step.label}</span>
             </div>
           ))}
         </div>
@@ -197,7 +197,7 @@ function AdminRequestsContent() {
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <table className="w-full text-start">
-            <thead className="bg-muted/50 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <thead className="bg-muted/50 text-xs font-medium uppercase font-condensed tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-6 py-4">Référence / Date</th>
                 <th className="px-6 py-4">Acheteur</th>
