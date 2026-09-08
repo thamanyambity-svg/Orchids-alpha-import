@@ -36,9 +36,9 @@ function calculateDetailedCosts(amount: number, transportMode: string, countryCo
 // Mock documents requirement based on country
 function getRequiredDocuments(countryCode: string) {
     const baseDocs = ["Bill of Lading", "Facture Commerciale", "Packing List"]
-    if (countryCode === 'CHN') return [...baseDocs, "Certificat d'Origine", "Form E"]
-    if (countryCode === 'ARE') return [...baseDocs, "Certificat SASO"]
-    if (countryCode === 'TUR') return [...baseDocs, "EUR.1"]
+    if (countryCode === 'CN') return [...baseDocs, "Certificat d'Origine", "Form E"]
+    if (countryCode === 'AE') return [...baseDocs, "Certificat SASO"]
+    if (countryCode === 'TR') return [...baseDocs, "EUR.1"]
     return baseDocs
 }
 
@@ -167,7 +167,7 @@ export default function AdminShippingPage() {
                             ) : (
                                 shipments.map((shipment) => {
                                     const transportMode = shipment.request?.transport_mode || 'SEA'
-                                    const countryCode = shipment.request?.country?.code || 'CHN'
+                                    const countryCode = shipment.request?.country?.code || 'CN'
                                     const costs = calculateDetailedCosts(shipment.total_amount, transportMode, countryCode)
                                     const docs = getRequiredDocuments(countryCode)
 

@@ -30,7 +30,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
     city: "Dubai",
     email: "achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site",
     phone: "+971500000000",
-    countries: { name: "United Arab Emirates", code: "ARE" },
+    countries: { name: "United Arab Emirates", code: "AE" },
     avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
   }
 
@@ -50,9 +50,9 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
     let rawPhone = displayPartner.phone || "+971501201719";
 
     // Executive Overrides (Validated Numbers)
-    if (displayPartner.countries?.code === 'JPN') {
+    if (displayPartner.countries?.code === 'JP') {
       rawPhone = "+819083267671"; // Pam Congo Japan
-    } else if (displayPartner.countries?.code === 'ARE') {
+    } else if (displayPartner.countries?.code === 'AE') {
       rawPhone = "+971501201719"; // Achignon Bilongo UAE
     }
 
@@ -70,9 +70,9 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
     let targetEmail = displayPartner.email;
 
     // Force specific requested emails based on country code if dynamic data isn't perfectly clean
-    if (displayPartner.countries?.code === 'JPN') {
+    if (displayPartner.countries?.code === 'JP') {
       targetEmail = 'assanimususa.pdg.pam.congo.japon@aonosekehouseinvestmentdrc.site';
-    } else if (displayPartner.countries?.code === 'ARE') {
+    } else if (displayPartner.countries?.code === 'AE') {
       targetEmail = 'achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site';
     } else if (!targetEmail) {
       // Ultimate fallback
@@ -121,7 +121,7 @@ export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | n
             <h4 className="text-lg font-bold text-foreground tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-muted-foreground uppercase">{displayPartner.city} {displayPartner.countries?.name}</span>
-              {displayPartner.countries?.code === 'ARE' && (
+              {displayPartner.countries?.code === 'AE' && (
                 <div className="w-4 h-2.5 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
                   <div className="h-1/3 bg-[#ff0000]" />
                   <div className="h-1/3 bg-white" />

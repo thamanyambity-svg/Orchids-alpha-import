@@ -92,7 +92,7 @@ export default function DashboardPage() {
             {profile?.countries && (
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-muted-foreground uppercase">{profile.countries.name}</span>
-                {profile.countries.code === 'ARE' && (
+                {profile.countries.code === 'AE' && (
                   <div className="w-5 h-3 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
                     <div className="h-1/3 bg-[#ff0000]" />
                     <div className="h-1/3 bg-white" />
