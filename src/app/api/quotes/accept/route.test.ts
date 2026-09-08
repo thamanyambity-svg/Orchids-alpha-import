@@ -19,6 +19,12 @@ vi.mock("@/lib/auth-guard", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/auth-guard")>()
   return { ...actual, requireUser: (...args: any[]) => requireUser(...args) }
 })
+vi.mock("@/lib/rate-limit", () => ({
+  // Le limiteur est une Map partagée entre les tests d'un même fichier : il
+  // épuiserait le budget au bout de cinq cas. Il est éprouvé séparément, en
+  // conditions réelles ; ici on teste la règle métier, pas le compteur.
+  checkRateLimit: () => ({ allowed: true, remaining: 99, resetAt: Date.now() + 60000 }),
+}))
 vi.mock("@/lib/audit", () => ({ logAudit: (...args: any[]) => logAudit(...args) }))
 
 const { POST } = await import("./route")
