@@ -49,7 +49,9 @@ export default function ReportingPage() {
   if (loading) return <div className="p-8">Chargement du rapport...</div>
   if (error) return <div className="p-8 text-destructive">Erreur: {error}</div>
 
-  const { stats, auditLogs } = data
+  // data peut être une réponse partielle : on ne déstructure jamais à nu.
+  const stats = data?.stats ?? { totalVolume: 0, activeRequests: 0, totalTransactions: 0, statusDistribution: {} }
+  const auditLogs = Array.isArray(data?.auditLogs) ? data.auditLogs : []
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
