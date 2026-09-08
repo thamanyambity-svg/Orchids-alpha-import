@@ -1,32 +1,36 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { z } from "zod"
+import { requireRole, handleApiError, ApiError } from "@/lib/auth-guard"
 import { initiateRetryForFailedSEPA } from "@/lib/payments/sepa-admin.utils"
 
+const schema = z.object({
+  transactionId: z.string().uuid(),
+})
+
+/**
+ * Relance manuelle d'un prélèvement SEPA en échec.
+ *
+ * Le contrôle d'accès était réécrit ici à la main : lecture de la session,
+ * lecture du profil, comparaison du rôle. Le même contrôle existe dans
+ * lib/auth-guard, et deux implémentations d'une même règle finissent toujours
+ * par diverger — l'une reçoit un correctif que l'autre ignore. On passe donc
+ * par le garde partagé, qui est aussi le seul endroit testé.
+ *
+ * transactionId n'était pas validé non plus : n'importe quelle chaîne partait
+ * vers le service, qui relance un mouvement d'argent.
+ */
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
+    const { user } = await requireRole(["ADMIN"])
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single()
-
-    if (profile?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Accès refusé" }, { status: 403 })
+    const parsed = schema.safeParse(await req.json().catch(() => null))
+    if (!parsed.success) {
+      throw new ApiError(400, "transactionId doit être un UUID")
     }
 
-    const { transactionId } = await req.json()
-    if (!transactionId) {
-      return NextResponse.json({ error: "transactionId requis" }, { status: 400 })
-    }
-
-    const result = await initiateRetryForFailedSEPA(transactionId, user.id)
+    const result = await initiateRetryForFailedSEPA(parsed.data.transactionId, user.id)
     return NextResponse.json(result)
-  } catch (error: any) {
-    console.error("SEPA retry error:", error)
-    return NextResponse.json({ error: error.message || "Erreur interne" }, { status: 500 })
+  } catch (error) {
+    return handleApiError(error)
   }
 }

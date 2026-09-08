@@ -1,5 +1,5 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireUser, handleApiError } from '@/lib/auth-guard'
 import {
     canTransitionRequest,
     canTransitionOrder,
@@ -19,37 +19,15 @@ type TransitionRequest = {
 }
 
 export async function POST(request: NextRequest) {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
-    }
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        {
-            cookies: {
-                getAll() { return request.cookies.getAll() },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-                },
-            },
-        }
-    )
-
-    // 1. Authenticate User
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    // 2. Get User Role
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-    const userRole = profile?.role as UserRole
+  try {
+    // Session, rôle et client SSR viennent du garde partagé. Cette route
+    // reconstruisait le client à la main et relisait le profil elle-même :
+    // c'était une quatrième implémentation du même contrôle d'accès, et la
+    // seule non couverte par les tests du garde.
+    //
+    // L'appel est à l'intérieur du try : sinon un 401 ou un 403 levé par le
+    // garde remonterait non capturé et sortirait en 500 générique.
+    const { supabase, user, role: userRole } = await requireUser()
 
     // 3. Parse Request
     let body: TransitionRequest
@@ -60,8 +38,7 @@ export async function POST(request: NextRequest) {
     }
     const { type, id, targetStatus, reason } = body
 
-    try {
-        if (type === 'REQUEST') {
+    if (type === 'REQUEST') {
             // Fetch current status
             const { data: reqData, error: fetchError } = await supabase
                 .from('import_requests')
@@ -155,8 +132,9 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
 
-    } catch (error: any) {
-        console.error('Workflow Transition Error:', error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  } catch (error) {
+    // handleApiError préserve les statuts du garde au lieu de tout aplatir.
+    console.error('Workflow Transition Error:', error)
+    return handleApiError(error)
+  }
 }
