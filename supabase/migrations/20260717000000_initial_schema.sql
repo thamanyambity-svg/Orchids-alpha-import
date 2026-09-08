@@ -13,7 +13,19 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- 2. ENUMS
 DO $$
 BEGIN
-  CREATE TYPE user_role AS ENUM ('BUYER', 'PARTNER', 'ADMIN');
+  -- Six rôles, et non trois. Les politiques du module douanes comparent
+  -- profiles.role — typée user_role — à 'PARTNER_COUNTRY',
+  -- 'FISCAL_CONSULTANT' et 'ACCOUNTANT'. Déclarer l'enum à trois valeurs
+  -- rendait le schéma inconstructible sur une base neuve : PostgreSQL
+  -- refuse la conversion du littéral et échoue en 22P02.
+  -- Ces valeurs ne peuvent pas être ajoutées par un ALTER TYPE ultérieur :
+  -- une valeur d'enum ajoutée dans une transaction ne peut pas être
+  -- utilisée dans cette même transaction, et l'éditeur SQL de Supabase
+  -- exécute tout le script d'un bloc.
+  CREATE TYPE user_role AS ENUM (
+    'BUYER', 'PARTNER', 'ADMIN',
+    'PARTNER_COUNTRY', 'FISCAL_CONSULTANT', 'ACCOUNTANT'
+  );
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 DO $$
