@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate:prod": "node scripts/validate-production-config.cjs"
+    "validate:prod": "node scripts/validate-production-config.cjs",
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

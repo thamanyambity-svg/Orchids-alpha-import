@@ -74,10 +74,17 @@ const nextConfig: NextConfig = {
     ],
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    // Les avertissements ne bloquent pas ; les erreurs, si.
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    // Le build ignorait les erreurs de type. Une conséquence réelle : la route
+    // purchase-orders/[id] référençait dans son GET une variable `role` qui
+    // n'était jamais déclarée — elle est partie en production et n'a été vue
+    // qu'en lançant `tsc` à la main. Vérifier séparément ne remplace pas un
+    // filet dans le build : ce qui n'est pas dans le pipeline finit par ne
+    // plus être fait.
+    ignoreBuildErrors: false,
   },
 } as NextConfig;
 
