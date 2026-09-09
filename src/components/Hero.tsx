@@ -27,7 +27,7 @@ export default function Hero() {
     {
       bg: null, isCss: true,
       cssStyle: { background: "radial-gradient(ellipse at 50% 30%, #2a1f08 0%, #1a1406 30%, #0a1628 70%, #06101e 100%)" },
-      tag: t("hero.tag.countries", "47 PAYS PARTENAIRES"),
+      tag: t("hero.tag.countries", "5 PAYS D'ORIGINE"),
       headline: t("hero.headline.security", "SÉCURITÉ"),
       sub: t("hero.sub.iso", "CERTIFIÉE ISO 9001"),
     },
@@ -117,7 +117,7 @@ export default function Hero() {
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.7 }} className="absolute bottom-0 left-0 right-0 z-20 flex justify-around items-center py-5 px-8 border-t border-foreground/10" style={{ background: "rgba(6,16,30,0.85)", backdropFilter: "blur(20px)" }}>
         {[
           { val: "$2.4B+", label: t("hero.stat.goods", "Marchandises déplacées") },
-          { val: "47", label: t("hero.stat.countries", "Pays partenaires") },
+          { val: "5", label: t("hero.stat.countries", "Pays d'origine") },
           { val: "1 200+", label: t("hero.stat.partners", "Partenaires actifs") },
           { val: "99.2%", label: t("hero.stat.satisfaction", "Taux de satisfaction") },
         ].map((s, i) => (

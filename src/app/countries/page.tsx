@@ -9,7 +9,7 @@ import { NetworkMap } from "@/components/site/network-map"
 const HUBS = ["hub1", "hub2", "hub3", "hub4"] as const
 
 /** Les cinq pays d'origine réellement opérés, alignés sur la table `countries`. */
-const ORIGINS = ["Chine", "Turquie", "Dubaï", "Japon", "Thaïlande"]
+const ORIGINS = ["Chine", "Turquie", "Émirats arabes unis", "Japon", "Thaïlande"]
 
 export default function NetworkPage() {
   const { t } = useLanguage()

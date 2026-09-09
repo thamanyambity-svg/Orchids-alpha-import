@@ -9,7 +9,7 @@ const ja: Record<string, string> = {
 
   'hero.tag.kinshasa': 'キンシャサ · コンゴ民主共和国',
   'hero.tag.shanghai': '上海 · ドバイ · 東京',
-  'hero.tag.countries': '47のパートナー国',
+  'hero.tag.countries': '5つの調達国',
   'hero.tag.global': 'ブリュッセル · ニューヨーク · 広州',
   'hero.headline.africa': 'アフリカ',
   'hero.headline.speed': 'スピード',
@@ -54,7 +54,7 @@ const ja: Record<string, string> = {
   'services.export.desc': 'アフリカと世界市場を結ぶ信頼性の高い輸出パイプライン。',
   'services.export.detail': '梱包 · 海上貨物 · GPS追跡',
   'services.customs': '通関手続き',
-  'services.customs.desc': '専任の港湾エージェントによる迅速な手続き。47カ国で通関コンプライアンスを保証。',
+  'services.customs.desc': '専任の港湾エージェントによる迅速な手続き。全コリドーで通関コンプライアンスを確保。',
   'services.customs.detail': 'DRC · ベルギー · 中国 · UAE · アメリカ',
   'services.analytics': 'サプライチェーン分析',
   'services.analytics.desc': 'リアルタイムダッシュボードと予測モデリングでサプライチェーンを最適化。',

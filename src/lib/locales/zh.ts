@@ -9,7 +9,7 @@ const zh: Record<string, string> = {
 
   'hero.tag.kinshasa': '金沙萨 · 刚果民主共和国',
   'hero.tag.shanghai': '上海 · 迪拜 · 东京',
-  'hero.tag.countries': '47个合作伙伴国家',
+  'hero.tag.countries': '5个采购国家',
   'hero.tag.global': '布鲁塞尔 · 纽约 · 广州',
   'hero.headline.africa': '非洲',
   'hero.headline.speed': '速度',
@@ -54,7 +54,7 @@ const zh: Record<string, string> = {
   'services.export.desc': '可靠的出口管道，快速精准地将非洲与全球市场连接。',
   'services.export.detail': '包装 · 海运 · GPS跟踪',
   'services.customs': '海关清关',
-  'services.customs.desc': '专属港口代理，加速通关流程。47个国家海关合规保证。',
+  'services.customs.desc': '专属港口代理，加速通关流程。我们所有通道均保证海关合规。',
   'services.customs.detail': '刚果 · 比利时 · 中国 · 阿联酋 · 美国',
   'services.analytics': '供应链分析',
   'services.analytics.desc': '实时仪表板和预测建模，优化您的供应链。',

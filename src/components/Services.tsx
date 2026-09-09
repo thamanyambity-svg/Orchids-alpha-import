@@ -24,7 +24,7 @@ export default function Services() {
     {
       num: "03",
       title: t("services.customs", "Dédouanement"),
-      desc: t("services.customs.desc", "Agents portuaires dédiés pour des procédures accélérées. Conformité douanière garantie dans 47 pays."),
+      desc: t("services.customs.desc", "Agents portuaires dédiés pour des procédures accélérées. Conformité douanière assurée sur l'ensemble de nos corridors."),
       detail: t("services.customs.detail", "DRC · Belgique · Chine · UAE · USA"),
       img: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=900&q=75&fit=crop",
     },

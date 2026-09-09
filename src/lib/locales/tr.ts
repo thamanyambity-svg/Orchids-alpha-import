@@ -9,7 +9,7 @@ const tr: Record<string, string> = {
 
   'hero.tag.kinshasa': 'KİNŞASA · DRC',
   'hero.tag.shanghai': 'ŞANGHAY · DUBAİ · TOKYO',
-  'hero.tag.countries': '47 ORTAK ÜLKE',
+  'hero.tag.countries': '5 TEDARİK ÜLKESİ',
   'hero.tag.global': 'BRÜKSEL · NEW YORK · GUANGZHOU',
   'hero.headline.africa': 'AFRİKA',
   'hero.headline.speed': 'HIZ',
@@ -54,7 +54,7 @@ const tr: Record<string, string> = {
   'services.export.desc': 'Afrika\'yı küresel pazarlara hız ve hassasiyetle bağlayan güvenilir ihracat hatları.',
   'services.export.detail': 'Paketleme · Deniz taşımacılığı · GPS Takibi',
   'services.customs': 'Gümrük İşlemleri',
-  'services.customs.desc': 'Hızlandırılmış prosedürler için özel liman acenteleri. 47 ülkede garantili gümrük uyumu.',
+  'services.customs.desc': 'Hızlandırılmış prosedürler için özel liman acenteleri. Tüm koridorlarımızda gümrük uyumu güvence altında.',
   'services.customs.detail': 'DRC · Belçika · Çin · BAE · ABD',
   'services.analytics': 'Tedarik Zinciri Analitiği',
   'services.analytics.desc': 'Tedarik zincirinizi optimize etmek için gerçek zamanlı panolar ve tahmine dayalı modelleme.',

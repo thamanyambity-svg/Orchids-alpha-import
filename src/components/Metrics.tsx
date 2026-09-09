@@ -8,7 +8,7 @@ export default function Metrics() {
 
   const stats = [
     { val: "$2.4B+", label: t("metrics.stat.goods", "Marchandises déplacées") },
-    { val: "47", label: t("metrics.stat.countries", "Pays partenaires") },
+    { val: "5", label: t("metrics.stat.countries", "Pays d'origine") },
     { val: "1 200+", label: t("metrics.stat.partners", "Partenaires actifs") },
     { val: "99.2%", label: t("metrics.stat.satisfaction", "Taux de satisfaction") },
     { val: "5 000+", label: t("metrics.containers", "Conteneurs traités") },

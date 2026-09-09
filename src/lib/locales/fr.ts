@@ -9,7 +9,7 @@ const fr: Record<string, string> = {
 
   'hero.tag.kinshasa': 'KINSHASA · RDC',
   'hero.tag.shanghai': 'SHANGHAI · DUBAI · TOKYO',
-  'hero.tag.countries': '47 PAYS PARTENAIRES',
+  'hero.tag.countries': "5 PAYS D'ORIGINE",
   'hero.tag.global': 'BRUXELLES · NEW YORK · GUANGZHOU',
   'hero.headline.africa': "L'AFRIQUE",
   'hero.headline.speed': 'VITESSE',
@@ -54,7 +54,7 @@ const fr: Record<string, string> = {
   'services.export.desc': 'Pipelines d\'export fiables reliant l\'Afrique aux marchés mondiaux avec rapidité et précision.',
   'services.export.detail': 'Conditionnement · Fret maritime · Tracking GPS',
   'services.customs': 'Dédouanement',
-  'services.customs.desc': 'Agents portuaires dédiés pour des procédures accélérées. Conformité douanière garantie dans 47 pays.',
+  'services.customs.desc': "Agents portuaires dédiés pour des procédures accélérées. Conformité douanière assurée sur l'ensemble de nos corridors.",
   'services.customs.detail': 'DRC · Belgique · Chine · UAE · USA',
   'services.analytics': 'Analyse Supply Chain',
   'services.analytics.desc': 'Tableaux de bord en temps réel et modélisation prédictive pour optimiser votre chaîne logistique.',

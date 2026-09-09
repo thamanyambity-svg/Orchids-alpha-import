@@ -76,7 +76,7 @@ const fr: SiteDict = {
     'Six prestations qui se combinent. La plupart de nos clients commencent par le sourcing et finissent par nous confier l\'ensemble du flux, financement compris.',
   'site.svc.sourcing.title': 'SOURCING & ACHATS',
   'site.svc.sourcing.body':
-    'Sélection rigoureuse des fournisseurs en Chine, Turquie, Dubai, Japon et Thaïlande avec inspection qualité systématique.',
+    'Sélection rigoureuse des fournisseurs en Chine, Turquie, Émirats arabes unis, Japon et Thaïlande avec inspection qualité systématique.',
   'site.svc.logistics.title': 'LOGISTIQUE & TRANSIT',
   'site.svc.logistics.body':
     'Fret maritime, aérien et multimodal. Dédouanement clé en main à Kinshasa via notre partenariat SGS.',
@@ -96,12 +96,12 @@ const fr: SiteDict = {
   'site.svc.consulting.detail': 'RDC · Belgique · Chine · UAE · USA',
 
   'site.net.eyebrow': 'Notre réseau',
-  'site.net.title': '47 PAYS, UN SEUL DOSSIER',
+  'site.net.title': '5 PAYS, UN SEUL DOSSIER',
   'site.net.body':
-    "Chine, Turquie, Dubaï, Japon, Thaïlande : dans chaque pays d'origine, un partenaire agréé achète pour vous et répond de la marchandise.",
+    "Chine, Turquie, Émirats arabes unis, Japon, Thaïlande : dans chaque pays d'origine, un partenaire agréé achète pour vous et répond de la marchandise.",
   'site.net.pageTitle': 'LE RÉSEAU',
   'site.net.pageBody':
-    "Une présence opérationnelle directe sur 4 continents, et un partenaire agréé dans chaque pays d'origine que nous opérons.",
+    "Une présence opérationnelle directe sur trois continents, et un partenaire agréé dans chaque pays d'origine que nous opérons.",
   'site.net.legendHub': 'Hub Kinshasa',
   'site.net.legendRoute': 'Corridor actif',
   'site.net.hubsTitle': 'QUATRE HUBS MONDIAUX',
@@ -123,7 +123,7 @@ const fr: SiteDict = {
 
   'site.met.eyebrow': 'Chiffres clés',
   'site.met.title': 'ALPHA IMPORT EN CHIFFRES',
-  'site.met.countries': 'Pays partenaires',
+  'site.met.countries': "Pays d'origine",
   'site.met.partners': 'Partenaires actifs',
   'site.met.hubs': 'Hubs mondiaux',
   'site.met.languages': 'Langues',
@@ -321,7 +321,7 @@ const en: SiteDict = {
     'Six services that combine. Most clients start with sourcing and end up handing us the whole flow, financing included.',
   'site.svc.sourcing.title': 'SOURCING & PURCHASING',
   'site.svc.sourcing.body':
-    'Rigorous supplier selection in China, Türkiye, Dubai, Japan and Thailand with systematic quality inspection.',
+    'Rigorous supplier selection in China, Türkiye, United Arab Emirates, Japan and Thailand with systematic quality inspection.',
   'site.svc.logistics.title': 'LOGISTICS & TRANSIT',
   'site.svc.logistics.body':
     'Ocean, air and multimodal freight. Turnkey customs clearance in Kinshasa through our SGS partnership.',
@@ -339,12 +339,12 @@ const en: SiteDict = {
   'site.svc.consulting.detail': 'DRC · Belgium · China · UAE · USA',
 
   'site.net.eyebrow': 'Our network',
-  'site.net.title': '47 COUNTRIES, ONE FILE',
+  'site.net.title': '5 COUNTRIES, ONE FILE',
   'site.net.body':
-    'China, Türkiye, Dubai, Japan, Thailand: in every origin country, an approved partner buys on your behalf and answers for the goods.',
+    'China, Türkiye, United Arab Emirates, Japan, Thailand: in every origin country, an approved partner buys on your behalf and answers for the goods.',
   'site.net.pageTitle': 'THE NETWORK',
   'site.net.pageBody':
-    'Direct operational presence across 4 continents, and an approved partner in every origin country we run.',
+    'Direct operational presence across three continents, and an approved partner in every origin country we run.',
   'site.net.legendHub': 'Kinshasa hub',
   'site.net.legendRoute': 'Active corridor',
   'site.net.hubsTitle': 'FOUR GLOBAL HUBS',
@@ -366,7 +366,7 @@ const en: SiteDict = {
 
   'site.met.eyebrow': 'Key figures',
   'site.met.title': 'ALPHA IMPORT IN NUMBERS',
-  'site.met.countries': 'Partner countries',
+  'site.met.countries': 'Sourcing countries',
   'site.met.partners': 'Active partners',
   'site.met.hubs': 'Global hubs',
   'site.met.languages': 'Languages',
@@ -517,7 +517,7 @@ const tr: SiteDict = {
   'site.cta.platform': 'Platforma giriş',
   'site.cta.discover': 'Keşfedin',
   'site.svc.title': 'HİZMETLERİMİZ',
-  'site.net.title': '47 ÜLKE, TEK DOSYA',
+  'site.net.title': '5 ÜLKE, TEK DOSYA',
   'site.met.title': 'RAKAMLARLA ALPHA IMPORT',
   'site.how.title': 'TALEPTEN TESLİMATA',
   'site.access.login': 'Giriş',
@@ -537,7 +537,7 @@ const zh: SiteDict = {
   'site.cta.platform': '进入平台',
   'site.cta.discover': '了解更多',
   'site.svc.title': '我们的服务',
-  'site.net.title': '47 个国家，一个档案',
+  'site.net.title': '5 个国家，一个档案',
   'site.met.title': '数据中的 ALPHA IMPORT',
   'site.how.title': '从询价到交付',
   'site.access.login': '登录',
@@ -557,7 +557,7 @@ const ja: SiteDict = {
   'site.cta.platform': 'プラットフォームへ',
   'site.cta.discover': '詳しく見る',
   'site.svc.title': 'サービス',
-  'site.net.title': '47か国、ひとつの案件',
+  'site.net.title': '5か国、ひとつの案件',
   'site.met.title': '数字で見る ALPHA IMPORT',
   'site.how.title': '依頼から納品まで',
   'site.access.login': 'ログイン',
@@ -577,7 +577,7 @@ const ar: SiteDict = {
   'site.cta.platform': 'الدخول إلى المنصة',
   'site.cta.discover': 'اكتشف',
   'site.svc.title': 'خدماتنا',
-  'site.net.title': '47 دولة، ملف واحد',
+  'site.net.title': '5 دول، ملف واحد',
   'site.met.title': 'ألفا إمبورت بالأرقام',
   'site.how.title': 'من الطلب إلى التسليم',
   'site.access.login': 'تسجيل الدخول',

@@ -12,7 +12,7 @@ describe("Metrics", () => {
   it("renders stat values", () => {
     render(<Metrics />, { wrapper: Wrapper })
     expect(screen.getByText("$2.4B+")).toBeInTheDocument()
-    expect(screen.getByText("47")).toBeInTheDocument()
+    expect(screen.getByText("5")).toBeInTheDocument()
     expect(screen.getByText("1 200+")).toBeInTheDocument()
     expect(screen.getByText("99.2%")).toBeInTheDocument()
   })

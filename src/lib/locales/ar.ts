@@ -9,7 +9,7 @@ const ar: Record<string, string> = {
 
   'hero.tag.kinshasa': 'كينشاسا · جمهورية الكونغو الديمقراطية',
   'hero.tag.shanghai': 'شنغهاي · دبي · طوكيو',
-  'hero.tag.countries': '47 دولة شريكة',
+  'hero.tag.countries': '5 دول مصدر',
   'hero.tag.global': 'بروكسل · نيويورك · قوانغتشو',
   'hero.headline.africa': 'أفريقيا',
   'hero.headline.speed': 'السرعة',
@@ -54,7 +54,7 @@ const ar: Record<string, string> = {
   'services.export.desc': 'خطوط تصدير موثوقة تربط أفريقيا بالأسواق العالمية بسرعة ودقة.',
   'services.export.detail': 'التعبئة · الشحن البحري · تتبع GPS',
   'services.customs': 'التخليص الجمركي',
-  'services.customs.desc': 'وكلاء ميناء مخصصون لإجراءات متسارعة. الامتثال الجمركي مضمون في 47 دولة.',
+  'services.customs.desc': 'وكلاء ميناء مخصصون لإجراءات متسارعة. الامتثال الجمركي مضمون عبر جميع ممراتنا.',
   'services.customs.detail': 'الكونغو · بلجيكا · الصين · الإمارات · الولايات المتحدة',
   'services.analytics': 'تحليل سلسلة التوريد',
   'services.analytics.desc': 'لوحات معلومات في الوقت الفعلي ونمذجة تنبؤية لتحسين سلسلة التوريد الخاصة بك.',

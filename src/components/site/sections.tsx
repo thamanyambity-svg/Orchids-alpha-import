@@ -81,8 +81,8 @@ export function PageHero({
 const HERO = [
   { word: "L'AFRIQUE", sub: "CONNECTÉE AU MONDE", tag: "KINSHASA · RDC", img: "photo-1494412574643-ff11b0a5c1c3" },
   { word: "VITESSE", sub: "SANS COMPROMIS", tag: "SHANGHAI · DUBAI · TOKYO", img: "photo-1578575437130-527eed3abbec" },
-  { word: "SÉCURITÉ", sub: "CERTIFIÉE ISO 9001", tag: "47 PAYS PARTENAIRES", img: "photo-1613690399151-65ea69478674" },
-  { word: "CONFIANCE", sub: "VOTRE PARTENAIRE GLOBAL", tag: "BRUXELLES · NEW YORK · GUANGZHOU", img: "photo-1553413077-190dd305871c" },
+  { word: "SÉCURITÉ", sub: "CERTIFIÉE ISO 9001", tag: "5 PAYS D'ORIGINE", img: "photo-1613690399151-65ea69478674" },
+  { word: "CONFIANCE", sub: "VOTRE PARTENAIRE GLOBAL", tag: "ISTANBUL · BANGKOK · GUANGZHOU", img: "photo-1553413077-190dd305871c" },
 ]
 
 export function Hero() {
@@ -202,8 +202,8 @@ export function TrustMarquee() {
   const { t, language } = useLanguage()
   const items =
     language === "en"
-      ? ["60/40 escrow", "SGS certification", "ISO 9001", "Pre-shipment inspection", "Kinshasa clearance", "KYC verification", "Audit log", "Cargo insurance", "47 countries"]
-      : ["Séquestre 60/40", "Certification SGS", "ISO 9001", "Contrôle avant expédition", "Dédouanement Kinshasa", "Vérification KYC", "Journal d'audit", "Assurance cargo", "47 pays"]
+      ? ["60/40 escrow", "SGS certification", "ISO 9001", "Pre-shipment inspection", "Kinshasa clearance", "KYC verification", "Audit log", "Cargo insurance", "5 sourcing countries"]
+      : ["Séquestre 60/40", "Certification SGS", "ISO 9001", "Contrôle avant expédition", "Dédouanement Kinshasa", "Vérification KYC", "Journal d'audit", "Assurance cargo", "5 pays d'origine"]
 
   return (
     <section className="relative overflow-hidden border-y border-[var(--line)] bg-[var(--navy2)] pt-14">
@@ -409,7 +409,12 @@ export function NetworkSection() {
 
 /* ── Chiffres ────────────────────────────────────────────────────────────── */
 
-const METRIC_TARGETS = [47, 1200, 4, 6, 10, 24]
+// Le premier chiffre annonçait 47 pays. La carte du réseau n'en contient que
+// cinq à l'origine — Chine, Japon, Turquie, Thaïlande, Émirats — plus la RDC en
+// destination. Un chiffre commercial que la page elle-même contredit se
+// retourne contre celui qui l'affiche : il est aligné sur `CITIES` de
+// network-map.tsx, qui est la seule source de vérité de cette section.
+const METRIC_TARGETS = [5, 1200, 4, 6, 10, 24]
 const METRIC_SUFFIX = ["", "+", "", "", " %", " H"]
 const METRIC_KEYS = [
   "site.met.countries",
