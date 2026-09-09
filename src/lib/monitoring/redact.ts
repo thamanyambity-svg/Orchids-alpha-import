@@ -53,6 +53,30 @@ const CLES_SENSIBLES = [
   "service_role",
 ]
 
+/**
+ * Clé de Luhn — la somme de contrôle que porte tout numéro de carte bancaire.
+ *
+ * Sert ici de discriminant, pas de validation : le but n'est pas de savoir si
+ * une carte existe, mais d'éviter de masquer une suite de chiffres qui n'en
+ * est pas une.
+ */
+function verifieLuhn(chiffres: string): boolean {
+  if (chiffres.length < 13 || chiffres.length > 19) return false
+  let somme = 0
+  let double = false
+  for (let i = chiffres.length - 1; i >= 0; i--) {
+    let n = chiffres.charCodeAt(i) - 48
+    if (n < 0 || n > 9) return false
+    if (double) {
+      n *= 2
+      if (n > 9) n -= 9
+    }
+    somme += n
+    double = !double
+  }
+  return somme % 10 === 0
+}
+
 interface Motif {
   nom: string
   motif: RegExp
@@ -109,10 +133,25 @@ const MOTIFS: Motif[] = [
   },
   {
     // Numéro de carte : 13 à 19 chiffres, éventuellement groupés.
+    //
+    // Le motif seul produit des faux positifs destructeurs. Constaté en
+    // production : « 55550000-2222-4222-8222-cccccccccccc » — un UUID — était
+    // masqué comme une carte, ce qui corrompait l'identifiant et scindait le
+    // regroupement des incidents. Une référence de commande ou un horodatage
+    // subissaient le même sort.
+    //
+    // La clé de Luhn sert de discriminant : tout numéro de carte réel la
+    // vérifie, une suite de chiffres arbitraire n'a qu'une chance sur dix d'y
+    // satisfaire par hasard. Le masquage n'a donc lieu que si elle passe.
+    // La clé ne suffit pas non plus à elle seule : « 5555000022224222 »,
+    // extrait de l'UUID ci-dessus, la vérifie par hasard — une chance sur dix.
+    // D'où la garde de contexte : un numéro de carte n'est jamais accolé à un
+    // tiret ni à une lettre, contrairement au fragment d'un identifiant.
     nom: "carte",
-    motif: /\b(?:\d[ -]?){12,18}\d\b/g,
+    motif: /(?<![\w-])(?:\d[ -]?){12,18}\d(?![\w-])/g,
     remplacement: (m: string) => {
       const chiffres = m.replace(/\D/g, "")
+      if (!verifieLuhn(chiffres)) return m
       return `[CARTE_MASQUEE]${chiffres.slice(-4)}`
     },
   },

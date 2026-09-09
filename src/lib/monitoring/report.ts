@@ -40,17 +40,28 @@ export interface ContexteIncident {
  * devient illisible au lieu de montrer un problème unique et fréquent.
  */
 export function normaliserMessage(message: string): string {
-  return message
-    .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, "<uuid>")
-    .replace(/\b0x[0-9a-f]+\b/gi, "<hex>")
-    // Sans frontière de mot : un nombre collé à son unité (« 3000ms ») doit
-    // être normalisé comme un nombre isolé, sinon deux délais d'attente
-    // différents comptent pour deux incidents distincts.
-    .replace(/\d+/g, "<n>")
-    .replace(/'[^']*'|"[^"]*"/g, "<str>")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 300)
+  return (
+    message
+      // Les fragments laissés par la rédaction — quatre derniers chiffres d'un
+      // IBAN, domaine d'un courriel — servent à identifier une occurrence, pas
+      // à distinguer un défaut. Les laisser dans l'empreinte scinderait un
+      // incident unique en autant de clients touchés : constaté en production,
+      // « FR76[IBAN_MASQUE]0189 » et « DE89[IBAN_MASQUE]3000 » comptaient pour
+      // deux incidents distincts.
+      .replace(/\b[A-Z]{2}\d{2}\[IBAN_MASQUE\][A-Z0-9]{4}/g, "<iban>")
+      .replace(/\[CARTE_MASQUEE\]\d{0,4}/g, "<carte>")
+      .replace(/\[COURRIEL_MASQUE\]@[^\s,;)\]]*/g, "<courriel>")
+      .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, "<uuid>")
+      .replace(/\b0x[0-9a-f]+\b/gi, "<hex>")
+      // Sans frontière de mot : un nombre collé à son unité (« 3000ms ») doit
+      // être normalisé comme un nombre isolé, sinon deux délais d'attente
+      // différents comptent pour deux incidents distincts.
+      .replace(/\d+/g, "<n>")
+      .replace(/'[^']*'|"[^"]*"/g, "<str>")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 300)
+  )
 }
 
 /**

@@ -91,6 +91,30 @@ describe("redactString — données personnelles", () => {
     expect(sortie).toContain("4242")
   })
 
+  it("ne prend pas un UUID pour un numéro de carte", () => {
+    // Régression constatée en production : la règle « carte » avalait
+    // 55550000-2222-4222-8222 et détruisait l'identifiant, ce qui corrompait
+    // la donnée et scindait le regroupement des incidents.
+    const uuid = "55550000-2222-4222-8222-cccccccccccc"
+    expect(redactString(`Commande ${uuid} introuvable`)).toContain(uuid)
+  })
+
+  it("ne prend pas une suite de chiffres quelconque pour une carte", () => {
+    // Référence de commande, horodatage, numéro de conteneur : rien de tout
+    // cela ne doit être masqué.
+    const brut = "commande 1234567890123456789 au 2026-09-09 14:22:31"
+    const sortie = redactString(brut)
+    expect(sortie).toContain("1234567890123456789")
+    expect(sortie).toContain("2026-09-09")
+  })
+
+  it("masque un numéro de carte valide, y compris sans séparateurs", () => {
+    // Ce qui distingue une vraie carte d'une suite de chiffres est la clé de
+    // Luhn : c'est elle qui sert de discriminant.
+    expect(redactString("card 4242424242424242 declined")).not.toContain("4242424242424242")
+    expect(redactString("card 5555555555554444 declined")).not.toContain("5555555555554444")
+  })
+
   it("masque un courriel en gardant le domaine", () => {
     const sortie = redactString("user acheteur.dupont@example.com not found")
     expect(sortie).not.toContain("acheteur.dupont")

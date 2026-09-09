@@ -57,6 +57,28 @@ describe("normaliserMessage", () => {
     )
   })
 
+  it("regroupe deux IBAN masqués de pays différents", () => {
+    // Constaté en production : « FR76[IBAN_MASQUE]0189 » et
+    // « DE89[IBAN_MASQUE]3000 » comptaient pour deux incidents, alors que
+    // c'est le même défaut sur deux clients. Les fragments conservés servent
+    // à identifier une occurrence, pas à distinguer un défaut.
+    expect(normaliserMessage("mandat refusé pour FR76[IBAN_MASQUE]0189")).toBe(
+      normaliserMessage("mandat refusé pour DE89[IBAN_MASQUE]3000")
+    )
+  })
+
+  it("regroupe deux courriels masqués de domaines différents", () => {
+    expect(normaliserMessage("[COURRIEL_MASQUE]@exemple.fr inconnu")).toBe(
+      normaliserMessage("[COURRIEL_MASQUE]@autre.com inconnu")
+    )
+  })
+
+  it("regroupe deux cartes masquées différentes", () => {
+    expect(normaliserMessage("carte [CARTE_MASQUEE]4242 refusée")).toBe(
+      normaliserMessage("carte [CARTE_MASQUEE]0002 refusée")
+    )
+  })
+
   it("garde distincts deux messages réellement différents", () => {
     expect(normaliserMessage("commande introuvable")).not.toBe(
       normaliserMessage("facture introuvable")
