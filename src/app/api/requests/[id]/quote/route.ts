@@ -5,6 +5,8 @@ import { checkRateLimit } from '@/lib/rate-limit'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 const createQuoteSchema = z.object({
   request_id: z.string().uuid(),
   unit_price_usd: z.number().positive(),
@@ -31,8 +33,19 @@ const createQuoteSchema = z.object({
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
-    const { supabase, user } = await requireUser()
+    const { id } = await params
+    // Le rôle vient du garde partagé. Il était relu ici par une requête sur
+    // `profiles` — une quatrième implémentation du même contrôle, la seule non
+    // couverte par les tests du garde, et celle qui divergerait en silence le
+    // jour où la définition d'un rôle change.
+    const { supabase, user, role } = await requireUser()
+
+    // `import_requests.id` est de type uuid : une valeur libre atteignait
+    // Postgres, qui levait 22P02, et la route rendait ce défaut de saisie en
+    // « demande introuvable ».
+    if (!UUID.test(id)) {
+      return NextResponse.json({ error: 'Invalid request id' }, { status: 400 })
+    }
 
     const rl = checkRateLimit(`quote:${user.id}`, { maxRequests: 20, windowMs: 60000 })
     if (!rl.allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -54,12 +67,21 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Request not found' }, { status: 404 })
     }
 
-    // Check permission: partner assigned to this request, or admin, or buyer (view only)
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-    const isAdmin = profile?.role === 'ADMIN'
-    const isAssignedPartner = importRequest.assigned_partner_id && 
-      (await supabase.from('partner_profiles').select('id').eq('id', importRequest.assigned_partner_id).eq('user_id', user.id).single()).data
-    const isBuyer = importRequest.buyer_id === user.id
+    // Émettre un devis est réservé à l'administration et au partenaire
+    // effectivement assigné à cette demande. L'acheteur consulte, il ne chiffre
+    // pas : il n'avait rien à faire dans cette autorisation, et la variable qui
+    // le calculait n'était utilisée nulle part.
+    const isAdmin = role === 'ADMIN'
+    const isAssignedPartner =
+      !!importRequest.assigned_partner_id &&
+      !!(
+        await supabase
+          .from('partner_profiles')
+          .select('id')
+          .eq('id', importRequest.assigned_partner_id)
+          .eq('user_id', user.id)
+          .single()
+      ).data
 
     if (!isAdmin && !isAssignedPartner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -164,8 +186,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
-    const { supabase, user } = await requireUser()
+    const { id } = await params
+    const { supabase } = await requireUser()
+
+    if (!UUID.test(id)) {
+      return NextResponse.json({ error: 'Invalid request id' }, { status: 400 })
+    }
 
     const { data: quotes, error } = await supabase
       .from('quotes')
