@@ -121,9 +121,17 @@ export function SiteNav() {
             )}
           </div>
 
+          {/*
+            Masqué tant que la navigation est repliée. À 375 px ce bouton
+            débordait de 164 px : `overflow-x: hidden` sur le corps supprimait
+            la barre de défilement, si bien qu'il n'était pas visiblement cassé
+            — seulement tronqué, et à moitié inutilisable. Il est repris dans le
+            menu ci-dessous, où il manquait : un visiteur sur téléphone n'avait
+            aucun chemin vers la plateforme depuis la navigation.
+          */}
           <Link
             href="/dashboard"
-            className="bg-gold px-6 py-[14px] font-condensed text-[12px] font-bold uppercase tracking-[.24em] text-primary-foreground whitespace-nowrap"
+            className="hidden bg-gold px-6 py-[14px] font-condensed text-[12px] font-bold uppercase tracking-[.24em] text-primary-foreground whitespace-nowrap min-[1280px]:block"
           >
             {t("site.cta.platform", "Accéder à la plateforme")}
           </Link>
@@ -152,6 +160,15 @@ export function SiteNav() {
               className="bg-background px-[18px] py-[19px] text-start font-condensed text-[15px] font-semibold uppercase tracking-[.28em] text-gold"
             >
               {t("site.quote.eyebrow", "Accès")}
+            </Link>
+            {/* L'action principale de la barre, reprise ici puisqu'elle est
+                masquée en écran étroit. Traitée en pleine largeur et en doré
+                plein : c'est la destination du site, pas un lien parmi d'autres. */}
+            <Link
+              href="/dashboard"
+              className="bg-gold px-[18px] py-[19px] text-start font-condensed text-[15px] font-bold uppercase tracking-[.28em] text-primary-foreground"
+            >
+              {t("site.cta.platform", "Accéder à la plateforme")}
             </Link>
           </div>
         </div>
