@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { CountryGallery } from "@/components/site/country-gallery"
 import { useLanguage } from "@/lib/i18n-context"
 import { SiteShell } from "@/components/site/site-shell"
 import { useReveal } from "@/components/site/use-reveal"
@@ -31,7 +31,12 @@ const ORIGINS = [
       "Infrastructure de production sans équivalent, et la capacité de personnaliser en grande série sans faire exploser le prix unitaire.",
     atouts: ["Capacité de production", "Écosystème technologique", "Rapport qualité-prix", "Réactivité industrielle"],
     filieres: "Électronique · Machines · Textile",
-    image: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?auto=format&fit=crop&q=80&w=1600",
+    images: [
+      "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1545893835-abaa50cbe628?auto=format&fit=crop&q=80&w=1600",
+    ],
   },
   {
     id: "turkey",
@@ -42,7 +47,12 @@ const ORIGINS = [
       "Une qualité alignée sur les normes européennes, à quelques jours de mer seulement. Le choix quand le délai compte autant que le prix.",
     atouts: ["Normes européennes", "Délais courts", "Savoir-faire textile", "Coûts logistiques bas"],
     filieres: "Textile · Ameublement · Construction",
-    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=1600",
+    images: [
+      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1589561253898-768105ca91a8?auto=format&fit=crop&q=80&w=1600",
+    ],
   },
   {
     id: "uae",
@@ -53,7 +63,12 @@ const ORIGINS = [
       "Zone franche et infrastructure portuaire de premier plan : le transit y est le plus rapide pour les marchandises à forte valeur.",
     atouts: ["Zone franche", "Hub portuaire", "Douane rapide", "Accès aux marques"],
     filieres: "Luxe · Cosmétiques · Électronique",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600",
+    images: [
+      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1546412414-e1885259563a?auto=format&fit=crop&q=80&w=1600",
+    ],
   },
   {
     id: "japan",
@@ -64,7 +79,12 @@ const ORIGINS = [
       "La référence quand la tolérance de fabrication ne se négocie pas : haute technologie et ingénierie de précision.",
     atouts: ["Innovation", "Fabrication irréprochable", "Durabilité", "Design de précision"],
     filieres: "Robotique · Automobile · Machines-outils",
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=1600",
+    images: [
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=1600",
+    ],
   },
   {
     id: "thailand",
@@ -75,7 +95,12 @@ const ORIGINS = [
       "Standards sanitaires stricts et régularité des approvisionnements : le partenaire de l'agroalimentaire et des pièces techniques.",
     atouts: ["Standards sanitaires", "Excellence manufacturière", "Approvisionnement stable", "Expertise technique"],
     filieres: "Agroalimentaire · Pièces détachées · Bijouterie",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=1600",
+    images: [
+      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&q=80&w=1600",
+    ],
   },
 ] as const
 
@@ -172,20 +197,17 @@ export default function NetworkPage() {
                   i % 2 === 1 ? "md:[direction:rtl]" : ""
                 }`}
               >
-                <div className="relative min-h-[280px] bg-[var(--navy)] md:min-h-[340px]">
-                  <Image
-                    src={pays.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover opacity-70"
+                <div className="relative">
+                  {/* Le décalage évite que les cinq galeries basculent ensemble :
+                      un défilement synchronisé se lit comme un clignotement. */}
+                  <CountryGallery
+                    images={pays.images}
+                    decalageMs={i * 900}
+                    legende={pays.name}
                   />
-                  {/* Voile dégradé : le texte du bloc voisin doit rester lisible
-                      quelle que soit la photo. */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy)] via-transparent to-transparent" />
                   <span
                     aria-hidden
-                    className="absolute bottom-5 start-6 text-[38px] leading-none"
+                    className="pointer-events-none absolute bottom-5 start-6 z-10 text-[38px] leading-none"
                   >
                     {pays.flag}
                   </span>
