@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/*
+ * Sources scannées, déclarées explicitement.
+ *
+ * Tailwind v4 détecte seul les fichiers du projet, et cela a suffi jusqu'ici.
+ * Mais une construction sur l'hébergeur a réutilisé une feuille mise en cache
+ * sans rescanner : le composant `country-gallery` était bien déployé, son
+ * balisage contenait `min-h-[280px]` et `duration-[1200ms]`, et aucune de ces
+ * deux règles n'existait dans le CSS servi. Les galeries avaient donc une
+ * hauteur nulle, leurs images ne se chargeaient jamais, et la page paraissait
+ * simplement vide.
+ *
+ * Une détection implicite qui dépend d'un cache n'est pas une détection. Le
+ * chemin est donc écrit noir sur blanc.
+ */
+@source "../";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
