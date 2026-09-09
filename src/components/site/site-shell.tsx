@@ -5,9 +5,6 @@ import Link from "next/link"
 import { useLanguage } from "@/lib/i18n-context"
 import { SiteNav, SITE_LINKS } from "./site-nav"
 
-/** Numéro WhatsApp public de la société, repris de la maquette. */
-const WHATSAPP = "243818924674"
-
 const SERVICE_KEYS = [
   ["site.svc.sourcing.title", "SOURCING & ACHATS"],
   ["site.svc.logistics.title", "LOGISTIQUE & TRANSIT"],
@@ -140,42 +137,24 @@ function SiteFooter() {
 }
 
 /**
- * Enveloppe commune aux pages vitrine : barre de progression, navigation fixe,
- * pied de page et bouton WhatsApp flottant.
+ * Enveloppe commune aux pages vitrine : barre de progression, navigation fixe
+ * et pied de page.
+ *
+ * Le bouton WhatsApp flottant a été retiré : l'assistant, monté dans le layout
+ * racine, occupe déjà ce coin sur toutes les pages. Deux points d'entrée au
+ * même endroit se recouvraient, et un seul suffit.
  *
  * La classe `site-shell` sert d'ancre au bloc `prefers-reduced-motion` de
  * globals.css : elle neutralise les animations sur toute la vitrine sans
  * toucher au tableau de bord.
  */
 export function SiteShell({ children }: { children: React.ReactNode }) {
-  const { t } = useLanguage()
-
   return (
     <div className="site-shell relative min-h-screen bg-[var(--navy)]">
       <ScrollProgress />
       <SiteNav />
       <main>{children}</main>
       <SiteFooter />
-
-      <a
-        href={`https://wa.me/${WHATSAPP}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        // Décalé vers le haut pour laisser sa place à l'assistant, monté dans
-        // le layout racine et donc présent sur la vitrine aussi. Les deux
-        // étaient ancrés au même coin : ce bouton, plus haut en couche,
-        // recouvrait entièrement le cercle de l'assistant, dont ne dépassaient
-        // qu'un croissant doré et sa pastille de notification.
-        //
-        // 104px = 24px (bas de l'assistant) + 64px (son diamètre) + 16px d'air.
-        className="fixed bottom-[104px] right-[26px] z-[800] bg-gold px-[26px] py-[17px] font-condensed text-[12px] font-bold uppercase tracking-[.26em] text-primary-foreground whitespace-nowrap"
-        style={{
-          boxShadow: "0 14px 40px hsl(42 85% 55% / .28)",
-          animation: "drift 4s ease-in-out infinite",
-        }}
-      >
-        {t("site.floatBtn", "WhatsApp")}
-      </a>
     </div>
   )
 }
