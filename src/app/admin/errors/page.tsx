@@ -45,6 +45,48 @@ type Incident = {
 
 type Statut = "ouverts" | "resolus" | "tous"
 
+type EtatService = "ok" | "invalide" | "absent" | "injoignable"
+
+type Controle = {
+  service: string
+  etat: EtatService
+  detail?: string
+  critique: boolean
+}
+
+type Sante = {
+  etat: "ok" | "degrade"
+  version: string | null
+  environnement: string
+  controles: Controle[]
+}
+
+const TONALITE_PAR_ETAT: Record<EtatService, Parameters<typeof tone>[0]> = {
+  ok: "success",
+  invalide: "danger",
+  injoignable: "warning",
+  absent: "neutral",
+}
+
+const LIBELLE_ETAT: Record<EtatService, string> = {
+  ok: "opérationnel",
+  invalide: "clé refusée",
+  injoignable: "injoignable",
+  absent: "non configuré",
+}
+
+const NOM_SERVICE: Record<string, string> = {
+  stripe: "Stripe — paiements",
+  supabase: "Supabase — base de données",
+  resend: "Resend — e-mails",
+  stripe_webhook: "Stripe — signature webhook",
+  openai: "OpenAI",
+  resend_webhook: "Resend — signature webhook",
+  n8n: "n8n",
+  turnstile: "Turnstile",
+  mapbox: "Mapbox",
+}
+
 const TONALITE_PAR_NIVEAU: Record<Incident["level"], Parameters<typeof tone>[0]> = {
   warning: "warning",
   error: "danger",
@@ -66,6 +108,111 @@ function dateLisible(valeur: string | null) {
     hour: "2-digit",
     minute: "2-digit",
   })
+}
+
+/**
+ * État des services externes.
+ *
+ * Il existe parce qu'une valeur sensible ne peut pas être relue : l'hébergeur
+ * la masque, à raison. La seule preuve qu'une clé est encore valide est de
+ * s'en servir — c'est ce que fait /api/admin/health.
+ *
+ * Il est ici plutôt que sur une page à part : incidents et état des services
+ * se consultent au même moment, quand quelque chose ne va pas.
+ */
+function PanneauSante() {
+  const [sante, setSante] = useState<Sante | null>(null)
+  const [chargement, setChargement] = useState(true)
+  const [erreur, setErreur] = useState<string | null>(null)
+
+  const charger = useCallback(async () => {
+    setChargement(true)
+    setErreur(null)
+    try {
+      const res = await fetch("/api/admin/health")
+      // 503 est une réponse attendue : elle porte le diagnostic. Seul un refus
+      // d'accès ou une réponse illisible est un échec de chargement.
+      if (res.status === 401 || res.status === 403) throw new Error("Accès refusé")
+      const data = await res.json()
+      if (!data?.controles) throw new Error(data?.error || "Réponse inattendue")
+      setSante(data as Sante)
+    } catch (e: unknown) {
+      setErreur(e instanceof Error ? e.message : "Contrôle impossible")
+      setSante(null)
+    } finally {
+      setChargement(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void charger()
+  }, [charger])
+
+  const critiquesEnPanne = (sante?.controles ?? []).filter(
+    (c) => c.critique && c.etat !== "ok"
+  )
+
+  return (
+    <div className="rounded-xl border p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="font-semibold">État des services</h2>
+          <p className="text-muted-foreground text-sm">
+            Chaque contrôle interroge réellement le service, en lecture seule.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {sante && (
+            <Badge className={tone(sante.etat === "ok" ? "success" : "danger").badge}>
+              {sante.etat === "ok" ? "Tout fonctionne" : `${critiquesEnPanne.length} en panne`}
+            </Badge>
+          )}
+          <Button variant="outline" size="sm" onClick={() => void charger()} disabled={chargement}>
+            {chargement ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            <span className="ms-2">Contrôler</span>
+          </Button>
+        </div>
+      </div>
+
+      {erreur && (
+        <p className={`mt-3 text-sm ${tone("danger").text}`}>{erreur}</p>
+      )}
+
+      {sante && (
+        <>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {sante.controles.map((c) => {
+              const t = tone(TONALITE_PAR_ETAT[c.etat])
+              return (
+                <div
+                  key={c.service}
+                  className="flex items-start justify-between gap-3 rounded-lg border p-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{NOM_SERVICE[c.service] ?? c.service}</p>
+                    {c.detail && (
+                      <p className="text-muted-foreground mt-1 font-mono text-xs break-words">
+                        {c.detail}
+                      </p>
+                    )}
+                  </div>
+                  <Badge className={t.badge}>{LIBELLE_ETAT[c.etat]}</Badge>
+                </div>
+              )
+            })}
+          </div>
+          <p className="text-muted-foreground mt-3 text-xs">
+            {sante.environnement}
+            {sante.version ? ` · version ${sante.version}` : ""}
+          </p>
+        </>
+      )}
+    </div>
+  )
 }
 
 export default function PageIncidents() {
@@ -138,6 +285,8 @@ export default function PageIncidents() {
           <span className="ms-2">Actualiser</span>
         </Button>
       </div>
+
+      <PanneauSante />
 
       <div className="flex flex-wrap items-center gap-2">
         {(Object.keys(LIBELLE_STATUT) as Statut[]).map((valeur) => (
