@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { logAudit } from '@/lib/audit'
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 import { logAdminAccess, getAdminAuditMetadata } from '@/lib/admin-audit'
 import { sendToN8N } from '@/lib/webhooks'
 
@@ -22,7 +24,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { supabase, user } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
+    // Le rôle vient du garde partagé : il était relu juste après par une
+    // requête sur `profiles`, ce qui fait deux sources pour la même donnée —
+    // et celle-ci échouait ouvert si la lecture du profil échouait.
+    const { supabase, user, role } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
 
     const rl = checkRateLimit(`po:${user.id}`, { maxRequests: 30, windowMs: 60000 })
     if (!rl.allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -30,7 +35,11 @@ export async function POST(
     const body = await request.json()
     const url = new URL(request.url)
     const action = url.searchParams.get('action') // 'sign' or 'cancel'
-    const { id } = await params;
+    const { id } = await params
+
+    if (!UUID.test(id)) {
+      return NextResponse.json({ error: 'Invalid purchase order id' }, { status: 400 })
+    }
 
     // Get PO with related data
     const { data: po, error: poError } = await supabase
@@ -47,8 +56,7 @@ export async function POST(
       return NextResponse.json({ error: 'Purchase Order not found' }, { status: 404 })
     }
 
-    const profile = await supabase.from('profiles').select('role').eq('id', user.id).single()
-    const isAdmin = profile.data?.role === 'ADMIN'
+    const isAdmin = role === 'ADMIN'
     const isBuyer = po.request.buyer_id === user.id
     const isAssignedPartner = await supabase
       .from('partner_profiles')
@@ -205,8 +213,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const { supabase, user } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
+    const { id } = await params
+    const { supabase, user, role } = await requireRole(['ADMIN', 'PARTNER', 'BUYER'])
+
+    if (!UUID.test(id)) {
+      return NextResponse.json({ error: 'Invalid purchase order id' }, { status: 400 })
+    }
 
     const { data: po, error } = await supabase
       .from('purchase_orders')
@@ -223,8 +235,7 @@ export async function GET(
     if (error) throw error
 
     // Check permission
-    const profile = await supabase.from('profiles').select('role').eq('id', user.id).single()
-    const isAdmin = profile.data?.role === 'ADMIN'
+    const isAdmin = role === 'ADMIN'
     const isBuyer = po.request.buyer_id === user.id
     const isAssignedPartner = await supabase
       .from('partner_profiles')
