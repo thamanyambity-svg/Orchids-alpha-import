@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, act } from "@testing-library/react"
-import { CountryGallery } from "./country-gallery"
+import { CountryGallery, DUREE_MS } from "./country-gallery"
 
 /**
  * Galerie défilante d'un pays.
@@ -106,7 +106,7 @@ describe("CountryGallery", () => {
 
     act(() => declencherVisibilite!(true))
     act(() => {
-      vi.advanceTimersByTime(6000)
+      vi.advanceTimersByTime(DUREE_MS + 1000)
     })
 
     expect(imageVisible()).not.toBe(depart)
@@ -119,7 +119,7 @@ describe("CountryGallery", () => {
     act(() => declencherVisibilite!(true))
     act(() => {
       // Quatre pas complets.
-      vi.advanceTimersByTime(4 * 5000 + 100)
+      vi.advanceTimersByTime(4 * DUREE_MS + 100)
     })
 
     expect(imageVisible()).toBe(depart)
@@ -132,7 +132,7 @@ describe("CountryGallery", () => {
 
     act(() => declencherVisibilite!(true))
     act(() => {
-      vi.advanceTimersByTime(5100)
+      vi.advanceTimersByTime(DUREE_MS + 100)
     })
     const avantSortie = imageVisible()
 
@@ -145,7 +145,7 @@ describe("CountryGallery", () => {
     const vues = new Set<string | null>([avantSortie])
     for (let k = 0; k < 6; k++) {
       act(() => {
-        vi.advanceTimersByTime(5100)
+        vi.advanceTimersByTime(DUREE_MS + 100)
       })
       vues.add(imageVisible())
     }
@@ -162,7 +162,7 @@ describe("CountryGallery", () => {
 
     act(() => declencherVisibilite!(true))
     act(() => {
-      vi.advanceTimersByTime(6000)
+      vi.advanceTimersByTime(DUREE_MS + 1000)
     })
 
     expect(imageVisible()).not.toBe(arret)
@@ -178,7 +178,7 @@ describe("CountryGallery", () => {
     // Le décalage retarde le démarrage du minuteur : le premier changement
     // survient à 3000 + 5000 ms, pas à 5000.
     act(() => {
-      vi.advanceTimersByTime(7500)
+      vi.advanceTimersByTime(3000 + DUREE_MS - 500)
     })
     expect(imageVisible()).toBe(depart)
 

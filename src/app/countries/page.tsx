@@ -202,7 +202,7 @@ export default function NetworkPage() {
                       un défilement synchronisé se lit comme un clignotement. */}
                   <CountryGallery
                     images={pays.images}
-                    decalageMs={i * 900}
+                    decalageMs={i * 400}
                     legende={pays.name}
                   />
                   <span

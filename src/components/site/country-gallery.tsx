@@ -27,12 +27,22 @@ import Image from "next/image"
  *    fondu n'ait jamais à attendre le réseau.
  */
 
-/** Durée d'affichage d'une vue. Assez long pour être regardé, pas pour lasser. */
-const DUREE_MS = 5000
+/**
+ * Durée d'affichage d'une vue.
+ *
+ * Réduite de 5 s à 3,2 s : avec le décalage, la cinquième carte attendait
+ * jusqu'à 8,6 s avant son premier changement. Un visiteur qui regarde la
+ * section quelques secondes puis fait défiler ne voyait jamais rien bouger et
+ * concluait, à juste titre, que la galerie ne fonctionnait pas.
+ */
+export const DUREE_MS = 3200
 
 interface Props {
   images: readonly string[]
-  /** Décalage au démarrage : sans lui, les cinq galeries basculent à l'unisson. */
+  /**
+   * Décalage au démarrage : sans lui, les cinq galeries basculent à l'unisson.
+   * Volontairement court — il désynchronise sans retarder la première vue.
+   */
   decalageMs?: number
   legende: string
 }
