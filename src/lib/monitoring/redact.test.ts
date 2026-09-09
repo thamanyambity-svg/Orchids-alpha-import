@@ -11,18 +11,24 @@ import { redactString, redactValue, redactError, LONGUEUR_MAX } from "./redact"
  *
  * La règle est asymétrique : laisser passer un secret est une fuite, masquer
  * un peu trop n'est qu'une gêne au diagnostic. En cas de doute, on masque.
+ *
+ * Les valeurs d'exemple portent toutes une marque explicite (EXEMPLEDETEST,
+ * FAUSSE, EXEMPLE). Une première version utilisait des chaînes ressemblant à
+ * de vraies clés : un audit de l'historique Git les a prises pour des secrets
+ * réellement divulgués, ce qui a déclenché une rotation inutile. Un jeu de
+ * test doit être reconnaissable comme tel, y compris par un outil.
  */
 
 describe("redactString — secrets", () => {
   it("masque une clé secrète Stripe recopiée dans un message d'erreur", () => {
-    const brut = "StripeAuthenticationError: Invalid API Key provided: sk_live_51QxAbCdEfGhIjKlMn"
+    const brut = "StripeAuthenticationError: Invalid API Key provided: sk_live_EXEMPLEDETESTNONREEL"
     const sortie = redactString(brut)
-    expect(sortie).not.toContain("sk_live_51QxAbCdEfGhIjKlMn")
+    expect(sortie).not.toContain("sk_live_EXEMPLEDETESTNONREEL")
     expect(sortie).toContain("[SK_LIVE_MASQUEE]")
   })
 
   it("masque aussi une clé de test — un secret de test reste un secret", () => {
-    expect(redactString("key=sk_test_abcdefgh12345678")).not.toContain("abcdefgh12345678")
+    expect(redactString("key=sk_test_EXEMPLEDETESTNONREEL")).not.toContain("abcdefgh12345678")
   })
 
   it("masque le secret de signature d'un webhook", () => {
@@ -34,8 +40,8 @@ describe("redactString — secrets", () => {
   it("laisse passer la clé publiable, qui est destinée au navigateur", () => {
     // La masquer priverait le diagnostic de l'indication d'environnement,
     // sans rien protéger : cette clé est servie dans le bundle.
-    const sortie = redactString("stripe key pk_live_51QxAbCdEfGhIjKlMn")
-    expect(sortie).toContain("pk_live_51QxAbCdEfGhIjKlMn")
+    const sortie = redactString("stripe key pk_live_EXEMPLEDETESTNONREEL")
+    expect(sortie).toContain("pk_live_EXEMPLEDETESTNONREEL")
   })
 
   it("masque un jeton JWT — jeton de session ou clé service_role", () => {
@@ -249,7 +255,7 @@ describe("redactError", () => {
 
   it("masque la cause chaînée", () => {
     const e = new Error("échec haut niveau", {
-      cause: new Error("clé sk_live_ABCDEFGH12345678 refusée"),
+      cause: new Error("clé sk_live_AUTREEXEMPLEDETEST refusée"),
     })
     expect(JSON.stringify(redactError(e))).not.toContain("ABCDEFGH12345678")
   })

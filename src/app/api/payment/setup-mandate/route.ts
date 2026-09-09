@@ -11,9 +11,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Parser le body
-    const body = await req.json()
-    const { iban, bic } = body
+    // Un corps illisible est une faute de l'appelant, pas une panne du
+    // serveur : sans ce filet il ressortait en 500, ce qui envoie chercher un
+    // incident inexistant.
+    let body: { iban?: unknown; bic?: unknown }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+    }
+
+    const iban = typeof body?.iban === 'string' ? body.iban : ''
+    const bic = typeof body?.bic === 'string' ? body.bic : ''
 
     if (!iban || !bic) {
       return NextResponse.json(

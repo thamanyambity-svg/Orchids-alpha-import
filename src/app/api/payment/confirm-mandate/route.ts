@@ -10,11 +10,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Parser le body
-    const body = await req.json()
-    const { setupIntentId } = body
+    // Un corps illisible est une faute de l'appelant : sans ce filet il
+    // ressortait en 500, ce qui envoie chercher un incident inexistant.
+    let body: { setupIntentId?: unknown }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+    }
 
-    if (!setupIntentId) {
+    // La forme est contrôlée avant l'appel : l'identifiant part tel quel chez
+    // Stripe, et une valeur d'un autre type d'objet (pm_, cus_) y déclencherait
+    // une erreur générique qu'on rendrait en 500 au lieu d'un refus net.
+    const setupIntentId = body?.setupIntentId
+    if (typeof setupIntentId !== 'string' || !/^seti_[A-Za-z0-9_]{4,}$/.test(setupIntentId)) {
       return NextResponse.json(
         { error: 'setupIntentId is required' },
         { status: 400 }
