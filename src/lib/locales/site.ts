@@ -106,6 +106,21 @@ const fr: SiteDict = {
   'site.net.legendRoute': 'Corridor actif',
   'site.net.hubsTitle': 'QUATRE HUBS MONDIAUX',
   'site.net.originsTitle': "PAYS D'ORIGINE OPÉRÉS EN DIRECT",
+  'site.net.whyTitle': 'POURQUOI CES PAYS',
+  'site.net.whyBody':
+    "Chaque implantation est retenue pour un avantage précis, pas pour élargir une liste. Trois critères décident.",
+  'site.net.why.eco.tag': 'Coût',
+  'site.net.why.eco.title': "PRIX D'USINE, SANS INTERMÉDIAIRE",
+  'site.net.why.eco.body':
+    "Le partenaire achète sur place, au tarif producteur. Ce que vous économisez est la marge que personne ne prélève entre l'usine et vous.",
+  'site.net.why.quality.tag': 'Contrôle',
+  'site.net.why.quality.title': 'UNE PRÉSENCE PHYSIQUE SUR PLACE',
+  'site.net.why.quality.body':
+    "Chaque lot est inspecté avant embarquement par quelqu'un qui répond de la marchandise. Un contrôle à distance ne vaut rien une fois le conteneur parti.",
+  'site.net.why.speed.tag': 'Délai',
+  'site.net.why.speed.title': 'DES CORRIDORS DÉJÀ OUVERTS',
+  'site.net.why.speed.body':
+    "Transitaires, douane et transporteurs sont établis sur chacune de ces routes. Rien n'est improvisé au moment de l'expédition.",
   'site.net.originsBody':
     "Pour chacun, un partenaire agréé sur place : il sélectionne le fournisseur, négocie, inspecte et répond de la marchandise jusqu'à l'embarquement.",
   'site.net.hub1.tag': 'Siège',
@@ -349,6 +364,21 @@ const en: SiteDict = {
   'site.net.legendRoute': 'Active corridor',
   'site.net.hubsTitle': 'FOUR GLOBAL HUBS',
   'site.net.originsTitle': 'ORIGIN COUNTRIES RUN DIRECTLY',
+  'site.net.whyTitle': 'WHY THESE COUNTRIES',
+  'site.net.whyBody':
+    'Each location is kept for one precise advantage, not to lengthen a list. Three criteria decide.',
+  'site.net.why.eco.tag': 'Cost',
+  'site.net.why.eco.title': 'FACTORY PRICE, NO MIDDLEMAN',
+  'site.net.why.eco.body':
+    'The partner buys on site, at the producer rate. What you save is the margin nobody takes between the factory and you.',
+  'site.net.why.quality.tag': 'Control',
+  'site.net.why.quality.title': 'SOMEONE ON THE GROUND',
+  'site.net.why.quality.body':
+    'Every lot is inspected before loading by a partner who answers for the goods. A remote check is worth nothing once the container has sailed.',
+  'site.net.why.speed.tag': 'Lead time',
+  'site.net.why.speed.title': 'CORRIDORS ALREADY OPEN',
+  'site.net.why.speed.body':
+    'Forwarders, customs and carriers are established on each of these routes. Nothing is improvised at shipping time.',
   'site.net.originsBody':
     'For each one, an approved partner on the ground: they select the supplier, negotiate, inspect and answer for the goods up to loading.',
   'site.net.hub1.tag': 'Head office',
