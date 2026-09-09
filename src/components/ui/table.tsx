@@ -70,7 +70,11 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-2 text-start align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pe-0 [&>[role=checkbox]]:translate-y-[2px]",
+        // `t-label` : en-tête de colonne au sens du système de typographie —
+        // condensée, capitales, interlettrage large. C'est ce que le site
+        // vitrine emploie pour ses libellés ; les tableaux affichaient jusqu'ici
+        // la police de texte courant, ce qui faisait deux dialectes visuels.
+        "t-label text-muted-foreground h-10 px-2 text-start align-middle whitespace-nowrap [&:has([role=checkbox])]:pe-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}

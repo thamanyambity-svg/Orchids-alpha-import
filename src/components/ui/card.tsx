@@ -28,11 +28,30 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+/**
+ * Titre de carte.
+ *
+ * Rendu en `h3` et non en `div`. La règle de base pose la police d'affichage
+ * sur `h1, h2, h3` : tant que ce composant était un `div`, il ne l'héritait
+ * jamais, et les 49 titres de cartes de l'application s'affichaient en Inter
+ * pendant que le site vitrine utilisait Bebas Neue. C'est l'écart de
+ * typographie visible entre les deux moitiés du produit.
+ *
+ * Un titre de carte est par ailleurs un titre : `h3` est aussi la balise juste
+ * pour la navigation au lecteur d'écran.
+ *
+ * Pour un libellé d'indicateur — « Commandes à haute valeur » au-dessus d'un
+ * chiffre — la police d'affichage n'est pas la bonne : passer `t-label`, qui
+ * applique la condensée en capitales prévue par le système.
+ */
+function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
   return (
-    <div
+    <h3
       data-slot="card-title"
-      className={cn("leading-none font-semibold", className)}
+      // Pas de `font-semibold` : Bebas Neue n'est chargée qu'en graisse 400.
+      // Demander 600 fait synthétiser un faux gras par le navigateur — traits
+      // épaissis et irréguliers, visible surtout aux petites tailles.
+      className={cn("leading-none", className)}
       {...props}
     />
   )

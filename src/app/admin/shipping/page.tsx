@@ -87,11 +87,11 @@ export default function AdminShippingPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-info-subtle/50 border-info-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-info">Fret Maritime</CardTitle>
+                        <CardTitle className="t-label text-info">Fret Maritime</CardTitle>
                         <Anchor className="h-4 w-4 text-info" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-info">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums] text-info">
                             {shipments.filter(s => s.request?.transport_mode !== 'AIR').length}
                         </div>
                         <p className="text-xs text-info">Conteneurs en transit</p>
@@ -100,11 +100,11 @@ export default function AdminShippingPage() {
 
                 <Card className="bg-info-subtle/50 border-info-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-info">Fret Aérien</CardTitle>
+                        <CardTitle className="t-label text-info">Fret Aérien</CardTitle>
                         <Plane className="h-4 w-4 text-info" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-info">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums] text-info">
                             {shipments.filter(s => s.request?.transport_mode === 'AIR').length}
                         </div>
                         <p className="text-xs text-info">Expéditions urgentes</p>
@@ -113,11 +113,11 @@ export default function AdminShippingPage() {
 
                 <Card className="bg-success-subtle/50 border-success-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-success">Coûts Logistiques</CardTitle>
+                        <CardTitle className="t-label text-success">Coûts Logistiques</CardTitle>
                         <DollarSign className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-success">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums] text-success">
                             ${shipments.reduce((acc, s) => {
                                 const costs = calculateDetailedCosts(s.total_amount, s.request?.transport_mode, s.request?.country?.code)
                                 return acc + costs.total

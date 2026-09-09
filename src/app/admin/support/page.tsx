@@ -85,7 +85,7 @@ export default function AdminSupportPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Support & Incidents</h1>
+                    <h1 className="text-3xl">Support & Incidents</h1>
                     <p className="text-muted-foreground">
                         Gestion des réclamations clients et des incidents logistiques.
                     </p>
@@ -95,11 +95,11 @@ export default function AdminSupportPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Incidents Ouverts</CardTitle>
+                        <CardTitle className="t-label text-muted-foreground">Incidents Ouverts</CardTitle>
                         <AlertTriangle className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">
                             {incidents.filter(i => i.status === 'OPEN').length}
                         </div>
                         <p className="text-xs text-muted-foreground">Nécessitent une intervention</p>
@@ -107,11 +107,11 @@ export default function AdminSupportPage() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Messages Non Lus</CardTitle>
+                        <CardTitle className="t-label text-muted-foreground">Messages Non Lus</CardTitle>
                         <MessageSquare className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">
                             {messages.filter(m => !m.is_read).length}
                         </div>
                         <p className="text-xs text-muted-foreground">Demandes de renseignements</p>
@@ -119,11 +119,11 @@ export default function AdminSupportPage() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Temps de Réponse</CardTitle>
+                        <CardTitle className="t-label text-muted-foreground">Temps de Réponse</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">
                             {avgResponseHours != null ? `${avgResponseHours}h` : "—"}
                         </div>
                         <p className="text-xs text-muted-foreground">Moyenne sur 7 jours (incidents résolus)</p>

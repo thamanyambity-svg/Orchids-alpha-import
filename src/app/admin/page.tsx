@@ -143,7 +143,7 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Tableau de Bord</h1>
+          <h1 className="text-3xl text-foreground">Tableau de Bord</h1>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground/5 border border-foreground/10 text-xs text-foreground/60">

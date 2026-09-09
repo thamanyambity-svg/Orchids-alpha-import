@@ -54,7 +54,7 @@ export default function AdminSourcingMonitorPage() {
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div className="flex items-center justify-between space-y-2 mb-8">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+          <h2 className="text-3xl flex items-center gap-2">
             <Bot className="w-8 h-8 text-primary" /> Supervision Sourcing IA
           </h2>
           <p className="text-muted-foreground mt-1">

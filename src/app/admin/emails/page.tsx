@@ -108,7 +108,7 @@ export default function AdminEmailsPage() {
     <div className="space-y-6 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl flex items-center gap-3">
             <Mail className="w-8 h-8 text-primary" />
             Boîte Mail contact@aonosekehouseinvestmentdrc.site
           </h1>

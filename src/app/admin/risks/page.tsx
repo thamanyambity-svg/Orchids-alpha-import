@@ -62,7 +62,7 @@ export default function AdminRisksPage() {
         <div className="space-y-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Gestion des Risques</h1>
+                    <h1 className="text-3xl">Gestion des Risques</h1>
                     <p className="text-muted-foreground">
                         Surveillance des opérations sensibles et de la conformité.
                     </p>
@@ -73,33 +73,33 @@ export default function AdminRisksPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-destructive-subtle border-destructive-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-destructive">{t("admin.risks.high_value_orders", "Commandes à Haute Valeur")}</CardTitle>
+                        <CardTitle className="t-label text-destructive">{t("admin.risks.high_value_orders", "Commandes à Haute Valeur")}</CardTitle>
                         <TrendingUp className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-destructive">{highRiskOrders.length}</div>
+                        <div className="font-display text-4xl leading-none text-destructive [font-variant-numeric:tabular-nums]">{highRiskOrders.length}</div>
                         <p className="text-xs text-destructive">Nécessitent une double validation</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-warning-subtle border-warning-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-warning">{t("admin.risks.restricted_suppliers", "Fournisseurs Restreints")}</CardTitle>
+                        <CardTitle className="t-label text-warning">{t("admin.risks.restricted_suppliers", "Fournisseurs Restreints")}</CardTitle>
                         <AlertOctagon className="h-4 w-4 text-warning" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-warning">{restrictedSuppliers.length}</div>
+                        <div className="font-display text-4xl leading-none text-warning [font-variant-numeric:tabular-nums]">{restrictedSuppliers.length}</div>
                         <p className="text-xs text-warning">Non conformes ou en probation</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Score de Risque Global</CardTitle>
+                        <CardTitle className="t-label text-muted-foreground">Score de Risque Global</CardTitle>
                         <ShieldAlert className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-success">Faible</div>
+                        <div className="font-display text-4xl leading-none text-success [font-variant-numeric:tabular-nums]">Faible</div>
                         <p className="text-xs text-muted-foreground">Basé sur les incidents actifs</p>
                     </CardContent>
                 </Card>

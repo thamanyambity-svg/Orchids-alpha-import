@@ -69,44 +69,44 @@ export default function ReportingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Volume Total (Projeté)</CardTitle>
+            <CardTitle className="t-label text-muted-foreground">Volume Total (Projeté)</CardTitle>
             <TrendingUp className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalVolume.toLocaleString()} €</div>
+            <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">{stats.totalVolume.toLocaleString()} €</div>
             <p className="text-xs text-muted-foreground">Cumul des budgets max validés</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Demandes Actives</CardTitle>
+            <CardTitle className="t-label text-muted-foreground">Demandes Actives</CardTitle>
             <Activity className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.activeRequests}</div>
+            <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">{stats.activeRequests}</div>
             <p className="text-xs text-muted-foreground">Hors brouillons et clôturées</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Transactions Encaissées</CardTitle>
+            <CardTitle className="t-label text-muted-foreground">Transactions Encaissées</CardTitle>
             <CheckCircle2 className="w-4 h-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTransactions.toLocaleString()} €</div>
+            <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">{stats.totalTransactions.toLocaleString()} €</div>
             <p className="text-xs text-muted-foreground">Somme des paiements confirmés</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Taux de Résolution</CardTitle>
+            <CardTitle className="t-label text-muted-foreground">Taux de Résolution</CardTitle>
             <BarChart3 className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">98.5%</div>
+            <div className="font-display text-4xl leading-none [font-variant-numeric:tabular-nums]">98.5%</div>
             <p className="text-xs text-muted-foreground">+0.5% ce mois-ci</p>
           </CardContent>
         </Card>

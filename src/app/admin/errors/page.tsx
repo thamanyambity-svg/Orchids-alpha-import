@@ -156,7 +156,7 @@ function PanneauSante() {
     <div className="rounded-xl border p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-semibold">État des services</h2>
+          <h2 className="text-xl">État des services</h2>
           <p className="text-muted-foreground text-sm">
             Chaque contrôle interroge réellement le service, en lecture seule.
           </p>
@@ -270,7 +270,7 @@ export default function PageIncidents() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Incidents</h1>
+          <h1 className="text-3xl">Incidents</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Erreurs serveur et navigateur, regroupées par empreinte. Les données
             sensibles sont masquées à l&apos;enregistrement.
@@ -327,7 +327,7 @@ export default function PageIncidents() {
       {!chargement && !erreur && incidents.length === 0 && (
         <div className="rounded-xl border border-dashed py-16 text-center">
           <ServerCrash className="text-muted-foreground mx-auto h-8 w-8" />
-          <p className="mt-3 font-medium">Aucun incident {statut === "ouverts" ? "ouvert" : ""}</p>
+          <p className="t-label mt-3 text-muted-foreground">Aucun incident {statut === "ouverts" ? "ouvert" : ""}</p>
           <p className="text-muted-foreground mt-1 text-sm">
             La supervision est active : cette page se remplira au premier incident.
           </p>
