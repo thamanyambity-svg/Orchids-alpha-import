@@ -43,6 +43,7 @@ import { PurchaseOrderCard } from "@/components/dashboard/purchase-order-card"
 import { QuoteSubmissionForm } from "@/components/dashboard/quote-submission-form"
 import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 import { QUOTE_STATUS } from "@/lib/design/status"
+import type { PartnerCard } from "@/lib/partners/public-card"
 
 export default function RequestDetailsPage() {
   const { id } = useParams()
@@ -56,6 +57,7 @@ export default function RequestDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
   const [showQuoteForm, setShowQuoteForm] = useState(false)
+  const [partenaire, setPartenaire] = useState<PartnerCard | null>(null)
 
   const documentTypeLabels: Record<string, string> = {
     PROFORMA_INVOICE: "Facture Proforma",
@@ -77,10 +79,12 @@ export default function RequestDetailsPage() {
       const [requestRes, orderRes, docsRes, quotesRes, poRes] = await Promise.all([
         supabase
           .from("import_requests")
+          // `countries.flag` n'existe pas (flag_emoji), et le nom du partenaire
+          // n'est pas dans partner_profiles : la requête échouait et la page
+          // affichait « Demande introuvable » pour toute demande.
           .select(`
             *,
-            countries (name, flag),
-            assigned_partner:partner_profiles (full_name, company_name, email, phone)
+            countries (name, flag_emoji)
           `)
           .eq("id", id)
           .single(),
@@ -114,6 +118,14 @@ export default function RequestDetailsPage() {
         setDocuments(docsRes.data || [])
         setQuotes(quotesRes.data || [])
         setPurchaseOrders(poRes.data || [])
+        // Coordonnées du partenaire affecté : les règles d'accès ne les
+        // ouvrent pas à l'acheteur, la route serveur renvoie la seule carte.
+        if (requestRes.data?.assigned_partner_id) {
+          fetch(`/api/partners/card?request=${id}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((j) => setPartenaire(j?.partner ?? null))
+            .catch(() => setPartenaire(null))
+        }
       }
       setLoading(false)
     }
@@ -362,7 +374,7 @@ export default function RequestDetailsPage() {
                   Origine
                 </h3>
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-                  <span className="text-3xl">{request.countries?.flag}</span>
+                  <span className="text-3xl">{request.countries?.flag_emoji}</span>
                   <div>
                     <p className="font-bold">{request.countries?.name}</p>
                     <p className="text-xs text-muted-foreground">Partenaire certifié actif</p>
@@ -370,7 +382,7 @@ export default function RequestDetailsPage() {
                 </div>
               </section>
 
-              {request.assigned_partner && (
+              {partenaire && (
                 <section className="bg-card border border-border rounded-2xl p-6">
                   <h3 className="font-bold mb-4 flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-primary" />
@@ -378,18 +390,24 @@ export default function RequestDetailsPage() {
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <p className="font-bold text-sm">{request.assigned_partner.full_name}</p>
-                      <p className="text-xs text-muted-foreground">{request.assigned_partner.company_name}</p>
+                      <p className="font-bold text-sm">{partenaire.company_name || partenaire.full_name}</p>
+                      {partenaire.company_name && partenaire.full_name && (
+                        <p className="text-xs text-muted-foreground">{partenaire.full_name}</p>
+                      )}
                     </div>
                     <div className="space-y-2 pt-2 border-t border-border">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Phone className="w-3 h-3" />
-                        {request.assigned_partner.phone}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Mail className="w-3 h-3" />
-                        {request.assigned_partner.email}
-                      </div>
+                      {partenaire.whatsapp && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Phone className="w-3 h-3" />
+                          {partenaire.whatsapp}
+                        </div>
+                      )}
+                      {partenaire.email && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Mail className="w-3 h-3" />
+                          {partenaire.email}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </section>
@@ -423,7 +441,7 @@ export default function RequestDetailsPage() {
         <TabsContent value="quotes" className="space-y-6 animate-in fade-in">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">{t("dashboard.request.tab_quotes", "Devis / Proforma")}</h2>
-            {request.assigned_partner && (
+            {request.assigned_partner_id && (
               <Button onClick={() => setShowQuoteForm(true)}>
                 <PenSquare className="w-4 h-4 me-2" />
                 {t("dashboard.request.new_quote", "Nouveau Devis")}

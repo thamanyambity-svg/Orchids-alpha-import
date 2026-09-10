@@ -56,7 +56,7 @@ export default function IncidentsPage() {
           .from("incidents")
           .select(`
             *,
-            import_requests:order_id (product_name, reference)
+            commande:order_id (reference, demande:request_id (product_name, reference))
           `)
           .eq("reported_by", user.id)
           .order("created_at", { ascending: false })
@@ -87,10 +87,26 @@ export default function IncidentsPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Non authentifié")
 
+      // Un incident se rattache à une commande (order_id → orders), pas à la
+      // demande : l'identifiant de la demande était refusé par la base.
+      const { data: commande } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("request_id", formData.requestId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (!commande) {
+        throw new Error(t(
+          "dashboard.incidents.no_order",
+          "Un incident se signale sur une commande en cours. Cette demande n'a pas encore de bon de commande : écrivez-nous via l'assistant ou la messagerie."
+        ))
+      }
+
       const { data, error } = await supabase
         .from("incidents")
         .insert({
-          order_id: formData.requestId,
+          order_id: commande.id,
           type: formData.type,
           description: formData.description,
           reported_by: user.id,
@@ -98,7 +114,7 @@ export default function IncidentsPage() {
         })
         .select(`
           *,
-          import_requests:order_id (product_name, reference)
+          commande:order_id (reference, demande:request_id (product_name, reference))
         `)
         .single()
 
@@ -234,7 +250,7 @@ export default function IncidentsPage() {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <FileText className="w-3 h-3" />
-                          {incident.import_requests?.reference || "N/A"}
+                          {incident.commande?.demande?.reference || incident.commande?.reference || "N/A"}
                         </div>
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />

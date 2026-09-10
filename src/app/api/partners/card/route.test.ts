@@ -178,4 +178,28 @@ describe("GET /api/partners/card", () => {
 
     await expect((await GET(req("?request=latest"))).json()).resolves.toEqual({ partner: null })
   })
+
+  it("renvoie le partenaire d'une demande précise, restreinte à l'appelant", async () => {
+    setup()
+    const DEMANDE = "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+
+    const res = await GET(req(`?request=${DEMANDE}`))
+
+    await expect(res.json()).resolves.toMatchObject({ partner: { full_name: "Achignon Bilongo" } })
+    const lecture = mock.lastOp("import_requests")
+    expect(lecture?.filtres).toEqual(
+      expect.arrayContaining([
+        { operateur: "eq", colonne: "buyer_id", valeur: ACHETEUR },
+        { operateur: "eq", colonne: "id", valeur: DEMANDE },
+      ])
+    )
+  })
+
+  it("refuse un identifiant de demande mal formé sans interroger la base", async () => {
+    setup()
+    for (const valeur of ["abc", "1' or '1'='1", "dddddddd-dddd-4ddd-8ddd"]) {
+      expect((await GET(req(`?request=${encodeURIComponent(valeur)}`))).status, valeur).toBe(400)
+    }
+    expect(mock.ops.length).toBe(0)
+  })
 })

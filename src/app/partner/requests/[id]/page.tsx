@@ -66,10 +66,9 @@ export default function PartnerRequestDetailPage() {
             .from('import_requests')
             .select(`
               *,
-              buyer_profiles (
+              buyer_profiles:profiles!import_requests_buyer_id_fkey (
                 full_name,
-                company_name,
-                activity_type
+                company_name
               )
             `)
             .eq('id', params.id)

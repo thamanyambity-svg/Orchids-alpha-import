@@ -51,7 +51,7 @@ export default function PartnerDashboardPage() {
           .from('import_requests')
           .select(`
             *,
-            buyer_profiles (
+            buyer_profiles:profiles!import_requests_buyer_id_fkey (
               full_name,
               company_name
             )

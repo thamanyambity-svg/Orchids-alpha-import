@@ -38,7 +38,7 @@ export default function RequestsPage() {
           .from("import_requests")
           .select(`
             *,
-            countries (name, flag)
+            countries (name, flag_emoji)
           `)
           .eq("buyer_id", user.id)
           .order("created_at", { ascending: false })
@@ -144,7 +144,7 @@ export default function RequestsPage() {
                         <p className="text-xs text-muted-foreground">{request.category}</p>
                       </td>
                       <td className="p-4 text-sm">
-                        {request.countries?.flag} {request.countries?.name}
+                        {request.countries?.flag_emoji} {request.countries?.name}
                       </td>
                       <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusBadge(REQUEST_STATUS, request.status)}`}>

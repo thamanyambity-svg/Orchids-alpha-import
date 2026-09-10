@@ -3,6 +3,8 @@ import { requireUser, handleApiError, ApiError } from '@/lib/auth-guard'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PARTNER_CARD_SELECT, toPartnerCard } from '@/lib/partners/public-card'
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 /**
  * Carte de contact du partenaire, pour un acheteur connecté.
  *
@@ -46,14 +48,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ partner: toPartnerCard(data) })
     }
 
-    if (mode === 'latest') {
-      const { data: demande } = await admin
+    if (mode !== null) {
+      if (mode !== 'latest' && !UUID.test(mode)) throw new ApiError(400, 'Demande invalide')
+
+      // `latest` : dernière demande de l'appelant ; sinon la demande désignée,
+      // toujours restreinte à celles dont il est l'acheteur.
+      let requete = admin
         .from('import_requests')
         .select('assigned_partner_id')
         .eq('buyer_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
+      requete = mode === 'latest'
+        ? requete.order('created_at', { ascending: false }).limit(1)
+        : requete.eq('id', mode)
+      const { data: demande } = await requete.maybeSingle()
 
       if (!demande?.assigned_partner_id) return NextResponse.json({ partner: null })
 
@@ -67,7 +74,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ partner: toPartnerCard(data) })
     }
 
-    throw new ApiError(400, 'Préciser ?country=XX ou ?request=latest')
+    throw new ApiError(400, 'Préciser ?country=XX, ?request=latest ou ?request=<demande>')
   } catch (error) {
     return handleApiError(error, { route: '/api/partners/card', method: 'GET' })
   }
