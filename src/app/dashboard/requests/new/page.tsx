@@ -201,6 +201,28 @@ const steps = [
  * pour tous les pays — sauf les Émirats, à cause d'une ligne parasite `ARE` en
  * trois lettres. On résout par code exact, puis par nom normalisé.
  */
+/**
+ * Pays d'achat réellement opérés, dans l'ordre du réseau.
+ *
+ * La table `countries` en marque onze comme actifs — dont l'Allemagne,
+ * l'Espagne, la France, l'Italie, les États-Unis, et la RDC elle-même, qui est
+ * la destination et non un pays d'achat. Aucun partenaire n'y opère : proposer
+ * ces pays promettait un service qui n'existe pas. La liste suit `CITIES` de
+ * network-map.tsx et la page réseau.
+ */
+const PAYS_ACHAT = ["CN", "TR", "AE", "JP", "TH"] as const
+
+/**
+ * Nom de produit effectif. La fiche véhicule ne comporte pas de champ « nom » :
+ * il se déduit de la marque, du modèle et de l'année.
+ */
+function nomProduit(item: any): string {
+  if (item.productName) return item.productName
+  const s = item.specs || {}
+  const vehicule = [s.brand, s.model, s.year].filter(Boolean).join(" ")
+  return vehicule || s.product_name || s.designation || ""
+}
+
 function resolveCountryId(
   dbCountries: { id: string; code: string; name: string }[],
   selectedCode: string
@@ -229,7 +251,6 @@ export default function NewRequestPage() {
     buyerCountry: "",
     country: "",
     category: "TEXTILE",
-    deadline: "",
     transportMode: "SEA",
   })
 
@@ -311,11 +332,21 @@ export default function NewRequestPage() {
       return
     }
     if (currentStep === 2) {
-      const invalidItems = items.some(item => 
-        !item.productName || !item.quantity || !item.budgetMin || !item.budgetMax
+      // Le budget est saisi dans la fiche produit (budget min et max, communs
+      // aux trois fiches). La ligne « Budget estimé » placée dessous le
+      // redemandait : elle a été retirée, et c'est la fiche qui fait foi.
+      const invalidItems = items.some(item =>
+        !nomProduit(item) || !item.quantity || !item.specs?.budget_min_usd || !item.specs?.budget_max_usd
       )
       if (invalidItems) {
         toast.error(t("dashboard.requests.new.incomplete_items", "Tous les champs produit sont requis"))
+        return
+      }
+      const budgetIncoherent = items.some(item =>
+        parseFloat(item.specs.budget_min_usd) > parseFloat(item.specs.budget_max_usd)
+      )
+      if (budgetIncoherent) {
+        toast.error(t("dashboard.requests.new.budget_order", "Le budget minimum dépasse le budget maximum."))
         return
       }
     }
@@ -381,16 +412,18 @@ export default function NewRequestPage() {
             country_id: countryId,
             buyer_country: formData.buyerCountry,
             category: formData.category,
-            product_name: item.productName,
+            product_name: nomProduit(item),
             specifications: {
               description: item.description,
               category_specific: item.specs || {}
             },
             quantity: parseInt(item.quantity),
             unit: item.unit,
-            budget_min: parseFloat(item.budgetMin),
-            budget_max: parseFloat(item.budgetMax),
-            deadline: formData.deadline || null,
+            budget_min: parseFloat(item.specs.budget_min_usd),
+            budget_max: parseFloat(item.specs.budget_max_usd),
+            // Pas de date limite côté acheteur : le délai dépend des
+            // embarquements disponibles, il est fixé par le partenaire sur place.
+            deadline: null,
             transport_mode: formData.transportMode
           })
         })
@@ -499,32 +532,25 @@ export default function NewRequestPage() {
                       <Select value={formData.country} onValueChange={(value) => setFormData({ ...formData, country: value })}>
                         <SelectTrigger className="h-14 text-lg"><SelectValue placeholder={t("dashboard.requests.new.purchase_country_placeholder", "Où achetez-vous ?")} /></SelectTrigger>
                         <SelectContent>
-                          {countries.length > 0 ? (
-                            countries.map((country) => {
-                              const countryInfo = allCountries.find(c => c.code === country.code);
-                              return (
-                                <SelectItem key={country.code} value={country.code}>
-                                  <span className="flex items-center gap-3 py-1">
-                                    {countryInfo?.name || country.name}
-                                  </span>
-                                </SelectItem>
-                              );
-                            })
-                          ) : (
-                            allCountries.map((country) => (
+                          {/* Plus de repli sur la liste mondiale : elle proposait
+                              près de deux cents pays, dont aucun n'est desservi
+                              hors des cinq corridors. */}
+                          {PAYS_ACHAT.map((code) => countries.find((c) => c.code === code))
+                            .filter(Boolean)
+                            .map((country: any) => (
                               <SelectItem key={country.code} value={country.code}>
                                 <span className="flex items-center gap-3 py-1">
+                                  {country.flag_emoji ? <span aria-hidden>{country.flag_emoji}</span> : null}
                                   {country.name}
                                 </span>
                               </SelectItem>
-                            ))
-                          )}
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-base font-semibold italic opacity-70">{t("dashboard.requests.new.category", "Catégorie de produits *")}</Label>
+                      <Label className="text-base font-semibold">{t("dashboard.requests.new.category", "Catégorie de produits *")}</Label>
                       <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                         <SelectTrigger className="h-12"><SelectValue placeholder={t("dashboard.requests.new.category_placeholder", "Sélectionnez une catégorie")} /></SelectTrigger>
                         <SelectContent>
@@ -543,7 +569,7 @@ export default function NewRequestPage() {
                         {t("dashboard.requests.new.why_this_step", "Pourquoi cette étape ?")}
                       </h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        {t("dashboard.requests.new.why_this_step_desc", "AlphaIX vous connecte directement avec un expert local certifié. Chaque pays dispose d'une équipe dédiée pour garantir la sécurité de vos fonds et la conformité de vos produits.")}
+                        {t("dashboard.requests.new.why_this_step_desc", "Alpha Import vous connecte directement avec un expert local certifié. Chaque pays dispose d'une équipe dédiée pour garantir la sécurité de vos fonds et la conformité de vos produits.")}
                       </p>
                     </div>
                   </div>
@@ -558,6 +584,17 @@ export default function NewRequestPage() {
                             toast.info(`${t("dashboard.requests.new.contact_via", "Contact via")} ${method} ${t("dashboard.requests.new.initiated", "initié")}`)
                           }}
                         />
+                      </div>
+                    ) : formData.country ? (
+                      // Pays choisi, aucun partenaire encore affecté. Afficher
+                      // « Sélectionnez un pays » ici laissait croire que le choix
+                      // n'avait pas été pris en compte.
+                      <div className="h-full min-h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center bg-primary/5">
+                        <ShieldCheck className="w-12 h-12 text-primary/60 mb-4" />
+                        <h3 className="font-semibold">{t("dashboard.requests.new.partner_pending", "Partenaire en cours d'affectation")}</h3>
+                        <p className="text-sm text-muted-foreground max-w-[320px] mt-2">
+                          {t("dashboard.requests.new.partner_pending_desc", "Votre demande est reçue et suivie par l'administration Alpha Import, qui l'attribue au partenaire agréé de ce pays. Vous verrez son profil ici dès l'affectation.")}
+                        </p>
                       </div>
                     ) : (
                       <div className="h-full min-h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/10">
@@ -634,10 +671,6 @@ export default function NewRequestPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>{t("dashboard.requests.new.deadline", "Date limite souhaitée")}</Label>
-                    <Input type="date" value={formData.deadline} onChange={(e) => setFormData({ ...formData, deadline: e.target.value })} />
-                  </div>
                 </div>
 
                 <div className="space-y-6">
@@ -663,7 +696,7 @@ export default function NewRequestPage() {
 
                       {getCategoryForm(item)}
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-border">
+                      <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border md:max-w-[560px]">
                         <div className="space-y-2">
                           <Label>{t("dashboard.requests.new.quantity", "Quantité *")}</Label>
                           <Input type="number" placeholder={t("dashboard.requests.new.quantity_placeholder", "Ex: 1")} className="h-12" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value)} />
@@ -679,14 +712,6 @@ export default function NewRequestPage() {
                               <SelectItem value="cartons">{t("dashboard.requests.new.cartons", "Cartons")}</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                        <div className="space-y-2 col-span-2">
-                          <Label>{t("dashboard.requests.new.estimated_budget", "Budget estimé ($)")}</Label>
-                          <div className="flex items-center gap-2">
-                            <Input type="number" placeholder={t("dashboard.requests.new.budget_min", "Min")} className="h-12" value={item.budgetMin} onChange={(e) => updateItem(item.id, "budgetMin", e.target.value)} />
-                            <span className="text-muted-foreground">-</span>
-                            <Input type="number" placeholder={t("dashboard.requests.new.budget_max", "Max")} className="h-12" value={item.budgetMax} onChange={(e) => updateItem(item.id, "budgetMax", e.target.value)} />
-                          </div>
                         </div>
                       </div>
                     </div>

@@ -41,6 +41,53 @@ const REQUIRED_DOCS = [
   { key: "customs_decl", label: "Déclaration en douane" },
 ]
 
+/**
+ * Modèles courants par marque, proposés dès que la marque est choisie.
+ *
+ * Retenus pour ce qui s'importe réellement vers l'Afrique centrale : pick-up,
+ * 4x4, utilitaires, berlines robustes. « Autre modèle » reste disponible —
+ * la liste guide la saisie, elle ne la limite pas.
+ */
+const MODELES: Record<string, string[]> = {
+  "Toyota": ["Hilux", "Land Cruiser", "Land Cruiser Prado", "Land Cruiser 70", "Fortuner", "RAV4", "Corolla", "Camry", "Yaris", "Hiace", "Coaster", "Rush", "Highlander", "Tundra", "Dyna"],
+  "Mercedes-Benz": ["Classe G", "Classe C", "Classe E", "Classe S", "GLE", "GLC", "GLS", "Sprinter", "Vito", "Actros", "Atego"],
+  "BMW": ["Série 3", "Série 5", "Série 7", "X1", "X3", "X5", "X6", "X7"],
+  "Hyundai": ["Tucson", "Santa Fe", "Creta", "Elantra", "Accent", "i10", "H-1", "H100", "Palisade"],
+  "Nissan": ["Navara", "Patrol", "X-Trail", "Qashqai", "Hardbody", "Urvan", "Sunny", "Pathfinder", "Almera"],
+  "Mitsubishi": ["L200", "Pajero", "Pajero Sport", "Outlander", "ASX", "Canter", "Fuso"],
+  "Ford": ["Ranger", "Everest", "F-150", "Explorer", "Transit", "Escape", "Territory"],
+  "Lexus": ["LX", "GX", "RX", "NX", "ES", "LS"],
+  "Volkswagen": ["Amarok", "Touareg", "Tiguan", "Golf", "Polo", "Passat", "Crafter", "Transporter"],
+  "Land Rover": ["Defender", "Range Rover", "Range Rover Sport", "Range Rover Evoque", "Discovery", "Discovery Sport"],
+  "Peugeot": ["3008", "5008", "2008", "508", "Partner", "Boxer", "Landtrek"],
+  "Renault": ["Duster", "Koleos", "Kwid", "Logan", "Master", "Kangoo", "Alaskan"],
+  "Citroën": ["C3", "C5 Aircross", "Berlingo", "Jumper", "Jumpy"],
+  "Kia": ["Sportage", "Sorento", "Seltos", "Picanto", "Rio", "K2700", "Carnival"],
+  "Mazda": ["BT-50", "CX-5", "CX-9", "Mazda3", "Mazda6"],
+  "Honda": ["CR-V", "HR-V", "Pilot", "Civic", "Accord", "Fit"],
+  "Suzuki": ["Jimny", "Vitara", "Grand Vitara", "Swift", "Ertiga", "Carry", "Super Carry"],
+  "Isuzu": ["D-Max", "MU-X", "NPR", "NQR", "FVR"],
+  "Volvo": ["XC90", "XC60", "XC40", "FH", "FMX"],
+  "Audi": ["Q7", "Q5", "Q3", "A4", "A6", "A8"],
+  "Porsche": ["Cayenne", "Macan", "Panamera", "911"],
+  "Jeep": ["Wrangler", "Grand Cherokee", "Cherokee", "Compass", "Gladiator"],
+  "Chevrolet": ["Silverado", "Tahoe", "Colorado", "Captiva", "Trailblazer"],
+}
+
+const AUTRE_MODELE = "__autre__"
+
+/**
+ * Réglementation RDC sur l'âge des véhicules importés.
+ *
+ * Décret de 2026 (Première ministre) : 15 ans au plus depuis la première mise
+ * en circulation pour les véhicules particuliers, utilitaires, poids lourds et
+ * véhicules spécialisés ; 20 ans pour les tracteurs agricoles, forestiers et
+ * miniers. Il remplace le régime de 2017, qui plafonnait à 20 ans, lui-même
+ * successeur de la limite de 10 ans fixée en 2012 — ce qui explique qu'on
+ * entende encore parler de 10 ans.
+ */
+const AGE_MAX_RDC = 15
+
 interface VehicleSpecFormProps {
   initialData?: any
   onChange: (data: any) => void
@@ -86,6 +133,22 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
     setFormData(next)
     onChange(next)
   }
+
+  const modelesProposes = MODELES[formData.brand] ?? []
+  // Modèle saisi hors liste (demande reprise, ou « Autre modèle ») : on garde
+  // la saisie libre au lieu d'afficher une liste où il n'apparaît pas.
+  const [modeleLibre, setModeleLibre] = useState(
+    () => Boolean(initialData?.model) && !(MODELES[initialData?.brand] ?? []).includes(initialData?.model)
+  )
+
+  // Âge selon la règle : depuis la première mise en circulation si elle est
+  // connue, sinon depuis l'année modèle, qui en est la meilleure approximation.
+  const anneeReference = formData.first_registration_date
+    ? new Date(formData.first_registration_date).getFullYear()
+    : parseInt(formData.year, 10)
+  const ageVehicule = Number.isFinite(anneeReference) && anneeReference > 1900
+    ? new Date().getFullYear() - anneeReference
+    : null
 
   const toggleDoc = (key: string) => {
     const docs: string[] = formData.required_documents || []
@@ -138,20 +201,85 @@ export function VehicleSpecForm({ initialData, onChange, readOnly, lineNumber }:
         <div className="grid md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.brand", "Marque")} *</Label>
-            <Select value={formData.brand} onValueChange={v => update("brand", v)} disabled={readOnly}>
+            <Select
+              value={formData.brand}
+              onValueChange={v => {
+                const next = { ...formData, brand: v, model: "" }
+                setFormData(next)
+                onChange(next)
+                setModeleLibre(false)
+              }}
+              disabled={readOnly}
+            >
               <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
               <SelectContent>{BRANDS.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.model", "Modèle")} *</Label>
-            <Input placeholder="Ex. Hilux, G-Class, Land Cruiser" value={formData.model} onChange={e => update("model", e.target.value)} disabled={readOnly} className="h-10" />
+            {modelesProposes.length > 0 && !modeleLibre ? (
+              <Select
+                value={formData.model || undefined}
+                onValueChange={v => {
+                  if (v === AUTRE_MODELE) {
+                    setModeleLibre(true)
+                    update("model", "")
+                  } else {
+                    update("model", v)
+                  }
+                }}
+                disabled={readOnly}
+              >
+                <SelectTrigger className="h-10"><SelectValue placeholder={t("spec.select", "Sélectionner...")} /></SelectTrigger>
+                <SelectContent>
+                  {modelesProposes.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                  <SelectItem value={AUTRE_MODELE}>{t("spec.vehicle.other_model", "Autre modèle…")}</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                placeholder={formData.brand ? t("spec.vehicle.model_free", "Saisissez le modèle") : t("spec.vehicle.model_brand_first", "Choisissez d'abord la marque")}
+                value={formData.model}
+                onChange={e => update("model", e.target.value)}
+                disabled={readOnly || !formData.brand}
+                className="h-10"
+              />
+            )}
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold uppercase font-condensed tracking-wide text-muted-foreground">{t("spec.vehicle.year", "Année modèle")} *</Label>
             <Input type="number" min={1990} max={new Date().getFullYear() + 1} placeholder="Ex. 2023" value={formData.year} onChange={e => update("year", e.target.value)} disabled={readOnly} className="h-10" />
           </div>
         </div>
+
+        {formData.vehicle_type !== "PIECES_DETACHEES" && (
+          <div
+            className={`rounded-lg border px-4 py-3 text-sm leading-relaxed ${
+              ageVehicule !== null && ageVehicule > AGE_MAX_RDC
+                ? "border-destructive-border bg-destructive-subtle text-destructive"
+                : ageVehicule !== null && ageVehicule >= AGE_MAX_RDC - 1
+                  ? "border-warning-border bg-warning-subtle text-warning"
+                  : "border-border bg-muted/30 text-muted-foreground"
+            }`}
+          >
+            {ageVehicule !== null && ageVehicule > AGE_MAX_RDC ? (
+              <p>
+                <strong>{t("spec.vehicle.age_refused_title", "Importation refusée en RDC.")}</strong>{" "}
+                {t("spec.vehicle.age_refused", `Ce véhicule a ${ageVehicule} ans. La réglementation congolaise interdit l'importation des véhicules de plus de ${AGE_MAX_RDC} ans depuis leur première mise en circulation : il serait bloqué à la douane.`)}
+              </p>
+            ) : ageVehicule !== null && ageVehicule >= AGE_MAX_RDC - 1 ? (
+              <p>
+                <strong>{t("spec.vehicle.age_limit_title", "Proche de la limite d'âge.")}</strong>{" "}
+                {t("spec.vehicle.age_limit", `Ce véhicule a ${ageVehicule} ans, pour une limite de ${AGE_MAX_RDC} ans. Tenez compte du délai d'acheminement et faites confirmer la date de première mise en circulation par votre partenaire.`)}
+              </p>
+            ) : (
+              <p>
+                <strong>{t("spec.vehicle.age_rule_title", "Réglementation RDC :")}</strong>{" "}
+                {t("spec.vehicle.age_rule", `un véhicule ne peut être importé s'il a plus de ${AGE_MAX_RDC} ans depuis sa première mise en circulation (20 ans pour les tracteurs agricoles, forestiers et miniers). Contrôle technique du pays d'origine, carte grise et acte de cession légalisé sont exigés.`)}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Spécifications techniques */}
         <div className="rounded-lg border border-border p-4 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
