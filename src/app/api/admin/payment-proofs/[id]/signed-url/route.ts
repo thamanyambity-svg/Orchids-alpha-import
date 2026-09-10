@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const BUCKET = 'documents'
 const SIGNED_URL_TTL_SECONDS = 3600
@@ -30,7 +31,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Justificatif introuvable' }, { status: 404 })
     }
 
-    const { data: signed, error: signError } = await supabase.storage
+    // Clé de service : l'espace est privé et sans règle de lecture ; la session
+    // administrateur ne pourrait pas signer. Le rôle a été vérifié plus haut.
+    const { data: signed, error: signError } = await createAdminClient().storage
       .from(BUCKET)
       .createSignedUrl(proof.file_path, SIGNED_URL_TTL_SECONDS)
 

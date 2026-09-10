@@ -62,39 +62,17 @@ export function KycUploadModal({
 
     setUploading(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
-
-      const fileExt = file.name.split('.').pop()
-      const fileName = `kyc/${user.id}/${Date.now()}.${fileExt}`
-      const filePath = `documents/${fileName}`
-
-      // 1. Upload to Storage
-      const { error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file)
-
-      if (uploadError) throw uploadError
-
-      // 2. Get Public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath)
-
-      // 3. Insert into DB (request_id is NULL for KYC)
-      const { error: dbError } = await supabase
-        .from('request_documents')
-        .insert({
-          service: 'COMPLIANCE',
-          type,
-          file_url: publicUrl,
-          file_name: file.name,
-          file_size: file.size,
-          uploaded_by: user.id,
-          status: 'PENDING'
-        })
-
-      if (dbError) throw dbError
+      // Envoi par la route serveur. Déposé depuis le navigateur, le fichier
+      // était ensuite enregistré dans des colonnes inexistantes : chaque envoi
+      // échouait, et la pièce d'identité était exposée par lien public.
+      const corps = new FormData()
+      corps.append("file", file)
+      corps.append("type", type)
+      const res = await fetch("/api/kyc/documents", { method: "POST", body: corps })
+      if (!res.ok) {
+        const erreur = await res.json().catch(() => ({}))
+        throw new Error(erreur.error || `Erreur ${res.status}`)
+      }
 
       toast.success("Document KYC téléversé. Nos équipes vont l'analyser.")
       onSuccess()

@@ -229,13 +229,21 @@ describe("POST /api/invoices/generate", () => {
     expect((await POST(makeRequest({ orderId: ID, type: "COMMERCIAL" }) as any)).status).toBe(500)
   })
 
+  it("range la facture par commande et n'enregistre jamais de lien public", async () => {
+    await POST(makeRequest({ orderId: ID, type: "COMMERCIAL" }) as any)
+
+    const [chemin] = upload.mock.calls[0] as unknown as [string]
+    expect(chemin.startsWith(`${ID}/`)).toBe(true)
+    expect((upsertFacture.mock.calls[0]?.[0] as any).file_url).toMatch(/^\/api\/files\/invoices\?path=/)
+  })
+
   it("renvoie la facture et son adresse à un administrateur", async () => {
     const res = await POST(makeRequest({ orderId: ID, type: "COMMERCIAL" }) as any)
 
     expect(res.status).toBe(200)
     await expect(res.json()).resolves.toMatchObject({
       invoice: { id: "inv_1" },
-      url: expect.stringContaining("https://cdn.test/"),
+      url: expect.stringContaining("/api/files/invoices?path="),
     })
   })
 })

@@ -5,14 +5,17 @@ import { requireUser, handleApiError, ApiError } from '@/lib/auth-guard'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 // `uploadedBy` est volontairement ABSENT : dérivé de la session (anti-usurpation).
+// Le client transmet le CHEMIN du fichier dans l'espace privé `documents`, et
+// non plus un lien public : ces documents étaient ouvrables par quiconque en
+// obtenait l'adresse. Le lien enregistré pointe vers /api/files, qui vérifie
+// le droit de l'appelant à chaque ouverture.
 const createDocumentSchema = z.object({
-  requestId: z.string().min(1, 'requestId requis'),
-  service: z.string().nullable().optional(),
-  type: z.string().min(1, 'type requis'),
-  fileUrl: z.string().url('fileUrl doit être une URL valide'),
-  fileName: z.string().min(1, 'fileName requis'),
+  requestId: z.string().uuid('requestId invalide'),
+  service: z.string().max(60).nullable().optional(),
+  type: z.string().min(1, 'type requis').max(80),
+  filePath: z.string().min(1).max(300).regex(/^[A-Za-z0-9/_.-]+$/, 'chemin invalide'),
+  fileName: z.string().min(1, 'fileName requis').max(200),
   fileSize: z.number().nonnegative().nullable().optional(),
-  status: z.string().nullable().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -33,7 +36,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { requestId, service, type, fileUrl, fileName, fileSize, status } = parsed.data
+    const { requestId, service, type, filePath, fileName, fileSize } = parsed.data
+
+    // Le fichier doit se trouver dans le dossier de cette demande : sinon un
+    // document déposé ailleurs pourrait être rattaché — et rendu lisible — ici.
+    if (!filePath.startsWith(`requests/${requestId}/`) || filePath.split('/').includes('..')) {
+      throw new ApiError(400, 'Chemin hors du dossier de la demande')
+    }
+    const fileUrl = `/api/files/documents?path=${encodeURIComponent(filePath)}`
 
     // Contrôle d'appartenance : la demande doit être visible par l'utilisateur via RLS
     // (buyer propriétaire, partenaire assigné, ou admin). Sinon 403 explicite.
@@ -49,15 +59,16 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('request_documents')
+      // Colonnes réelles de la table. L'insertion écrivait `service`, `type`,
+      // `file_name` et `status`, qui n'existent pas : chaque document échouait.
       .insert({
         request_id: requestId,
-        service,
-        type,
+        document_type: service ? `${service}:${type}` : type,
+        name: fileName,
         file_url: fileUrl,
-        file_name: fileName,
-        file_size: fileSize,
+        file_type: filePath.split('.').pop()?.toLowerCase() ?? null,
+        file_size: fileSize ?? null,
         uploaded_by: user.id, // <-- dérivé de la session, jamais du body
-        status: status || 'PENDING',
       })
       .select()
       .single()

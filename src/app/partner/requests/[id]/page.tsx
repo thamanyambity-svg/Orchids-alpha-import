@@ -109,8 +109,12 @@ export default function PartnerRequestDetailPage() {
     if (!confirm("Voulez-vous vraiment supprimer ce document ?")) return
 
     try {
-      // 1. Delete from storage (need to extract path from URL)
-      const path = url.split('/storage/v1/object/public/documents/')[1]
+      // 1. Suppression du fichier. Le chemin est porté par l'adresse de la
+      //    route d'accès (/api/files/documents?path=…) ; l'ancien format de lien
+      //    public reste compris pour les documents déjà enregistrés.
+      const path =
+        new URL(url, window.location.origin).searchParams.get('path') ??
+        url.split('/storage/v1/object/public/documents/')[1]
       if (path) {
         await supabase.storage.from('documents').remove([path])
       }

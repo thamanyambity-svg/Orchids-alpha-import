@@ -28,6 +28,12 @@ vi.mock("@/lib/auth-guard", async (importOriginal) => {
   return { ...actual, requireRole: (...args: any[]) => requireRole(...args) }
 })
 
+vi.mock("@/lib/supabase/admin", () => ({
+  createAdminClient: () => ({
+    storage: { from: () => ({ createSignedUrl: (...a: any[]) => createSignedUrl(...(a as [])) }) },
+  }),
+}))
+
 const { POST } = await import("./route")
 const { ApiError } = await import("@/lib/auth-guard")
 
@@ -42,9 +48,6 @@ function setup({ trouve = true, cheminFichier = "proofs/2026/justif.pdf" as stri
     if (op.table === "document_access_logs") return { data: { id: "log_1" } }
     return { data: null }
   })
-  mock.client.storage = {
-    from: () => ({ createSignedUrl: (...a: any[]) => createSignedUrl(...(a as [])) }),
-  }
   requireRole.mockResolvedValue({ user: { id: ADMIN }, role: "ADMIN", supabase: mock.client })
   return mock
 }

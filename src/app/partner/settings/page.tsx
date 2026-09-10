@@ -46,7 +46,9 @@ export default function PartnerSettingsPage() {
     try {
       const fileExt = file.name.split('.').pop()
       const fileName = `${profile.id}-${Math.random()}.${fileExt}`
-      const filePath = `avatars/${fileName}`
+      // Dossier du propriétaire : c'est ce que vérifie la règle d'envoi de
+      // l'espace `avatars`, comme pour la page paramètres de l'acheteur.
+      const filePath = `${profile.id}/${fileName}`
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')

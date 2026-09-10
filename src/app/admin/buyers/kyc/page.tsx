@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n-context"
+import { piecesKyc } from "@/lib/kyc/pieces"
 import {
   Shield,
   Search,
@@ -56,22 +57,12 @@ export default function BuyerKycPage() {
 
     const buyerMap = new Map((buyerProfiles || []).map(bp => [bp.user_id, bp]))
 
-    const { data: docs } = await supabase
-      .from("request_documents")
-      .select("*")
-      .eq("service", "COMPLIANCE")
-      .is("request_id", null)
-
-    const docsByUser = new Map<string, any[]>()
-    for (const doc of docs || []) {
-      const existing = docsByUser.get(doc.uploaded_by) || []
-      existing.push(doc)
-      docsByUser.set(doc.uploaded_by, existing)
-    }
-
+    // Les pièces sont dans buyer_profiles.kyc_documents. L'ancienne lecture
+    // filtrait request_documents sur une colonne `service` inexistante : la
+    // liste était toujours vide.
     const buyersWithKyc = profiles.map(p => {
       const bp = buyerMap.get(p.id)
-      const userDocs = docsByUser.get(p.id) || []
+      const userDocs = piecesKyc(bp?.kyc_documents, bp?.kyc_status)
       return {
         ...p,
         kyc_status: bp?.kyc_status || "NOT_STARTED",

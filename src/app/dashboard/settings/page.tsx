@@ -25,6 +25,7 @@ import {
   Upload
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { piecesKyc } from "@/lib/kyc/pieces"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -118,7 +119,9 @@ export default function SettingsPage() {
 
       const [profileRes, kycRes, countriesRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-        supabase.from('request_documents').select('*').eq('uploaded_by', user.id).is('request_id', null).order('created_at', { ascending: false }),
+        // Les pièces KYC vivent dans buyer_profiles.kyc_documents, pas dans
+        // request_documents (qui exige une demande rattachée).
+        supabase.from('buyer_profiles').select('kyc_status, kyc_documents').eq('user_id', user.id).maybeSingle(),
         supabase.from('countries').select('*').order('name')
       ])
 
@@ -134,7 +137,7 @@ export default function SettingsPage() {
         city: null,
         status: 'PENDING'
       })
-      setKycDocuments(kycRes.data || [])
+      setKycDocuments(piecesKyc(kycRes.data?.kyc_documents, kycRes.data?.kyc_status))
       setCountries(countriesRes.data || [])
     } catch (error) {
       console.error('Error fetching settings data:', error)
@@ -148,12 +151,11 @@ export default function SettingsPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
     const { data } = await supabase
-      .from('request_documents')
-      .select('*')
-      .eq('uploaded_by', user.id)
-      .is('request_id', null)
-      .order('created_at', { ascending: false })
-    if (data) setKycDocuments(data)
+      .from('buyer_profiles')
+      .select('kyc_status, kyc_documents')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (data) setKycDocuments(piecesKyc(data.kyc_documents, data.kyc_status))
   }
 
   async function handleUpdateProfile(e: React.FormEvent) {

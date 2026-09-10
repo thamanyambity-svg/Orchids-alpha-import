@@ -173,7 +173,18 @@ export default function ApplicationReviewPage({ params }: { params: Promise<{ id
                                             </div>
                                         </div>
                                         <Button variant="ghost" size="sm" asChild>
-                                            <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                                            <a
+                                                href={
+                                                    // Le formulaire enregistre le chemin dans l'espace privé ; un lien
+                                                    // direct y pointait vers une adresse inexistante. Les anciens liens
+                                                    // complets restent ouverts tels quels.
+                                                    /^https?:\/\//.test(doc.url)
+                                                        ? doc.url
+                                                        : `/api/files/compliance-documents?path=${encodeURIComponent(doc.url)}`
+                                                }
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
                                                 <Download className="w-4 h-4" />
                                             </a>
                                         </Button>

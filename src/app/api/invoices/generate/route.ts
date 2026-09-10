@@ -87,7 +87,11 @@ export async function POST(req: Request) {
 
     const pdfBuffer = await generateInvoice(invoiceData)
 
-    const fileName = `${invoiceNumber}.pdf`
+    // Rangé par commande dans un espace privé : la route d'accès autorise
+    // l'acheteur de la commande en lisant l'identifiant dans le chemin. La
+    // facture porte le nom et l'adresse de l'acheteur ; elle était exposée par
+    // lien public.
+    const fileName = `${orderId}/${invoiceNumber}.pdf`
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("invoices")
       .upload(fileName, pdfBuffer, {
@@ -99,7 +103,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to upload invoice" }, { status: 500 })
     }
 
-    const { data: publicUrl } = supabase.storage.from("invoices").getPublicUrl(fileName)
+    const fileUrl = `/api/files/invoices?path=${encodeURIComponent(fileName)}`
 
     const { data: invoice, error: dbError } = await supabase
       .from("invoices")
@@ -115,7 +119,7 @@ export async function POST(req: Request) {
         status: "DRAFT",
         issued_at: new Date().toISOString(),
         due_at: type !== "PROFORMA" ? new Date(Date.now() + 30 * 86400000).toISOString() : null,
-        file_url: publicUrl.publicUrl,
+        file_url: fileUrl,
         notes: invoiceData.notes,
       })
       .select()
@@ -125,7 +129,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to save invoice" }, { status: 500 })
     }
 
-    return NextResponse.json({ invoice, url: publicUrl.publicUrl })
+    return NextResponse.json({ invoice, url: fileUrl })
   } catch (error) {
     return handleApiError(error)
   }

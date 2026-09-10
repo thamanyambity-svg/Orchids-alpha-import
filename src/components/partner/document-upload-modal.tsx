@@ -78,7 +78,8 @@ export function DocumentUploadModal({
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Non authentifié")
 
-      const fileExt = file.name.split('.').pop()
+      // Extension nettoyée : le serveur refuse tout chemin hors [A-Za-z0-9/_.-].
+      const fileExt = (file.name.includes('.') ? file.name.split('.').pop() : 'bin')!.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin'
       const fileName = `${requestId}/${Date.now()}.${fileExt}`
       const filePath = `requests/${fileName}`
 
@@ -89,11 +90,6 @@ export function DocumentUploadModal({
 
       if (uploadError) throw uploadError
 
-      // 2. Get Public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath)
-
       // 3. Insert into DB via API to trigger notification
       const response = await fetch('/api/requests/documents', {
         method: 'POST',
@@ -102,7 +98,8 @@ export function DocumentUploadModal({
           requestId,
           service,
           type,
-          fileUrl: publicUrl,
+          // Chemin dans l'espace privé : plus de lien public vers le document.
+          filePath,
           fileName: file.name,
           fileSize: file.size,
           uploadedBy: user.id,
