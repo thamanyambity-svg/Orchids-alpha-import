@@ -4,9 +4,38 @@ import Link from "next/link"
 import { useLanguage } from "@/lib/i18n-context"
 import { SiteShell } from "@/components/site/site-shell"
 import { useReveal } from "@/components/site/use-reveal"
+import Image from "next/image"
 import { PageHero, SectionTitle, Eyebrow } from "@/components/site/sections"
 
 const VALUES = ["v1", "v2", "v3"] as const
+
+/**
+ * Les deux personnes à l'origine du groupe.
+ *
+ * Cette section, le récit de fondation et la vision avaient été supprimés le
+ * 19 août avec la refonte des pages publiques, au motif qu'elles « ne
+ * contenaient pas de code fonctionnel ». C'était vrai et hors sujet : sur une
+ * page « Qui sommes-nous », les dirigeants sont le contenu.
+ *
+ * Les portraits étaient servis par un ancien projet Supabase, distinct de celui
+ * de la plateforme et hors de notre contrôle. Ils répondaient encore, mais la
+ * page des dirigeants serait devenue vide le jour de sa suppression, sans que
+ * personne ne s'en aperçoive. Ils sont désormais dans `public/direction/`.
+ */
+const DIRIGEANTS = [
+  {
+    id: "fondateur",
+    nom: "Monsieur Ambity A.Alpha",
+    role: "Fondateur et initiateur de la vision",
+    image: "/direction/fondateur.jpg",
+  },
+  {
+    id: "pdg",
+    nom: "Madame Salima Onoseke Nzikisa",
+    role: "Présidente Directrice Générale",
+    image: "/direction/pdg.jpg",
+  },
+] as const
 
 export default function AboutPage() {
   const { t } = useLanguage()
@@ -57,6 +86,116 @@ export default function AboutPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Histoire ------------------------------------------------------- */}
+      <section className="border-t border-[var(--line)] bg-[var(--navy)] py-[110px]">
+        <div className="mx-auto max-w-[1440px] px-8">
+          <div className="grid items-center gap-14 lg:grid-cols-[1fr_0.85fr]">
+            <div data-reveal>
+              <Eyebrow>{t("site.about.storyEyebrow", "Notre histoire")}</Eyebrow>
+              <SectionTitle size="md">
+                {t("site.about.storyTitle", "UNE VISION AUDACIEUSE, NÉE EN 2019")}
+              </SectionTitle>
+              <div className="mt-7 max-w-[620px] space-y-5 text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
+                <p>
+                  {t(
+                    "site.about.storyP1",
+                    "Fondé en 2019, le Groupe A.Onoseke House Investment RDC est né d'une volonté audacieuse de redéfinir l'entrepreneuriat en République Démocratique du Congo."
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "site.about.storyP2",
+                    "Cette structure est le fruit de la synergie entre deux visionnaires qui ont uni leur expertise pour créer un écosystème d'affaires robuste, capable de répondre aux défis complexes du marché congolais tout en s'ouvrant à l'international."
+                  )}
+                </p>
+              </div>
+            </div>
+            <div data-reveal className="relative aspect-[4/3] border border-[var(--line)]">
+              <Image
+                src="/direction/fondation.jpg"
+                alt=""
+                fill
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="object-cover opacity-80"
+              />
+              <div className="absolute bottom-0 start-0 bg-gold px-6 py-4">
+                <p className="font-display text-[34px] leading-none text-primary-foreground">2019</p>
+                <p className="t-label mt-1 text-primary-foreground/70">
+                  {t("site.about.founded", "Année de fondation")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dirigeants ------------------------------------------------------ */}
+      <section className="border-t border-[var(--line)] bg-[var(--navy2)] py-[110px]">
+        <div className="mx-auto max-w-[1440px] px-8">
+          <div data-reveal className="mb-12">
+            <Eyebrow>{t("site.about.leadershipEyebrow", "Direction")}</Eyebrow>
+            <SectionTitle size="md">{t("site.about.leadershipTitle", "LES VISIONNAIRES")}</SectionTitle>
+          </div>
+          {/*
+            Largeur bornée : à pleine largeur, chaque cadre atteignait 688 × 859,
+            au-delà de la hauteur native de la photographie du fondateur (675 px)
+            — elle aurait été agrandie, donc adoucie. Deux portraits de cette
+            taille écrasaient par ailleurs le reste de la page.
+          */}
+          <div className="mx-auto grid max-w-[980px] gap-px bg-[var(--line)] md:grid-cols-2">
+            {DIRIGEANTS.map((personne) => (
+              <article key={personne.id} data-reveal className="bg-[var(--navy)]">
+                {/* Portrait cadré en 4/5 : un portrait carré coupe les épaules,
+                    un 16/9 les noie dans le décor. */}
+                <div className="relative aspect-[4/5] w-full">
+                  <Image
+                    src={personne.image}
+                    alt={personne.nom}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 490px"
+                    className="object-cover object-top"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--navy)] via-transparent to-transparent" />
+                </div>
+                <div className="px-[30px] py-8 md:px-10 md:py-10">
+                  <p className="t-eyebrow text-gold">{personne.role}</p>
+                  <h3 className="mt-3 font-display text-[30px] leading-[1.05] text-foreground">
+                    {personne.nom}
+                  </h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Vision ---------------------------------------------------------- */}
+      <section className="relative overflow-hidden border-t border-[var(--line)] bg-[var(--navy)] py-[120px]">
+        <div className="absolute inset-0 opacity-60 [background:radial-gradient(ellipse_at_50%_25%,hsl(42_85%_55%/.10)_0%,transparent_60%)]" />
+        <div className="relative mx-auto max-w-[1440px] px-8 text-center">
+          <div data-reveal>
+            <Eyebrow>{t("site.about.visionEyebrow", "Notre vision")}</Eyebrow>
+            <blockquote className="mx-auto mt-6 max-w-[900px] font-display text-[clamp(38px,6vw,74px)] leading-[1.02] text-foreground">
+              {t("site.about.visionQuote", "« FAIRE AU CONGO, POUR LE CONGO. »")}
+            </blockquote>
+            <div className="mx-auto mt-10 max-w-[760px] space-y-5 text-[18px] font-light leading-[1.65] text-foreground/60 [text-wrap:pretty]">
+              <p>
+                {t(
+                  "site.about.visionP1",
+                  "Notre ambition est l'émergence d'une nouvelle génération de Congolais : conscients, productifs et créateurs de richesse."
+                )}
+              </p>
+              <p>
+                {t(
+                  "site.about.visionP2",
+                  "Nous ne voulons pas seulement des consommateurs, mais des producteurs acteurs de leur propre développement. Bâtir une économie résiliente où l'excellence locale rivalise avec les standards internationaux."
+                )}
+              </p>
+            </div>
           </div>
         </div>
       </section>
