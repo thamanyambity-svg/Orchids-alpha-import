@@ -71,10 +71,11 @@ export const metadata: Metadata = {
     description: "Sécurisez vos fonds à 100%. Ne payez le solde qu'à la livraison.",
     images: ['/opengraph-image'],
   },
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-icon.png',
-  },
+  // Pas de bloc `icons` manuel : les fichiers favicon.ico, icon.png et
+  // apple-icon.png placés dans ce dossier sont pris en charge par Next, qui
+  // émet les balises avec la bonne empreinte. La déclaration à la main pointait
+  // vers /apple-icon.png, qui répondait 404 — un appareil iOS ajoutant le site
+  // à l'écran d'accueil se rabattait sur une capture de la page.
   robots: {
     index: true,
     follow: true,
