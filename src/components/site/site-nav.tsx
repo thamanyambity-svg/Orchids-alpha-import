@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useLanguage, languages, type Language } from "@/lib/i18n-context"
 
@@ -58,10 +59,29 @@ export function SiteNav() {
       className="fixed top-0 left-0 right-0 z-[900] border-b border-transparent transition-[background,backdrop-filter,border-color] duration-[400ms]"
     >
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-8 py-[18px]">
-        <Link href="/" className="flex items-baseline gap-[10px]">
-          <span className="font-display text-[30px] leading-[.9] tracking-[.04em] text-foreground">ALPHA</span>
-          <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
-            Import
+        <Link href="/" className="flex items-center gap-[13px]">
+          {/*
+            L'emblème manquait à l'ensemble de la vitrine : l'en-tête ne portait
+            que le mot-symbole composé. Le seul composant qui affichait le logo
+            n'était monté nulle part.
+
+            `priority` parce qu'il est au-dessus de la ligne de flottaison sur
+            chaque page : en chargement différé, il apparaîtrait après le reste
+            de l'en-tête, ce qui se voit.
+          */}
+          <Image
+            src="/logo-embleme.png"
+            alt=""
+            width={38}
+            height={38}
+            priority
+            className="h-[38px] w-[38px] shrink-0 object-contain"
+          />
+          <span className="flex items-baseline gap-[10px]">
+            <span className="font-display text-[30px] leading-[.9] tracking-[.04em] text-foreground">ALPHA</span>
+            <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
+              Import
+            </span>
           </span>
         </Link>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useLanguage } from "@/lib/i18n-context"
 import { SiteNav, SITE_LINKS } from "./site-nav"
 
@@ -50,10 +51,19 @@ function SiteFooter() {
       <div className="mx-auto max-w-[1440px] px-8">
         <div className="grid gap-11 border-b border-[var(--line)] pb-[52px] [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
           <div>
-            <div className="mb-4 flex items-baseline gap-[10px]">
-              <span className="font-display text-[32px] leading-[.9] text-foreground">ALPHA</span>
-              <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
-                Import
+            <div className="mb-4 flex items-center gap-[14px]">
+              <Image
+                src="/logo-embleme.png"
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 object-contain"
+              />
+              <span className="flex items-baseline gap-[10px]">
+                <span className="font-display text-[32px] leading-[.9] text-foreground">ALPHA</span>
+                <span className="font-condensed text-[12px] font-semibold uppercase tracking-[.42em] text-gold">
+                  Import
+                </span>
               </span>
             </div>
             <p className="mb-[18px] max-w-[300px] text-[16px] font-light leading-[1.6] text-foreground/45">
