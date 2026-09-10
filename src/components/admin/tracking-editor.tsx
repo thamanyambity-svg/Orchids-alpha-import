@@ -91,17 +91,35 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
         event_date: new Date().toISOString().split('T')[0]
     })
 
+    // Commande de la demande : les étapes de suivi sont rangées par commande
+    // (order_id, occurred_at). L'éditeur écrivait request_id / event_date,
+    // colonnes absentes : aucune étape ne s'enregistrait.
+    const [orderId, setOrderId] = useState<string | null>(null)
+
     // Fetch Events
     const fetchEvents = async () => {
         try {
+            const { data: commandes, error: erreurCommandes } = await supabase
+                .from('orders')
+                .select('id')
+                .eq('request_id', requestId)
+                .order('created_at', { ascending: false })
+            if (erreurCommandes) throw erreurCommandes
+            const ids = (commandes || []).map((c: { id: string }) => c.id)
+            setOrderId(ids[0] ?? null)
+            if (ids.length === 0) {
+                setEvents([])
+                return
+            }
+
             const { data, error } = await supabase
                 .from('tracking_events')
                 .select('*')
-                .eq('request_id', requestId)
-                .order('event_date', { ascending: false }) // Newest first
+                .in('order_id', ids)
+                .order('occurred_at', { ascending: false }) // Newest first
 
             if (error) throw error
-            setEvents(data || [])
+            setEvents((data || []).map((e: any) => ({ ...e, event_date: e.occurred_at })))
         } catch (error) {
             console.error("Error fetching tracking:", error)
             toast.error(t("admin.tracking.load_error", "Impossible de charger le suivi"))
@@ -117,17 +135,21 @@ export function TrackingEditor({ requestId }: TrackingEditorProps) {
     // Add Event
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!orderId) {
+            toast.error(t("admin.tracking.no_order", "Aucune commande pour cette demande : le suivi démarre une fois le bon de commande émis."))
+            return
+        }
         setSubmitting(true)
 
         try {
             const { error } = await supabase
                 .from('tracking_events')
                 .insert({
-                    request_id: requestId,
+                    order_id: orderId,
                     status: formData.status,
                     location: formData.location,
                     description: formData.description,
-                    event_date: new Date(formData.event_date).toISOString()
+                    occurred_at: new Date(formData.event_date).toISOString()
                 })
 
             if (error) throw error

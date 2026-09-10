@@ -97,9 +97,11 @@ export async function POST(request: Request) {
                 currency,
                 type: paymentType === 'DEPOSIT_60' ? 'DEPOSIT' : 'BALANCE',
                 status: 'SUCCEEDED',
-                stripe_payment_id: transactionRef,
-                provider: 'STRIPE',
+                // Colonnes réelles : `stripe_payment_id` et `provider` n'existent
+                // pas, l'enregistrement du paiement échouait à chaque fois.
+                reference: transactionRef,
                 metadata: {
+                    provider: 'STRIPE',
                     stripe_session_id: session.id,
                     customer_email: session.customer_details?.email,
                 },
@@ -259,9 +261,9 @@ export async function POST(request: Request) {
                     currency,
                     type: paymentType === 'DEPOSIT_60' ? 'DEPOSIT' : 'BALANCE',
                     status: 'SUCCEEDED',
-                    stripe_payment_id: intentId,
-                    provider: 'STRIPE_SEPA',
+                    reference: intentId,
                     metadata: {
+                        provider: 'STRIPE_SEPA',
                         payment_intent_id: intentId,
                         payment_method_type: 'sepa_debit',
                         off_session: true,

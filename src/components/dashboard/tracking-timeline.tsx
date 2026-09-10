@@ -54,14 +54,27 @@ export function TrackingTimeline({ requestId }: TrackingTimelineProps) {
     useEffect(() => {
         async function fetchEvents() {
             try {
+                // Les étapes sont rangées par commande (order_id, occurred_at),
+                // pas par demande : on passe par les commandes de la demande.
+                const { data: commandes, error: erreurCommandes } = await supabase
+                    .from('orders')
+                    .select('id')
+                    .eq('request_id', requestId)
+                if (erreurCommandes) throw erreurCommandes
+                const ids = (commandes || []).map((c: { id: string }) => c.id)
+                if (ids.length === 0) {
+                    setEvents([])
+                    return
+                }
+
                 const { data, error } = await supabase
                     .from('tracking_events')
                     .select('*')
-                    .eq('request_id', requestId)
-                    .order('event_date', { ascending: false }) // Newest first
+                    .in('order_id', ids)
+                    .order('occurred_at', { ascending: false }) // Newest first
 
                 if (error) throw error
-                setEvents(data || [])
+                setEvents((data || []).map((e: any) => ({ ...e, event_date: e.occurred_at })))
             } catch (error) {
                 console.error("Error fetching tracking:", error)
             } finally {

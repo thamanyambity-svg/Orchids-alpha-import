@@ -17,6 +17,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 
 const constructEvent = vi.fn()
 const insertProcessed = vi.fn()
+const insertTransaction = vi.fn()
 const executeTransition = vi.fn((..._args: any[]) => Promise.resolve({ ok: true }))
 const sendToN8N = vi.fn((..._args: any[]) => Promise.resolve())
 let entetes: Record<string, string> = {}
@@ -44,10 +45,11 @@ vi.mock("@/lib/supabase/admin", () => ({
         single: () => Promise.resolve({ data: null, error: null }),
         maybeSingle: () => Promise.resolve({ data: null, error: null }),
         then: (r: any) => Promise.resolve({ data: null, error: null }).then(r),
-        insert: (payload: any) =>
-          table === "processed_stripe_events"
-            ? insertProcessed(payload)
-            : Promise.resolve({ data: null, error: null }),
+        insert: (payload: any) => {
+          if (table === "processed_stripe_events") return insertProcessed(payload)
+          if (table === "transactions") insertTransaction(payload)
+          return Promise.resolve({ data: null, error: null })
+        },
       }
       return builder
     },
@@ -147,5 +149,32 @@ describe("POST /api/webhooks/stripe", () => {
 
     expect(res.status).toBe(200)
     expect(executeTransition).not.toHaveBeenCalled()
+  })
+
+  it("enregistre le paiement dans les colonnes réelles de transactions", async () => {
+    // L'insertion écrivait `stripe_payment_id` et `provider`, absentes de la
+    // table : chaque paiement encaissé manquait au registre financier.
+    constructEvent.mockReturnValue({
+      ...EVENEMENT,
+      id: "evt_paiement",
+      data: {
+        object: {
+          id: "cs_test_1",
+          metadata: { orderId: "11111111-1111-4111-8111-111111111111", paymentType: "DEPOSIT_60" },
+          amount_total: 25000,
+          currency: "usd",
+          payment_intent: "pi_test_1",
+        },
+      },
+    })
+
+    await POST(requete())
+
+    const COLONNES = ["id", "order_id", "payment_id", "user_id", "type", "amount", "currency", "status", "reference", "metadata", "created_at"]
+    expect(insertTransaction).toHaveBeenCalledTimes(1)
+    const ligne = insertTransaction.mock.calls[0][0]
+    expect(Object.keys(ligne).filter((c) => !COLONNES.includes(c))).toEqual([])
+    expect(ligne).toMatchObject({ reference: "pi_test_1", type: "DEPOSIT", amount: 250, currency: "USD" })
+    expect(ligne.metadata).toMatchObject({ provider: "STRIPE", stripe_session_id: "cs_test_1" })
   })
 })

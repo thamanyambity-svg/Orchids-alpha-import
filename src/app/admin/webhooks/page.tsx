@@ -45,7 +45,8 @@ export default function AdminWebhooksPage() {
       const { data: stripeEvents } = await supabase
         .from("processed_stripe_events")
         .select("*")
-        .order("created_at", { ascending: false })
+        // Colonnes réelles : event_id, type, processed_at (ni id ni created_at).
+        .order("processed_at", { ascending: false })
         .limit(100)
 
       const { data: n8nLogs } = await supabase
@@ -57,11 +58,11 @@ export default function AdminWebhooksPage() {
 
       const mapped: WebhookEntry[] = [
         ...(stripeEvents || []).map((e: any) => ({
-          id: e.id,
+          id: e.event_id,
           source: "stripe" as const,
           type: e.type,
           status: "processed",
-          created_at: e.created_at,
+          created_at: e.processed_at,
           details: { event_id: e.event_id },
         })),
         ...(n8nLogs || []).map((l: any) => ({

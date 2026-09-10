@@ -258,10 +258,12 @@ export async function createSEPAAlertForAdmin(
   const { data, error } = await supabase
     .from('audit_logs')
     .insert({
-      actor_id: 'SYSTEM',
+      // Alerte système : pas d'acteur (la colonne attend un compte, « SYSTEM »
+      // était refusé). Colonnes réelles : target_type / target_id.
+      actor_id: null,
       action: 'SEPA_ALERT',
-      resource_type: 'TRANSACTION',
-      resource_id: transactionId,
+      target_type: 'TRANSACTION',
+      target_id: transactionId,
       details: {
         severity,
         message,

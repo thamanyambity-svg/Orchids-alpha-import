@@ -28,6 +28,7 @@ export function PartnerWizard() {
         : null
     const [formData, setFormData] = useState({
         company_name: "",
+        contact_name: "",
         email: "",
         phone: "",
         address: "",
@@ -83,6 +84,8 @@ export function PartnerWizard() {
                 .insert({
                     email: formData.email,
                     company_name: formData.company_name,
+                    // Obligatoire en base : sans lui, chaque candidature était refusée.
+                    contact_name: formData.contact_name.trim(),
                     phone: formData.phone,
                     company_details: {
                         address: formData.address,
@@ -350,6 +353,15 @@ export function PartnerWizard() {
                     />
                 </div>
                 <div className="space-y-2">
+                    <Label>{t("partner_wizard.contact_label", "Nom du responsable")}</Label>
+                    <Input
+                        name="contact_name"
+                        placeholder={t("partner_wizard.contact_placeholder", "Prénom et nom")}
+                        value={formData.contact_name}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="space-y-2">
                     <Label>{t("partner_wizard.email_label", "Adresse Email Professionnelle")}</Label>
                     <Input
                         name="email"
@@ -423,7 +435,7 @@ export function PartnerWizard() {
                 <Button
                     onClick={handleSubmit}
                     size="lg"
-                    disabled={isLoading || !formData.email || !formData.company_name}
+                    disabled={isLoading || !formData.email || !formData.company_name || !formData.contact_name.trim()}
                 >
                     {isLoading ? t("partner_wizard.sending", "Envoi...") : t("partner_wizard.submit", "Soumettre ma candidature")}
                 </Button>
