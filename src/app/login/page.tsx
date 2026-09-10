@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
@@ -25,6 +25,27 @@ export default function LoginPage() {
     password: "",
   })
 
+  // Une garde qui refoule vers ce formulaire transmet sa raison dans l'URL :
+  // on la dit, au lieu de laisser la personne se reconnecter en boucle.
+  useEffect(() => {
+    const raison = new URLSearchParams(window.location.search).get("erreur")
+    const messages: Record<string, string> = {
+      session: t(
+        "login.redirect.session",
+        "Votre session n'a pas été reconnue. Reconnectez-vous. Si cela se reproduit, indiquez au support : SESSION."
+      ),
+      role: t(
+        "login.redirect.role",
+        "Connexion établie, mais votre rôle n'a pas pu être lu. Indiquez au support : RÔLE."
+      ),
+      profil: t(
+        "login.redirect.profil",
+        "Connexion établie, mais votre profil n'a pas pu être chargé. Indiquez au support : PROFIL."
+      ),
+    }
+    if (raison && messages[raison]) toast.error(messages[raison], { duration: 15000 })
+  }, [t])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
@@ -48,11 +69,26 @@ export default function LoginPage() {
         return
       }
 
-      const { data: profile } = await supabase
+      const { data: profile, error: erreurProfil } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single()
+
+      // Sans rôle lisible, l'espace demandé refoulera aussitôt vers ce
+      // formulaire. Annoncer « Connexion réussie » puis rediriger laissait la
+      // personne revenir ici sans comprendre pourquoi.
+      if (!profile?.role) {
+        console.error("[connexion] rôle illisible :", erreurProfil?.message ?? "profil absent")
+        toast.error(
+          t(
+            "login.error.no_profile",
+            "Connexion établie, mais votre profil n'a pas pu être lu. Contactez le support en indiquant : PROFIL."
+          ),
+          { duration: 15000 }
+        )
+        return
+      }
 
       if (profile?.role === "ADMIN") {
         router.push("/admin")

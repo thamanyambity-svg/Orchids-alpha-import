@@ -40,7 +40,9 @@ export async function updateSession(request: NextRequest) {
   const isBuyerArea = path.startsWith('/dashboard')
   const isProtected = isAdminArea || isPartnerArea || isBuyerArea
 
-  // Non authentifié sur une zone protégée -> login.
+  // Non authentifié sur une zone protégée -> login. C'est le parcours normal
+  // d'un visiteur qui clique « Accéder à la plateforme » : aucune raison n'est
+  // jointe, il n'y a rien d'anormal à signaler.
   if (!user && isProtected) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
@@ -58,11 +60,15 @@ export async function updateSession(request: NextRequest) {
 
     const role = profile?.role as 'ADMIN' | 'PARTNER' | 'BUYER' | undefined
 
-    // Pas de profil/rôle exploitable : on renvoie vers /login (sans boucle).
+    // Pas de profil/rôle exploitable : on renvoie vers /login (sans boucle),
+    // avec la raison. Ici la personne EST connectée : sans message, elle
+    // retombait sur le formulaire, se reconnectait, retombait — sans que rien
+    // ne dise quelle garde la refoulait.
     if (!role) {
       if (!isAuthPage) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
+        url.searchParams.set('erreur', 'role')
         return NextResponse.redirect(url)
       }
       return supabaseResponse

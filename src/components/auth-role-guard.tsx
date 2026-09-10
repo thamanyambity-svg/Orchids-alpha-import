@@ -27,7 +27,7 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
             const { data: { user } } = await supabase.auth.getUser()
 
             if (!user) {
-                router.push('/login')
+                router.push('/login?erreur=session')
                 return
             }
 
@@ -37,10 +37,17 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
                 .eq('id', user.id)
                 .single()
 
-            if (!profile || !allowedRoles.includes(profile.role as Role)) {
-                // Redirect based on actual role
-                if (profile?.role === 'ADMIN') router.push('/admin')
-                else if (profile?.role === 'PARTNER') router.push('/partner')
+            // Profil illisible : ne pas renvoyer vers /dashboard. Pour un
+            // acheteur, /dashboard est la page même que cette garde protège —
+            // le renvoi tournait en boucle, écran de chargement sans fin.
+            if (!profile) {
+                router.push('/login?erreur=profil')
+                return
+            }
+
+            if (!allowedRoles.includes(profile.role as Role)) {
+                if (profile.role === 'ADMIN') router.push('/admin')
+                else if (profile.role === 'PARTNER') router.push('/partner')
                 else router.push('/dashboard')
                 return
             }
