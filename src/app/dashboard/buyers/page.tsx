@@ -10,12 +10,14 @@ import { MessagingCard } from "@/components/dashboard/messaging-card"
 import { DocumentTable } from "@/components/dashboard/document-table"
 import { TransactionHistory } from "@/components/dashboard/transaction-history"
 import { CertifiedPartnerCard } from "@/components/dashboard/certified-partner-card"
+import type { PartnerCard } from "@/lib/partners/public-card"
 import { createClient } from "@/lib/supabase/client"
 import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<any>(null)
   const [request, setRequest] = useState<any>(null)
+  const [partner, setPartner] = useState<PartnerCard | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -37,13 +39,26 @@ export default function DashboardPage() {
           // Fetch latest request with partner info
           const { data: requestData } = await supabase
             .from('import_requests')
-            .select('*, assigned_partner:profiles!import_requests_assigned_partner_id_fkey(*, countries(name, code))')
+            .select('*')
             .eq('buyer_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle()
           
           setRequest(requestData)
+
+          // Le partenaire passe par une route serveur : les règles d'accès
+          // interdisent à un acheteur de lire les fiches partenaires. La
+          // relation intégrée utilisée ici visait `profiles` alors que
+          // `assigned_partner_id` pointe vers `partner_profiles` — la requête
+          // échouait en PGRST200 à chaque chargement, ne renvoyait ni la
+          // demande ni le partenaire, et la carte retombait sur une fiche
+          // écrite en dur.
+          const reponse = await fetch("/api/partners/card?request=latest")
+          if (reponse.ok) {
+            const { partner: affecte } = await reponse.json()
+            setPartner(affecte ?? null)
+          }
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
@@ -118,7 +133,7 @@ export default function DashboardPage() {
           {/* Left Column (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             <div id="partner-showcase">
-              <PartnerShowcase />
+              <PartnerShowcase partner={partner} />
             </div>
             <div id="documents-section">
               <DocumentTable requestId={request?.id} />
@@ -131,9 +146,9 @@ export default function DashboardPage() {
           {/* Right Column (4 cols) */}
           <div className="lg:col-span-4 space-y-8">
             <div id="messaging-section">
-              <MessagingCard partner={request?.assigned_partner} />
+              <MessagingCard partner={partner} />
             </div>
-            <CertifiedPartnerCard partner={request?.assigned_partner} />
+            <CertifiedPartnerCard partner={partner} />
           </div>
         </div>
       </div>

@@ -289,42 +289,53 @@ export default function NewRequestPage() {
     fetchCountries()
   }, [])
 
-  // Le partenaire affiché est celui réellement assigné au pays d'origine. Cette
-  // fiche montrait jusqu'ici cinq profils inventés, numéros WhatsApp compris.
+  // Le partenaire affiché est celui réellement affecté au pays d'achat.
+  //
+  // La lecture passe par /api/partners/card : les règles d'accès interdisent
+  // à un acheteur de lire `partner_profiles` et le profil d'un autre compte.
+  // Interrogée depuis le navigateur, cette requête revenait toujours vide —
+  // aucun acheteur n'aurait jamais vu de partenaire, même enregistré.
   useEffect(() => {
-    const countryId = formData.country ? resolveCountryId(countries, formData.country) : undefined
-
-    if (!countryId) {
+    if (!formData.country) {
       setSelectedPartner(null)
       return
     }
 
-    createClient()
-      .from("partner_profiles")
-      .select(
-        "id, whatsapp_number, performance_score, total_orders_handled, profile:profiles!user_id(full_name, company_name, email, phone)"
-      )
-      .eq("country_id", countryId)
-      .eq("contract_status", "ACTIVE")
-      .limit(1)
-      .then(({ data }) => {
-        const row: any = data?.[0]
+    let annule = false
+    fetch(`/api/partners/card?country=${encodeURIComponent(formData.country)}`)
+      .then((r) => (r.ok ? r.json() : { partner: null }))
+      .then(({ partner }) => {
+        if (annule) return
         setSelectedPartner(
-          row
+          partner
             ? {
-                id: row.id,
-                whatsapp_number: row.whatsapp_number,
-                performance_score: row.performance_score,
-                total_orders_handled: row.total_orders_handled,
-                full_name: row.profile?.full_name ?? "",
-                company_name: row.profile?.company_name ?? "",
-                email: row.profile?.email ?? "",
-                phone: row.profile?.phone ?? "",
+                id: partner.id,
+                full_name: partner.full_name,
+                company_name: partner.company_name,
+                avatar_url: partner.avatar_url ?? undefined,
+                whatsapp_number: partner.whatsapp ?? "",
+                email: partner.email ?? "",
+                phone: partner.phone ?? "",
+                country_name: partner.country?.name ?? "",
+                city: partner.city ?? "",
+                // Aucune de ces valeurs n'est mesurée aujourd'hui : elles sont
+                // laissées à zéro et la carte ne les affiche pas.
+                bio: "",
+                experience_years: 0,
+                total_orders_handled: 0,
+                performance_score: 0,
               }
             : null
         )
       })
-  }, [formData.country, countries])
+      .catch(() => {
+        if (!annule) setSelectedPartner(null)
+      })
+
+    return () => {
+      annule = true
+    }
+  }, [formData.country])
 
   const handleNext = () => {
     if (currentStep === 1 && (!formData.country || !formData.buyerCountry)) {
@@ -798,23 +809,37 @@ export default function NewRequestPage() {
                       <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                            {selectedPartner.full_name[0]}
+                            {(selectedPartner.full_name || selectedPartner.company_name || "?").charAt(0)}
                           </div>
                           <div>
                             <p className="font-bold text-sm">{selectedPartner.full_name}</p>
                             <p className="text-xs text-muted-foreground">{selectedPartner.company_name}</p>
                           </div>
                         </div>
-                        <div className="space-y-2 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">{t("dashboard.requests.new.score", "Score")}</span>
-                            <span className="font-bold text-warning">{selectedPartner.performance_score}/5.0</span>
+                        {/* Score et volume ne sont affichés que s'ils existent :
+                            « 0/5.0 » et « 0+ » présentaient un partenaire neuf
+                            comme un partenaire mal noté. */}
+                        {(selectedPartner.performance_score > 0 || selectedPartner.total_orders_handled > 0) && (
+                          <div className="space-y-2 text-xs">
+                            {selectedPartner.performance_score > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">{t("dashboard.requests.new.score", "Score")}</span>
+                                <span className="font-bold text-warning">{selectedPartner.performance_score}/5.0</span>
+                              </div>
+                            )}
+                            {selectedPartner.total_orders_handled > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">{t("dashboard.requests.new.orders", "Commandes")}</span>
+                                <span className="font-bold">{selectedPartner.total_orders_handled}+</span>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">{t("dashboard.requests.new.orders", "Commandes")}</span>
-                            <span className="font-bold">{selectedPartner.total_orders_handled}+</span>
-                          </div>
-                        </div>
+                        )}
+                        {(selectedPartner.city || selectedPartner.country_name) && (
+                          <p className="text-xs text-muted-foreground">
+                            {[selectedPartner.city, selectedPartner.country_name].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
                         {waMeLink(
                           selectedPartner.whatsapp_number ?? "",
                           t("dashboard.requests.new.whatsapp_intro", "Bonjour, je prépare une demande d'import via Alpha Import.")

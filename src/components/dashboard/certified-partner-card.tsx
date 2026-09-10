@@ -1,188 +1,148 @@
 "use client"
 
 import { useLanguage } from "@/lib/i18n-context"
-import { Star, ShieldCheck, LayoutGrid, FileText, CreditCard, MessageSquare, Mail, Phone, ExternalLink } from "lucide-react"
+import { ShieldCheck, LayoutGrid, FileText, CreditCard, MessageSquare, Mail, Phone, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { type PartnerCard, lienWhatsApp } from "@/lib/partners/public-card"
 
-/** Partenaire affiché : peut venir de partner_profiles+user ou d'un fallback */
-export interface PartnerDisplay {
-  id?: string
-  full_name?: string
-  company_name?: string
-  city?: string
-  email?: string
-  phone?: string
-  avatar_url?: string
-  countries?: { name?: string; code?: string }
-}
-
-export function CertifiedPartnerCard({ partner }: { partner?: PartnerDisplay | null }) {
+/**
+ * Partenaire affecté à la demande de l'acheteur.
+ *
+ * Cette carte affichait jusqu'ici une fiche écrite en dur — Achignon Bilongo,
+ * Dubaï — à tous les acheteurs, quel que soit leur pays d'achat. Et quand un
+ * vrai partenaire était transmis, elle remplaçait ses coordonnées par des
+ * numéros fixés selon le pays. Elle n'affiche plus que le partenaire réel ;
+ * sans affectation, elle le dit.
+ */
+export function CertifiedPartnerCard({ partner }: { partner?: PartnerCard | null }) {
   const { t } = useLanguage()
-  const displayPartner = partner || {
-    full_name: "Achignon Bilongo",
-    company_name: "MAARMALA - Head Officer",
-    city: "Dubai",
-    email: "achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site",
-    phone: "+971500000000",
-    countries: { name: "United Arab Emirates", code: "AE" },
-    avatar_url: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain"
-  }
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
   }
 
-  /* 
-   * COMMUNICATION HANDLERS
-   * Ensures automatic opening of real partner channels.
-   */
-  const handleWhatsApp = () => {
-    // 1. Get Phone based on Country (Default to Maarmala UAE)
-    let rawPhone = displayPartner.phone || "+971501201719";
-
-    // Executive Overrides (Validated Numbers)
-    if (displayPartner.countries?.code === 'JP') {
-      rawPhone = "+819083267671"; // Pam Congo Japan
-    } else if (displayPartner.countries?.code === 'AE') {
-      rawPhone = "+971501201719"; // Achignon Bilongo UAE
-    }
-
-    // 2. Sanitize: Remove spaces, dashes, parens, pluses
-    // Example: "+971 50 123" -> "97150123"
-    const cleanPhone = rawPhone.replace(/\D/g, '');
-
-    // 3. Open WhatsApp Web/App
-    // Note: wa.me works best with pure digits including country code
-    window.open(`https://wa.me/${cleanPhone}`, '_blank');
-  }
-
-  const handleEmail = () => {
-    // Smart routing based on country/partner
-    let targetEmail = displayPartner.email;
-
-    // Force specific requested emails based on country code if dynamic data isn't perfectly clean
-    if (displayPartner.countries?.code === 'JP') {
-      targetEmail = 'assanimususa.pdg.pam.congo.japon@aonosekehouseinvestmentdrc.site';
-    } else if (displayPartner.countries?.code === 'AE') {
-      targetEmail = 'achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site';
-    } else if (!targetEmail) {
-      // Ultimate fallback
-      targetEmail = 'achignon.pdg.maarmala.uae@aonosekehouseinvestmentdrc.site';
-    }
-
-    window.location.href = `mailto:${targetEmail}?subject=Ref: Alpha Import Exchange - Support`;
-  }
+  const whatsapp = lienWhatsApp(partner?.whatsapp)
 
   return (
-    <div className="space-y-6">
-      {/* Certified Partner Section */}
-      <div className="glass rounded-3xl overflow-hidden p-6">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="t-label text-[10px] text-muted-foreground tracking-widest leading-none mb-1">
-                {partner ? t("certified_partner.assigned", "Partenaire Assigné") : t("certified_partner.certified", "Partenaire Certifié")}
-              </p>
-              <h3 className="text-sm font-bold tracking-widest uppercase font-condensed">
-                {partner ? t("certified_partner.your_partner", "VOTRE PARTENAIRE") : t("certified_partner.certified_dubai", "CERTIFIÉ DUBAÏ")}
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary/50 border border-foreground/5">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <span className="text-[9px] font-mono text-primary uppercase">{t("certified_partner.online", "En ligne")}</span>
-          </div>
+    <div className="glass rounded-3xl overflow-hidden p-6">
+      <div className="mb-8 flex items-center gap-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+          <ShieldCheck className="h-5 w-5 text-primary" />
         </div>
+        <div>
+          <p className="t-label mb-1 leading-none text-muted-foreground">
+            {t("certified_partner.assigned", "Partenaire assigné")}
+          </p>
+          <h3 className="t-label text-foreground">{t("certified_partner.your_partner", "Votre partenaire")}</h3>
+        </div>
+      </div>
 
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/30 relative group">
-            <img
-              src={displayPartner.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"}
-              alt="Partner"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <ExternalLink className="w-4 h-4 text-foreground" />
-            </div>
-          </div>
-          <div>
-            <h4 className="text-lg font-bold text-foreground tracking-tight">{displayPartner.company_name || displayPartner.full_name}</h4>
-            <div className="flex items-center gap-2">
-              <span className="t-label text-[10px] text-muted-foreground">{displayPartner.city} {displayPartner.countries?.name}</span>
-              {displayPartner.countries?.code === 'AE' && (
-                <div className="w-4 h-2.5 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
-                  <div className="h-1/3 bg-[#ff0000]" />
-                  <div className="h-1/3 bg-white" />
-                  <div className="h-1/3 bg-black" />
-                  <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-[#00732f]" />
-                </div>
+      {partner ? (
+        <>
+          <div className="mb-8 flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-primary/30 bg-primary/10">
+              {partner.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={partner.avatar_url} alt={partner.full_name} className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-display text-2xl text-primary">{(partner.full_name || partner.company_name).charAt(0)}</span>
               )}
             </div>
-            <div className="flex items-center gap-0.5 mt-1">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="w-3 h-3 fill-primary text-primary" />
-              ))}
+            <div className="min-w-0">
+              <h4 className="truncate text-lg font-bold tracking-tight text-foreground">
+                {partner.company_name || partner.full_name}
+              </h4>
+              {partner.company_name && partner.full_name && (
+                <p className="truncate text-sm text-muted-foreground">{partner.full_name}</p>
+              )}
+              <p className="t-label mt-1 text-muted-foreground">
+                {[partner.city, partner.country?.name].filter(Boolean).join(" · ")}
+              </p>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-4 gap-2 mb-8">
-          {[
-            { icon: LayoutGrid, label: t("certified_partner.hub", "Hub"), target: "partner-showcase" },
-            { icon: FileText, label: t("certified_partner.docs", "Docs"), target: "documents-section" },
-            { icon: CreditCard, label: t("certified_partner.payment", "Paie"), target: "transactions-section" },
-            { icon: MessageSquare, label: t("certified_partner.chat", "Chat"), target: "messaging-section" },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center gap-2"
-              onClick={() => scrollToSection(item.target)}
+          <div className="mb-4 grid grid-cols-2 gap-3">
+            <Button
+              asChild={Boolean(whatsapp)}
+              disabled={!whatsapp}
+              className="h-11 rounded-xl border border-[#25D366]/30 bg-[#25D366]/10 font-condensed text-[10px] font-bold uppercase tracking-widest text-[#25D366] transition-all hover:bg-[#25D366] hover:text-foreground"
             >
-              <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center border border-foreground/5 hover:border-primary/30 transition-colors cursor-pointer group">
-                <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <span className="text-[9px] text-muted-foreground uppercase font-medium">{item.label}</span>
-            </div>
-          ))}
+              {whatsapp ? (
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  <Phone className="me-2 h-3 w-3" />
+                  WhatsApp
+                </a>
+              ) : (
+                <span>
+                  <Phone className="me-2 h-3 w-3" />
+                  WhatsApp
+                </span>
+              )}
+            </Button>
+            <Button
+              asChild={Boolean(partner.email)}
+              disabled={!partner.email}
+              className="h-11 rounded-xl border border-primary/30 bg-primary/10 font-condensed text-[10px] font-bold uppercase tracking-widest text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+            >
+              {partner.email ? (
+                <a href={`mailto:${partner.email}?subject=${encodeURIComponent("Ref: Alpha Import Exchange")}`}>
+                  <Mail className="me-2 h-3 w-3" />
+                  Email
+                </a>
+              ) : (
+                <span>
+                  <Mail className="me-2 h-3 w-3" />
+                  Email
+                </span>
+              )}
+            </Button>
+          </div>
+        </>
+      ) : (
+        // Aucune affectation : la carte le dit, au lieu d'afficher un partenaire
+        // qui n'a rien à voir avec la demande.
+        <div className="mb-8 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-5">
+          <div className="mb-2 flex items-center gap-2 text-primary">
+            <Clock className="h-4 w-4" />
+            <p className="t-label">{t("certified_partner.pending", "En cours d'affectation")}</p>
+          </div>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {t(
+              "certified_partner.pending_desc",
+              "L'administration Alpha Import attribue votre demande au partenaire agréé du pays d'achat. Ses coordonnées apparaîtront ici."
+            )}
+          </p>
         </div>
+      )}
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <Button
-            onClick={handleWhatsApp}
-            className="h-11 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366] hover:text-foreground transition-all font-bold tracking-widest uppercase font-condensed text-[10px]"
+      <div className="mb-6 grid grid-cols-4 gap-2">
+        {[
+          { icon: LayoutGrid, label: t("certified_partner.hub", "Hub"), target: "partner-showcase" },
+          { icon: FileText, label: t("certified_partner.docs", "Docs"), target: "documents-section" },
+          { icon: CreditCard, label: t("certified_partner.payment", "Paie"), target: "transactions-section" },
+          { icon: MessageSquare, label: t("certified_partner.chat", "Chat"), target: "messaging-section" },
+        ].map((item) => (
+          <button
+            key={item.target}
+            type="button"
+            className="group flex flex-col items-center gap-2"
+            onClick={() => scrollToSection(item.target)}
           >
-            <Phone className="w-3 h-3 me-2" />
-            WhatsApp
-          </Button>
-          <Button
-            onClick={handleEmail}
-            className="h-11 rounded-xl bg-primary/10 text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all font-bold tracking-widest uppercase font-condensed text-[10px]"
-          >
-            <Mail className="w-3 h-3 me-2" />
-            Email
-          </Button>
-        </div>
-
-        <Button
-          onClick={() => scrollToSection('messaging-section')}
-          className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:scale-[1.02] transition-all font-bold tracking-widest uppercase font-condensed text-xs shadow-lg shadow-primary/20"
-        >
-          {t("certified_partner.open_secure_chat", "Ouvrir le Chat Sécurisé")}
-        </Button>
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/5 bg-secondary/50 transition-colors group-hover:border-primary/30">
+              <item.icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+            </span>
+            <span className="text-[9px] font-medium uppercase text-muted-foreground">{item.label}</span>
+          </button>
+        ))}
       </div>
+
+      <Button
+        onClick={() => scrollToSection("messaging-section")}
+        disabled={!partner}
+        className="h-12 w-full rounded-xl bg-primary font-condensed text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+      >
+        {t("certified_partner.open_secure_chat", "Ouvrir le chat sécurisé")}
+      </Button>
     </div>
   )
 }
-

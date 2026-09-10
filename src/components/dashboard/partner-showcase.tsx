@@ -1,82 +1,83 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Star, MessageSquare } from "lucide-react"
+import { MessageSquare, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/lib/i18n-context"
+import type { PartnerCard } from "@/lib/partners/public-card"
 
-export function PartnerShowcase() {
-  const scrollToMessaging = () => {
-    const element = document.getElementById('messaging-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+/**
+ * Vitrine du partenaire affecté.
+ *
+ * Elle montrait en dur « MAARMALA — Dubaï Global Hub », une note de cinq
+ * étoiles et un « temps de réponse ~15 min » que rien ne mesurait. Elle suit
+ * désormais le partenaire réel ; l'image est celle de son pays, avec les mêmes
+ * photographies que la page réseau.
+ */
+const IMAGE_PAYS: Record<string, string> = {
+  CN: "photo-1547981609-4b6bfe67ca0b",
+  TR: "photo-1524231757912-21f4fe3a7200",
+  AE: "photo-1512453979798-5ea266f8880c",
+  JP: "photo-1540959733332-eab4deabeeaf",
+  TH: "photo-1552465011-b4e21bf6e79a",
+}
+const IMAGE_RESEAU = "photo-1494412574643-ff11b0a5c1c3"
+
+export function PartnerShowcase({ partner }: { partner?: PartnerCard | null }) {
+  const { t } = useLanguage()
+  const image = IMAGE_PAYS[partner?.country?.code ?? ""] ?? IMAGE_RESEAU
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="glass rounded-3xl overflow-hidden relative min-h-[400px] flex flex-col justify-end p-8"
+      className="glass relative flex min-h-[360px] flex-col justify-end overflow-hidden rounded-3xl p-8"
     >
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('https://images.unsplash.com/${image}?q=75&w=1800&auto=format&fit=crop')` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       </div>
 
-      <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-6 bg-[#00732f] rounded-sm relative overflow-hidden flex flex-col">
-              <div className="h-1/3 bg-[#ff0000]" />
-              <div className="h-1/3 bg-white" />
-              <div className="h-1/3 bg-black" />
-              <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-[#00732f]" />
-            </div>
-            <span className="text-sm font-mono tracking-widest text-foreground/80 uppercase font-condensed">Dubai</span>
-          </div>
-
-          <h2 className="text-4xl font-bold mb-2 tracking-tight text-foreground">MAARMALA - Head Officer</h2>
-          
-          <div className="flex items-center gap-2 mb-8">
-            <div className="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground ms-2">Dubaï Global Hub</span>
-          </div>
-
-          <div className="glass-dark p-6 rounded-2xl border border-foreground/10 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary shrink-0">
-              <img 
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/WhatsApp-Image-2026-01-07-at-22.12.11-1767820691638.jpeg?width=8000&height=8000&resize=contain" 
-                alt="Partner" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-foreground">Achignon Bilongo</p>
-              <p className="text-xs text-muted-foreground">Spécialiste du commerce international à Dubaï. Prêt à traiter votre demande.</p>
-            </div>
-          </div>
+          {partner ? (
+            <>
+              <p className="t-eyebrow mb-3 text-gold">
+                {[partner.city, partner.country?.name].filter(Boolean).join(" · ")}
+              </p>
+              <h2 className="mb-2 text-4xl text-foreground">{partner.company_name || partner.full_name}</h2>
+              {partner.company_name && partner.full_name && (
+                <p className="text-muted-foreground">{partner.full_name}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="t-eyebrow mb-3 text-gold">{t("partner_showcase.eyebrow", "Votre partenaire sur place")}</p>
+              <h2 className="mb-3 text-4xl text-foreground">
+                {t("partner_showcase.pending_title", "AFFECTATION EN COURS")}
+              </h2>
+              <p className="flex max-w-xl items-start gap-2 text-muted-foreground">
+                <Clock className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                {t(
+                  "partner_showcase.pending_desc",
+                  "Dès qu'une demande est déposée, l'administration Alpha Import l'attribue au partenaire agréé du pays d'achat. Il achète, inspecte et répond de la marchandise jusqu'à l'embarquement."
+                )}
+              </p>
+            </>
+          )}
         </div>
 
-        <div className="flex flex-col gap-3">
-          <Button 
-            onClick={scrollToMessaging}
-            className="rounded-xl px-8 h-12 bg-primary text-primary-foreground font-bold tracking-widest uppercase font-condensed text-xs hover:scale-105 transition-transform"
+        {partner && (
+          <Button
+            onClick={() => document.getElementById("messaging-section")?.scrollIntoView({ behavior: "smooth" })}
+            className="h-12 rounded-xl bg-primary px-8 font-condensed text-xs font-bold uppercase tracking-widest text-primary-foreground transition-transform hover:scale-105"
           >
-            <MessageSquare className="w-4 h-4 me-2" />
-            Contacter le partenaire
+            <MessageSquare className="me-2 h-4 w-4" />
+            {t("partner_showcase.contact", "Contacter le partenaire")}
           </Button>
-          <p className="text-[9px] text-muted-foreground uppercase font-condensed text-center tracking-widest">Temps de réponse: ~15 min</p>
-        </div>
+        )}
       </div>
     </motion.div>
   )

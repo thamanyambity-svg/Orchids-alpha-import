@@ -47,7 +47,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
       <div className="absolute top-0 right-0 p-4">
         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 gap-1 px-3 py-1">
           <ShieldCheck className="w-3.5 h-3.5" />
-            {t("partner_card.certified", "Partenaire Certifié AlphaIX")}
+            {t("partner_card.certified", "Partenaire certifié Alpha Import")}
         </Badge>
       </div>
 
@@ -56,7 +56,7 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
           <Avatar className="w-24 h-24 border-4 border-background shadow-xl">
             <AvatarImage src={partner.avatar_url} alt={partner.full_name} />
             <AvatarFallback className="text-2xl bg-primary/10 text-primary font-bold">
-              {partner.full_name.split(' ').map(n => n[0]).join('')}
+              {(partner.full_name || partner.company_name || "?").split(' ').map(n => n[0]).join('').slice(0, 2)}
             </AvatarFallback>
           </Avatar>
           <div className="absolute -bottom-2 -right-2 bg-background rounded-full p-1 shadow-md border border-border">
@@ -68,25 +68,38 @@ export function PartnerProfileCard({ partner, onContact }: PartnerProfileCardPro
           <div>
             <h3 className="text-2xl font-bold tracking-tight">{partner.full_name}</h3>
             <p className="text-primary font-medium">{partner.company_name}</p>
-            <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-1 text-warning">
-                <Star className="w-4 h-4 fill-current" />
-                <span className="font-bold">{partner.performance_score}</span>
+            {/* Indicateurs affichés seulement quand ils existent : un nouveau
+                partenaire montrait « 0 », « 0+ commandes », « 0 ans d'exp. »
+                — une vitrine qui dessert celui qu'elle présente. */}
+            {(partner.performance_score > 0 || partner.total_orders_handled > 0 || partner.experience_years > 0) && (
+              <div className="flex items-center gap-4 mt-2">
+                {partner.performance_score > 0 && (
+                  <div className="flex items-center gap-1 text-warning">
+                    <Star className="w-4 h-4 fill-current" />
+                    <span className="font-bold">{partner.performance_score}</span>
+                  </div>
+                )}
+                {partner.total_orders_handled > 0 && (
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                    <Package className="w-4 h-4" />
+                    <span>{partner.total_orders_handled}+ commandes</span>
+                  </div>
+                )}
+                {partner.experience_years > 0 && (
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                    <Calendar className="w-4 h-4" />
+                    <span>{partner.experience_years} ans d'exp.</span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                <Package className="w-4 h-4" />
-                <span>{partner.total_orders_handled}+ commandes</span>
-              </div>
-              <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                <Calendar className="w-4 h-4" />
-                <span>{partner.experience_years} ans d'exp.</span>
-              </div>
-            </div>
+            )}
           </div>
 
-          <p className="text-muted-foreground leading-relaxed italic">
-            "{partner.bio}"
-          </p>
+          {partner.bio && (
+            <p className="text-muted-foreground leading-relaxed italic">
+              "{partner.bio}"
+            </p>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Button 

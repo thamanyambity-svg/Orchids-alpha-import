@@ -7,10 +7,22 @@ import { Input } from "@/components/ui/input"
 import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 
-import type { Message, Profile } from "@/lib/types"
+import type { Message } from "@/lib/types"
+
+/**
+ * Ce que la messagerie lit du correspondant : son compte, pour adresser les
+ * messages, et de quoi l'afficher. Typer le prop en `Profile` complet
+ * empêchait de lui passer la carte de contact publique, seule visible par un
+ * acheteur.
+ */
+interface Correspondant {
+  id: string
+  full_name?: string | null
+  avatar_url?: string | null
+}
 import { useLanguage } from "@/lib/i18n-context"
 
-export function MessagingCard({ partner }: { partner?: Profile | null }) {
+export function MessagingCard({ partner }: { partner?: Correspondant | null }) {
   const { t } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
