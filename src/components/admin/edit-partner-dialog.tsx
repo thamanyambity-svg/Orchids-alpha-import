@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/i18n-context"
-import { createClient } from "@/lib/supabase/client"
 import {
     Dialog,
     DialogContent,
@@ -28,6 +27,8 @@ import type { PartnerProfile, Profile } from "@/lib/types"
 export interface PartnerWithUser extends Partial<Omit<PartnerProfile, 'contract_status'>> {
     id: string
     user_id?: string
+    /** Identifiant de la fiche `partner_profiles`, attendu par la route. */
+    partner_profile_id?: string
     user?: Profile
     full_name?: string
     company_name?: string
@@ -48,7 +49,6 @@ interface EditPartnerDialogProps {
 export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPartnerDialogProps) {
     const { t } = useLanguage()
     const [loading, setLoading] = useState(false)
-    const supabase = createClient()
 
     // Initialize state from partner prop when it opens/changes
     // (We use a key on the Dialog in parent to reset state, or effects)
@@ -69,37 +69,37 @@ export function EditPartnerDialog({ open, onClose, partner, onUpdate }: EditPart
     async function handleSave() {
         setLoading(true)
         try {
-            // 1. Update Profile (Base Info)
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .update({
-                    full_name: formData.full_name,
-                    company_name: formData.company_name, // Schema has company_name on profiles
-                    city: formData.city,
-                    status: formData.status
-                })
-                .eq('id', partner.id)
+            // Écriture par la route serveur. Depuis le navigateur, la mise à
+            // jour du profil touchait zéro ligne — l'administrateur n'a aucun
+            // droit de modification sur le compte d'un autre — et la fenêtre
+            // annonçait pourtant un succès.
+            if (!partner.partner_profile_id) {
+                throw new Error(t("admin.edit_partner.no_record", "Fiche partenaire introuvable"))
+            }
 
-            if (profileError) throw profileError
-
-            // 2. Update Partner Profile (Specifics)
-            // Parse assigned cities
             const citiesArray = formData.assigned_cities
                 .split(",")
                 .map((c: string) => c.trim())
                 .filter((c: string) => c.length > 0)
 
-            // We need to check if partner_profile exists, it should.
-            const { error: partnerError } = await supabase
-                .from('partner_profiles')
-                .update({
+            const res = await fetch(`/api/admin/partners/${partner.partner_profile_id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    full_name: formData.full_name,
+                    company_name: formData.company_name,
+                    city: formData.city,
+                    status: formData.status,
                     assigned_cities: citiesArray,
                     performance_score: Number(formData.performance_score),
-                    contract_status: formData.contract_status
-                })
-                .eq('user_id', partner.id)
+                    contract_status: formData.contract_status,
+                }),
+            })
 
-            if (partnerError) throw partnerError
+            if (!res.ok) {
+                const corps = await res.json().catch(() => ({}))
+                throw new Error(corps.error || `Erreur ${res.status}`)
+            }
 
             toast.success(t("admin.edit_partner.update_success", "Partenaire mis à jour avec succès"))
             onUpdate()

@@ -84,16 +84,28 @@ export default function BuyerKycPage() {
     setLoading(false)
   }
 
+  /**
+   * Décision KYC par la route serveur. L'écriture directe depuis le navigateur
+   * touchait zéro ligne — l'administrateur n'a qu'un droit de lecture sur
+   * `buyer_profiles` — et affichait pourtant « vérifié avec succès ».
+   */
+  async function envoyerDecision(buyerId: string, decision: "VERIFIED" | "REJECTED", motif?: string) {
+    const res = await fetch(`/api/admin/buyers/${buyerId}/kyc`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ decision, motif }),
+    })
+    if (res.ok) return null
+    const corps = await res.json().catch(() => ({}))
+    return corps.error || `Erreur ${res.status}`
+  }
+
   async function handleVerify(buyerId: string) {
     setActionLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from("buyer_profiles")
-      .update({ kyc_status: "VERIFIED" })
-      .eq("user_id", buyerId)
+    const error = await envoyerDecision(buyerId, "VERIFIED")
 
     if (error) {
-      toast.error("Erreur lors de la vérification")
+      toast.error(`Vérification non enregistrée : ${error}`)
     } else {
       toast.success("KYC vérifié avec succès")
       setBuyers(prev => prev.map(b => b.id === buyerId ? { ...b, kyc_status: "VERIFIED" } : b))
@@ -109,14 +121,10 @@ export default function BuyerKycPage() {
     if (!reason) return
 
     setActionLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from("buyer_profiles")
-      .update({ kyc_status: "REJECTED" })
-      .eq("user_id", buyerId)
+    const error = await envoyerDecision(buyerId, "REJECTED", reason)
 
     if (error) {
-      toast.error("Erreur")
+      toast.error(`Refus non enregistré : ${error}`)
     } else {
       toast.success("KYC refusé")
       setBuyers(prev => prev.map(b => b.id === buyerId ? { ...b, kyc_status: "REJECTED" } : b))

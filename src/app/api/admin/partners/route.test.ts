@@ -11,8 +11,14 @@ vi.mock("@/lib/auth-guard", async (importOriginal) => {
   return { ...actual, requireRole: (...args: any[]) => requireRole(...args) }
 })
 vi.mock("@/lib/audit", () => ({ logAudit: vi.fn() }))
+// Client de service séparé du client de session : c'est la distinction qui
+// compte. Un administrateur n'a, en RLS, aucun droit de mise à jour sur le
+// profil d'un autre compte ; seul le client de service peut basculer le rôle.
+let service: ReturnType<typeof createSupabaseMock>
+
 vi.mock("@/lib/supabase/admin", () => ({
   createAdminClient: () => ({
+    from: (...args: any[]) => (service.client.from as any)(...args),
     auth: {
       admin: {
         inviteUserByEmail: (...args: any[]) => inviteUserByEmail(...args),
@@ -41,7 +47,16 @@ const validPayload = {
 
 let userCounter = 0
 
-function setup({ partnerInsertFails = false } = {}) {
+function setup({ partnerInsertFails = false, profilSansLigne = false } = {}) {
+  service = createSupabaseMock((op) => {
+    if (op.table === "profiles" && op.type === "update") {
+      // Un UPDATE qui ne trouve pas sa ligne renvoie un tableau vide, sans
+      // erreur : c'est exactement l'échec silencieux observé en production.
+      return { data: profilSansLigne ? [] : [{ id: NEW_USER }] }
+    }
+    return { data: null }
+  })
+
   const mock = createSupabaseMock((op) => {
     if (op.table === "partner_profiles" && op.type === "insert") {
       return partnerInsertFails
@@ -67,6 +82,33 @@ function setup({ partnerInsertFails = false } = {}) {
 
 describe("POST /api/admin/partners", () => {
   beforeEach(() => vi.clearAllMocks())
+
+  it("bascule le profil avec la clé de service, jamais avec la session admin", async () => {
+    // Avec la session, l'UPDATE touchait zéro ligne sans erreur : le premier
+    // partenaire réel est resté BUYER, sans société ni téléphone.
+    const mock = setup()
+
+    await POST(makeRequest(validPayload) as any)
+
+    expect(service.lastOp("profiles", "update")?.payload).toMatchObject({
+      role: "PARTNER",
+      company_name: validPayload.company_name,
+    })
+    expect(mock.lastOp("profiles", "update")).toBeUndefined()
+  })
+
+  it("échoue et supprime le compte créé quand le profil n'est pas mis à jour", async () => {
+    // Zéro ligne modifiée n'est pas un succès. Sans cette garde, la fiche
+    // partenaire se créait quand même, rattachée à un compte resté BUYER.
+    const mock = setup({ profilSansLigne: true })
+    vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const res = await POST(makeRequest(validPayload) as any)
+
+    expect(res.status).toBe(500)
+    expect(mock.lastOp("partner_profiles", "insert")).toBeUndefined()
+    expect(deleteUser).toHaveBeenCalledWith(NEW_USER)
+  })
 
   it("crée le partenaire et renvoie son identifiant", async () => {
     const mock = setup()
@@ -95,7 +137,7 @@ describe("POST /api/admin/partners", () => {
 
     await POST(makeRequest(validPayload))
 
-    expect(mock.lastOp("profiles", "update")?.payload.role).toBe("PARTNER")
+    expect(service.lastOp("profiles", "update")?.payload.role).toBe("PARTNER")
   })
 
   // Sans compensation, l'adresse reste prise par un compte sans profil et le

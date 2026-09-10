@@ -107,8 +107,13 @@ export default function AdminPartnersPage() {
                     return {
                         id: profile.id,
                         user_id: profile.id,
+                        // Identifiant de la fiche : c'est lui que les routes
+                        // /api/admin/partners/[id] attendent.
+                        partner_profile_id: partnerDetails?.id,
                         email: profile.email,
                         full_name: profile.full_name || "Sans nom",
+                        company_name: profile.company_name || "",
+                        assigned_cities: partnerDetails?.assigned_cities || [],
                         phone: profile.phone,
                         city: profile.city,
                         country: profile.country?.name || "N/A",

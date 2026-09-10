@@ -115,7 +115,14 @@ export async function POST(request: NextRequest) {
     try {
       // handle_new_user crée le profil en BUYER : sans cette bascule le partenaire
       // n'aurait aucun de ses droits.
-      const { error: profileError } = await supabase
+      //
+      // Clé de service, et non le client de session : en RLS, un administrateur
+      // n'a aucun droit de mise à jour sur le profil d'un autre compte — seule
+      // `profiles_update_own` existe. Avec le client de session, cet UPDATE
+      // touchait zéro ligne sans lever d'erreur : le rôle restait BUYER, la
+      // société, le téléphone et la ville étaient perdus, et la fiche partenaire
+      // se créait quand même. Constaté sur le premier partenaire réel.
+      const { data: profilMisAJour, error: profileError } = await admin
         .from('profiles')
         .update({
           role: 'PARTNER',
@@ -127,8 +134,14 @@ export async function POST(request: NextRequest) {
           updated_at: new Date().toISOString(),
         })
         .eq('id', userId)
+        .select('id')
 
       if (profileError) throw profileError
+      // Zéro ligne modifiée n'est pas un succès : c'est précisément l'échec
+      // silencieux qui s'était produit.
+      if (!profilMisAJour?.length) {
+        throw new Error(`Profil introuvable pour le compte ${userId} : rôle non basculé en PARTNER`)
+      }
 
       const { data: partner, error: partnerError } = await supabase
         .from('partner_profiles')
