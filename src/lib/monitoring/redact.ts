@@ -256,5 +256,20 @@ export function redactError(erreur: unknown): ErreurRedigee {
   if (typeof erreur === "string") {
     return { name: "Error", message: redactString(erreur, 1000) }
   }
+  // Les erreurs Supabase (PostgREST) sont des objets simples, pas des Error :
+  // `String(erreur)` donnait « [object Object] », sans rien d'exploitable.
+  if (erreur && typeof erreur === "object" && typeof (erreur as any).message === "string") {
+    const e = erreur as { message: string; code?: unknown; details?: unknown; hint?: unknown }
+    const complements = [
+      typeof e.code === "string" && e.code ? `code ${e.code}` : null,
+      typeof e.details === "string" && e.details ? e.details : null,
+      typeof e.hint === "string" && e.hint ? `indice : ${e.hint}` : null,
+    ].filter(Boolean)
+    const message = complements.length ? `${e.message} (${complements.join(" ; ")})` : e.message
+    return {
+      name: typeof e.code === "string" && e.code ? "PostgrestError" : "Error",
+      message: redactString(message, 1000),
+    }
+  }
   return { name: "Error", message: redactString(String(erreur), 1000) }
 }

@@ -266,4 +266,22 @@ describe("redactError", () => {
     expect(() => redactError(null)).not.toThrow()
     expect(() => redactError(undefined)).not.toThrow()
   })
+
+  it("lit le message d'une erreur Supabase au lieu de « [object Object] »", () => {
+    const sortie = redactError({
+      message: "Could not find the 'buyer_country' column of 'import_requests' in the schema cache",
+      code: "PGRST204",
+      details: null,
+      hint: null,
+    })
+    expect(sortie.name).toBe("PostgrestError")
+    expect(sortie.message).toContain("buyer_country")
+    expect(sortie.message).toContain("PGRST204")
+    expect(sortie.message).not.toContain("[object Object]")
+  })
+
+  it("masque un secret présent dans le détail d'une erreur Supabase", () => {
+    const sortie = redactError({ message: "échec", code: "42501", details: "clé sk_live_AUTREEXEMPLEDETEST refusée" })
+    expect(sortie.message).not.toContain("AUTREEXEMPLEDETEST")
+  })
 })
