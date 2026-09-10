@@ -149,15 +149,19 @@ export default function AboutPage() {
           <div className="mx-auto grid max-w-[980px] gap-px bg-[var(--line)] md:grid-cols-2">
             {DIRIGEANTS.map((personne) => (
               <article key={personne.id} data-reveal className="bg-[var(--navy)]">
-                {/* Portrait cadré en 4/5 : un portrait carré coupe les épaules,
-                    un 16/9 les noie dans le décor. */}
+                {/* Les deux fichiers sont recadrés au format du cadre, 4/5, et
+                    sur un placement de tête comparable. Servis bruts, ils ne
+                    s'accordaient pas : l'un était un portrait studio en paysage,
+                    l'autre une capture de téléphone en 463x1000 dont les barres
+                    noires occupaient le haut. Avec `object-top`, cette bande
+                    devenait le sommet de la carte. */}
                 <div className="relative aspect-[4/5] w-full">
                   <Image
                     src={personne.image}
                     alt={personne.nom}
                     fill
                     sizes="(max-width: 768px) 100vw, 490px"
-                    className="object-cover object-top"
+                    className="object-cover"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--navy)] via-transparent to-transparent" />
                 </div>
