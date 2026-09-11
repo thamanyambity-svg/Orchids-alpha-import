@@ -28,7 +28,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
  * lire la demande d'un acheteur via RLS, mais la décision, elle, est prise ici.
  */
 
-const DUREE_LIEN_SECONDES = 120
+// Dix minutes : une vidéo de la discussion lit son fichier par morceaux tout
+// au long de la lecture, avec le même lien. Deux minutes la coupaient.
+const DUREE_LIEN_SECONDES = 600
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const ESPACES = new Set(['documents', 'invoices', 'compliance-documents'])
 

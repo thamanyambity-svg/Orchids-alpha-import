@@ -31,6 +31,10 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
+      // Vidéos et notes vocales de la discussion : /api/files redirige vers un
+      // lien signé du stockage Supabase. Sans cette directive, media-src hérite
+      // de default-src 'self' et le lecteur refuse le fichier.
+      "media-src 'self' blob: https://*.supabase.co",
       "font-src 'self' data:",
       "worker-src 'self' blob:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://api.stripe.com",

@@ -5,7 +5,12 @@ import { requireRole, handleApiError } from '@/lib/auth-guard'
 import { processAutomaticDebit } from '@/lib/payments/auto-debit.service'
 import { logAdminAccess, getAdminAuditMetadata } from '@/lib/admin-audit'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { createAdminClient } from '@/lib/supabase/admin'
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+// Statuts à partir desquels une (ré)assignation remet le dossier « en analyse ».
+// Au-delà — devis accepté, paiement, exécution — le statut n'est pas touché.
+const STATUTS_AVANT_ANALYSE = new Set(['PENDING', 'DRAFT', 'VALIDATED', 'ANALYSIS'])
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,21 +48,60 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'ASSIGN_PARTNER': {
-        const { partnerId } = actionData
-        const { data, error } = await supabase
+        // Écriture par la clé de service, après le contrôle ADMIN ci-dessus :
+        // une écriture de session peut toucher zéro ligne sans erreur selon
+        // les règles d'accès appliquées en base.
+        const partnerId = actionData?.partnerId
+        if (typeof partnerId !== 'string' || !UUID.test(partnerId)) {
+          return NextResponse.json({ error: 'Partenaire invalide' }, { status: 400 })
+        }
+        const service = createAdminClient()
+
+        const { data: fiche } = await service
+          .from('partner_profiles')
+          .select('id, user_id, contract_status')
+          .eq('id', partnerId)
+          .maybeSingle()
+        if (!fiche) return NextResponse.json({ error: 'Partenaire introuvable' }, { status: 404 })
+        if (fiche.contract_status !== 'ACTIVE') {
+          return NextResponse.json({ error: 'Le contrat de ce partenaire n\'est pas actif' }, { status: 400 })
+        }
+
+        const { data: actuelle } = await service
+          .from('import_requests')
+          .select('id, status')
+          .eq('id', requestId)
+          .maybeSingle()
+        if (!actuelle) return NextResponse.json({ error: 'Demande introuvable' }, { status: 404 })
+
+        const { data, error } = await service
           .from('import_requests')
           .update({
             assigned_partner_id: partnerId,
-            status: 'ANALYSIS',
+            status: STATUTS_AVANT_ANALYSE.has(actuelle.status) ? 'ANALYSIS' : actuelle.status,
             updated_at: new Date().toISOString()
           })
           .eq('id', requestId)
           .select()
-          .single()
+          .maybeSingle()
 
         if (error) throw error
+        if (!data) return NextResponse.json({ error: 'Demande introuvable' }, { status: 404 })
         result = data
         n8nEvent = 'partner_assigned'
+
+        // Le partenaire est prévenu dans son espace. Sans effet sur l'assignation en cas d'échec.
+        await service
+          .from('notifications')
+          .insert({
+            user_id: fiche.user_id,
+            channel: 'status_change',
+            type: 'info',
+            title: 'Nouveau dossier confié',
+            message: `La demande ${data.reference ?? ''} vous est confiée. Échangez avec le client dans la discussion du dossier.`,
+            link: `/partner/requests/${requestId}`,
+          })
+          .then(() => undefined, () => undefined)
 
         await logAudit({
           actorId: user.id,

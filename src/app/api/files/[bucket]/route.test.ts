@@ -89,7 +89,10 @@ describe("GET /api/files/[bucket]", () => {
     expect(res.status).toBe(302)
     expect(res.headers.get("location")).toBe("https://stockage.test/signe?t=1")
     const [, duree] = createSignedUrl.mock.calls[0] as [string, number]
-    expect(duree).toBeLessThanOrEqual(300)
+    // Dix minutes au plus : assez pour lire une vidéo de la discussion par
+    // morceaux avec le même lien, trop peu pour en faire un lien de partage.
+    expect(duree).toBeGreaterThan(0)
+    expect(duree).toBeLessThanOrEqual(600)
   })
 
   it("refuse la pièce KYC d'un autre, en 404 pour ne pas confirmer qu'elle existe", async () => {

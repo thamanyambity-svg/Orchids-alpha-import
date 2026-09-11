@@ -61,6 +61,15 @@ describe("Content-Security-Policy", () => {
     expect(connect).toContain("wss://*.supabase.co")
   })
 
+  it("autorise la lecture des vidéos et notes vocales stockées chez Supabase", async () => {
+    // /api/files redirige vers un lien signé du stockage. Sans media-src, la
+    // directive retombe sur default-src 'self' et le lecteur refuse le fichier.
+    const media = (await csp())["media-src"]
+    expect(media).toBeDefined()
+    expect(media).toContain("https://*.supabase.co")
+    expect(media).not.toContain("*")
+  })
+
   it("garde une politique par défaut restrictive", async () => {
     const directives = await csp()
     expect(directives["default-src"]).toEqual(["'self'"])

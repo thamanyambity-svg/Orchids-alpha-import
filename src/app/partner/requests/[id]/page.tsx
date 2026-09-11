@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import { DocumentUploadModal } from "@/components/partner/document-upload-modal"
+import { RequestThread } from "@/components/requests/request-thread"
 import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 
 const documentTypeLabels: Record<string, string> = {
@@ -325,6 +326,8 @@ export default function PartnerRequestDetailPage() {
                 )}
               </div>
             </div>
+
+            <RequestThread requestId={params.id as string} />
           </div>
         </div>
 

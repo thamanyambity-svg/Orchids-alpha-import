@@ -44,6 +44,7 @@ import { QuoteSubmissionForm } from "@/components/dashboard/quote-submission-for
 import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 import { QUOTE_STATUS } from "@/lib/design/status"
 import type { PartnerCard } from "@/lib/partners/public-card"
+import { RequestThread } from "@/components/requests/request-thread"
 
 export default function RequestDetailsPage() {
   const { id } = useParams()
@@ -194,8 +195,9 @@ export default function RequestDetailsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 md:grid-cols-7">
+        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">{t("dashboard.request.tab_overview", "Vue d'ensemble")}</TabsTrigger>
+          <TabsTrigger value="discussion">{t("dashboard.request.tab_discussion", "Discussion")}</TabsTrigger>
           <TabsTrigger value="quotes">{t("dashboard.request.tab_quotes", "Devis / Proforma")} {quotes.length > 0 && <Badge variant="secondary" className="ms-1">{quotes.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="purchase_orders">{t("dashboard.request.tab_po", "Bons de Commande")} {purchaseOrders.length > 0 && <Badge variant="secondary" className="ms-1">{purchaseOrders.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="documents">{t("dashboard.request.tab_docs", "Documents")} {documents.length > 0 && <Badge variant="secondary" className="ms-1">{documents.length}</Badge>}</TabsTrigger>
@@ -587,6 +589,10 @@ export default function RequestDetailsPage() {
 
         <TabsContent value="tracking" className="animate-in fade-in">
           <TrackingTimeline requestId={id as string} />
+        </TabsContent>
+
+        <TabsContent value="discussion" className="animate-in fade-in">
+          <RequestThread requestId={id as string} />
         </TabsContent>
 
         <TabsContent value="history" className="animate-in fade-in">

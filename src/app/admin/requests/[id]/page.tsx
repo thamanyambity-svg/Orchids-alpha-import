@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/i18n-context"
 import { TrackingEditor } from "@/components/admin/tracking-editor"
+import { AssignPartnerDialog } from "@/components/admin/assign-partner-dialog"
+import { RequestThread } from "@/components/requests/request-thread"
 import {
   ArrowLeft,
   Package,
@@ -64,7 +66,25 @@ export default function AdminRequestDetailPage() {
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [assignOpen, setAssignOpen] = useState(false)
   const supabase = createClient()
+
+  // Une seule définition de la lecture du dossier : la relecture après une
+  // action perdait le compte du partenaire (nom, téléphone, email).
+  const SELECT_DEMANDE = `
+    *,
+    buyer:profiles!import_requests_buyer_id_fkey(*),
+    assigned_partner:partner_profiles (
+      *,
+      user:profiles!partner_profiles_user_id_fkey(*)
+    ),
+    country:countries(*)
+  `
+
+  async function relireDemande() {
+    const { data } = await supabase.from('import_requests').select(SELECT_DEMANDE).eq('id', params.id).single()
+    if (data) setRequest(data)
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -72,15 +92,7 @@ export default function AdminRequestDetailPage() {
         const [requestRes, docsRes, orderRes] = await Promise.all([
           supabase
             .from('import_requests')
-            .select(`
-              *,
-              buyer:profiles!import_requests_buyer_id_fkey(*),
-              assigned_partner:partner_profiles (
-                *,
-                user:profiles(*)
-              ),
-              country:countries(*)
-            `)
+            .select(SELECT_DEMANDE)
             .eq('id', params.id)
             .single(),
           supabase
@@ -124,13 +136,7 @@ export default function AdminRequestDetailPage() {
 
       toast.success("Opération réussie")
       router.refresh()
-      // Re-fetch data
-      const { data: updatedReq } = await supabase
-        .from('import_requests')
-        .select('*, buyer:profiles!import_requests_buyer_id_fkey(*), assigned_partner:partner_profiles(*)')
-        .eq('id', params.id)
-        .single()
-      setRequest(updatedReq)
+      await relireDemande()
     } catch (error: any) {
       toast.error("Erreur: " + error.message)
     } finally {
@@ -352,6 +358,9 @@ export default function AdminRequestDetailPage() {
             </div>
           </div>
 
+          {/* Discussion : client, partenaire affecté et administration */}
+          <RequestThread requestId={params.id as string} />
+
           {/* Financial Info if exists */}
           {order && (
             <div className="rounded-2xl bg-card border border-border p-6 relative overflow-hidden">
@@ -445,27 +454,40 @@ export default function AdminRequestDetailPage() {
                     <Building2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-sm">{request.assigned_partner.user?.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{request.assigned_partner.company_name}</p>
+                    {/* Nom, société et coordonnées sont sur le compte, pas sur la fiche. */}
+                    <p className="font-bold text-sm">{request.assigned_partner.user?.company_name || request.assigned_partner.user?.full_name}</p>
+                    {request.assigned_partner.user?.company_name && (
+                      <p className="text-xs text-muted-foreground">{request.assigned_partner.user?.full_name}</p>
+                    )}
                   </div>
                 </div>
                 <div className="space-y-2 pt-2 border-t border-border">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Phone className="w-3 h-3" />
-                    {request.assigned_partner.phone}
+                    {request.assigned_partner.whatsapp_number || request.assigned_partner.user?.phone || "—"}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Mail className="w-3 h-3" />
-                    {request.assigned_partner.email}
+                    {request.assigned_partner.pro_email || request.assigned_partner.user?.email || "—"}
                   </div>
                 </div>
+                <Button size="sm" variant="ghost" className="w-full" onClick={() => setAssignOpen(true)}>
+                  Changer de partenaire
+                </Button>
               </div>
             ) : (
               <div className="text-center py-4 bg-muted/30 rounded-xl border border-dashed border-border">
                 <p className="text-xs text-muted-foreground mb-3">Aucun partenaire assigné</p>
-                <Button size="sm" variant="outline">Assigner maintenant</Button>
+                <Button size="sm" variant="outline" onClick={() => setAssignOpen(true)}>Assigner maintenant</Button>
               </div>
             )}
+            <AssignPartnerDialog
+              requestId={params.id as string}
+              countryId={request.country_id}
+              open={assignOpen}
+              onOpenChange={setAssignOpen}
+              onAssigned={relireDemande}
+            />
           </div>
 
           {/* TRACKING SECTION */}
