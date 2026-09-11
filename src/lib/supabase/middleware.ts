@@ -77,14 +77,21 @@ export async function updateSession(request: NextRequest) {
     const home =
       role === 'ADMIN' ? '/admin' : role === 'PARTNER' ? '/partner' : '/dashboard'
 
-    // Déjà connecté sur une page d'auth -> dirige vers son espace.
+    // Déjà connecté sur une page d'auth -> dirige vers son espace, en disant
+    // pourquoi : la personne voulait sans doute ouvrir un autre compte, et
+    // un navigateur ne garde qu'une session à la fois.
     if (isAuthPage) {
       const url = request.nextUrl.clone()
       url.pathname = home
+      url.search = ''
+      url.searchParams.set('deja', '1')
       return NextResponse.redirect(url)
     }
 
-    // Le rôle doit correspondre à la zone demandée, sinon redirection vers son espace.
+    // Le rôle doit correspondre à la zone demandée, sinon redirection vers son
+    // espace — avec la zone refusée. Sans elle, un administrateur qui ouvrait
+    // l'espace client atterrissait en silence sur /admin et concluait que
+    // l'espace client ne fonctionnait pas.
     const allowed =
       (isAdminArea && role === 'ADMIN') ||
       (isPartnerArea && role === 'PARTNER') ||
@@ -93,6 +100,8 @@ export async function updateSession(request: NextRequest) {
     if (!allowed) {
       const url = request.nextUrl.clone()
       url.pathname = home
+      url.search = ''
+      url.searchParams.set('refus', isAdminArea ? 'admin' : isPartnerArea ? 'partner' : 'client')
       return NextResponse.redirect(url)
     }
   }

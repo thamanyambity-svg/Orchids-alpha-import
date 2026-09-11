@@ -5,7 +5,6 @@ import { Building2, CheckCircle2, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { createClient } from "@/lib/supabase/client"
 
 /**
  * Choix du partenaire à qui confier une demande.
@@ -49,12 +48,19 @@ export function AssignPartnerDialog({
   useEffect(() => {
     if (!open) return
     setChargement(true)
-    createClient()
-      .from("partner_profiles")
-      .select("id, contract_status, country_id, user:profiles!partner_profiles_user_id_fkey(full_name, company_name), country:countries(name, code)")
-      .then(({ data, error }) => {
-        if (error) toast.error(`Partenaires indisponibles : ${error.message}`)
-        const liste = (data ?? []).map((p: any) => ({ ...p, user: un(p.user), country: un(p.country) })) as PartenaireListe[]
+    // Par la route serveur : lue avec la session, la table revenait vide.
+    fetch("/api/admin/partners", { cache: "no-store" })
+      .then(async (res) => {
+        const corps = await res.json().catch(() => ({}))
+        if (!res.ok) throw new Error(corps.error || `Erreur ${res.status}`)
+        return corps.partners ?? []
+      })
+      .catch((e: Error) => {
+        toast.error(`Partenaires indisponibles : ${e.message}`)
+        return []
+      })
+      .then((data: any[]) => {
+        const liste = data.map((p: any) => ({ ...p, user: un(p.user), country: un(p.country) })) as PartenaireListe[]
         // Pays d'achat d'abord, puis contrats actifs.
         liste.sort((a, b) => {
           const pays = Number(b.country_id === countryId) - Number(a.country_id === countryId)

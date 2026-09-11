@@ -29,7 +29,8 @@ vi.mock("@/lib/supabase/admin", () => ({
   }),
 }))
 
-const { POST } = await import("./route")
+const { POST, GET } = await import("./route")
+const { ApiError } = await import("@/lib/auth-guard")
 
 const COUNTRY = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
 const NEW_USER = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
@@ -79,6 +80,42 @@ function setup({ partnerInsertFails = false, profilSansLigne = false } = {}) {
 
   return mock
 }
+
+describe("GET /api/admin/partners — liste pour l'assignation", () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it("est réservée à l'administration, sans rien lire", async () => {
+    service = createSupabaseMock(() => ({ data: [] }))
+    requireRole.mockRejectedValue(new ApiError(403, "Forbidden"))
+
+    expect((await GET()).status).toBe(403)
+    expect(service.ops.length).toBe(0)
+  })
+
+  it("lit avec la clé de service et renvoie les partenaires", async () => {
+    // Lue avec la session admin, la table revenait vide : la fenêtre
+    // d'assignation affichait « Aucun partenaire enregistré ».
+    service = createSupabaseMock((op) =>
+      op.table === "partner_profiles"
+        ? { data: [{ id: "fiche-1", contract_status: "ACTIVE", country_id: COUNTRY, user: { full_name: "Achignon Bilongo", company_name: "MAARMALA SARL" } }] }
+        : { data: null }
+    )
+    requireRole.mockResolvedValue({ user: { id: "admin-x" }, role: "ADMIN", supabase: { from: () => { throw new Error("session interdite") } } })
+
+    const res = await GET()
+
+    expect(res.status).toBe(200)
+    await expect(res.json()).resolves.toMatchObject({ partners: [{ id: "fiche-1", user: { company_name: "MAARMALA SARL" } }] })
+    expect(service.lastOp("partner_profiles")).toBeDefined()
+  })
+
+  it("renvoie une liste vide plutôt que null", async () => {
+    service = createSupabaseMock(() => ({ data: null }))
+    requireRole.mockResolvedValue({ user: { id: "admin-x" }, role: "ADMIN", supabase: {} })
+
+    await expect((await GET()).json()).resolves.toEqual({ partners: [] })
+  })
+})
 
 describe("POST /api/admin/partners", () => {
   beforeEach(() => vi.clearAllMocks())

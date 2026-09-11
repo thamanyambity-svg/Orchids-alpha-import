@@ -24,6 +24,29 @@ const createPartnerSchema = z.object({
 })
 
 /**
+ * Liste des partenaires, pour l'assignation d'une demande.
+ *
+ * La fenêtre d'assignation lisait `partner_profiles` avec la session de
+ * l'administrateur et recevait une liste vide : les règles d'accès de la base
+ * ne lui ouvraient pas la table. Lecture par la clé de service, après le
+ * contrôle ADMIN. Seuls les champs utiles au choix sortent — ni commission ni
+ * caution.
+ */
+export async function GET() {
+  try {
+    await requireRole(['ADMIN'])
+    const admin = createAdminClient()
+    const { data, error } = await admin
+      .from('partner_profiles')
+      .select('id, contract_status, country_id, user:profiles!partner_profiles_user_id_fkey(full_name, company_name), country:countries(name, code)')
+    if (error) throw error
+    return NextResponse.json({ partners: data ?? [] })
+  } catch (error) {
+    return handleApiError(error, { route: '/api/admin/partners', method: 'GET' })
+  }
+}
+
+/**
  * Création d'un partenaire opérationnel.
  *
  * Point unique de vérité : l'interface admin ne fait qu'appeler cette route, que

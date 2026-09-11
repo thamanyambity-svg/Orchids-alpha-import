@@ -24,14 +24,20 @@ export function NotificationCenter() {
     async function fetchNotifications() {
       try {
         const res = await fetch("/api/admin/notifications")
+        // Session perdue ou remplacée par un autre compte dans ce navigateur :
+        // inutile d'insister chaque minute, la garde d'espace prend le relais.
+        if (res.status === 401 || res.status === 403) {
+          clearInterval(interval)
+          return
+        }
         const json = await res.json()
         if (!json.error) setData(json)
       } catch {
         // Ignorer
       }
     }
-    fetchNotifications()
     const interval = setInterval(fetchNotifications, 60000) // Refresh every minute
+    fetchNotifications()
     return () => clearInterval(interval)
   }, [])
 
