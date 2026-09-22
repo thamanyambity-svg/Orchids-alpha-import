@@ -149,16 +149,23 @@ export async function POST(request: NextRequest, { params }: Contexte) {
         .eq('quote_id', id)
         .maybeSingle()
       purchaseOrder = bc ?? null
-      await notifier(admin, quote.request_id, [partenaire, ...admins], {
-        title: 'Pro forma acceptée',
-        message: `Le client a accepté la pro forma v${v} (${ref}, ${total})${bc ? ` — bon de commande ${bc.po_number}` : ''}.`,
+      await notifier(admin, quote.request_id, admins, {
+        title: 'Pro forma acceptée — facture finale à établir',
+        message: `Le client a accepté la pro forma v${v} (${ref}, ${total}). Établissez et émettez la facture finale détaillée dans la fiche de la demande.`,
         type: 'success',
       }, user.id)
+      await notifier(admin, quote.request_id, [partenaire], {
+        title: 'Pro forma acceptée',
+        message: `Le client a accepté votre pro forma v${v} (${ref}). Attendez le feu vert d'Alpha Import avant tout achat : il suit la validation de la facture finale et l'acompte.`,
+        type: 'success',
+      }, user.id)
+      // Aucun paiement n'est dû à ce stade : le dire, pour qu'un bon de commande
+      // généré ne passe pas pour une commande validée.
       await messageDossier(
         admin,
         quote.request_id,
         user.id,
-        `Pro forma v${v} acceptée.${bc ? ` Bon de commande ${bc.po_number} généré : à signer dans l'onglet « Bons de commande ».` : ''}`
+        `Pro forma v${v} acceptée. Alpha Import prépare la facture finale détaillée (droits et taxes RDC, transport jusqu'à destination, frais). Aucun paiement n'est demandé avant sa validation.`
       )
     } else {
       await notifier(admin, quote.request_id, [partenaire, ...admins], {

@@ -67,7 +67,7 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
   const getStatusConfig = () => {
     switch (po.status) {
       case 'GENERATED':
-        return { label: t("po.status.generated", "Généré"), color: "bg-muted text-muted-foreground", icon: FileText }
+        return { label: t("po.status.awaiting_final_invoice", "En attente de la facture finale"), color: "bg-muted text-muted-foreground", icon: FileText }
       case 'PENDING_SIGNATURE':
         return { label: t("po.status.pending_signature", "En attente signature"), color: "bg-warning/10 text-warning border-warning-border", icon: AlertCircle }
       case 'SIGNED':
@@ -126,25 +126,28 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
         <CardContent className="space-y-6">
           <Separator />
 
-          {/* Montants */}
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="p-4 bg-card border border-border rounded-xl">
-              <p className="text-sm text-muted-foreground">{t("po.grand_total", "Total Final")}</p>
-              <p className="text-2xl font-bold">${Number(po.grand_total_usd).toLocaleString()} {po.currency}</p>
+          {/* Montants — le 60 / 40 n'est jamais affiché ici : calculé sur la seule
+              pro forma, il laissait croire la commande validée et l'acompte fixé,
+              alors que la facture finale (droits et taxes RDC, transport,
+              commission) n'existait pas encore. */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-border bg-card p-4">
+              <p className="text-sm text-muted-foreground">{t("po.proforma_amount", "Montant de la pro forma acceptée")}</p>
+              <p className="text-2xl font-bold">{Number(po.grand_total_usd).toLocaleString("fr-FR", { minimumFractionDigits: 2 })} {po.currency}</p>
             </div>
-            <div className="p-4 bg-card border border-border rounded-xl">
-              <p className="text-sm text-muted-foreground">{t("po.deposit", "Acompte (60%)")}</p>
-              <p className="text-2xl font-bold text-primary">${Number(po.deposit_amount_usd).toLocaleString()} {po.currency}</p>
-            </div>
-            <div className="p-4 bg-card border border-border rounded-xl">
-              <p className="text-sm text-muted-foreground">{t("po.balance", "Solde (40%)")}</p>
-              <p className="text-2xl font-bold text-warning">${Number(po.balance_amount_usd).toLocaleString()} {po.currency}</p>
-            </div>
-            <div className="p-4 bg-card border border-border rounded-xl">
+            <div className="rounded-xl border border-border bg-card p-4">
               <p className="text-sm text-muted-foreground">{t("po.incoterm", "Incoterm")}</p>
-              <p className="text-xl font-bold">{quote?.incoterm || 'FOB'}</p>
+              <p className="text-xl font-bold">{quote?.incoterm || "—"}</p>
             </div>
           </div>
+          <p className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
+            {po.status === "GENERATED" || po.status === "PENDING_SIGNATURE"
+              ? t(
+                  "po.awaiting_final_invoice_note",
+                  "Ce bon de commande n'est pas encore signé et rien n'est à payer. Alpha Import établit la facture finale détaillée (droits et taxes RDC, transport jusqu'à destination, frais) : le montant définitif, l'acompte de 60 % et le solde de 40 % y seront fixés. Sa validation, dans l'onglet « Facture & paiement », signera ce bon de commande."
+                )
+              : t("po.amounts_on_final_invoice", "Montant définitif, acompte de 60 % et solde de 40 % : voir la facture finale, onglet « Facture & paiement ».")}
+          </p>
 
           {/* Timer 48h ou Statut */}
           {po.status === 'SIGNED' && timeRemaining && timeRemaining !== "EXPIRED" && (

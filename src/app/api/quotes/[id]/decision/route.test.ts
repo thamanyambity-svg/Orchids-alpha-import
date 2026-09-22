@@ -162,6 +162,20 @@ describe("POST /api/quotes/[id]/decision", () => {
       await expect(res.json()).resolves.toMatchObject({ purchase_order: { po_number: "PO-2026-0001" } })
     })
 
+    it("annonce qu'aucun paiement n'est dû avant la facture finale, et demande à l'admin de l'établir", async () => {
+      // Le bon de commande généré à l'acceptation passait pour une commande validée.
+      setup(client)
+      await decider("accept")
+
+      const message = db.lastOp("messages", "insert")?.payload.content
+      expect(message).toMatch(/facture finale/)
+      expect(message).toMatch(/Aucun paiement/)
+      expect(message).not.toMatch(/à signer/)
+      const notes = db.ops.filter((o) => o.table === "notifications").flatMap((o) => o.payload)
+      expect(notes.find((n: any) => n.user_id === ADMIN).title).toMatch(/facture finale à établir/)
+      expect(notes.find((n: any) => n.user_id === PARTENAIRE).message).toMatch(/Attendez le feu vert/)
+    })
+
     it("refuse d'accepter une pro forma expirée et la marque expirée", async () => {
       setup({ ...client, validite: "2026-09-21" })
       const res = await decider("accept")

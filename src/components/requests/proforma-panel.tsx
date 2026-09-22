@@ -158,9 +158,7 @@ export function ProformaPanel({ requestId, requestData, onChange }: { requestId:
       const messages = {
         approve: "Pro forma validée et transmise au client.",
         return: "Pro forma renvoyée au partenaire.",
-        accept: corps.purchase_order
-          ? `Pro forma acceptée. Bon de commande ${corps.purchase_order.po_number} généré.`
-          : "Pro forma acceptée.",
+        accept: "Pro forma acceptée. Alpha Import prépare votre facture finale détaillée : aucun paiement avant sa validation.",
         revise: "Demande de révision envoyée au partenaire.",
       }
       toast.success(messages[action])
@@ -322,7 +320,7 @@ export function ProformaPanel({ requestId, requestData, onChange }: { requestId:
                         {q.status === "SUBMITTED" && !q.expiree && (
                           <Button
                             onClick={() => {
-                              if (window.confirm(`Accepter la pro forma v${q.version} (${formatMontant(q.grand_total_usd, devise)}) ? Un bon de commande sera généré.`)) {
+                              if (window.confirm(`Accepter la pro forma v${q.version} (${formatMontant(q.grand_total_usd, devise)}) ? Alpha Import établira ensuite la facture finale détaillée ; rien n'est à payer avant sa validation.`)) {
                                 decider(q.id, "accept")
                               }
                             }}
