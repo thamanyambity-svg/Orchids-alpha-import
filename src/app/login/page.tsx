@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
@@ -16,7 +16,6 @@ const LABEL =
   "mb-2 block font-condensed text-[11px] font-bold uppercase tracking-[.32em] text-foreground/50"
 
 export default function LoginPage() {
-  const router = useRouter()
   const { t } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -45,6 +44,21 @@ export default function LoginPage() {
     }
     if (raison && messages[raison]) toast.error(messages[raison], { duration: 15000 })
   }, [t])
+
+  /**
+   * Ouvre l'espace par un vrai chargement de page, pas par le routeur.
+   *
+   * Sur les pages publiques, le lien « Espace client » est préchargé pendant
+   * que la personne n'est pas encore connectée : le serveur répond alors
+   * « redirection vers la connexion », et le routeur garde cette réponse.
+   * Après la connexion, `router.push` la réutilisait sans rien redemander au
+   * serveur : « Connexion réussie » s'affichait, mais l'espace ne s'ouvrait
+   * pas avant un rechargement manuel. Un chargement complet renvoie les
+   * cookies de session au serveur et vide ce cache.
+   */
+  function ouvrirEspace(chemin: string) {
+    window.location.assign(chemin)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -90,15 +104,8 @@ export default function LoginPage() {
         return
       }
 
-      if (profile?.role === "ADMIN") {
-        router.push("/admin")
-      } else if (profile?.role === "PARTNER") {
-        router.push("/partner")
-      } else {
-        router.push("/dashboard")
-      }
-
       toast.success(t("login.success", "Connexion réussie"))
+      ouvrirEspace(profile.role === "ADMIN" ? "/admin" : profile.role === "PARTNER" ? "/partner" : "/dashboard")
     } catch {
       toast.error(t("login.error.generic", "Une erreur est survenue"))
     } finally {
@@ -146,7 +153,7 @@ export default function LoginPage() {
 
     if (profile?.role === "ADMIN") {
       toast.success(t("login.admin.granted", "Accès Administrateur accordé"))
-      router.push("/admin")
+      ouvrirEspace("/admin")
     } else {
       toast.error(t("login.admin.no_rights", "Vous n'avez pas les droits d'administration."))
     }

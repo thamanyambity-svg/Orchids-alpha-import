@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { 
   LayoutDashboard, 
@@ -33,12 +33,12 @@ const navItems = [
 export function PartnerSidebar() {
   const { t } = useLanguage()
   const pathname = usePathname()
-  const router = useRouter()
 
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push("/login")
+    // Chargement complet : un /login préchargé pendant la session renverrait vers l'espace.
+    window.location.href = "/login"
   }
 
   return (

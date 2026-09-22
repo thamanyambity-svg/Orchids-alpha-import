@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import Image from "next/image"
 import {
   LayoutDashboard,
@@ -82,7 +82,6 @@ const navItems: NavItem[] = [
 export function AdminSidebar() {
   const { t } = useLanguage()
   const pathname = usePathname()
-  const router = useRouter()
   const [user, setUser] = useState<{ full_name: string | null; role: string | null } | null>(null)
 
   useEffect(() => {
@@ -111,7 +110,8 @@ export function AdminSidebar() {
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push("/login")
+    // Chargement complet : un /login préchargé pendant la session renverrait vers l'espace.
+    window.location.href = "/login"
   }
 
   return (
