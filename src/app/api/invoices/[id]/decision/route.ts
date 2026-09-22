@@ -84,6 +84,7 @@ export async function POST(request: NextRequest, { params }: Contexte) {
 
       await notifier(admin, facture.request_id, [client], {
         title: 'Votre facture finale est disponible',
+        onglet: 'invoice',
         message: `Facture ${facture.number} (${ref}) : ${formatMontant(facture.total_amount, devise)}, dont acompte de 60 % : ${formatMontant(facture.deposit_amount, devise)}. Vérifiez-la puis validez-la pour ouvrir le paiement.`,
         type: 'success',
       })

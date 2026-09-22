@@ -166,6 +166,7 @@ const ja: Record<string, string> = {
   'dashboard.notifications.empty_hint': 'ステータス変更、書類、支払い、インシデントに関するアラートを受け取ります。',
 
   'dashboard.sidebar.requests': 'リクエスト',
+  'dashboard.sidebar.quotes': '見積書',
   'dashboard.orders.title': '注文',
   'dashboard.orders.subtitle': '輸入注文のステータスを追跡',
   'dashboard.orders.search': '参照番号または製品で検索...',

@@ -43,7 +43,10 @@ export default function DashboardInvoicesPage() {
       const { data } = await supabase
         .from("invoices")
         .select(`*, import_requests!inner(reference, product_name)`)
-        .eq("buyer_id", user.id)
+        // Les règles d'accès limitent déjà la lecture aux factures du client.
+        // Le filtre sur `buyer_id` — colonne absente de la table — faisait
+        // échouer la requête : la liste restait toujours vide.
+        .neq("status", "DRAFT")
         .order("created_at", { ascending: false })
 
       if (data) setInvoices(data)
@@ -111,7 +114,7 @@ export default function DashboardInvoicesPage() {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
-                          {new Date(inv.issued_at).toLocaleDateString("fr-FR")}
+                          {inv.issued_at ? new Date(inv.issued_at).toLocaleDateString("fr-FR") : "—"}
                         </span>
                         <span className="flex items-center gap-1">
                           <Building2 className="w-3 h-3" />
@@ -122,8 +125,13 @@ export default function DashboardInvoicesPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <p className="text-lg font-bold">${inv.total_amount?.toLocaleString()}</p>
-                    {inv.file_url && (
-                      <a href={inv.file_url} target="_blank" rel="noopener noreferrer">
+                    {inv.type === "FINAL" && (
+                      <Link href={`/dashboard/requests/${inv.request_id}?onglet=invoice`}>
+                        <Button size="sm">{inv.validated_at ? "Paiement" : "Valider"}</Button>
+                      </Link>
+                    )}
+                    {(inv.type === "FINAL" || inv.file_url) && (
+                      <a href={inv.type === "FINAL" ? `/api/invoices/${inv.id}/pdf` : inv.file_url} target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="gap-2">
                           <Download className="w-4 h-4" />
                           PDF

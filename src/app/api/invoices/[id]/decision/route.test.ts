@@ -81,7 +81,9 @@ describe("POST /api/invoices/[id]/decision", () => {
       expect(res.status).toBe(200)
       expect(db.lastOp("invoices", "update")?.payload).toMatchObject({ status: "SENT", contest_reason: null })
       expect(db.lastOp("invoices", "update")?.filtres).toContainEqual({ operateur: "eq", colonne: "status", valeur: "DRAFT" })
-      expect(db.lastOp("notifications", "insert")?.payload).toEqual([expect.objectContaining({ user_id: ACHETEUR })])
+      expect(db.lastOp("notifications", "insert")?.payload).toEqual([
+        expect.objectContaining({ user_id: ACHETEUR, link: `/dashboard/requests/${DEMANDE}?onglet=invoice` }),
+      ])
     })
 
     it("n'annonce aucun montant dans la discussion, que le partenaire lit", async () => {

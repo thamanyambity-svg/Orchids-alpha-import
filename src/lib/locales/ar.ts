@@ -166,6 +166,7 @@ const ar: Record<string, string> = {
   'dashboard.notifications.empty_hint': 'ستتلقى تنبيهات عند تغيير الحالة أو المستندات أو المدفوعات أو الحوادث.',
 
   'dashboard.sidebar.requests': 'الطلبات',
+  'dashboard.sidebar.quotes': 'الفواتير المبدئية',
   'dashboard.orders.title': 'طلباتي',
   'dashboard.orders.subtitle': 'تتبع حالة طلبات الاستيراد الخاصة بك',
   'dashboard.orders.search': 'البحث بالمرجع أو المنتج...',

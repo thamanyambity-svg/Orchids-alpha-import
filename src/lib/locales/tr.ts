@@ -166,6 +166,7 @@ const tr: Record<string, string> = {
   'dashboard.notifications.empty_hint': 'Durum değişiklikleri, belgeler, ödemeler ve olaylar hakkında uyarılar alacaksınız.',
 
   'dashboard.sidebar.requests': 'Talepler',
+  'dashboard.sidebar.quotes': 'Proformalar',
   'dashboard.orders.title': 'Siparişlerim',
   'dashboard.orders.subtitle': 'İthalat siparişlerinizin durumunu takip edin',
   'dashboard.orders.search': 'Referans veya ürün ile ara...',

@@ -25,6 +25,7 @@ import {
   Bell,
   ClipboardList,
   FolderOpen,
+  FileSignature,
 } from "lucide-react"
 
 const navItems = [
@@ -32,6 +33,7 @@ const navItems = [
   // { href: "/dashboard/buyers", label: "Acheteurs", icon: Users }, // Removed for client view
   { href: "/dashboard/orders", labelKey: "dashboard.sidebar.orders", label: "Commandes", icon: ShoppingCart },
   { href: "/dashboard/requests", labelKey: "dashboard.sidebar.requests", label: "Demandes", icon: ClipboardList },
+  { href: "/dashboard/quotes", labelKey: "dashboard.sidebar.quotes", label: "Pro formas", icon: FileSignature },
   { href: "/dashboard/transactions", labelKey: "dashboard.sidebar.transactions", label: "Transactions", icon: CircleDollarSign },
   { href: "/dashboard/invoices", labelKey: "dashboard.sidebar.invoices", label: "Factures", icon: FileText },
   { href: "/dashboard/messages", labelKey: "dashboard.sidebar.messaging", label: "Messagerie", icon: MessageSquare },

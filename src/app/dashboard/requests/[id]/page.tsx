@@ -58,6 +58,13 @@ export default function RequestDetailsPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
+  // Lien direct vers un onglet (depuis « Pro formas », « Factures » ou une notification).
+  useEffect(() => {
+    const onglet = new URLSearchParams(window.location.search).get("onglet")
+    if (onglet && ["overview", "discussion", "quotes", "invoice", "purchase_orders", "documents", "tracking", "history"].includes(onglet)) {
+      setActiveTab(onglet)
+    }
+  }, [])
   // Incrémenté après une décision sur une pro forma : relit la demande et ses bons de commande.
   const [revision, setRevision] = useState(0)
   const [partenaire, setPartenaire] = useState<PartnerCard | null>(null)

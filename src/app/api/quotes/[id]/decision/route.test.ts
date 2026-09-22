@@ -110,7 +110,8 @@ describe("POST /api/quotes/[id]/decision", () => {
 
       const notes = db.ops.filter((o) => o.table === "notifications").flatMap((o) => o.payload)
       expect(notes.map((n: any) => n.user_id).sort()).toEqual([ACHETEUR, PARTENAIRE].sort())
-      expect(notes.find((n: any) => n.user_id === ACHETEUR).link).toBe(`/dashboard/requests/${DEMANDE}`)
+      expect(notes.find((n: any) => n.user_id === ACHETEUR).link).toBe(`/dashboard/requests/${DEMANDE}?onglet=quotes`)
+      expect(notes.find((n: any) => n.user_id === PARTENAIRE).link).toBe(`/partner/requests/${DEMANDE}`)
       expect(db.lastOp("messages", "insert")?.payload.content).toContain("22/10/2026")
     })
 

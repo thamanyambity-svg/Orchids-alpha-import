@@ -166,6 +166,7 @@ const zh: Record<string, string> = {
   'dashboard.notifications.empty_hint': '您将收到状态变更、文档、支付和事件的提醒。',
 
   'dashboard.sidebar.requests': '请求',
+  'dashboard.sidebar.quotes': '形式发票',
   'dashboard.orders.title': '我的订单',
   'dashboard.orders.subtitle': '跟踪您的进口订单状态',
   'dashboard.orders.search': '按参考号或产品搜索...',

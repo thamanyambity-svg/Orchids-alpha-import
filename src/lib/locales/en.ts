@@ -166,6 +166,7 @@ const en: Record<string, string> = {
   'dashboard.notifications.empty_hint': 'You will receive alerts for status changes, documents, payments, and incidents.',
 
   'dashboard.sidebar.requests': 'Requests',
+  'dashboard.sidebar.quotes': 'Pro formas',
   'dashboard.orders.title': 'My Orders',
   'dashboard.orders.subtitle': 'Track the status of your import orders',
   'dashboard.orders.search': 'Search by reference or product...',

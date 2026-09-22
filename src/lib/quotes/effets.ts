@@ -26,7 +26,7 @@ export async function notifier(
   admin: any,
   demandeId: string,
   destinataires: Destinataire[],
-  contenu: { title: string; message: string; type?: 'info' | 'success' | 'warning' },
+  contenu: { title: string; message: string; type?: 'info' | 'success' | 'warning'; onglet?: string },
   exclure?: string
 ): Promise<void> {
   const vus = new Set<string>()
@@ -39,7 +39,8 @@ export async function notifier(
       type: contenu.type ?? 'info',
       title: contenu.title,
       message: contenu.message.slice(0, 500),
-      link: lienDossier(d.espace, demandeId),
+      // L'onglet n'existe que dans l'espace client ; ailleurs, le lien ouvre la fiche.
+      link: lienDossier(d.espace, demandeId) + (contenu.onglet && d.espace === 'BUYER' ? `?onglet=${contenu.onglet}` : ''),
     }))
   if (lignes.length === 0) return
   await admin.from('notifications').insert(lignes).then(() => undefined, () => undefined)

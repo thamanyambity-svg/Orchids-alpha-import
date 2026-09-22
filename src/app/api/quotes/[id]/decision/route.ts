@@ -122,6 +122,7 @@ export async function POST(request: NextRequest, { params }: Contexte) {
         title: 'Votre pro forma est disponible',
         message: `Pro forma v${v} pour la demande ${ref} : ${total}, valable jusqu'au ${dateFr(maj.valid_until)}. Acceptez-la ou demandez une révision.`,
         type: 'success',
+        onglet: 'quotes',
       })
       await notifier(admin, quote.request_id, [partenaire], {
         title: 'Pro forma validée',
