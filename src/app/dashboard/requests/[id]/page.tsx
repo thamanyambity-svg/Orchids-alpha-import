@@ -41,6 +41,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PurchaseOrderCard } from "@/components/dashboard/purchase-order-card"
 import { ProformaPanel } from "@/components/requests/proforma-panel"
+import { FinalInvoicePanel } from "@/components/requests/final-invoice-panel"
 import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 import { QUOTE_STATUS } from "@/lib/design/status"
 import type { PartnerCard } from "@/lib/partners/public-card"
@@ -188,6 +189,7 @@ export default function RequestDetailsPage() {
           <TabsTrigger value="overview">{t("dashboard.request.tab_overview", "Vue d'ensemble")}</TabsTrigger>
           <TabsTrigger value="discussion">{t("dashboard.request.tab_discussion", "Discussion")}</TabsTrigger>
           <TabsTrigger value="quotes">{t("dashboard.request.tab_quotes", "Devis / Proforma")} {quotes.length > 0 && <Badge variant="secondary" className="ms-1">{quotes.length}</Badge>}</TabsTrigger>
+          <TabsTrigger value="invoice">{t("dashboard.request.tab_invoice", "Facture & paiement")}</TabsTrigger>
           <TabsTrigger value="purchase_orders">{t("dashboard.request.tab_po", "Bons de Commande")} {purchaseOrders.length > 0 && <Badge variant="secondary" className="ms-1">{purchaseOrders.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="documents">{t("dashboard.request.tab_docs", "Documents")} {documents.length > 0 && <Badge variant="secondary" className="ms-1">{documents.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="tracking">{t("dashboard.request.tab_tracking", "Tracking")}</TabsTrigger>
@@ -432,6 +434,10 @@ export default function RequestDetailsPage() {
             requestData={request}
             onChange={() => setRevision((r) => r + 1)}
           />
+        </TabsContent>
+
+        <TabsContent value="invoice" className="space-y-6 animate-in fade-in">
+          <FinalInvoicePanel requestId={id as string} onChange={() => setRevision((r) => r + 1)} />
         </TabsContent>
 
         <TabsContent value="purchase_orders" className="space-y-6 animate-in fade-in">

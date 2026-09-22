@@ -27,7 +27,6 @@ interface PurchaseOrderCardProps {
 
 export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onViewQuote, readOnly = false }: PurchaseOrderCardProps) {
   const { t } = useLanguage()
-  const [isSigning, setIsSigning] = useState(false)
   const [showCGV, setShowCGV] = useState(false)
   const [cgvAccepted, setCgvAccepted] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>("")
@@ -88,32 +87,6 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
     ['GENERATED', 'PENDING_SIGNATURE', 'SIGNED'].includes(po.status) &&
     timeRemaining !== "EXPIRED" && timeRemaining !== ""
 
-  const handleSignCGV = async () => {
-    if (!cgvAccepted) {
-      toast.error(t("po.accept_cgv_first", "Vous devez accepter les CGV avant de signer"))
-      return
-    }
-    setIsSigning(true)
-    try {
-      // Passe par l'API : IP réelle, journal d'audit et contrôle d'état côté serveur.
-      const res = await fetch(`/api/purchase-orders/${po.id}?action=sign`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cgv_accepted: true, cgv_version: '1.0' }),
-      })
-
-      const payload = await res.json()
-      if (!res.ok) throw new Error(payload?.error || 'Signature refusée')
-
-      toast.success(t("po.signed_success", "Bon de commande signé ! Délai rétractation 48h démarré."))
-      setCgvAccepted(true)
-      onSigned?.()
-    } catch (error: any) {
-      toast.error(error.message)
-    } finally {
-      setIsSigning(false)
-    }
-  }
 
   const handleCancel = async () => {
     if (!confirm(t("po.confirm_cancel", "Confirmer l'annulation dans les 48h ? Cette action est irréversible."))) return
@@ -227,23 +200,15 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
             {!cgvAccepted ? (
               <div className="p-4 bg-warning/5 border border-warning/20 rounded-xl space-y-3">
                 <p className="text-sm text-warning">
-                  {t("po.cgv_must_accept", "Vous devez accepter les CGV AlphaIX pour signer le bon de commande.")}
+                  {t(
+                    "po.sign_via_invoice",
+                    "La signature du bon de commande et l'acceptation des CGV se font en validant la facture finale détaillée, dans l'onglet « Facture & paiement », dès qu'Alpha Import l'a émise."
+                  )}
                 </p>
                 <Button variant="outline" onClick={() => setShowCGV(true)} className="w-full gap-2">
                   <FileText className="w-4 h-4" />
                   {t("po.read_cgv", "Lire les CGV complètes")}
                 </Button>
-                <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg border border-warning/20 bg-warning/5">
-                  <input
-                    type="checkbox"
-                    onChange={(e) => setCgvAccepted(e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary border-warning rounded"
-                  />
-                  <div className="text-sm">
-                    <span className="font-medium text-warning">{t("po.i_accept_cgv", "J'accepte les CGV AlphaIX")}</span>
-                    <p className="text-warning mt-1">{t("po.cgv_implication", "Cela inclut : paiement sécurisé séquestre, 60/40, annulation 48h, inspection, médiation litiges.")}</p>
-                  </div>
-                </label>
               </div>
             ) : (
               <div className="p-4 bg-success/5 border border-success/20 rounded-xl flex items-center justify-between">
@@ -251,15 +216,9 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
                   <CheckCircle2 className="w-6 h-6 text-success" />
                   <div>
                     <p className="font-semibold text-success">{t("po.cgv_accepted", "CGV Acceptées")}</p>
-                    <p className="text-sm text-success">{t("po.ready_to_sign", "Vous pouvez maintenant signer le bon de commande")}</p>
+                    <p className="text-sm text-success">{t("po.signed_with_invoice", "Bon de commande signé avec la facture finale")}</p>
                   </div>
                 </div>
-                {!readOnly && po.status !== 'CONFIRMED' && po.status !== 'CANCELLED' && (
-                  <Button onClick={handleSignCGV} disabled={isSigning} className="gap-2" size="lg">
-                    {isSigning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Signature className="w-4 h-4" />}
-                    {t("po.sign_po", "Signer le Bon de Commande")}
-                  </Button>
-                )}
               </div>
             )}
           </div>
@@ -271,11 +230,13 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
                 <Eye className="w-4 h-4 me-1" /> {t("po.view_quote", "Voir Devis")}
               </Button>
             )}
-            <Button variant="outline" asChild>
-              <a href={po.po_pdf_url} target="_blank" rel="noopener noreferrer">
-                <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF PO")}
-              </a>
-            </Button>
+            {po.po_pdf_url && (
+              <Button variant="outline" asChild>
+                <a href={po.po_pdf_url} target="_blank" rel="noopener noreferrer">
+                  <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF PO")}
+                </a>
+              </Button>
+            )}
             {po.signed_po_pdf_url && (
               <Button variant="outline" asChild>
                 <a href={po.signed_po_pdf_url} target="_blank" rel="noopener noreferrer">

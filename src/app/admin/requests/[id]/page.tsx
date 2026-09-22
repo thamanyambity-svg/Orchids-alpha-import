@@ -7,6 +7,7 @@ import { TrackingEditor } from "@/components/admin/tracking-editor"
 import { AssignPartnerDialog } from "@/components/admin/assign-partner-dialog"
 import { RequestThread } from "@/components/requests/request-thread"
 import { ProformaPanel } from "@/components/requests/proforma-panel"
+import { FinalInvoicePanel } from "@/components/requests/final-invoice-panel"
 import {
   ArrowLeft,
   Package,
@@ -358,6 +359,9 @@ export default function AdminRequestDetailPage() {
 
           {/* Pro forma : le partenaire prépare, l'administration valide avant transmission */}
           <ProformaPanel requestId={params.id as string} requestData={request} onChange={relireDemande} />
+
+          {/* Facture finale détaillée, émise après acceptation de la pro forma */}
+          <FinalInvoicePanel requestId={params.id as string} onChange={relireDemande} />
 
           {/* Discussion : client, partenaire affecté et administration */}
           <RequestThread requestId={params.id as string} />
