@@ -40,7 +40,7 @@ import { TrackingTimeline } from "@/components/dashboard/tracking-timeline"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PurchaseOrderCard } from "@/components/dashboard/purchase-order-card"
-import { QuoteSubmissionForm } from "@/components/dashboard/quote-submission-form"
+import { ProformaPanel } from "@/components/requests/proforma-panel"
 import { REQUEST_STATUS, statusBadge, statusLabel } from "@/lib/design/status"
 import { QUOTE_STATUS } from "@/lib/design/status"
 import type { PartnerCard } from "@/lib/partners/public-card"
@@ -57,7 +57,8 @@ export default function RequestDetailsPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
-  const [showQuoteForm, setShowQuoteForm] = useState(false)
+  // Incrémenté après une décision sur une pro forma : relit la demande et ses bons de commande.
+  const [revision, setRevision] = useState(0)
   const [partenaire, setPartenaire] = useState<PartnerCard | null>(null)
 
   const documentTypeLabels: Record<string, string> = {
@@ -103,6 +104,8 @@ export default function RequestDetailsPage() {
           .from("quotes")
           .select("*")
           .eq("request_id", id)
+          // Une pro forma n'est visible du client qu'une fois validée par Alpha Import.
+          .not("submitted_at", "is", null)
           .order("created_at", { ascending: false }),
         supabase
           .from("purchase_orders")
@@ -132,21 +135,7 @@ export default function RequestDetailsPage() {
     }
 
     if (id) fetchData()
-  }, [id])
-
-  const handleQuoteSubmit = async (quoteData: any) => {
-    const supabase = createClient()
-    const { error } = await supabase.from("quotes").insert({
-      ...quoteData,
-      request_id: id,
-      partner_id: quoteData.partner_id,
-      status: "SUBMITTED",
-      submitted_at: new Date().toISOString(),
-    })
-    if (error) throw error
-    setShowQuoteForm(false)
-    router.refresh()
-  }
+  }, [id, revision])
 
   const handlePOCancel = async (poId: string, reason: string) => {
     const supabase = createClient()
@@ -203,9 +192,6 @@ export default function RequestDetailsPage() {
           <TabsTrigger value="documents">{t("dashboard.request.tab_docs", "Documents")} {documents.length > 0 && <Badge variant="secondary" className="ms-1">{documents.length}</Badge>}</TabsTrigger>
           <TabsTrigger value="tracking">{t("dashboard.request.tab_tracking", "Tracking")}</TabsTrigger>
           <TabsTrigger value="history">{t("dashboard.request.tab_history", "Historique")}</TabsTrigger>
-          {(request.role === "PARTNER" || request.role === "ADMIN") && (
-            <TabsTrigger value="submit_quote">{t("dashboard.request.tab_submit_quote", "Soumettre Devis")}</TabsTrigger>
-          )}
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 animate-in fade-in">
@@ -441,93 +427,11 @@ export default function RequestDetailsPage() {
         </TabsContent>
 
         <TabsContent value="quotes" className="space-y-6 animate-in fade-in">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">{t("dashboard.request.tab_quotes", "Devis / Proforma")}</h2>
-            {request.assigned_partner_id && (
-              <Button onClick={() => setShowQuoteForm(true)}>
-                <PenSquare className="w-4 h-4 me-2" />
-                {t("dashboard.request.new_quote", "Nouveau Devis")}
-              </Button>
-            )}
-          </div>
-          {quotes.length === 0 ? (
-            <div className="text-center py-12 border-2 border-dashed border-border rounded-2xl">
-              <FileTextIcon className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-              <p className="text-sm text-muted-foreground">Aucun devis pour cette demande.</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {quotes.map((quote) => (
-                <Card key={quote.id} className="border-border">
-                  <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <FileTextIcon className="w-5 h-5 text-primary" />
-                        <div>
-                          <p className="font-bold">Devis v{quote.version} - ${quote.grand_total_usd?.toLocaleString()} {quote.currency}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Incoterm: {quote.incoterm} • Valide jusqu'au: {quote.valid_until ? new Date(quote.valid_until).toLocaleDateString() : "N/A"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <Badge variant="secondary" className={`ms-2 ${statusBadge(QUOTE_STATUS, quote.status)}`}>
-                      {statusLabel(QUOTE_STATUS, quote.status, t)}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="space-y-4 pb-4">
-                    <div className="grid md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <label className="text-muted-foreground">Prix Unitaire</label>
-                        <p className="font-semibold">${Number(quote.unit_price_usd).toLocaleString()} {quote.currency}</p>
-                      </div>
-                      <div>
-                        <label className="text-muted-foreground">Quantité</label>
-                        <p className="font-semibold">{quote.quantity}</p>
-                      </div>
-                      <div>
-                        <label className="text-muted-foreground">Sous-total</label>
-                        <p className="font-semibold">${Number(quote.subtotal_usd).toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <label className="text-muted-foreground">Total Frais</label>
-                        <p className="font-semibold">${Number(quote.total_fees_usd).toLocaleString()}</p>
-                      </div>
-                    </div>
-                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                      <div className="flex justify-between items-center">
-                        <span className="font-semibold">TOTAL FINAL</span>
-                        <span className="text-2xl font-bold text-primary">${Number(quote.grand_total_usd).toLocaleString()} {quote.currency}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline">{quote.incoterm}</Badge>
-                      <Badge variant="outline">Port: {quote.port_loading || "-"}</Badge>
-                      <Badge variant="outline">Arrivée: {quote.port_discharge || "-"}</Badge>
-                      <Badge variant="outline">{quote.estimated_transit_days}j transit</Badge>
-                    </div>
-                    {quote.proforma_pdf_url && (
-                      <Button variant="outline" asChild className="mt-2">
-                        <a href={quote.proforma_pdf_url} target="_blank" rel="noopener noreferrer">
-                          <Download className="w-4 h-4 me-1" />
-                          Proforma PDF
-                        </a>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {showQuoteForm && (
-            <QuoteSubmissionForm
-              requestId={id as string}
-              requestData={request}
-              onSubmit={handleQuoteSubmit}
-              onCancel={() => setShowQuoteForm(false)}
-            />
-          )}
+          <ProformaPanel
+            requestId={id as string}
+            requestData={request}
+            onChange={() => setRevision((r) => r + 1)}
+          />
         </TabsContent>
 
         <TabsContent value="purchase_orders" className="space-y-6 animate-in fade-in">
@@ -627,16 +531,6 @@ export default function RequestDetailsPage() {
           </div>
         </TabsContent>
 
-        {(request.role === "PARTNER" || request.role === "ADMIN") && (
-          <TabsContent value="submit_quote" className="animate-in fade-in">
-            <QuoteSubmissionForm
-              requestId={id as string}
-              requestData={request}
-              onSubmit={handleQuoteSubmit}
-              onCancel={() => setActiveTab("quotes")}
-            />
-          </TabsContent>
-        )}
       </Tabs>
     </div>
   )

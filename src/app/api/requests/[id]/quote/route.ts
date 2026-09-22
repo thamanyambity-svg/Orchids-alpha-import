@@ -1,211 +1,193 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { requireUser, handleApiError } from '@/lib/auth-guard'
+import { requireUser, handleApiError, ApiError } from '@/lib/auth-guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
+import { participantsDemande, estParticipant } from '@/lib/requests/participants'
+import { totaux, visiblePourAcheteur, estExpiree } from '@/lib/quotes/workflow'
+import { idsAdmins, notifier, messageDossier } from '@/lib/quotes/effets'
+
+/**
+ * Pro formas d'une demande.
+ *
+ * POST — le partenaire affecté (ou l'administration) prépare une pro forma.
+ * Elle naît en brouillon (DRAFT), invisible du client, et attend la
+ * validation d'Alpha Import (/api/quotes/[id]/decision).
+ *
+ * Auparavant la route écrivait les totaux, que la base calcule elle-même
+ * (colonnes générées) : Postgres refusait l'insertion et aucune pro forma ne
+ * pouvait être créée. Et un devis partait directement au client, sans
+ * contrôle.
+ *
+ * GET — la liste, filtrée selon qui la demande : le client ne voit que les
+ * pro formas transmises.
+ *
+ * Lectures et écritures par la clé de service, après vérification de la
+ * participation au dossier.
+ */
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const montant = z.number().min(0).max(1e9)
+const texte = (max: number) => z.string().trim().max(max).nullable().optional()
 
-const createQuoteSchema = z.object({
-  request_id: z.string().uuid(),
-  unit_price_usd: z.number().positive(),
-  quantity: z.number().int().positive(),
+const schemaProForma = z.object({
+  unit_price_usd: z.number().positive().max(1e9),
+  quantity: z.number().int().positive().max(1e6),
   currency: z.string().length(3).default('USD'),
-  freight_cost_usd: z.number().min(0).default(0),
-  insurance_cost_usd: z.number().min(0).default(0),
-  customs_duty_estimate_usd: z.number().min(0).default(0),
-  inspection_cost_usd: z.number().min(0).default(0),
-  handling_fees_usd: z.number().min(0).default(0),
-  other_fees_usd: z.number().min(0).default(0),
-  incoterm: z.enum(['EXW','FCA','FAS','FOB','CFR','CIF','CPT','CIP','DAP','DPU','DDP']).default('FOB'),
-  port_loading: z.string().nullable().optional(),
-  port_discharge: z.string().nullable().optional(),
-  estimated_transit_days: z.number().int().positive().nullable().optional(),
-  estimated_departure_date: z.string().nullable().optional(),
-  estimated_arrival_date: z.string().nullable().optional(),
-  payment_terms: z.string().default('60% deposit, 40% against documents'),
+  freight_cost_usd: montant.default(0),
+  insurance_cost_usd: montant.default(0),
+  customs_duty_estimate_usd: montant.default(0),
+  inspection_cost_usd: montant.default(0),
+  handling_fees_usd: montant.default(0),
+  other_fees_usd: montant.default(0),
+  incoterm: z.enum(['EXW', 'FCA', 'FAS', 'FOB', 'CFR', 'CIF', 'CPT', 'CIP', 'DAP', 'DPU', 'DDP']).default('FOB'),
+  port_loading: texte(120),
+  port_discharge: texte(120),
+  estimated_transit_days: z.number().int().positive().max(365).nullable().optional(),
+  estimated_departure_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  estimated_arrival_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  payment_terms: z.string().trim().min(1).max(500).default("60 % d'acompte à la commande, 40 % contre documents d'expédition"),
   validity_days: z.number().int().min(1).max(90).default(30),
   specifications_json: z.record(z.string(), z.unknown()).nullable().optional(),
-  notes: z.string().nullable().optional(),
-  proforma_pdf_url: z.string().url().nullable().optional(),
+  notes: texte(2000),
 })
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params
-    // Le rôle vient du garde partagé. Il était relu ici par une requête sur
-    // `profiles` — une quatrième implémentation du même contrôle, la seule non
-    // couverte par les tests du garde, et celle qui divergerait en silence le
-    // jour où la définition d'un rôle change.
-    const { supabase, user, role } = await requireUser()
+type Contexte = { params: Promise<{ id: string }> }
 
-    // `import_requests.id` est de type uuid : une valeur libre atteignait
-    // Postgres, qui levait 22P02, et la route rendait ce défaut de saisie en
-    // « demande introuvable ».
-    if (!UUID.test(id)) {
-      return NextResponse.json({ error: 'Invalid request id' }, { status: 400 })
+async function contexte(params: Contexte['params']) {
+  const { user, role } = await requireUser()
+  const { id } = await params
+  if (!UUID.test(id)) throw new ApiError(400, 'Demande invalide')
+  const admin = createAdminClient()
+  const participants = await participantsDemande(admin, id)
+  // 404 et non 403 : ne pas confirmer l'existence d'un dossier étranger.
+  if (!participants || (role !== 'ADMIN' && !estParticipant(participants, user.id))) {
+    throw new ApiError(404, 'Demande introuvable')
+  }
+  return { id, user, role, admin, participants }
+}
+
+export async function POST(request: NextRequest, { params }: Contexte) {
+  try {
+    const { id, user, role, admin, participants } = await contexte(params)
+
+    const estPartenaireAffecte = participants.partnerUserId === user.id
+    if (role !== 'ADMIN' && !estPartenaireAffecte) {
+      // Le client consulte et décide, il ne chiffre pas.
+      throw new ApiError(403, 'Seul le partenaire affecté ou Alpha Import prépare une pro forma')
+    }
+    if (!participants.partnerProfileId) {
+      throw new ApiError(400, "Aucun partenaire n'est assigné à cette demande")
     }
 
     const rl = checkRateLimit(`quote:${user.id}`, { maxRequests: 20, windowMs: 60000 })
-    if (!rl.allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    if (!rl.allowed) throw new ApiError(429, 'Trop de tentatives, patientez une minute')
 
-    const body = await request.json()
-    const parsed = createQuoteSchema.safeParse(body)
+    const parsed = schemaProForma.safeParse(await request.json().catch(() => null))
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
+      return NextResponse.json({ error: 'Pro forma incomplète ou invalide', details: parsed.error.flatten() }, { status: 400 })
     }
 
-    // Verify request exists and user has permission (partner assigned or admin)
-    const { data: importRequest, error: reqError } = await supabase
-      .from('import_requests')
-      .select('id, status, assigned_partner_id, buyer_id, category')
-      .eq('id', id)
-      .single()
-
-    if (reqError || !importRequest) {
-      return NextResponse.json({ error: 'Request not found' }, { status: 404 })
-    }
-
-    // Émettre un devis est réservé à l'administration et au partenaire
-    // effectivement assigné à cette demande. L'acheteur consulte, il ne chiffre
-    // pas : il n'avait rien à faire dans cette autorisation, et la variable qui
-    // le calculait n'était utilisée nulle part.
-    const isAdmin = role === 'ADMIN'
-    const isAssignedPartner =
-      !!importRequest.assigned_partner_id &&
-      !!(
-        await supabase
-          .from('partner_profiles')
-          .select('id')
-          .eq('id', importRequest.assigned_partner_id)
-          .eq('user_id', user.id)
-          .single()
-      ).data
-
-    if (!isAdmin && !isAssignedPartner) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
-    // Get latest version
-    const { data: latestQuote } = await supabase
+    const { data: existantes, error: erreurLecture } = await admin
       .from('quotes')
-      .select('version')
+      .select('id, version, status')
       .eq('request_id', id)
-      .order('version', { ascending: false })
-      .limit(1)
-      .single()
+    if (erreurLecture) throw erreurLecture
 
-    const version = (latestQuote?.version || 0) + 1
+    const liste = existantes ?? []
+    if (liste.some((q: any) => q.status === 'ACCEPTED')) {
+      throw new ApiError(409, 'Une pro forma a déjà été acceptée pour cette demande')
+    }
+    if (liste.some((q: any) => q.status === 'DRAFT')) {
+      throw new ApiError(409, "Une pro forma attend déjà la validation d'Alpha Import")
+    }
+    const version = liste.reduce((max: number, q: any) => Math.max(max, Number(q.version) || 0), 0) + 1
 
-    // Calculate totals
-    const subtotal = parsed.data.unit_price_usd * parsed.data.quantity
-    const totalFees = parsed.data.freight_cost_usd + parsed.data.insurance_cost_usd + 
-      parsed.data.customs_duty_estimate_usd + parsed.data.inspection_cost_usd + 
-      parsed.data.handling_fees_usd + parsed.data.other_fees_usd
-    const grandTotal = subtotal + totalFees
-
-    const { data: quote, error } = await supabase
+    // Les totaux ne sont PAS envoyés : la base les calcule.
+    const { data: creee, error } = await admin
       .from('quotes')
       .insert({
+        ...parsed.data,
         request_id: id,
-        partner_id: importRequest.assigned_partner_id,
+        partner_id: participants.partnerProfileId,
         version,
-        status: 'SUBMITTED',
-        unit_price_usd: parsed.data.unit_price_usd,
-        quantity: parsed.data.quantity,
-        currency: parsed.data.currency,
-        subtotal_usd: subtotal,
-        freight_cost_usd: parsed.data.freight_cost_usd,
-        insurance_cost_usd: parsed.data.insurance_cost_usd,
-        customs_duty_estimate_usd: parsed.data.customs_duty_estimate_usd,
-        inspection_cost_usd: parsed.data.inspection_cost_usd,
-        handling_fees_usd: parsed.data.handling_fees_usd,
-        other_fees_usd: parsed.data.other_fees_usd,
-        total_fees_usd: totalFees,
-        grand_total_usd: grandTotal,
-        incoterm: parsed.data.incoterm,
-        port_loading: parsed.data.port_loading,
-        port_discharge: parsed.data.port_discharge,
-        estimated_transit_days: parsed.data.estimated_transit_days,
-        estimated_departure_date: parsed.data.estimated_departure_date,
-        estimated_arrival_date: parsed.data.estimated_arrival_date,
-        payment_terms: parsed.data.payment_terms,
-        validity_days: parsed.data.validity_days,
-        specifications_json: parsed.data.specifications_json,
-        notes: parsed.data.notes,
-        proforma_pdf_url: parsed.data.proforma_pdf_url,
-        submitted_at: new Date().toISOString(),
+        status: 'DRAFT',
+        submitted_at: null,
+        valid_until: null,
       })
       .select()
       .single()
-
     if (error) throw error
 
-    // Update request status
-    await supabase
-      .from('import_requests')
-      .update({ status: 'ANALYSIS', updated_at: new Date().toISOString() })
-      .eq('id', id)
+    let quote = creee
+    // Base sans colonnes générées : on pose les totaux nous-mêmes.
+    if (quote && quote.grand_total_usd == null) {
+      const { data: complete } = await admin.from('quotes').update(totaux(quote)).eq('id', quote.id).select().maybeSingle()
+      if (complete) quote = complete
+    }
 
-    // Audit log
+    const { data: demande } = await admin.from('import_requests').select('status, reference').eq('id', id).maybeSingle()
+    if (demande && ['PENDING', 'VALIDATED'].includes(demande.status)) {
+      await admin.from('import_requests').update({ status: 'ANALYSIS', updated_at: new Date().toISOString() }).eq('id', id)
+    }
+
     await logAudit({
       actorId: user.id,
       action: 'CREATE_QUOTE',
       targetType: 'quotes',
       targetId: quote.id,
-      details: { requestId: id, version, grandTotal, incoterm: parsed.data.incoterm }
+      details: { requestId: id, version, status: 'DRAFT', grandTotal: quote.grand_total_usd },
     })
 
-    // Notify n8n
-    await sendToN8N('quote_submitted', {
-      quoteId: quote.id,
-      requestId: id,
-      version,
-      grandTotal,
-      incoterm: parsed.data.incoterm,
-      buyerId: importRequest.buyer_id,
-    }).catch(console.error)
+    const admins = await idsAdmins(admin)
+    await notifier(
+      admin,
+      id,
+      admins.map((a) => ({ id: a, espace: 'ADMIN' as const })),
+      {
+        title: 'Pro forma à valider',
+        message: `Pro forma v${version} de la demande ${demande?.reference ?? ''} préparée par le partenaire : à contrôler avant transmission au client.`,
+        type: 'warning',
+      },
+      user.id
+    )
+    await messageDossier(
+      admin,
+      id,
+      user.id,
+      `Pro forma v${version} préparée — en cours de vérification par Alpha Import avant transmission au client.`
+    )
 
-    // Notify buyer
-    const { data: buyer } = await supabase
-      .from('profiles')
-      .select('email, full_name')
-      .eq('id', importRequest.buyer_id)
-      .single()
+    await sendToN8N('quote_drafted', { quoteId: quote.id, requestId: id, version }).catch(() => undefined)
 
-    if (buyer) {
-      // Notification handled by trigger or separate function
-    }
-
-    return NextResponse.json(quote)
+    return NextResponse.json({ quote }, { status: 201 })
   } catch (error) {
-    return handleApiError(error)
+    return handleApiError(error, { route: '/api/requests/[id]/quote', method: 'POST' })
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: NextRequest, { params }: Contexte) {
   try {
-    const { id } = await params
-    const { supabase } = await requireUser()
+    const { id, user, role, admin, participants } = await contexte(params)
 
-    if (!UUID.test(id)) {
-      return NextResponse.json({ error: 'Invalid request id' }, { status: 400 })
-    }
-
-    const { data: quotes, error } = await supabase
+    const { data, error } = await admin
       .from('quotes')
-      .select(`
-        *,
-        partner:partner_profiles(id, user_id, profile:profiles!user_id(full_name, company_name, email, phone))
-      `)
+      .select('*')
       .eq('request_id', id)
       .order('version', { ascending: false })
-
     if (error) throw error
 
-    return NextResponse.json(quotes)
+    const vue: 'ADMIN' | 'PARTNER' | 'BUYER' =
+      role === 'ADMIN' ? 'ADMIN' : participants.partnerUserId === user.id ? 'PARTNER' : 'BUYER'
+
+    const quotes = (data ?? [])
+      .filter((q: any) => vue !== 'BUYER' || visiblePourAcheteur(q))
+      .map((q: any) => ({ ...q, expiree: q.status === 'SUBMITTED' && estExpiree(q) }))
+
+    return NextResponse.json({ vue, quotes })
   } catch (error) {
-    return handleApiError(error)
+    return handleApiError(error, { route: '/api/requests/[id]/quote', method: 'GET' })
   }
 }

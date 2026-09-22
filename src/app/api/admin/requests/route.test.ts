@@ -20,7 +20,6 @@ vi.mock("@/lib/auth-guard", async (importOriginal) => {
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => service.client }))
 vi.mock("@/lib/webhooks", () => ({ sendToN8N: (...a: unknown[]) => sendToN8N(...a) }))
 vi.mock("@/lib/audit", () => ({ logAudit: vi.fn(() => Promise.resolve()) }))
-vi.mock("@/lib/payments/auto-debit.service", () => ({ processAutomaticDebit: vi.fn() }))
 vi.mock("@/lib/admin-audit", () => ({
   logAdminAccess: vi.fn(() => Promise.resolve()),
   getAdminAuditMetadata: () => ({ ip: "127.0.0.1", userAgent: "test" }),
@@ -126,5 +125,23 @@ describe("POST /api/admin/requests — ASSIGN_PARTNER", () => {
       link: `/partner/requests/${DEMANDE}`,
     })
     expect(sendToN8N).toHaveBeenCalledWith("partner_assigned", expect.anything())
+  })
+})
+
+describe("POST /api/admin/requests — VALIDATE désactivée", () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it("ne crée aucune commande et ne déclenche aucun prélèvement", async () => {
+    // L'ancienne action créait une commande sur le budget déclaré et pouvait
+    // prélever 60 % par SEPA, avant toute pro forma ni facture finale.
+    setup()
+    const session = createSupabaseMock(() => ({ data: { id: DEMANDE, budget_max: 50000 } }))
+    requireRole.mockResolvedValue({ user: { id: "admin-1" }, role: "ADMIN", supabase: session.client })
+
+    const res = await POST(makeRequest({ action: "VALIDATE", requestId: DEMANDE }))
+
+    expect(res.status).toBe(409)
+    expect(session.ops).toHaveLength(0)
+    expect(service.ops).toHaveLength(0)
   })
 })

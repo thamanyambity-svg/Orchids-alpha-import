@@ -68,11 +68,10 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
     estimated_transit_days: "",
     estimated_departure_date: "",
     estimated_arrival_date: "",
-    payment_terms: "60% deposit, 40% against documents",
+    payment_terms: "60 % d'acompte à la commande, 40 % contre documents d'expédition",
     validity_days: 30,
     specifications_json: {},
     notes: "",
-    proforma_pdf_url: "",
   })
 
   useEffect(() => {
@@ -128,7 +127,7 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t("dashboard.partner.quote_title", "Soumettre Devis / Proforma")}</h2>
+          <h2 className="text-2xl font-bold">{t("dashboard.partner.quote_title_v2", "Préparer une pro forma")}</h2>
           <p className="text-muted-foreground">{requestData.reference} • {requestData.category}</p>
         </div>
         <Button variant="outline" onClick={onCancel} disabled={isLoading}>
@@ -340,13 +339,8 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t("dashboard.partner.notes", "Notes pour l'acheteur")}</Label>
+                <Label>{t("dashboard.partner.notes", "Notes pour l'acheteur")} <span className="text-xs text-muted-foreground">(figurent sur la pro forma)</span></Label>
                 <Textarea placeholder="Délais spécifiques, conditions particulières, recommandations..." value={quoteData.notes} onChange={e => handleChange("notes", e.target.value)} rows={3} />
-              </div>
-              <div className="space-y-2">
-                <Label>{t("dashboard.partner.proforma_pdf", "Proforma PDF (URL)")}</Label>
-                <Input placeholder="https://.../proforma-XXX.pdf" value={quoteData.proforma_pdf_url} onChange={e => handleChange("proforma_pdf_url", e.target.value)} />
-                <p className="text-xs text-muted-foreground">{t("dashboard.partner.upload_pdf_note", "Uploadez le PDF sur Supabase Storage puis collez l'URL publique ici.")}</p>
               </div>
             </CardContent>
           </Card>
@@ -358,7 +352,7 @@ export function QuoteSubmissionForm({ requestId, requestData, onSubmit, onCancel
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading} className="gap-2" size="lg">
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            {t("dashboard.partner.submit_quote", "Envoyer le Devis à l'Acheteur")}
+            {t("dashboard.partner.submit_quote_v2", "Soumettre à la validation d'Alpha Import")}
           </Button>
         </div>
       </Tabs>

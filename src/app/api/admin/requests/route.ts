@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendToN8N } from '@/lib/webhooks'
 import { logAudit } from '@/lib/audit'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
-import { processAutomaticDebit } from '@/lib/payments/auto-debit.service'
 import { logAdminAccess, getAdminAuditMetadata } from '@/lib/admin-audit'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -114,79 +113,15 @@ export async function POST(request: NextRequest) {
       }
 
       case 'VALIDATE': {
-        // 1. Update request status
-        const { data: requestData, error: reqError } = await supabase
-          .from('import_requests')
-          .update({
-            status: 'VALIDATED',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', requestId)
-          .select()
-          .single()
-
-        if (reqError) throw reqError
-
-        // 2. Create Order
-        const orderRef = `ORD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-        const totalAmount = requestData.budget_max || 0
-        const commission = totalAmount * 0.1
-
-        const { data: orderData, error: orderError } = await supabase
-          .from('orders')
-          .insert({
-            reference: orderRef,
-            request_id: requestId,
-            total_amount: totalAmount,
-            alpha_commission: commission,
-            partner_payout: totalAmount - commission,
-            status: 'AWAITING_DEPOSIT',
-            validated_by_admin: true,
-            deposit_amount: totalAmount * 0.6,
-            balance_amount: totalAmount * 0.4,
-          })
-          .select()
-          .single()
-
-        if (orderError) throw orderError
-        result = { request: requestData, order: orderData }
-        n8nEvent = 'request_validated'
-
-        await logAudit({
-          actorId: user.id,
-          action: 'VALIDATE_REQUEST',
-          targetType: 'import_requests',
-          targetId: requestId,
-          details: { orderId: orderData.id, reference: orderRef }
-        })
-
-        // Trigger certified report generation (Alpha Compliance Report)
-        await sendToN8N('certified_report_requested', {
-          requestId,
-          orderId: orderData.id,
-          orderReference: orderRef,
-          amount: totalAmount,
-          clientName: requestData.user_id,
-          timestamp: new Date().toISOString()
-        })
-
-        // SEPA auto-debit: charge deposit 60% if buyer has mandate
-        try {
-          const { data: buyerProfile } = await supabase
-            .from('profiles')
-            .select('mandate_activated')
-            .eq('id', requestData.user_id || requestData.buyer_id)
-            .single()
-
-          if (buyerProfile?.mandate_activated && orderData.deposit_amount > 0) {
-            await processAutomaticDebit(orderData.id, 0.6)
-              .catch(e => console.error('SEPA auto-debit deposit failed:', e))
-          }
-        } catch (e) {
-          console.error('SEPA auto-debit check failed:', e)
-        }
-
-        break
+        // Désactivé : cette action créait une commande sur le seul budget
+        // déclaré par le client, sans pro forma, et pouvait déclencher un
+        // prélèvement SEPA de 60 %. Or aucun paiement ne doit précéder la
+        // facture finale détaillée. La commande naît désormais de la pro forma
+        // validée par Alpha Import puis acceptée par le client.
+        return NextResponse.json(
+          { error: 'Action remplacée : validez la pro forma du partenaire dans la fiche de la demande.' },
+          { status: 409 }
+        )
       }
 
       case 'REJECT': {

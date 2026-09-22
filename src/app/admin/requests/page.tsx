@@ -107,10 +107,6 @@ function AdminRequestsContent() {
     await handleAdminAction('ASSIGN_PARTNER', requestId, { partnerId })
   }
 
-  async function handleValidateRequest(requestId: string) {
-    await handleAdminAction('VALIDATE', requestId)
-  }
-
   async function handleRejectRequest(requestId: string) {
     await handleAdminAction('REJECT', requestId)
   }
@@ -296,10 +292,6 @@ function AdminRequestsContent() {
                           </DropdownMenuItem>
                           {req.status === "ANALYSIS" && (
                             <>
-                              <DropdownMenuItem onClick={() => handleValidateRequest(req.id)} className="text-success">
-                                <CheckCircle2 className="w-4 h-4 me-2" />
-                                Valider la demande
-                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleRejectRequest(req.id)} className="text-destructive">
                                 <XCircle className="w-4 h-4 me-2" />
                                 Refuser

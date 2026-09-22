@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/i18n-context"
 import { TrackingEditor } from "@/components/admin/tracking-editor"
 import { AssignPartnerDialog } from "@/components/admin/assign-partner-dialog"
 import { RequestThread } from "@/components/requests/request-thread"
+import { ProformaPanel } from "@/components/requests/proforma-panel"
 import {
   ArrowLeft,
   Package,
@@ -185,9 +186,6 @@ export default function AdminRequestDetailPage() {
               <Button variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => handleAction('REJECT')}>
                 Refuser
               </Button>
-              <Button onClick={() => handleAction('VALIDATE')}>
-                Valider la demande
-              </Button>
             </>
           )}
           <DropdownMenu>
@@ -357,6 +355,9 @@ export default function AdminRequestDetailPage() {
               )}
             </div>
           </div>
+
+          {/* Pro forma : le partenaire prépare, l'administration valide avant transmission */}
+          <ProformaPanel requestId={params.id as string} requestData={request} onChange={relireDemande} />
 
           {/* Discussion : client, partenaire affecté et administration */}
           <RequestThread requestId={params.id as string} />
