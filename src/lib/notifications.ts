@@ -112,7 +112,11 @@ export async function sendStatusNotification(
     // chose qu'un gabarit.
     const connu = Object.prototype.hasOwnProperty.call(SUBJECTS, status) && Object.prototype.hasOwnProperty.call(TEMPLATES, status)
     const subject = connu ? SUBJECTS[status] : undefined
-    const templateFn = connu ? TEMPLATES[status] : undefined
+    const gabarit = connu ? TEMPLATES[status] : undefined
+    // Le gabarit doit etre une fonction de la table ci-dessus, et rien d'autre :
+    // sans cette verification, une cle heritee du prototype ferait appeler une
+    // methode quelconque avec le nom du destinataire.
+    const templateFn = typeof gabarit === 'function' ? gabarit : undefined
 
     if (!subject || !templateFn) {
         console.log(`ℹ️ Aucun gabarit de notification pour le statut ${journal(status, 60)} — e-mail ignoré.`)
