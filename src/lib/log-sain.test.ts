@@ -17,9 +17,8 @@ describe("journal", () => {
   })
 
   it("retire tous les caractères de contrôle, pas seulement le saut de ligne", () => {
-    // Un retour chariot suivi d'un saut de ligne compte pour un seul espace ;
-    // tabulation, caractère nul et suppression en donnent un chacun.
-    expect(journal(`a${CR}${LF}${TAB}b${NUL}c${DEL}d`)).toBe("a  b c d")
+    // Chaque caractère de contrôle devient un espace, un par un.
+    expect(journal(`a${CR}${LF}${TAB}b${NUL}c${DEL}d`)).toBe("a   b c d")
   })
 
   it("borne la longueur", () => {

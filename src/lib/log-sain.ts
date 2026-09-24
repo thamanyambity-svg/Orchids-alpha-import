@@ -29,6 +29,6 @@ export function journal(valeur: unknown, longueurMax = 200): string {
   // Expressions écrites sur place : une analyse statique ne reconnaît le
   // nettoyage que si le motif est visible à l'appel, pas rangé dans une
   // constante voisine.
-  const propre = texte.replace(/[\r\n]+/g, ' ').replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, ' ')
+  const propre = texte.replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, ' ')
   return propre.length > longueurMax ? `${propre.slice(0, longueurMax)}…` : propre
 }
