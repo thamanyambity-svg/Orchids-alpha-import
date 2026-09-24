@@ -50,7 +50,7 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
-          queries: security-extended
+          config-file: ./.github/codeql/config.yml
       - uses: github/codeql-action/analyze@v3
 
   zap:
@@ -61,11 +61,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Scan passif
-        uses: zaproxy/action-baseline@v0.12.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
           target: https://www.aonosekehouseinvestmentdrc.site
           rules_file_name: .zap/regles.tsv
-          # Le rapport est déposé en artefact ; pas d'ouverture de ticket
+          # Le rapport est déposé en artefact (v0.15.0 : les versions
+          # antérieures échouaient à l'envoi) ; pas d'ouverture de ticket
           # automatique, qui noierait le dépôt à chaque exécution.
           allow_issue_writing: false
           cmd_options: "-a -T 5"

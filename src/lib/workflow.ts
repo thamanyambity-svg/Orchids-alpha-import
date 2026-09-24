@@ -34,8 +34,8 @@ export async function triggerSourcingAgent(
                 partner_profile_id: partnerProfileId,
             }),
         }).then(res => {
-            if (!res.ok) console.error('[SourcingAgent] Trigger failed:', res.status)
-            else console.log('[SourcingAgent] Triggered successfully for request:', requestId)
+            if (!res.ok) console.error('[SourcingAgent] Déclenchement échoué :', res.status)
+            else console.log('[SourcingAgent] Déclenché pour la demande :', journal(requestId, 80))
         }).catch(e => {
             console.error('[SourcingAgent] Trigger error:', e)
         })
@@ -180,6 +180,7 @@ export function getNextPossibleStatuses(
 // --- Shared Execution Logic ---
 
 import { SupabaseClient } from '@supabase/supabase-js'
+import { journal } from './log-sain'
 
 export async function executeTransition(
     supabase: SupabaseClient,
@@ -255,7 +256,7 @@ export async function executeTransition(
             // Lorsque la demande passe en ANALYSIS, l'agent est déclenché automatiquement
             if (target === 'ANALYSIS' && requestWithBuyer?.assigned_partner_id) {
                 triggerSourcingAgent(id, requestWithBuyer.assigned_partner_id)
-                console.log(`[Workflow] Sourcing agent triggered for request ${id}, partner ${requestWithBuyer.assigned_partner_id}`)
+                console.log(`[Workflow] Agent de sourcing déclenché — demande ${journal(id, 80)}, partenaire ${journal(requestWithBuyer.assigned_partner_id, 80)}`)
             }
             // ────────────────────────────────────────────────────────────────
 

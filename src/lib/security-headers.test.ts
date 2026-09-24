@@ -70,6 +70,12 @@ describe("Content-Security-Policy", () => {
     expect(media).not.toContain("*")
   })
 
+  it("empêche l'envoi d'un formulaire vers un autre site", async () => {
+    // form-action ne retombe sur aucune autre directive : absente, elle laisse
+    // un formulaire injecté poster les identifiants ailleurs.
+    expect((await csp())["form-action"]).toEqual(["'self'"])
+  })
+
   it("garde une politique par défaut restrictive", async () => {
     const directives = await csp()
     expect(directives["default-src"]).toEqual(["'self'"])

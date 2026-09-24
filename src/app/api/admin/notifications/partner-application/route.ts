@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireRole, handleApiError } from '@/lib/auth-guard'
 import { Resend } from 'resend'
+import { journal } from '@/lib/log-sain'
 
 const SENDER_EMAIL = 'A.Onoseke Investment <contact@aonosekehouseinvestmentdrc.site>'
 
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
       })
       if (error) console.error('Failed to send partner notification email:', error)
     } else {
-      console.log(`[SIMULATION] Email to ${email}: ${subject}`)
+      console.log(`[SIMULATION] E-mail à ${journal(email, 120)} : ${journal(subject, 120)}`)
     }
 
     return NextResponse.json({ success: true })

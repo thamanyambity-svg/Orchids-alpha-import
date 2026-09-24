@@ -42,6 +42,9 @@ const securityHeaders = [
       // redirections d'authentification 3-D Secure.
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "frame-ancestors 'self'",
+      // Destination des formulaires : sans elle, la directive ne retombe sur
+      // aucune autre, et un formulaire injecté pourrait poster vers un site tiers.
+      "form-action 'self'",
       "base-uri 'self'",
       "object-src 'none'",
     ].join("; "),

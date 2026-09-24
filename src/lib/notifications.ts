@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import { RequestStatus, OrderStatus } from './types'
 import { createClient } from '@supabase/supabase-js'
+import { journal } from '@/lib/log-sain'
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder')
 
@@ -106,11 +107,15 @@ export async function sendStatusNotification(
     orderId?: string
 ) {
     // Only send if we have a template and subject for this status
-    const subject = SUBJECTS[status]
-    const templateFn = TEMPLATES[status]
+    // Recherche par clé propre : `status` vient de l'appelant, et une clé
+    // héritée du prototype ("constructor", "toString") ferait appeler autre
+    // chose qu'un gabarit.
+    const connu = Object.prototype.hasOwnProperty.call(SUBJECTS, status) && Object.prototype.hasOwnProperty.call(TEMPLATES, status)
+    const subject = connu ? SUBJECTS[status] : undefined
+    const templateFn = connu ? TEMPLATES[status] : undefined
 
     if (!subject || !templateFn) {
-        console.log(`ℹ️ No notification template for status ${status}. Skipping email.`)
+        console.log(`ℹ️ Aucun gabarit de notification pour le statut ${journal(status, 60)} — e-mail ignoré.`)
         return
     }
 
@@ -152,7 +157,7 @@ export async function sendStatusNotification(
 
     try {
         if (!process.env.RESEND_API_KEY) {
-            console.log('⚠️ RESEND_API_KEY missing. Simulating email sent:', { to: toEmail, subject })
+            console.log('⚠️ RESEND_API_KEY absente — envoi simulé :', journal({ to: toEmail, subject }))
             return
         }
 
@@ -166,7 +171,7 @@ export async function sendStatusNotification(
         if (data.error) {
             console.error('❌ Resend Error:', data.error)
         } else {
-            console.log(`✅ Email sent to ${toEmail} [${status}] ID: ${data.data?.id}`)
+            console.log(`✅ E-mail envoyé à ${journal(toEmail, 120)} [${journal(status, 60)}] ID : ${journal(data.data?.id, 80)}`)
         }
 
         // --- NEW: Insert into Real-Time Notifications Table ---
@@ -177,7 +182,10 @@ export async function sendStatusNotification(
             if (userProfile) {
                 const { error: dbError } = await getSupabase().from('notifications').insert({
                     user_id: userProfile.id,
-                    title: subject?.replace(/<[^>]*>?/gm, '') || 'Nouvelle Notification', // Strip HTML if any
+                    // `subject` vient de SUBJECTS, constante du code : rien à
+                    // désinfecter, et un retrait de balises par expression
+                    // régulière donnerait une fausse impression de sécurité.
+                    title: subject || 'Nouvelle Notification',
                     message: `Statut mis à jour : ${status}`,
                     type: 'INFO',
                     link: '/dashboard' // Can be refined later based on orderId

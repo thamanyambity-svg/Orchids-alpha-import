@@ -1,0 +1,13 @@
+name: Analyse de sécurité Alpha Import
+
+queries:
+  - uses: security-extended
+
+paths-ignore:
+  # Maquette héritée d'un site vitrine, conservée pour référence : elle n'est
+  # ni importée par l'application, ni déployée. L'analyser produit des alertes
+  # sur du code qui ne tourne nulle part.
+  - refonte-dynamique-site-logistique
+  # Fichiers de tests : ils manipulent volontairement des entrées hostiles.
+  - "**/*.test.ts"
+  - "**/*.test.tsx"

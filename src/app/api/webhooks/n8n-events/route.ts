@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { verifySharedSecret } from '@/lib/webhook-verify'
+import { journal } from '@/lib/log-sain'
 
 /** Le nom d'action est repris dans audit_logs : on le borne et on le nettoie. */
 const ACTION_MAX = 40
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
     } else {
       // Sans base configurée, l'événement n'est PAS tracé : le dire, plutôt
       // que de renvoyer un accusé qui ferait croire l'inverse.
-      console.warn(`[n8n] ${action} non journalisé — Supabase non configuré :`, event)
+      console.warn('[n8n] événement non journalisé — Supabase non configuré :', journal(action, 80))
       return NextResponse.json({ ok: true, received: event, persisted: false }, { status: 202 })
     }
 

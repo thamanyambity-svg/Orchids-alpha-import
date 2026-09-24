@@ -11,7 +11,9 @@ export async function POST(req: Request) {
     }
 
     const { email, source } = await req.json()
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Longueur bornée d'abord (254 : maximum d'une adresse), sinon une chaîne
+    // démesurée fait travailler le moteur d'expressions régulières trop longtemps.
+    if (typeof email !== "string" || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Email invalide" }, { status: 400 })
     }
 

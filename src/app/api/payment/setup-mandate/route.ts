@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireUser, handleApiError } from '@/lib/auth-guard'
 import { setupDirectDebitMandate } from '@/lib/payments/auto-debit.service'
 import { validateIBAN, validateBIC } from '@/lib/payments/iban-validator'
+import { journal } from '@/lib/log-sain'
 
 export async function POST(req: NextRequest) {
   try {
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
       message: 'SEPA mandate setup initiated. Please confirm in the payment form.'
     })
   } catch (error: unknown) {
-    console.error('Setup mandate error:', error)
+    console.error('Erreur de mise en place du mandat :', journal(error))
     return handleApiError(error)
   }
 }

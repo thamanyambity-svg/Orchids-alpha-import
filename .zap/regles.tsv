@@ -5,7 +5,18 @@
 # donc ni les espaces client, partenaire ou administration, ni les routes
 # serveur protégées. Ces parties-là sont couvertes par la matrice d'accès
 # (src/app/api/matrice-acces.test.ts), rejouée à chaque modification du code.
+#
+# Verdicts posés après le scan du 24/09/2026 : 238 adresses, 0 échec,
+# 59 contrôles réussis, 9 avertissements — tous tranchés ci-dessous.
 10015	IGNORE	Cache-Control absent sur les fichiers statiques versionnés de Next.js ; ils portent une empreinte dans leur nom.
 10027	IGNORE	Commentaires d'information dans le HTML rendu par React.
+10049	IGNORE	Contenu stockable mais non mis en cache : comportement voulu pour des pages personnalisées.
+10050	IGNORE	Réponse servie par le cache du CDN sur des pages publiques : aucune donnée personnelle.
+10055	WARN	Directive CSP sans repli : form-action ajoutée le 24/09/2026 ; toute nouvelle alerte ici signale une vraie lacune.
 10063	WARN	En-têtes d'autorisations navigateur (Permissions-Policy) : à compléter.
+10094	IGNORE	Chaînes en base64 dans les pages : identifiants de compilation et données de rendu de Next.js, sans secret.
+10096	IGNORE	Horodatages visibles dans les ressources statiques : aucune information exploitable.
+10098	IGNORE	Access-Control-Allow-Origin ouvert, posé par le CDN sur les pages et fichiers publics uniquement ; les routes serveur ne le portent pas, et un navigateur n'envoie jamais de cookie vers une origine ouverte par joker.
 10109	IGNORE	Stockage local du navigateur : utilisé pour la langue et l'affichage, sans donnée personnelle.
+90004	WARN	Cross-Origin-Embedder-Policy absent : son activation casserait l'iframe de paiement Stripe ; à réétudier si le paiement change.
+90005	IGNORE	Sec-Fetch-Dest manquant : en-tête de requête envoyé par le navigateur, pas par le site. Ce sont les requêtes du scanner qui en sont dépourvues.

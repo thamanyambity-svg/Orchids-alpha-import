@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { analyzeEmail } from '@/lib/email-ai'
 import { verifySvixSignature } from '@/lib/webhook-verify'
+import { journal } from '@/lib/log-sain'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET
@@ -20,8 +21,14 @@ interface ResendInboundEvent {
   }
 }
 
+// Identifiant transmis par Resend : il compose une URL appelée par le
+// serveur, donc il est validé avant tout usage, jamais interpolé tel quel.
+const EMAIL_ID = /^[A-Za-z0-9_-]{1,80}$/
+
 function parseEmailAddress(raw: string): { email: string; name?: string } {
-  const match = raw.match(/^(.+?)\s*<([^>]+)>$/)
+  // Longueur bornée avant l'expression régulière : une adresse démesurée
+  // ferait travailler le moteur d'expressions bien au-delà du raisonnable.
+  const match = raw.slice(0, 320).match(/^(.+?)\s*<([^>]+)>$/)
   if (match) {
     return { name: match[1].trim().replace(/^["']|["']$/g, ''), email: match[2].trim() }
   }
@@ -54,7 +61,13 @@ export async function POST(request: NextRequest) {
     }
 
     const { email_id, from, to, subject } = event.data
-    const { email: fromEmail, name: fromName } = parseEmailAddress(from)
+    // Cet identifiant compose l'URL que le serveur appelle ensuite : il doit
+    // avoir exactement la forme attendue, sinon la requête est refusée.
+    if (typeof email_id !== 'string' || !EMAIL_ID.test(email_id)) {
+      console.warn('[resend] identifiant d\'e-mail invalide :', journal(email_id, 80))
+      return NextResponse.json({ error: 'Invalid email_id' }, { status: 400 })
+    }
+    const { email: fromEmail, name: fromName } = parseEmailAddress(typeof from === 'string' ? from : '')
 
     const supabase = createAdminClient()
 
@@ -81,7 +94,7 @@ export async function POST(request: NextRequest) {
 
     if (claimError) {
       if ((claimError as { code?: string }).code === '23505') {
-        console.log(`[resend] e-mail ${email_id} déjà reçu — ignoré (idempotence)`)
+        console.log(`[resend] e-mail ${journal(email_id, 80)} déjà reçu — ignoré (idempotence)`)
         return NextResponse.json({ ok: true, received: false, duplicate: true })
       }
       console.error('Inbound email claim error:', claimError)
@@ -93,7 +106,7 @@ export async function POST(request: NextRequest) {
     let bodyHtml = ''
 
     if (RESEND_API_KEY) {
-      const res = await fetch(`https://api.resend.com/emails/receiving/${email_id}`, {
+      const res = await fetch(`https://api.resend.com/emails/receiving/${encodeURIComponent(email_id)}`, {
         headers: { Authorization: `Bearer ${RESEND_API_KEY}` },
       })
       if (res.ok) {
