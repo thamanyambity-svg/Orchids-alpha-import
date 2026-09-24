@@ -100,6 +100,34 @@ const TEMPLATES: Partial<Record<NotificationType, (name: string) => string>> = {
     `
 }
 
+/** Sujet du message, par correspondance explicite. */
+function sujetDe(status: NotificationType): string | undefined {
+    switch (status) {
+        case 'VALIDATED': return SUBJECTS.VALIDATED
+        case 'REJECTED': return SUBJECTS.REJECTED
+        case 'FUNDED': return SUBJECTS.FUNDED
+        case 'PURCHASED': return SUBJECTS.PURCHASED
+        case 'SHIPPED': return SUBJECTS.SHIPPED
+        case 'DELIVERED': return SUBJECTS.DELIVERED
+        case 'AWAITING_BALANCE': return SUBJECTS.AWAITING_BALANCE
+        default: return undefined
+    }
+}
+
+/** Corps du message, produit par le gabarit correspondant au statut. */
+function corpsDe(status: NotificationType, nom: string): string | undefined {
+    switch (status) {
+        case 'VALIDATED': return TEMPLATES.VALIDATED?.(nom)
+        case 'REJECTED': return TEMPLATES.REJECTED?.(nom)
+        case 'FUNDED': return TEMPLATES.FUNDED?.(nom)
+        case 'PURCHASED': return TEMPLATES.PURCHASED?.(nom)
+        case 'SHIPPED': return TEMPLATES.SHIPPED?.(nom)
+        case 'DELIVERED': return TEMPLATES.DELIVERED?.(nom)
+        case 'AWAITING_BALANCE': return TEMPLATES.AWAITING_BALANCE?.(nom)
+        default: return undefined
+    }
+}
+
 export async function sendStatusNotification(
     toEmail: string,
     userName: string,
@@ -110,15 +138,13 @@ export async function sendStatusNotification(
     // Recherche par clé propre : `status` vient de l'appelant, et une clé
     // héritée du prototype ("constructor", "toString") ferait appeler autre
     // chose qu'un gabarit.
-    const connu = Object.prototype.hasOwnProperty.call(SUBJECTS, status) && Object.prototype.hasOwnProperty.call(TEMPLATES, status)
-    const subject = connu ? SUBJECTS[status] : undefined
-    const gabarit = connu ? TEMPLATES[status] : undefined
-    // Le gabarit doit etre une fonction de la table ci-dessus, et rien d'autre :
-    // sans cette verification, une cle heritee du prototype ferait appeler une
-    // methode quelconque avec le nom du destinataire.
-    const templateFn = typeof gabarit === 'function' ? gabarit : undefined
+    // Choix par correspondance explicite, sans appel indirect : `status` vient
+    // de l'appelant, et aller chercher une fonction par cette clé revenait à
+    // appeler ce qu'elle désigne — y compris une méthode héritée du prototype.
+    const subject = sujetDe(status)
+    const corps = corpsDe(status, userName)
 
-    if (!subject || !templateFn) {
+    if (!subject || !corps) {
         console.log(`ℹ️ Aucun gabarit de notification pour le statut ${journal(status, 60)} — e-mail ignoré.`)
         return
     }
@@ -143,7 +169,7 @@ export async function sendStatusNotification(
 
                 <!-- Content -->
                 <div style="padding: 40px 32px; color: #18181b; line-height: 1.6;">
-                    ${templateFn(userName)}
+                    ${corps}
                 </div>
 
                 <!-- Footer -->
