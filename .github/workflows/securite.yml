@@ -1,0 +1,72 @@
+name: Sécurité
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Lundi 06h00 UTC : une faille publiée en cours de semaine ne dort pas
+    # jusqu'au prochain commit.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  dependances:
+    name: Failles des dépendances
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # Bloque sur une faille critique dans ce qui part en production. Les
+      # dépendances de développement ne servent pas le site.
+      - name: Aucune faille critique en production
+        run: npm audit --omit=dev --audit-level=critical
+      # Les failles élevées sont rapportées sans bloquer : la seule connue à ce
+      # jour (postcss, embarqué dans Next) ne se corrige qu'en passant à Next 16.
+      - name: Rapport des failles élevées
+        if: always()
+        run: npm audit --omit=dev --audit-level=high || true
+
+  codeql:
+    name: Analyse du code (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v3
+
+  zap:
+    name: Scan du site en ligne (OWASP ZAP)
+    # Jamais sur une pull request : ce scan interroge le site de production.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan passif
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: https://www.aonosekehouseinvestmentdrc.site
+          rules_file_name: .zap/regles.tsv
+          # Le rapport est déposé en artefact ; pas d'ouverture de ticket
+          # automatique, qui noierait le dépôt à chaque exécution.
+          allow_issue_writing: false
+          cmd_options: "-a -T 5"
+          fail_action: false

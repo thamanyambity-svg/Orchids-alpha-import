@@ -1,0 +1,11 @@
+# Règles du scan ZAP — une ligne par alerte : identifiant, action, motif.
+# WARN = signalé dans le rapport ; IGNORE = écarté, avec sa raison.
+#
+# Le scan ne teste que ce qui est public : aucune session n'est fournie à ZAP,
+# donc ni les espaces client, partenaire ou administration, ni les routes
+# serveur protégées. Ces parties-là sont couvertes par la matrice d'accès
+# (src/app/api/matrice-acces.test.ts), rejouée à chaque modification du code.
+10015	IGNORE	Cache-Control absent sur les fichiers statiques versionnés de Next.js ; ils portent une empreinte dans leur nom.
+10027	IGNORE	Commentaires d'information dans le HTML rendu par React.
+10063	WARN	En-têtes d'autorisations navigateur (Permissions-Policy) : à compléter.
+10109	IGNORE	Stockage local du navigateur : utilisé pour la langue et l'affichage, sans donnée personnelle.
