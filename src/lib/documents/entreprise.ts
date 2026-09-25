@@ -24,9 +24,12 @@ export const ENTREPRISE = {
   nom: 'ALPHA IMPORT EXCHANGE',
   raisonSociale: 'A. Onoseke House Investment RDC',
   activite: 'Import · Sourcing · Logistique · Dédouanement',
-  adresse: 'Kinshasa, République Démocratique du Congo',
-  // Numéros légaux — à renseigner par l'administration.
-  rccm: '',
+  adresse: '332/40, av. Révolution, Q/Résidentiel, C/Limete, Kinshasa',
+  pays: 'République Démocratique du Congo',
+  // Extrait du Registre du Commerce et du Crédit Mobilier, immatriculation du
+  // 22/10/2021 au Guichet unique de Kinshasa/Matete.
+  rccm: 'CD/KNM/RCCM/21-A-01949',
+  // Restent à fournir par l'administration.
   idNat: '',
   nif: '',
   capital: '',
@@ -53,7 +56,7 @@ export function lignesEmetteur(): string[] {
 
   return [
     ENTREPRISE.raisonSociale,
-    ENTREPRISE.adresse,
+    `${ENTREPRISE.adresse} · ${ENTREPRISE.pays}`,
     identifiants.join(' · '),
     `${ENTREPRISE.telephones.join(' · ')} · ${ENTREPRISE.email}`,
   ].filter((l): l is string => Boolean(l && l.trim()))
@@ -76,7 +79,7 @@ export function piedEntreprise(): string {
   return [
     ENTREPRISE.raisonSociale,
     ENTREPRISE.capital && `Capital ${ENTREPRISE.capital}`,
-    ENTREPRISE.adresse,
+    `${ENTREPRISE.adresse} · ${ENTREPRISE.pays}`,
     ENTREPRISE.rccm && `RCCM ${ENTREPRISE.rccm}`,
     ENTREPRISE.site,
   ]
