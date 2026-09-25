@@ -35,7 +35,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const [{ data: demande }, { data: po }] = await Promise.all([
       admin
         .from('import_requests')
-        .select('reference, product_name, category, buyer:profiles!import_requests_buyer_id_fkey(full_name, company_name, email)')
+        .select('reference, product_name, category, buyer:profiles!import_requests_buyer_id_fkey(full_name, company_name, email, city)')
         .eq('id', facture.request_id)
         .maybeSingle(),
       facture.purchase_order_id
@@ -43,6 +43,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
         : Promise.resolve({ data: null }),
     ])
     const acheteur = un((demande as any)?.buyer)
+
+    // Acompte déjà encaissé : il apparaît en déduction sur la facture.
+    const { data: commande } = facture.order_id
+      ? await admin.from('orders').select('deposit_paid, deposit_amount, updated_at').eq('id', facture.order_id).maybeSingle()
+      : { data: null }
+    const acompte = commande?.deposit_paid
+      ? { montant: Number(commande.deposit_amount ?? 0), le: commande.updated_at ?? null }
+      : null
 
     const pdf = await genererFactureFinalePdf({
       numero: facture.number,
@@ -53,7 +61,9 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       bon_de_commande: (po as any)?.po_number ?? '—',
       devise: facture.currency ?? 'USD',
       pourcentage_acompte: (po as any)?.deposit_percent ?? 60,
-      client: { nom: acheteur?.full_name ?? '—', societe: acheteur?.company_name, email: acheteur?.email },
+      client: { nom: acheteur?.full_name ?? '—', societe: acheteur?.company_name, email: acheteur?.email, ville: acheteur?.city },
+      acompte_recu: acompte?.montant ?? null,
+      acompte_recu_le: acompte?.le ?? null,
       produit: demande?.product_name || demande?.category || 'Marchandise',
       lignes: Array.isArray(facture.lines) ? facture.lines : [],
       notes: facture.notes,

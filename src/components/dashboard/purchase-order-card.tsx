@@ -233,13 +233,13 @@ export function PurchaseOrderCard({ po, quote, request, onSigned, onCancel, onVi
                 <Eye className="w-4 h-4 me-1" /> {t("po.view_quote", "Voir Devis")}
               </Button>
             )}
-            {po.po_pdf_url && (
-              <Button variant="outline" asChild>
-                <a href={po.po_pdf_url} target="_blank" rel="noopener noreferrer">
-                  <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF PO")}
-                </a>
-              </Button>
-            )}
+            {/* Le document est produit à la demande : le lien pointait
+                auparavant vers un fichier qui n'a jamais existé. */}
+            <Button variant="outline" asChild>
+              <a href={`/api/purchase-orders/${po.id}/pdf`} target="_blank" rel="noopener noreferrer">
+                <Download className="w-4 h-4 me-1" /> {t("po.download_pdf", "PDF du bon de commande")}
+              </a>
+            </Button>
             {po.signed_po_pdf_url && (
               <Button variant="outline" asChild>
                 <a href={po.signed_po_pdf_url} target="_blank" rel="noopener noreferrer">

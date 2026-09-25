@@ -1,12 +1,29 @@
-import { Document, Page, Text, View, StyleSheet, renderToBuffer } from "@react-pdf/renderer"
+import { Document, Page, Text, View, renderToBuffer } from "@react-pdf/renderer"
+import { styles } from "@/components/documents/styles"
+import {
+  Entete,
+  Bandeau,
+  Parties,
+  partieAlpha,
+  Infos,
+  Tableau,
+  Totaux,
+  Conditions,
+  Banque,
+  Signatures,
+  Pied,
+  type LigneDocument,
+} from "@/components/documents/blocs"
 import { CHAMPS_FRAIS, formatMontant, dateFr } from "@/lib/quotes/workflow"
 
 /**
- * Pro forma au format PDF, produite à la demande à partir de la base : elle
- * reflète toujours la version enregistrée, sans fichier à téléverser.
+ * Facture pro forma, au format commercial : bandeau d'identification,
+ * émetteur et client, informations logistiques, lignes chiffrées, totaux
+ * avec acompte, conditions et signature.
  *
- * Polices standard du format PDF (Helvetica) : aucune dépendance réseau au
- * moment du rendu.
+ * Produite à la demande depuis la base : elle reflète toujours la version
+ * enregistrée, sans fichier à téléverser. Polices standard du format PDF,
+ * aucune dépendance réseau au rendu.
  */
 
 export interface DonneesProForma {
@@ -15,7 +32,7 @@ export interface DonneesProForma {
   statut: string
   emise_le: string | null
   valable_jusqu_au: string | null
-  client: { nom: string; societe?: string | null; email?: string | null }
+  client: { nom: string; societe?: string | null; email?: string | null; ville?: string | null }
   partenaire: { societe: string; pays?: string | null }
   produit: string
   categorie?: string | null
@@ -23,136 +40,116 @@ export interface DonneesProForma {
   quote: Record<string, any>
 }
 
-const OR = "#8E6E2E"
-const ENCRE = "#15171C"
-const GRIS = "#5B6170"
-const FILET = "#DDE0E6"
-
-const s = StyleSheet.create({
-  page: { padding: 40, fontFamily: "Helvetica", fontSize: 9.5, color: ENCRE, lineHeight: 1.4 },
-  entete: { flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 2, borderBottomColor: OR, paddingBottom: 14, marginBottom: 18 },
-  marque: { fontSize: 18, fontFamily: "Helvetica-Bold", letterSpacing: 2 },
-  sousMarque: { fontSize: 7, color: GRIS, letterSpacing: 1.5, marginTop: 3 },
-  titre: { fontSize: 16, fontFamily: "Helvetica-Bold", color: OR, textAlign: "right" },
-  ref: { fontSize: 8, color: GRIS, textAlign: "right", marginTop: 3 },
-  bandeau: { backgroundColor: "#FBF0DA", color: "#9A6200", padding: 8, marginBottom: 14, fontSize: 8.5, fontFamily: "Helvetica-Bold" },
-  deuxCol: { flexDirection: "row", gap: 16, marginBottom: 16 },
-  bloc: { flex: 1, borderWidth: 1, borderColor: FILET, padding: 10 },
-  etiquette: { fontSize: 7, color: GRIS, letterSpacing: 1, textTransform: "uppercase", marginBottom: 3 },
-  gras: { fontFamily: "Helvetica-Bold" },
-  table: { borderWidth: 1, borderColor: FILET, marginBottom: 14 },
-  ligne: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: FILET, paddingVertical: 6, paddingHorizontal: 8 },
-  enteteTable: { backgroundColor: "#F3F4F6" },
-  cDesc: { flex: 3 },
-  cNum: { flex: 1, textAlign: "right" },
-  total: { flexDirection: "row", justifyContent: "space-between", backgroundColor: ENCRE, color: "#FFFFFF", padding: 10, marginBottom: 14 },
-  totalTexte: { fontFamily: "Helvetica-Bold", fontSize: 12 },
-  grille: { flexDirection: "row", flexWrap: "wrap", marginBottom: 14 },
-  case: { width: "33.33%", paddingVertical: 4, paddingRight: 8 },
-  pied: { position: "absolute", bottom: 28, left: 40, right: 40, fontSize: 7, color: GRIS, borderTopWidth: 1, borderTopColor: FILET, paddingTop: 6 },
-})
-
-const LIBELLES_FRAIS: Record<(typeof CHAMPS_FRAIS)[number], string> = {
-  freight_cost_usd: "Fret",
-  insurance_cost_usd: "Assurance",
-  customs_duty_estimate_usd: "Droits de douane estimés",
-  inspection_cost_usd: "Inspection",
-  handling_fees_usd: "Manutention",
-  other_fees_usd: "Autres frais",
+const LIBELLES_FRAIS: Record<(typeof CHAMPS_FRAIS)[number], { ref: string; libelle: string }> = {
+  freight_cost_usd: { ref: "FRT-01", libelle: "Fret international" },
+  insurance_cost_usd: { ref: "ASS-01", libelle: "Assurance transport" },
+  customs_duty_estimate_usd: { ref: "DOU-01", libelle: "Droits et frais au départ (estimation)" },
+  inspection_cost_usd: { ref: "INS-01", libelle: "Inspection avant embarquement" },
+  handling_fees_usd: { ref: "POR-01", libelle: "Manutention" },
+  other_fees_usd: { ref: "DIV-01", libelle: "Autres frais du partenaire" },
 }
 
 function ProFormaDocument({ d }: { d: DonneesProForma }) {
   const q = d.quote
   const devise = q.currency ?? "USD"
-  const frais = CHAMPS_FRAIS.filter((c) => Number(q[c] ?? 0) > 0)
   const provisoire = d.statut === "DRAFT" || d.statut === "REJECTED"
+  const acompte = Number(q.grand_total_usd ?? 0) * 0.6
+
+  const lignes: LigneDocument[] = [
+    {
+      reference: "MAR-01",
+      designation: `${d.produit}${d.categorie ? ` — ${d.categorie}` : ""}`,
+      quantite: q.quantity,
+      prixUnitaire: Number(q.unit_price_usd ?? 0),
+      montant: Number(q.subtotal_usd ?? 0),
+    },
+    ...CHAMPS_FRAIS.filter((c) => Number(q[c] ?? 0) > 0).map((c) => ({
+      reference: LIBELLES_FRAIS[c].ref,
+      designation: LIBELLES_FRAIS[c].libelle,
+      quantite: 1,
+      prixUnitaire: Number(q[c]),
+      montant: Number(q[c]),
+    })),
+  ]
 
   return (
-    <Document title={`Pro forma ${d.reference} v${d.version}`} author="Alpha Import Exchange RDC">
-      <Page size="A4" style={s.page}>
-        <View style={s.entete}>
-          <View>
-            <Text style={s.marque}>ALPHA IMPORT EXCHANGE</Text>
-            <Text style={s.sousMarque}>AONOSEKE HOUSE INVESTMENT RDC</Text>
-          </View>
-          <View>
-            <Text style={s.titre}>FACTURE PRO FORMA</Text>
-            <Text style={s.ref}>{d.reference} · version {d.version}</Text>
-            <Text style={s.ref}>Émise le {dateFr(d.emise_le)} · valable jusqu'au {dateFr(d.valable_jusqu_au)}</Text>
-          </View>
-        </View>
+    <Document title={`Pro forma ${d.reference} v${d.version}`} author="Alpha Import Exchange">
+      <Page size="A4" style={styles.page}>
+        <Entete titre="Facture pro forma" titreAnglais="Pro forma invoice" />
+
+        <Bandeau
+          champs={[
+            { etiquette: "N° / No.", valeur: `${d.reference}-PF${String(d.version).padStart(2, "0")}` },
+            { etiquette: "Date", valeur: dateFr(d.emise_le) },
+            { etiquette: "Validité / Valid until", valeur: dateFr(d.valable_jusqu_au) },
+            { etiquette: "Devise / Currency", valeur: devise },
+          ]}
+        />
 
         {provisoire && (
-          <Text style={s.bandeau}>
-            DOCUMENT PROVISOIRE — en cours de vérification par Alpha Import, non transmis au client, sans valeur d'engagement.
+          <Text style={styles.bandeauAlerte}>
+            DOCUMENT PROVISOIRE — en cours de vérification par Alpha Import, non transmis au client, sans valeur d&apos;engagement.
           </Text>
         )}
 
-        <View style={s.deuxCol}>
-          <View style={s.bloc}>
-            <Text style={s.etiquette}>Client</Text>
-            <Text style={s.gras}>{d.client.societe || d.client.nom}</Text>
-            {d.client.societe ? <Text>{d.client.nom}</Text> : null}
-            {d.client.email ? <Text>{d.client.email}</Text> : null}
-          </View>
-          <View style={s.bloc}>
-            <Text style={s.etiquette}>Partenaire d'achat</Text>
-            <Text style={s.gras}>{d.partenaire.societe}</Text>
-            {d.partenaire.pays ? <Text>{d.partenaire.pays}</Text> : null}
-          </View>
+        <Parties
+          gauche={partieAlpha()}
+          droite={{
+            titre: "Client / Bill to",
+            nom: d.client.societe || d.client.nom,
+            lignes: [d.client.societe ? d.client.nom : null, d.client.ville, d.client.email],
+          }}
+        />
+
+        <Infos
+          champs={[
+            { etiquette: "Incoterms® 2020", valeur: q.incoterm },
+            { etiquette: "Mode", valeur: d.transport === "AIR" ? "Aérien" : d.transport === "SEA" ? "Maritime" : null },
+            { etiquette: "Partenaire sur place", valeur: [d.partenaire.societe, d.partenaire.pays].filter(Boolean).join(" · ") },
+            { etiquette: "Port d'embarquement", valeur: q.port_loading },
+            { etiquette: "Port de débarquement", valeur: q.port_discharge },
+            { etiquette: "Transit estimé", valeur: q.estimated_transit_days ? `${q.estimated_transit_days} jours` : null },
+            { etiquette: "Départ estimé", valeur: q.estimated_departure_date ? dateFr(q.estimated_departure_date) : null },
+            { etiquette: "Arrivée estimée", valeur: q.estimated_arrival_date ? dateFr(q.estimated_arrival_date) : null },
+            { etiquette: "Quantité", valeur: q.quantity ? String(q.quantity) : null },
+          ]}
+        />
+
+        <Tableau lignes={lignes} devise={devise} />
+
+        <View style={styles.bas}>
+          <Conditions
+            elements={[
+              { titre: "Conditions de paiement :", texte: q.payment_terms || "" },
+              { titre: "Notes :", texte: q.notes || "" },
+              {
+                titre: "Portée :",
+                texte:
+                  "Document sans valeur comptable, établi pour validation de commande. Les droits et taxes d'importation en RDC, le transport jusqu'à destination finale et la commission Alpha Import figurent sur la facture finale, émise avant tout paiement.",
+              },
+            ]}
+          />
+          <Totaux
+            lignes={[
+              { libelle: "Sous-total marchandise", montant: Number(q.subtotal_usd ?? 0) },
+              { libelle: "Frais et transport", montant: Number(q.total_fees_usd ?? 0) },
+              { libelle: `Total ${q.incoterm ?? ""}`.trim(), montant: Number(q.grand_total_usd ?? 0), ton: "fort" },
+              { libelle: "Acompte indicatif (60 %)", montant: acompte, ton: "or" },
+            ]}
+            devise={devise}
+          />
         </View>
 
-        <View style={s.table}>
-          <View style={[s.ligne, s.enteteTable]}>
-            <Text style={[s.cDesc, s.gras]}>Désignation</Text>
-            <Text style={[s.cNum, s.gras]}>Qté</Text>
-            <Text style={[s.cNum, s.gras]}>Prix unitaire</Text>
-            <Text style={[s.cNum, s.gras]}>Montant</Text>
-          </View>
-          <View style={s.ligne}>
-            <Text style={s.cDesc}>{d.produit}{d.categorie ? ` (${d.categorie})` : ""}</Text>
-            <Text style={s.cNum}>{q.quantity}</Text>
-            <Text style={s.cNum}>{formatMontant(q.unit_price_usd, devise)}</Text>
-            <Text style={s.cNum}>{formatMontant(q.subtotal_usd, devise)}</Text>
-          </View>
-          {frais.map((c) => (
-            <View key={c} style={s.ligne}>
-              <Text style={s.cDesc}>{LIBELLES_FRAIS[c]}</Text>
-              <Text style={s.cNum}></Text>
-              <Text style={s.cNum}></Text>
-              <Text style={s.cNum}>{formatMontant(q[c], devise)}</Text>
-            </View>
-          ))}
-        </View>
+        <Banque titre="Coordonnées bancaires / Bank details" />
 
-        <View style={s.total}>
-          <Text style={s.totalTexte}>TOTAL {q.incoterm ?? ""}</Text>
-          <Text style={s.totalTexte}>{formatMontant(q.grand_total_usd, devise)}</Text>
-        </View>
+        <Signatures
+          blocs={[
+            { titre: "Partenaire agréé", sous: d.partenaire.societe },
+            { titre: "Cachet et signature de l'émetteur", sous: "Service commercial — Alpha Import Exchange" },
+          ]}
+        />
 
-        <View style={s.grille}>
-          <View style={s.case}><Text style={s.etiquette}>Incoterm</Text><Text>{q.incoterm ?? "—"}</Text></View>
-          <View style={s.case}><Text style={s.etiquette}>Port d'embarquement</Text><Text>{q.port_loading || "—"}</Text></View>
-          <View style={s.case}><Text style={s.etiquette}>Port de débarquement</Text><Text>{q.port_discharge || "—"}</Text></View>
-          <View style={s.case}><Text style={s.etiquette}>Transport</Text><Text>{d.transport === "AIR" ? "Aérien" : d.transport === "SEA" ? "Maritime" : "—"}</Text></View>
-          <View style={s.case}><Text style={s.etiquette}>Transit estimé</Text><Text>{q.estimated_transit_days ? `${q.estimated_transit_days} jours` : "—"}</Text></View>
-          <View style={s.case}><Text style={s.etiquette}>Départ / arrivée estimés</Text><Text>{dateFr(q.estimated_departure_date)} → {dateFr(q.estimated_arrival_date)}</Text></View>
-        </View>
-
-        <View style={[s.bloc, { marginBottom: 10 }]}>
-          <Text style={s.etiquette}>Conditions de paiement</Text>
-          <Text>{q.payment_terms || "—"}</Text>
-        </View>
-        {q.notes ? (
-          <View style={s.bloc}>
-            <Text style={s.etiquette}>Notes</Text>
-            <Text>{q.notes}</Text>
-          </View>
-        ) : null}
-
-        <Text style={s.pied} fixed>
-          Pro forma indicative : les droits et taxes d'importation en RDC, le transport jusqu'à destination finale et la commission Alpha Import figurent sur la facture finale, émise avant tout paiement.
-        </Text>
+        <Pied reference={`${d.reference} · Pro forma v${d.version} · ${formatMontant(q.grand_total_usd, devise)}`} />
       </Page>
     </Document>
   )

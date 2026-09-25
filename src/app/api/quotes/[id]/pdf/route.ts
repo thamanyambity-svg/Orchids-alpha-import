@@ -39,7 +39,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
     const { data: demande } = await admin
       .from('import_requests')
-      .select('reference, product_name, category, transport_mode, buyer:profiles!import_requests_buyer_id_fkey(full_name, company_name, email)')
+      .select('reference, product_name, category, transport_mode, buyer:profiles!import_requests_buyer_id_fkey(full_name, company_name, email, city)')
       .eq('id', quote.request_id)
       .maybeSingle()
     const { data: fiche } = participants.partnerProfileId
@@ -60,7 +60,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       statut: quote.status,
       emise_le: quote.submitted_at ?? quote.created_at ?? null,
       valable_jusqu_au: quote.valid_until ?? null,
-      client: { nom: acheteur?.full_name ?? '—', societe: acheteur?.company_name, email: acheteur?.email },
+      client: { nom: acheteur?.full_name ?? '—', societe: acheteur?.company_name, email: acheteur?.email, ville: acheteur?.city },
       partenaire: { societe: compte?.company_name || compte?.full_name || '—', pays: pays?.name ?? null },
       produit: demande?.product_name || demande?.category || 'Marchandise',
       categorie: demande?.product_name ? demande?.category : null,

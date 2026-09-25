@@ -72,7 +72,14 @@ export function estExpiree(q: { valid_until?: string | null }, maintenant: Date 
 
 export function formatMontant(n: unknown, devise = 'USD'): string {
   const v = Number(n ?? 0)
-  return `${v.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${devise}`
+  // Les polices standard du format PDF ne connaissent ni l'espace fine
+  // insécable ni l'espace insécable que produit le formatage français : elles
+  // les rendaient par une barre oblique (« 18/500,00 »). On repasse donc en
+  // espace ordinaire.
+  const montant = v
+    .toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    .replace(/[\u202F\u00A0]/g, ' ')
+  return `${montant} ${devise}`
 }
 
 export function dateFr(iso: string | null | undefined): string {
